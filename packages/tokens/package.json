@@ -1,0 +1,45 @@
+{
+  "name": "@rowkit/tokens",
+  "version": "0.0.0",
+  "description": "Design tokens for rowkit — consumable without importing components.",
+  "license": "MIT",
+  "author": "Nikolai Kushner",
+  "homepage": "https://rowkit.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NikolaiKushner/rowkit.git",
+    "directory": "packages/tokens"
+  },
+  "bugs": "https://github.com/NikolaiKushner/rowkit/issues",
+  "keywords": [
+    "design-tokens",
+    "design-system",
+    "rowkit"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "build": "vue-tsc -b tsconfig.lib.json --force && vite build",
+    "typecheck": "vue-tsc -b --force"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "name": "rowkit",
+  "version": "0.0.0",
+  "description": "Vue 3 components for data-dense SaaS interfaces — tables, filters, and the states around them.",
+  "license": "MIT",
+  "author": "Nikolai Kushner",
+  "homepage": "https://rowkit.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NikolaiKushner/rowkit.git",
+    "directory": "packages/ui"
+  },
+  "bugs": "https://github.com/NikolaiKushner/rowkit/issues",
+  "keywords": [
+    "vue",
+    "vue3",
+    "component-library",
+    "data-table",
+    "design-system",
+    "rowkit"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "build": "vue-tsc -b tsconfig.lib.json --force && vite build",
+    "typecheck": "vue-tsc -b --force"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "@rowkit/tokens": "workspace:^"
+  }
+}
