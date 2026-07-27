@@ -29,6 +29,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./css": "./dist/tokens.css",
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -39,7 +40,8 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "build": "vue-tsc -b tsconfig.lib.json --force && vite build",
-    "typecheck": "vue-tsc -b --force"
+    "build": "vue-tsc -b tsconfig.lib.json --force && vite build && node scripts/emit-css.mjs && node scripts/emit-reference.mjs",
+    "typecheck": "vue-tsc -b --force",
+    "reference": "pnpm build && open dist/reference.html"
   }
 }
