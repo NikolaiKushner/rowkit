@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+pnpm-lock.yaml
+*.tsbuildinfo
+CHANGELOG.md
+
+# Hand-written prose at the repo root — Prettier reflows tables and emphasis
+# markers in ways that churn the diff without improving anything.
+/README.md
+/ROADMAP.md
+/CLAUDE.md
+/AGENTS.md

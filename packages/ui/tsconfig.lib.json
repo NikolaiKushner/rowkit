@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "incremental": true,
+    "tsBuildInfoFile": "../../node_modules/.tmp/ui.lib.tsbuildinfo",
+    "rootDir": "src",
+    "types": []
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/**/*.stories.ts"]
+}
