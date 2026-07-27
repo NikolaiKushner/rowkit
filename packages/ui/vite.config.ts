@@ -8,7 +8,17 @@ import dts from 'vite-plugin-dts'
  * Anything matching these is resolved from the consumer's node_modules rather
  * than bundled. Hard rule 5: `vue` is never bundled into the library output.
  */
-const external = [/^vue$/, /^vue\//, /^@vue\//, /^@rowkit\//, /^reka-ui$/]
+const external = [
+  /^vue$/,
+  /^vue\//,
+  /^@vue\//,
+  /^@rowkit\//,
+  /^reka-ui$/,
+  // Kept external so a consumer who already uses them gets one copy. Two
+  // copies of tailwind-merge would mean two separate class-group configs.
+  /^clsx$/,
+  /^tailwind-merge$/,
+]
 
 export default defineConfig({
   plugins: [

@@ -1,0 +1,17 @@
+/*
+ * rowkit's theme layer.
+ *
+ * Consumers import it *after* Tailwind, in their own stylesheet:
+ *
+ *   @import 'tailwindcss';
+ *   @import 'rowkit/styles';
+ *
+ * Tailwind is deliberately not imported here. rowkit is a library living inside
+ * someone else's app, and a dependency that pulls in Tailwind emits a second
+ * copy of preflight and the utility layer on top of the consumer's own.
+ *
+ * The token `@theme` is additive: it registers rowkit's scales alongside
+ * Tailwind's defaults rather than resetting them. Installing rowkit must never
+ * take `bg-red-500` away from the app that installed it.
+ */
+@import '@rowkit/tokens/css';

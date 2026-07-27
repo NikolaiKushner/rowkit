@@ -41,13 +41,15 @@ jobs:
       - name: Check formatting
         run: pnpm format:check
 
+      # Runs before typecheck and test, not after. `packages/ui` consumes
+      # `@rowkit/tokens` through its published dist rather than a path alias —
+      # deliberately, so it exercises the shape a consumer gets — which means
+      # nothing downstream can resolve until tokens has been built.
+      - name: Build
+        run: pnpm build
+
       - name: Typecheck
         run: pnpm typecheck
 
       - name: Test
         run: pnpm test
-
-      # Runs last: it is the slowest gate and the one most likely to be
-      # fixed by whatever the earlier gates already caught.
-      - name: Build
-        run: pnpm build
