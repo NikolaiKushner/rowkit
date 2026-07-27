@@ -74,6 +74,17 @@ export default tseslint.config(
     },
   },
 
+  // Build scripts are plain ESM run by Node, outside any tsconfig project, so
+  // type-aware rules have no program to consult.
+  {
+    files: ['**/scripts/**/*.mjs'],
+    extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: { projectService: false },
+    },
+  },
+
   // Config files run in Node and aren't part of the shipped surface.
   {
     files: ['*.config.{js,ts}', 'packages/*/*.config.ts'],
