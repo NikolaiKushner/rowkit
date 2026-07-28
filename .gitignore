@@ -1,6 +1,12 @@
 node_modules/
 dist/
 coverage/
+
+# build output
+playground/.nuxt/
+playground/.output/
+storybook-static/
+.nuxt/
 *.tsbuildinfo
 .DS_Store
 

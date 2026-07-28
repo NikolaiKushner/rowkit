@@ -7,7 +7,16 @@ import vueParser from 'vue-eslint-parser'
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', '**/*.tsbuildinfo'],
+    ignores: [
+      '**/dist/**',
+      '**/node_modules/**',
+      '**/coverage/**',
+      '**/*.tsbuildinfo',
+      // Nuxt and Storybook build output.
+      'playground/.nuxt/**',
+      'playground/.output/**',
+      'storybook-static/**',
+    ],
   },
 
   js.configs.recommended,
@@ -69,9 +78,12 @@ export default tseslint.config(
     },
   },
 
-  // Tests may assert on loosely-typed fixtures.
+  // Tests and stories import .vue files, which typescript-eslint's program
+  // cannot type without the Vue language plugin — every such import lands as an
+  // error type and trips the unsafe-* rules. `pnpm typecheck` runs vue-tsc,
+  // which does understand them, so the type safety is not actually lost here.
   {
-    files: ['**/*.{test,spec}.ts'],
+    files: ['**/*.{test,spec}.ts', '**/*.stories.ts'],
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',

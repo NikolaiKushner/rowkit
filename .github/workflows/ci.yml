@@ -51,5 +51,12 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      # Story tests run in a real browser, so the binary has to be present.
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Test
         run: pnpm test
+
+      - name: Build Storybook
+        run: pnpm build-storybook

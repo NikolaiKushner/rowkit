@@ -1,6 +1,9 @@
 node_modules/
 dist/
 coverage/
+playground/.nuxt/
+playground/.output/
+storybook-static/
 pnpm-lock.yaml
 *.tsbuildinfo
 CHANGELOG.md

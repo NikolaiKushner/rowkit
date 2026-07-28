@@ -1,0 +1,20 @@
+{
+  "name": "playground",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "typecheck": "nuxt typecheck"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "nuxt": "^4.5.1",
+    "tailwindcss": "^4.3.3",
+    "vue": "^3.5.40"
+  },
+  "dependencies": {
+    "@rowkit/tokens": "workspace:*",
+    "rowkit": "workspace:*"
+  }
+}

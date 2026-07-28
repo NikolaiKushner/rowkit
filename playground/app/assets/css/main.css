@@ -1,0 +1,11 @@
+/*
+ * The playground consumes rowkit from source rather than from `rowkit/styles`,
+ * so a change to a component shows up without a rebuild.
+ *
+ * That means declaring the token theme and the scan path by hand — the shipped
+ * stylesheet does both, but it points at dist/index.js.
+ */
+@import 'tailwindcss';
+@import '@rowkit/tokens/css';
+
+@source '../../../../packages/ui/src';

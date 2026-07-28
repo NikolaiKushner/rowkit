@@ -188,3 +188,18 @@ describe('Select', () => {
     })
   })
 })
+
+describe('stale ARIA references', () => {
+  it('drops aria-activedescendant when the panel closes', async () => {
+    const wrapper = mountSelect()
+    await open(wrapper)
+    expect(control(wrapper).attributes('aria-activedescendant')).toBeDefined()
+
+    await control(wrapper).trigger('keydown', { key: 'Escape' })
+    await nextTick()
+    await nextTick()
+
+    expect(control(wrapper).attributes('aria-expanded')).toBe('false')
+    expect(control(wrapper).attributes('aria-activedescendant')).toBeUndefined()
+  })
+})

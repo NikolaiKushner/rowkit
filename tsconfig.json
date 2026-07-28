@@ -8,5 +8,5 @@
     "checkJs": false,
     "types": ["node"]
   },
-  "include": ["vitest.config.ts", "eslint.config.js"]
+  "include": ["vitest.config.ts", "eslint.config.js", ".storybook/**/*.ts"]
 }

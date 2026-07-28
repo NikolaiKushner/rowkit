@@ -18,7 +18,12 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "clean": "rm -rf packages/*/dist node_modules/.tmp",
-    "prepare": "husky"
+    "prepare": "husky",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test:a11y": "vitest run --project storybook",
+    "dev": "pnpm --filter playground dev",
+    "docs:dev": "echo \"VitePress lands in Phase 5 — docs pages live in docs/components/\""
   },
   "lint-staged": {
     "*.{ts,vue}": [
@@ -29,8 +34,15 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@rowkit/tokens": "workspace:*",
+    "@storybook/addon-a11y": "^10.5.5",
+    "@storybook/addon-vitest": "^10.5.5",
+    "@storybook/vue3-vite": "^10.5.5",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.1.1",
     "@vitejs/plugin-vue": "^6.0.8",
+    "@vitest/browser": "^4.1.10",
+    "@vitest/browser-playwright": "^4.1.10",
     "@vitest/coverage-v8": "^4.1.10",
     "@vue/test-utils": "^2.4.11",
     "eslint": "^10.8.0",
@@ -40,7 +52,10 @@
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
     "lint-staged": "^17.2.0",
+    "playwright": "^1.62.0",
     "prettier": "^3.9.6",
+    "storybook": "^10.5.5",
+    "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.65.0",
     "vite": "^8.1.5",

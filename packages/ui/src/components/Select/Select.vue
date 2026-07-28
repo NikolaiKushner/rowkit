@@ -11,7 +11,7 @@ import {
   ComboboxTrigger,
   ComboboxViewport,
 } from 'reka-ui'
-import { computed, ref, watch, type HTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, ref, useId, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import { useFieldContext } from '../Field/context'
 import type { SelectOption } from './types'
@@ -97,7 +97,10 @@ defineSlots<{
 
 const field = useFieldContext()
 
-const triggerId = computed(() => props.id ?? field?.controlId.value)
+// Always resolves to something: the control needs a stable id anyway, and the
+// stale-ARIA cleanup below needs to find its own element.
+const generatedId = useId()
+const triggerId = computed(() => props.id ?? field?.controlId.value ?? generatedId)
 // OR, not `??` — see the note in Input.vue.
 const isDisabled = computed(() => props.disabled || (field?.disabled.value ?? false))
 const isInvalid = computed(() => props.invalid || (field?.invalid.value ?? false))
@@ -165,6 +168,55 @@ watch(
   },
   { immediate: true }
 )
+
+/**
+ * Reka keeps its highlight when the panel closes, so the input is left holding
+ * an `aria-activedescendant` that points at a list item which has been
+ * unmounted. axe reports it as an invalid ARIA reference, and a screen reader
+ * following the pointer finds nothing there.
+ *
+ * Reka binds the attribute from its own state, so a prop cannot override it,
+ * and it cannot simply be removed once after closing either: selecting an
+ * option moves the highlight onto the clicked item, and Reka's own deferred
+ * search-term reset renders again afterwards and writes the attribute back.
+ *
+ * Watching the attribute for as long as the panel is shut is the one approach
+ * that does not depend on winning a race. Removing it inside the callback is
+ * safe — the resulting mutation finds nothing left to do.
+ *
+ * Worth removing once this is fixed upstream in Reka.
+ */
+let activeDescendantGuard: MutationObserver | undefined
+
+function stopGuard(): void {
+  activeDescendantGuard?.disconnect()
+  activeDescendantGuard = undefined
+}
+
+watch(
+  open,
+  (isOpen) => {
+    stopGuard()
+    if (isOpen || typeof MutationObserver === 'undefined') return
+
+    const control = document.getElementById(triggerId.value)
+    if (!control) return
+
+    control.removeAttribute('aria-activedescendant')
+    activeDescendantGuard = new MutationObserver(() => {
+      if (control.hasAttribute('aria-activedescendant')) {
+        control.removeAttribute('aria-activedescendant')
+      }
+    })
+    activeDescendantGuard.observe(control, {
+      attributes: true,
+      attributeFilter: ['aria-activedescendant'],
+    })
+  },
+  { flush: 'post' }
+)
+
+onBeforeUnmount(stopGuard)
 
 // Only edits made while the panel is open are a search. Seeding the box with
 // the selected label is not something a consumer should have to filter out of
