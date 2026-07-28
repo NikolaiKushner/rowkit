@@ -62,6 +62,10 @@ export default tseslint.config(
     files: ['packages/ui/src/**/*.vue'],
     rules: {
       'vue/multi-word-component-names': 'off',
+      // Optional props are typed `foo?: T`, and `exactOptionalPropertyTypes`
+      // rejects an explicit `undefined` default — so the default this rule
+      // asks for cannot be written.
+      'vue/require-default-prop': 'off',
     },
   },
 
@@ -71,6 +75,9 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
+      // Test fixtures are throwaway wrappers, not shipped components.
+      'vue/one-component-per-file': 'off',
+      'vue/no-reserved-component-names': 'off',
     },
   },
 

@@ -62,5 +62,6 @@ export default defineConfig({
     name: 'ui',
     environment: 'jsdom',
     include: ['src/**/*.{test,spec}.ts'],
+    setupFiles: ['./vitest.setup.ts'],
   },
 })

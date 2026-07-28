@@ -32,10 +32,10 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 
 ### Foundations
 
-- [ ] 🔴 **Button** — variants, sizes, loading state, icon slots
-- [ ] 🔴 **Input / Field** — label, hint, error, required, disabled
-- [ ] 🔴 **Select** — searchable, keyboard nav, async options
-- [ ] 🔴 **Badge** — status semantics (success / warning / danger / neutral)
+- [ ] 🟡 **Button** — variants, sizes, loading state, icon slots
+- [ ] 🟡 **Input / Field** — label, hint, error, required, disabled
+- [ ] 🟡 **Select** — searchable, keyboard nav, async options
+- [ ] 🟡 **Badge** — status semantics (success / warning / danger / neutral)
 
 ### Data layer
 

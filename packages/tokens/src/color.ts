@@ -194,6 +194,16 @@ export const semanticColorLight = {
   /** Base colour shadows are mixed from. */
   shadow: ref('neutral-950'),
 
+  // `neutral` completes the status family so a component's variant matrix has
+  // no special case: a neutral Badge reads the same token names as a danger
+  // one. It is the default state — "no status" — not an absence of styling.
+  'neutral-solid': ref('neutral-700'),
+  'neutral-solid-hover': ref('neutral-800'),
+  'neutral-on-solid': ref('white'),
+  'neutral-subtle': ref('neutral-100'),
+  'neutral-on-subtle': ref('neutral-700'),
+  'neutral-border': ref('neutral-200'),
+
   'primary-solid': ref('primary-600'),
   'primary-solid-hover': ref('primary-700'),
   'primary-on-solid': ref('white'),
@@ -263,6 +273,13 @@ export const semanticColorDark = {
   'focus-ring': ref('primary-400'),
 
   shadow: ref('black'),
+
+  'neutral-solid': ref('neutral-400'),
+  'neutral-solid-hover': ref('neutral-300'),
+  'neutral-on-solid': ref('neutral-950'),
+  'neutral-subtle': ref('neutral-800'),
+  'neutral-on-subtle': ref('neutral-200'),
+  'neutral-border': ref('neutral-700'),
 
   'primary-solid': ref('primary-400'),
   'primary-solid-hover': ref('primary-300'),

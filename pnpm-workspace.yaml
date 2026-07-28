@@ -1,2 +1,8 @@
 packages:
   - 'packages/*'
+
+# vue-demi's postinstall picks the shim matching the installed Vue major.
+# reka-ui pulls it in transitively; without the script it can resolve to the
+# Vue 2 build.
+allowBuilds:
+  vue-demi: true
