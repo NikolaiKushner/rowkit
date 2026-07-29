@@ -7,6 +7,34 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { badgeVariants } from '../components/Badge/Badge.variants'
 import { buttonVariants } from '../components/Button/Button.variants'
 import {
+  dataTableCaptionVariants,
+  dataTableCellVariants,
+  dataTableCheckboxVariants,
+  dataTableHeaderCellVariants,
+  dataTableRadioVariants,
+  dataTableRowVariants,
+  dataTableSelectCellVariants,
+  dataTableSortButtonVariants,
+  dataTableSortIconVariants,
+  dataTableVariants,
+  dataTableWrapperVariants,
+} from '../components/DataTable/DataTable.variants'
+import {
+  emptyStateActionsVariants,
+  emptyStateDescriptionVariants,
+  emptyStateIconVariants,
+  emptyStateTitleVariants,
+  emptyStateVariants,
+} from '../components/EmptyState/EmptyState.variants'
+import {
+  filterBarChipRemoveVariants,
+  filterBarChipsVariants,
+  filterBarChipVariants,
+  filterBarControlsVariants,
+  filterBarSummaryVariants,
+  filterBarVariants,
+} from '../components/FilterBar/FilterBar.variants'
+import {
   fieldErrorVariants,
   fieldHintVariants,
   fieldLabelVariants,
@@ -18,6 +46,13 @@ import {
   selectItemVariants,
   selectTriggerVariants,
 } from '../components/Select/Select.variants'
+import { skeletonVariants } from '../components/Skeleton/Skeleton.variants'
+import {
+  tablePaginationEllipsisVariants,
+  tablePaginationItemVariants,
+  tablePaginationSummaryVariants,
+  tablePaginationVariants,
+} from '../components/TablePagination/TablePagination.variants'
 
 /**
  * Every class a component can emit has to produce CSS.
@@ -85,6 +120,33 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Select trigger', selectTriggerVariants],
   ['Select content', selectContentVariants],
   ['Select item', selectItemVariants],
+  ['Skeleton', skeletonVariants],
+  ['EmptyState', emptyStateVariants],
+  ['EmptyState icon', emptyStateIconVariants],
+  ['EmptyState title', emptyStateTitleVariants],
+  ['EmptyState description', emptyStateDescriptionVariants],
+  ['EmptyState actions', emptyStateActionsVariants],
+  ['TablePagination', tablePaginationVariants],
+  ['TablePagination item', tablePaginationItemVariants],
+  ['TablePagination ellipsis', tablePaginationEllipsisVariants],
+  ['TablePagination summary', tablePaginationSummaryVariants],
+  ['FilterBar', filterBarVariants],
+  ['FilterBar controls', filterBarControlsVariants],
+  ['FilterBar chips', filterBarChipsVariants],
+  ['FilterBar chip', filterBarChipVariants],
+  ['FilterBar chip remove', filterBarChipRemoveVariants],
+  ['FilterBar summary', filterBarSummaryVariants],
+  ['DataTable wrapper', dataTableWrapperVariants],
+  ['DataTable', dataTableVariants],
+  ['DataTable caption', dataTableCaptionVariants],
+  ['DataTable header cell', dataTableHeaderCellVariants],
+  ['DataTable cell', dataTableCellVariants],
+  ['DataTable row', dataTableRowVariants],
+  ['DataTable select cell', dataTableSelectCellVariants],
+  ['DataTable checkbox', dataTableCheckboxVariants],
+  ['DataTable radio', dataTableRadioVariants],
+  ['DataTable sort button', dataTableSortButtonVariants],
+  ['DataTable sort icon', dataTableSortIconVariants],
 ]
 
 let css = ''

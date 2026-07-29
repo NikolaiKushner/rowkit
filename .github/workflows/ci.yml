@@ -61,5 +61,10 @@ jobs:
       - name: Test
         run: pnpm test
 
+      # A budget nobody checks is decoration. Runs after Build because it
+      # measures the real dist, not a re-bundle of source.
+      - name: Bundle size
+        run: pnpm size
+
       - name: Build Storybook
         run: pnpm build-storybook

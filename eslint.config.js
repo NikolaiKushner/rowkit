@@ -64,6 +64,15 @@ export default tseslint.config(
     },
   },
 
+  // A Nuxt page's name is its route. `pages/users.vue` is `/users`, and the
+  // filename is not free to be multi-word without changing the URL.
+  {
+    files: ['playground/app/pages/**/*.vue'],
+    rules: {
+      'vue/multi-word-component-names': 'off',
+    },
+  },
+
   // A component library deliberately exports single-word names (Button, Badge,
   // Dialog). The multi-word rule exists to stop app components clashing with
   // HTML elements, which isn't the failure mode here.

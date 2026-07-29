@@ -7,3 +7,4 @@ export {
   type FieldVariants,
 } from './Field.variants'
 export { useFieldContext, type FieldContext } from './context'
+export type { FieldProps } from './types'

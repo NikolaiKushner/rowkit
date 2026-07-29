@@ -35,15 +35,15 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 - [x] 🟢 **Button** — variants, sizes, loading state, icon slots
 - [x] 🟢 **Input / Field** — label, hint, error, required, disabled
 - [x] 🟢 **Select** — searchable, keyboard nav, async options
-- [x] 🟢 **Badge** — status semantics (success / warning / danger / neutral)
+- [x] 🟢 **Badge** — status semantics (neutral / primary / success / warning / danger), three appearances
 
 ### Data layer
 
-- [ ] 🔴 **DataTable** — typed column defs, sorting, row selection, sticky header
-- [ ] 🔴 **TablePagination** — page size, jump-to-page, total count
-- [ ] 🔴 **FilterBar** — composable filter chips with applied-state display
-- [ ] 🔴 **EmptyState** — the screen every dashboard needs and nobody designs
-- [ ] 🔴 **Skeleton** — loading placeholders matched to the data components
+- [x] 🟢 **DataTable** — typed column defs, sorting, row selection, sticky header
+- [x] 🟢 **TablePagination** — page size, jump-to-page, total count
+- [x] 🟢 **FilterBar** — composable filter chips with applied-state display
+- [x] 🟢 **EmptyState** — the screen every dashboard needs and nobody designs
+- [x] 🟢 **Skeleton** — loading placeholders matched to the data components
 
 ### Overlay & feedback
 
@@ -64,7 +64,7 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 - [x] **Phase 2 — Core components.** The four foundations, one at a time, each fully complete before the next.
       *Done when:* all four at Stable, playground renders a working form using only rowkit components.
 
-- [ ] **Phase 3 — Data layer.** The five data components. DataTable is the centerpiece.
+- [x] **Phase 3 — Data layer.** The five data components. DataTable is the centerpiece.
       *Done when:* playground has a working "users admin" page — filterable, sortable, paginated, with loading and empty states.
 
 - [ ] **Phase 4 — Overlays.** Dialog, Toast, Tooltip. SSR-safe.

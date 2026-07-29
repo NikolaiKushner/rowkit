@@ -11,74 +11,24 @@ import {
   ComboboxTrigger,
   ComboboxViewport,
 } from 'reka-ui'
-import { computed, onBeforeUnmount, ref, useId, watch, type HTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, ref, useId, watch } from 'vue'
 import { cn } from '../../utils/cn'
 import { useFieldContext } from '../Field/context'
-import type { SelectOption } from './types'
-import {
-  selectContentVariants,
-  selectItemVariants,
-  selectTriggerVariants,
-  type SelectVariants,
-} from './Select.variants'
+import type { SelectOption, SelectProps } from './types'
+import { selectContentVariants, selectItemVariants, selectTriggerVariants } from './Select.variants'
 
 defineOptions({ name: 'RkSelect', inheritAttrs: false })
 
-const props = withDefaults(
-  defineProps<{
-    /** The available choices. */
-    options: SelectOption<T>[]
-    /** Text shown in the trigger while nothing is selected. */
-    placeholder?: string
-    /**
-     * Adds a search box inside the panel.
-     *
-     * Worth turning on somewhere around twenty options. Below that the search
-     * box costs a keystroke and saves nothing.
-     */
-    searchable?: boolean
-    /** Accessible name for the open/close chevron. */
-    togglerLabel?: string
-    /** Shown when no option matches the search term. */
-    emptyText?: string
-    /**
-     * Hands filtering to the consumer.
-     *
-     * Set this when options are fetched per keystroke: the list is already the
-     * server's answer, so filtering it again locally would hide results that
-     * matched on a field the label does not show.
-     */
-    manualFilter?: boolean
-    /** Shows a loading row in place of the list. For async options. */
-    loading?: boolean
-    /** Text shown while `loading`. */
-    loadingText?: string
-    /** Control height and text size. */
-    size?: NonNullable<SelectVariants['size']>
-    /** Disables the control. A surrounding disabled `Field` also disables it. */
-    disabled?: boolean
-    /** Marks the value invalid. A `Field` with an `error` also sets it. */
-    invalid?: boolean
-    /** Marks the control required. A required `Field` also sets it. */
-    required?: boolean
-    /** Id for the trigger. Inherited from a surrounding `Field` when omitted. */
-    id?: string
-    /** Name submitted with a native form. */
-    name?: string
-    /** Additional classes for the trigger, merged so a consumer's utility wins. */
-    class?: HTMLAttributes['class']
-  }>(),
-  {
-    placeholder: 'Select…',
-    searchable: false,
-    togglerLabel: 'Show options',
-    emptyText: 'No results',
-    manualFilter: false,
-    loading: false,
-    loadingText: 'Loading…',
-    size: 'md',
-  }
-)
+const props = withDefaults(defineProps<SelectProps<T>>(), {
+  placeholder: 'Select…',
+  searchable: false,
+  togglerLabel: 'Show options',
+  emptyText: 'No results',
+  manualFilter: false,
+  loading: false,
+  loadingText: 'Loading…',
+  size: 'md',
+})
 
 /** The selected value. */
 const model = defineModel<T | undefined>({ default: undefined })
