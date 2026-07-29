@@ -42,7 +42,7 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 - [ ] 🔴 **DataTable** — typed column defs, sorting, row selection, sticky header
 - [ ] 🔴 **TablePagination** — page size, jump-to-page, total count
 - [ ] 🔴 **FilterBar** — composable filter chips with applied-state display
-- [ ] 🔴 **EmptyState** — the screen every dashboard needs and nobody designs
+- [x] 🟢 **EmptyState** — the screen every dashboard needs and nobody designs
 - [x] 🟢 **Skeleton** — loading placeholders matched to the data components
 
 ### Overlay & feedback

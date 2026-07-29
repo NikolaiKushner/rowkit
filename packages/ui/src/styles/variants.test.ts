@@ -7,6 +7,13 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { badgeVariants } from '../components/Badge/Badge.variants'
 import { buttonVariants } from '../components/Button/Button.variants'
 import {
+  emptyStateActionsVariants,
+  emptyStateDescriptionVariants,
+  emptyStateIconVariants,
+  emptyStateTitleVariants,
+  emptyStateVariants,
+} from '../components/EmptyState/EmptyState.variants'
+import {
   fieldErrorVariants,
   fieldHintVariants,
   fieldLabelVariants,
@@ -87,6 +94,11 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Select content', selectContentVariants],
   ['Select item', selectItemVariants],
   ['Skeleton', skeletonVariants],
+  ['EmptyState', emptyStateVariants],
+  ['EmptyState icon', emptyStateIconVariants],
+  ['EmptyState title', emptyStateTitleVariants],
+  ['EmptyState description', emptyStateDescriptionVariants],
+  ['EmptyState actions', emptyStateActionsVariants],
 ]
 
 let css = ''
