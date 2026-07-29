@@ -22,6 +22,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test:a11y": "vitest run --project storybook",
+    "size": "size-limit",
+    "changeset": "changeset",
     "dev": "pnpm --filter playground dev",
     "docs:dev": "echo \"VitePress lands in Phase 5 — docs pages live in docs/components/\""
   },
@@ -33,8 +35,10 @@
     "*.{js,json,yaml,yml,css,md}": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.1",
     "@eslint/js": "^10.0.1",
     "@rowkit/tokens": "workspace:*",
+    "@size-limit/preset-small-lib": "^13.0.1",
     "@storybook/addon-a11y": "^10.5.5",
     "@storybook/addon-vitest": "^10.5.5",
     "@storybook/vue3-vite": "^10.5.5",
@@ -54,6 +58,7 @@
     "lint-staged": "^17.2.0",
     "playwright": "^1.62.0",
     "prettier": "^3.9.6",
+    "size-limit": "^13.0.1",
     "storybook": "^10.5.5",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",

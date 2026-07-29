@@ -8,6 +8,8 @@ Docs: `rowkit.dev`
 
 Read `ROADMAP.md` before proposing new components. The scope is fixed at twelve components for v1.0.
 
+Read `docs/conventions.md` before designing a component API. Prop naming, state ownership, event and slot shapes, and the recurring accessibility patterns are decided there, once, for every component.
+
 ---
 
 ## Stack
