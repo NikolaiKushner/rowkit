@@ -13,6 +13,7 @@ const sizes = ['sm', 'md', 'lg'] as const
 interface EmptyStateArgs {
   title: string
   description?: string
+  reason: 'no-data' | 'no-results' | 'error'
   size: (typeof sizes)[number]
   level: 1 | 2 | 3 | 4 | 5 | 6
   announce: boolean
@@ -33,11 +34,13 @@ const meta: Meta<EmptyStateArgs> = {
   args: {
     title: 'No projects yet',
     description: 'Projects group your work and control who can see it.',
+    reason: 'no-data',
     size: 'md',
     level: 2,
     announce: false,
   },
   argTypes: {
+    reason: { control: 'inline-radio', options: ['no-data', 'no-results', 'error'] },
     title: { control: 'text' },
     description: { control: 'text' },
     size: { control: 'inline-radio', options: sizes },
@@ -59,6 +62,58 @@ export default meta
 type Story = StoryObj<EmptyStateArgs>
 
 export const Default: Story = {}
+
+/**
+ * The three reasons side by side. They look alike and mean completely different
+ * things: only `no-data` should offer "create", `no-results` wants the filter
+ * undone, and `error` must not read as "this worked and there is nothing here".
+ */
+export const Reasons: Story = {
+  render: () => ({
+    components: { EmptyState, Button },
+    template: `
+      <div class="flex w-full max-w-lg flex-col gap-4">
+        <div class="rounded-lg border border-border bg-surface">
+          <EmptyState
+            reason="no-data"
+            title="No projects yet"
+            description="Projects group your work and control who can see it."
+          >
+            <template #actions><Button size="sm">Create a project</Button></template>
+          </EmptyState>
+        </div>
+        <div class="rounded-lg border border-border bg-surface">
+          <EmptyState announce reason="no-results" title="No projects match those filters">
+            <template #actions><Button variant="ghost" size="sm">Clear filters</Button></template>
+          </EmptyState>
+        </div>
+        <div class="rounded-lg border border-border bg-surface">
+          <EmptyState announce reason="error" title="Could not load projects">
+            <template #actions><Button variant="ghost" size="sm">Try again</Button></template>
+          </EmptyState>
+        </div>
+      </div>
+    `,
+  }),
+}
+
+/**
+ * `no-results` and `error` supply their own explanation, because that copy is
+ * genuinely generic. `no-data` supplies none — what to do when nothing exists
+ * yet depends entirely on the domain.
+ */
+export const DefaultCopy: Story = {
+  args: { reason: 'no-results', title: 'No users match those filters' },
+  render: (args) => ({
+    components: { EmptyState },
+    setup: () => ({ args }),
+    template: `
+      <div class="w-full max-w-lg rounded-lg border border-border bg-surface">
+        <EmptyState v-bind="args" />
+      </div>
+    `,
+  }),
+}
 
 /**
  * Title alone, when the situation genuinely needs no explanation.

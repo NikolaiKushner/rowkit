@@ -1,38 +1,47 @@
 import type { HTMLAttributes } from 'vue'
 
+/**
+ * The minimum a row must provide.
+ *
+ * Requiring an `id` rather than taking a `rowKey` prop makes `:key` correct and
+ * selection unambiguous without asking every caller to restate the obvious. It
+ * also makes `keyof TRow` non-empty while `TRow` is still generic, which is
+ * what lets the column and sort types resolve at all.
+ *
+ * The id must be **stable across renders** — present in the data, or assigned
+ * once at fetch or ingest time. Never derived in a computed: an id minted by a
+ * `.map()` produces a fresh object per row on every change, which defeats
+ * reference equality, churns `:key`, and would stop any row-level memoisation
+ * from ever hitting.
+ */
+export interface DataTableRow {
+  id: string | number
+}
+
 /** Horizontal alignment of a column's header and cells. */
 export type DataTableAlign = 'start' | 'center' | 'end'
 
 /** Which way a sorted column is ordered. */
 export type DataTableSortDirection = 'asc' | 'desc'
 
-/** The sorted column, and which way. `undefined` means unsorted. */
-export interface DataTableSort {
-  /** The `columnId` of the sorted column. */
-  id: string
+/**
+ * The sorted column, and which way. `undefined` means unsorted.
+ *
+ * Keyed by a field of the row, not a free string: a sort naming a column that
+ * does not exist is a compile error rather than a table that quietly ignores
+ * it.
+ */
+export interface DataTableSort<TRow> {
+  key: Extract<keyof TRow, string>
   direction: DataTableSortDirection
 }
 
 /** A value the table knows how to compare. */
 export type DataTableSortable = string | number | boolean | Date | null | undefined
 
-interface DataTableColumnBase<TRow> {
+interface DataTableColumnBase {
   /** Column heading text. */
   header: string
-  /**
-   * Makes the header a sort control.
-   *
-   * A custom column needs `sortValue` as well — there is no field behind it to
-   * compare.
-   */
-  sortable?: boolean
-  /**
-   * What to compare when sorting this column, instead of the raw field.
-   *
-   * For a column whose displayed text sorts badly: a formatted date, a status
-   * with a meaningful order, a name assembled from two fields.
-   */
-  sortValue?: (row: TRow) => DataTableSortable
   /**
    * Hides the heading visually while leaving it available to assistive
    * technology.
@@ -68,32 +77,37 @@ interface DataTableColumnBase<TRow> {
  * `key` is constrained to the row's own keys, so renaming a field or mistyping
  * one is a compile error rather than a column of blanks.
  */
-export interface DataTableFieldColumn<TRow> extends DataTableColumnBase<TRow> {
+export interface DataTableFieldColumn<TRow> extends DataTableColumnBase {
   key: Extract<keyof TRow, string>
   /** Overrides the slot name, which defaults to `key`. */
   id?: string
+  /** Makes the header a sort control. */
+  sortable?: boolean
+  /**
+   * What to compare when sorting this column, instead of the raw field.
+   *
+   * For a column whose displayed text sorts badly: a formatted date, a status
+   * with a meaningful order, a name assembled from two fields.
+   */
+  sortValue?: (row: TRow) => DataTableSortable
 }
 
 /**
  * A column with no field behind it — row actions, a computed total, an avatar
  * assembled from several fields. Render it through the `cell:<id>` slot.
+ *
+ * Not sortable: `DataTableSort` names a field of the row, so there would be
+ * nothing to put in it. A derived column that needs sorting belongs on the
+ * field it derives from, with a `sortValue`.
  */
-export interface DataTableCustomColumn<TRow> extends DataTableColumnBase<TRow> {
+export interface DataTableCustomColumn extends DataTableColumnBase {
   id: string
   key?: never
+  sortable?: never
+  sortValue?: never
 }
 
-export type DataTableColumn<TRow> = DataTableFieldColumn<TRow> | DataTableCustomColumn<TRow>
-
-/**
- * What makes a row unique: a field name, or a function.
- *
- * The field form collapses to `never` while `TRow` is still generic, since
- * `keyof object` has no members. It resolves the moment the table is used with
- * a real row type — `DataTable.test.ts` pins that down.
- */
-export type DataTableRowKey<TRow> =
-  Extract<keyof TRow, string> | ((row: TRow, index: number) => PropertyKey)
+export type DataTableColumn<TRow> = DataTableFieldColumn<TRow> | DataTableCustomColumn
 
 /**
  * Whether a column reads a field off the row.
@@ -156,11 +170,11 @@ export function compareSortable(
  * arrived in, which for a server-ordered table is often the meaningful one —
  * most recent first, or a ranking the application computed.
  */
-export function nextSort(
-  current: DataTableSort | undefined,
-  id: string
-): DataTableSort | undefined {
-  if (current?.id !== id) return { id, direction: 'asc' }
-  if (current.direction === 'asc') return { id, direction: 'desc' }
+export function nextSort<TRow>(
+  current: DataTableSort<TRow> | undefined,
+  key: Extract<keyof TRow, string>
+): DataTableSort<TRow> | undefined {
+  if (current?.key !== key) return { key, direction: 'asc' }
+  if (current.direction === 'asc') return { key, direction: 'desc' }
   return undefined
 }

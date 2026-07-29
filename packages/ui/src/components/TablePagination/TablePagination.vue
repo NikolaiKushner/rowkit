@@ -7,7 +7,7 @@ import {
   PaginationPrev,
   PaginationRoot,
 } from 'reka-ui'
-import { computed, watch, type HTMLAttributes } from 'vue'
+import { computed, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import Field from '../Field/Field.vue'
 import Select from '../Select/Select.vue'
@@ -39,10 +39,10 @@ const props = withDefaults(
      * not decoration.
      */
     showEdges?: boolean
-    /** Shows the rows-per-page control. */
-    showPageSize?: boolean
-    /** Shows the "1–10 of 247" summary. */
-    showSummary?: boolean
+    /** Hides the rows-per-page control. */
+    hidePageSize?: boolean
+    /** Hides the "1–10 of 247" summary. */
+    hideSummary?: boolean
     /** Label for the rows-per-page control. */
     pageSizeLabel?: string
     /** Accessible name for the navigation region. */
@@ -62,8 +62,8 @@ const props = withDefaults(
     pageSizeOptions: () => [10, 25, 50, 100],
     siblingCount: 1,
     showEdges: true,
-    showPageSize: true,
-    showSummary: true,
+    hidePageSize: false,
+    hideSummary: false,
     pageSizeLabel: 'Rows per page',
     label: 'Pagination',
     previousLabel: 'Previous page',
@@ -84,12 +84,6 @@ defineSlots<{
   summary: (props: { from: number; to: number; total: number }) => unknown
 }>()
 
-/**
- * Never below 1. A zero-page table would leave the controls in a state with no
- * valid page to be on, and `page` is 1-based with no meaningful zero.
- */
-const pageCount = computed(() => Math.max(1, Math.ceil(props.total / pageSize.value)))
-
 /** First row shown, 1-based. Zero only when there is nothing at all. */
 const from = computed(() => (props.total === 0 ? 0 : (page.value - 1) * pageSize.value + 1))
 
@@ -101,33 +95,28 @@ const pageSizeChoices = computed<SelectOption<number>[]>(() =>
 )
 
 /**
- * Changing the page size keeps the first currently-visible row visible instead
- * of resetting to page 1.
+ * This component never moves the page by itself.
  *
- * Someone on page 9 who switches from 10 rows to 25 is looking for more context
- * on what they are already reading, not asking to start over — and a reset
- * silently loses their place in a long list.
+ * Changing the page size emits `update:pageSize` and nothing else; a shrinking
+ * `total` emits nothing at all. Both are the application's to respond to,
+ * because only it knows whether a page change means a refetch, a URL rewrite,
+ * or nothing.
+ *
+ * An earlier version clamped an out-of-range page and re-anchored the page on a
+ * size change. It read as helpful and was not: a component making a second
+ * decision on the consumer's behalf is how "why did my page jump" bugs happen,
+ * and it fought applications that had already handled it. Resetting to page 1
+ * when the result set changes is one line at the call site — see the docs.
  */
-watch(pageSize, (next, previous) => {
-  if (previous === undefined || next === previous) return
-  const firstVisibleIndex = (page.value - 1) * previous
-  page.value = Math.min(Math.floor(firstVisibleIndex / next) + 1, pageCount.value)
-})
 
-/**
- * A filter that shrinks the result set can strand the user past the end, where
- * the table renders nothing and looks broken. Watching `pageCount` covers both
- * causes — fewer rows, or more rows per page.
- */
-watch(pageCount, (count) => {
-  if (page.value > count) page.value = count
-})
+/** Nothing to page through, so nothing should look operable. */
+const isDisabled = computed(() => props.disabled || props.total === 0)
 </script>
 
 <template>
   <div :class="cn(tablePaginationVariants({ size: props.size }), props.class)">
     <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <p v-if="props.showSummary" :class="tablePaginationSummaryVariants({ size: props.size })">
+      <p v-if="!props.hideSummary" :class="tablePaginationSummaryVariants({ size: props.size })">
         <slot name="summary" :from="from" :to="to" :total="props.total">
           <!-- Reads "0 of 0" when empty rather than the nonsensical "1–0 of 0". -->
           <template v-if="props.total === 0">0 of 0</template>
@@ -136,10 +125,10 @@ watch(pageCount, (count) => {
       </p>
 
       <Field
-        v-if="props.showPageSize"
+        v-if="!props.hidePageSize"
         :label="props.pageSizeLabel"
         size="sm"
-        :disabled="props.disabled"
+        :disabled="isDisabled"
         class="flex-row items-center gap-2"
       >
         <Select v-model="pageSize" :options="pageSizeChoices" size="sm" class="w-20" />
@@ -154,7 +143,7 @@ watch(pageCount, (count) => {
       :total="props.total"
       :sibling-count="props.siblingCount"
       :show-edges="props.showEdges"
-      :disabled="props.disabled"
+      :disabled="isDisabled"
       class="flex items-center gap-1"
     >
       <PaginationPrev

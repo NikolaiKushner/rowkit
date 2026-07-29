@@ -6,7 +6,7 @@ A typed table. Column definitions are constrained to the row type, cells render
 through per-column slots, and the loading and empty states are built in.
 
 ```vue
-<DataTable :rows="users" :columns="columns" row-key="id" caption="Team members">
+<DataTable :rows="users" :columns="columns" caption="Team members">
   <template #[`cell:status`]="{ value }">
     <Badge :variant="tone(value)" dot>{{ value }}</Badge>
   </template>
@@ -52,33 +52,32 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 
 ## Props
 
-| Prop               | Type                                          | Default             | Description                           |
-| ------------------ | --------------------------------------------- | ------------------- | ------------------------------------- |
-| `rows`             | `TRow[]`                                      | —                   | Required                              |
-| `columns`          | `DataTableColumn<TRow>[]`                     | —                   | Required, in display order            |
-| `rowKey`           | `keyof TRow \| ((row, index) => PropertyKey)` | —                   | Required. What makes a row unique     |
-| `caption`          | `string`                                      | —                   | Required. The table's accessible name |
-| `captionVisible`   | `boolean`                                     | `false`             | Show the caption                      |
-| `loading`          | `boolean`                                     | `false`             | Swap the body for placeholder rows    |
-| `loadingRows`      | `number`                                      | `5`                 | How many placeholders                 |
-| `loadingLabel`     | `string`                                      | `'Loading'`         | Announced while loading               |
-| `emptyTitle`       | `string`                                      | `'Nothing to show'` | Title for the built-in empty state    |
-| `emptyDescription` | `string`                                      | —                   | Description for the empty state       |
-| `sortMode`         | `'manual' \| 'client'`                        | `'manual'`          | Who reorders the rows                 |
-| `selectable`       | `'single' \| 'multiple'`                      | —                   | Adds a selection column               |
-| `rowLabel`         | `(row, index) => string`                      | —                   | Accessible name for a row's control   |
-| `selectionLabel`   | `string`                                      | `'Select'`          | Name for the selection column         |
-| `selectAllLabel`   | `string`                                      | `'Select all rows'` | Name for the select-all control       |
-| `size`             | `'sm' \| 'md'`                                | `'md'`              | Row height and text size              |
-| `hoverable`        | `boolean`                                     | `false`             | Highlight rows on hover               |
-| `class`            | `string`                                      | —                   | Merged onto the scroll container      |
+| Prop               | Type                      | Default             | Description                           |
+| ------------------ | ------------------------- | ------------------- | ------------------------------------- |
+| `rows`             | `TRow[]`                  | —                   | Required                              |
+| `columns`          | `DataTableColumn<TRow>[]` | —                   | Required, in display order            |
+| `caption`          | `string`                  | —                   | Required. The table's accessible name |
+| `captionVisible`   | `boolean`                 | `false`             | Show the caption                      |
+| `loading`          | `boolean`                 | `false`             | Swap the body for placeholder rows    |
+| `loadingRows`      | `number`                  | `5`                 | How many placeholders                 |
+| `loadingLabel`     | `string`                  | `'Loading'`         | Announced while loading               |
+| `emptyTitle`       | `string`                  | `'Nothing to show'` | Title for the built-in empty state    |
+| `emptyDescription` | `string`                  | —                   | Description for the empty state       |
+| `sortMode`         | `'manual' \| 'client'`    | `'manual'`          | Who reorders the rows                 |
+| `selectable`       | `'single' \| 'multiple'`  | —                   | Adds a selection column               |
+| `rowLabel`         | `(row, index) => string`  | —                   | Accessible name for a row's control   |
+| `selectionLabel`   | `string`                  | `'Select'`          | Name for the selection column         |
+| `selectAllLabel`   | `string`                  | `'Select all rows'` | Name for the select-all control       |
+| `size`             | `'sm' \| 'md'`            | `'md'`              | Row height and text size              |
+| `hoverable`        | `boolean`                 | `false`             | Highlight rows on hover               |
+| `class`            | `string`                  | —                   | Merged onto the scroll container      |
 
 ### v-model
 
-| Model              | Type                         | Description                       |
-| ------------------ | ---------------------------- | --------------------------------- |
-| `v-model:sort`     | `DataTableSort \| undefined` | `{ id, direction }`, or unsorted  |
-| `v-model:selected` | `PropertyKey[]`              | Selected rows, as `rowKey` values |
+| Model              | Type                               | Description                       |
+| ------------------ | ---------------------------------- | --------------------------------- |
+| `v-model:sort`     | `DataTableSort<TRow> \| undefined` | `{ key, direction }`, or unsorted |
+| `v-model:selected` | `TRow['id'][]`                     | Selected rows, by id              |
 
 ### Slots
 
@@ -113,7 +112,7 @@ only for the two that need it.
 Mark a column `sortable` and bind `v-model:sort`.
 
 ```vue
-<DataTable :rows="users" :columns="columns" row-key="id" caption="Users" v-model:sort="sort" />
+<DataTable :rows="users" :columns="columns" caption="Users" v-model:sort="sort" />
 ```
 
 **`sortMode` defaults to `manual`**, meaning the table reports the sort and
@@ -161,7 +160,6 @@ would have to change later — a future `sort` array is the intended path.
 <DataTable
   :rows="users"
   :columns="columns"
-  row-key="id"
   caption="Users"
   selectable="multiple"
   :row-label="(row) => `Select ${row.name}`"
@@ -176,7 +174,7 @@ gives radios and no select-all — there is nothing to select all of.
 most one entry. Two shapes for one model would make every consumer branch on the
 mode just to read their own state.
 
-**Selection is keyed by `rowKey`, so it survives sorting.** Reorder the table and
+**Selection is keyed by row `id`, so it survives sorting.** Reorder the table and
 the same records stay picked, rather than the same positions.
 
 **Supply `rowLabel`.** The default is "Select row 3", and a column of those is
@@ -191,9 +189,20 @@ not a checkbox.
 
 ## Behaviour worth knowing
 
-**`rowKey` is required.** An array index is not an identity: as soon as the
-table can sort or filter, index keys make Vue reuse the wrong DOM and cell state
-lands on the wrong row.
+**Rows must carry an `id`.** `TRow extends { id: string | number }`, so there is
+no `rowKey` prop to supply — the identity is in the data, where it belongs. An
+array index is not an identity: as soon as the table can sort or filter, index
+keys make Vue reuse the wrong DOM and cell state lands on the wrong row.
+
+The id must be **stable across renders** — present in your data, or assigned
+once at fetch or ingest time. Never mint one in a computed: a `.map()` that adds
+an id produces a fresh object per row on every change, which defeats reference
+equality and churns `:key` on every render.
+
+**Sorting names a field, not a column id.** `DataTableSort<TRow>` carries
+`key: keyof TRow`, so a sort naming a column that does not exist is a compile
+error. A custom (`id`-only) column therefore cannot be `sortable` — put the
+`sortValue` on the field it derives from instead.
 
 **Non-primitive values render blank.** A date or an object produces an empty cell
 rather than `[object Object]`, so a missing cell slot is obvious in development

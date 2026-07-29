@@ -42,56 +42,58 @@ describe('TablePagination', () => {
     })
 
     it('can be hidden', () => {
-      expect(setup({ showSummary: false }).find('p').exists()).toBe(false)
+      expect(setup({ hideSummary: true }).find('p').exists()).toBe(false)
     })
   })
 
-  describe('page size changes', () => {
-    it('keeps the first visible row visible rather than resetting', async () => {
-      // Page 9 at 10/page starts at row 81. At 25/page row 81 is on page 4.
+  describe('it never moves the page by itself', () => {
+    // The component reports; the application decides. A second decision taken
+    // on the consumer's behalf is how "why did my page jump" bugs happen.
+
+    it('leaves the page alone when the size grows', async () => {
       const el = setup({ page: 9, pageSize: 10 })
       await el.setProps({ pageSize: 25 })
       await nextTick()
-      expect(el.emitted('update:page')?.at(-1)).toEqual([4])
+      expect(el.emitted('update:page')).toBeUndefined()
     })
 
-    it('does not strand the user past the end when the size grows', async () => {
-      const el = setup({ total: 30, page: 3, pageSize: 10 })
+    it('leaves the page alone even when it now runs past the end', async () => {
+      // Page 9 of 10-row pages does not exist at 100 per page. Still not ours
+      // to fix — the application resets to 1 if that is what it wants.
+      const el = setup({ total: 30, page: 9, pageSize: 10 })
       await el.setProps({ pageSize: 100 })
       await nextTick()
-      // Only one page exists at 100 per page.
-      expect(el.emitted('update:page')?.at(-1)).toEqual([1])
+      expect(el.emitted('update:page')).toBeUndefined()
     })
 
-    it('leaves the page alone when the size is unchanged', async () => {
-      const el = setup({ page: 4, pageSize: 10 })
-      await el.setProps({ pageSize: 10 })
+    it('leaves the page alone when the total collapses', async () => {
+      const el = setup({ page: 9, pageSize: 10 })
+      await el.setProps({ total: 12 })
+      await nextTick()
+      expect(el.emitted('update:page')).toBeUndefined()
+    })
+
+    it('emits nothing at all when the total drops to zero', async () => {
+      const el = setup({ page: 5, pageSize: 10 })
+      await el.setProps({ total: 0 })
       await nextTick()
       expect(el.emitted('update:page')).toBeUndefined()
     })
   })
 
-  describe('shrinking result sets', () => {
-    it('pulls the page back into range when the total drops', async () => {
-      // The classic filter bug: 25 pages become 2, and page 9 renders nothing.
-      const el = setup({ page: 9, pageSize: 10 })
-      await el.setProps({ total: 12 })
-      await nextTick()
-      expect(el.emitted('update:page')?.at(-1)).toEqual([2])
+  describe('nothing to page through', () => {
+    it('disables the controls rather than hiding them', () => {
+      // Layout stability beats minimalism; the row keeps its height.
+      const el = setup({ total: 0 })
+      const controls = el.findAll('nav button')
+      expect(controls.length).toBeGreaterThan(0)
+      expect(controls.every((b) => b.attributes('disabled') !== undefined)).toBe(true)
+      expect(el.find('p').text()).toBe('0 of 0')
     })
 
-    it('never goes below page 1 when everything is filtered away', async () => {
-      const el = setup({ page: 5, pageSize: 10 })
-      await el.setProps({ total: 0 })
-      await nextTick()
-      expect(el.emitted('update:page')?.at(-1)).toEqual([1])
-    })
-
-    it('stays put when the total still covers the current page', async () => {
-      const el = setup({ page: 2, pageSize: 10 })
-      await el.setProps({ total: 200 })
-      await nextTick()
-      expect(el.emitted('update:page')).toBeUndefined()
+    it('leaves them operable when there are rows', () => {
+      const enabled = setup().findAll('nav button')
+      expect(enabled.some((b) => b.attributes('disabled') === undefined)).toBe(true)
     })
   })
 
@@ -157,7 +159,7 @@ describe('TablePagination', () => {
     })
 
     it('can be hidden', () => {
-      expect(setup({ showPageSize: false }).text()).not.toContain('Rows per page')
+      expect(setup({ hidePageSize: true }).text()).not.toContain('Rows per page')
     })
   })
 

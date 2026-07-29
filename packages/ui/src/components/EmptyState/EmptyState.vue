@@ -8,6 +8,7 @@ import {
   emptyStateIconVariants,
   emptyStateTitleVariants,
   emptyStateVariants,
+  type EmptyStateReason,
   type EmptyStateVariants,
 } from './EmptyState.variants'
 
@@ -27,6 +28,25 @@ const props = withDefaults(
      * into a starting point, and the part most empty states leave out.
      */
     description?: string
+    /**
+     * Why the view is empty.
+     *
+     * The three cases look identical and mean completely different things, and
+     * no amount of copy discipline at the call site keeps them apart on its own.
+     * `no-data` is first-run — nothing exists yet, so the action is to create.
+     * `no-results` is a filter that matched nothing — the action is to widen it,
+     * and offering "create your first project" to someone with fifty is the
+     * failure this prop exists to prevent. `error` is a request that failed, and
+     * must not read as "this worked and there is nothing here".
+     *
+     * Drives tone and the default description. It never selects an icon: rowkit
+     * ships none, and bundling SVGs to serve one prop would cross the scope
+     * line. Pass your own through `#icon`.
+     *
+     * `no-results` and `error` normally want `announce` as well, since both
+     * replace content that was there a moment ago.
+     */
+    reason?: EmptyStateReason
     /** Scales every part together. `sm` fits inside a table body. */
     size?: NonNullable<EmptyStateVariants['size']>
     /**
@@ -56,6 +76,7 @@ const props = withDefaults(
     asChild?: PrimitiveProps['asChild']
   }>(),
   {
+    reason: 'no-data',
     size: 'md',
     level: 2,
     announce: false,
@@ -82,6 +103,21 @@ defineSlots<{
 const headingTag = computed(() => `h${props.level}` as const)
 
 /**
+ * Generic copy for the two reasons that have any.
+ *
+ * `no-data` gets none: what to do when nothing exists yet is entirely
+ * domain-specific, and a library guessing at it would produce worse copy than
+ * silence. The other two are genuinely generic, and an explicit `description`
+ * always wins.
+ */
+const defaultDescriptions: Partial<Record<EmptyStateReason, string>> = {
+  'no-results': 'Try removing a filter or searching for something else.',
+  error: 'Something went wrong. Try again.',
+}
+
+const resolvedDescription = computed(() => props.description ?? defaultDescriptions[props.reason])
+
+/**
  * `role="status"` is polite by default, so it waits for a pause rather than
  * interrupting whatever the user is currently reading.
  */
@@ -104,10 +140,10 @@ const liveAttrs = computed(() => (props.announce ? ({ role: 'status' } as const)
     </component>
 
     <p
-      v-if="props.description !== undefined || $slots.description"
-      :class="emptyStateDescriptionVariants({ size: props.size })"
+      v-if="resolvedDescription !== undefined || $slots.description"
+      :class="emptyStateDescriptionVariants({ size: props.size, reason: props.reason })"
     >
-      <slot name="description">{{ props.description }}</slot>
+      <slot name="description">{{ resolvedDescription }}</slot>
     </p>
 
     <div v-if="$slots.actions" :class="emptyStateActionsVariants({ size: props.size })">

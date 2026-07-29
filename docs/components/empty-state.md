@@ -25,8 +25,19 @@ and a way forward — the last of which is the part usually missing.
 ## The three empties
 
 They look similar and mean completely different things. Getting this wrong is
-the most common failure, and no prop will save you from it — it is a copy
-decision.
+the most common failure — so it is a prop, not just advice.
+
+`reason` drives the tone and supplies the explanation where that copy is
+generic. It never selects an icon: rowkit ships none, and bundling SVGs to serve
+one prop would cross the scope line. Pass your own through `#icon`.
+
+`no-data` supplies **no** default description, because what to do when nothing
+exists yet depends entirely on your domain — a library guessing at it would
+write worse copy than silence. `no-results` and `error` do supply one, and an
+explicit `description` always wins.
+
+An `error` tints the explanation, not the heading: a red heading reads as an
+alert and pulls the eye away from the sentence that says what to do.
 
 | Situation               | Title names…            | The action is…            | `announce` |
 | ----------------------- | ----------------------- | ------------------------- | ---------- |
@@ -60,16 +71,17 @@ to someone who has fifty projects and a bad filter is worse than saying nothing.
 
 ## Props
 
-| Prop          | Type                         | Default | Description                                               |
-| ------------- | ---------------------------- | ------- | --------------------------------------------------------- |
-| `title`       | `string`                     | —       | Required. What is empty, in a few words                   |
-| `description` | `string`                     | —       | One sentence on what to do next                           |
-| `size`        | `'sm' \| 'md' \| 'lg'`       | `'md'`  | Scales every part together. `sm` fits inside a table body |
-| `level`       | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `2`     | Heading level for the title                               |
-| `announce`    | `boolean`                    | `false` | Announces the state when it replaces existing content     |
-| `class`       | `string`                     | —       | Merged so your utility wins over the component's          |
-| `as`          | `string \| Component`        | `'div'` | Element to render                                         |
-| `asChild`     | `boolean`                    | `false` | Merge props onto the child instead of wrapping            |
+| Prop          | Type                                   | Default     | Description                                               |
+| ------------- | -------------------------------------- | ----------- | --------------------------------------------------------- |
+| `title`       | `string`                               | —           | Required. What is empty, in a few words                   |
+| `description` | `string`                               | —           | One sentence on what to do next. Defaulted by `reason`    |
+| `reason`      | `'no-data' \| 'no-results' \| 'error'` | `'no-data'` | Why the view is empty. Drives tone and default copy       |
+| `size`        | `'sm' \| 'md' \| 'lg'`                 | `'md'`      | Scales every part together. `sm` fits inside a table body |
+| `level`       | `1 \| 2 \| 3 \| 4 \| 5 \| 6`           | `2`         | Heading level for the title                               |
+| `announce`    | `boolean`                              | `false`     | Announces the state when it replaces existing content     |
+| `class`       | `string`                               | —           | Merged so your utility wins over the component's          |
+| `as`          | `string \| Component`                  | `'div'`     | Element to render                                         |
+| `asChild`     | `boolean`                              | `false`     | Merge props onto the child instead of wrapping            |
 
 ### Slots
 

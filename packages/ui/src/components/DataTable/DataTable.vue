@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="TRow extends object">
+<script setup lang="ts" generic="TRow extends DataTableRow">
 import { CheckboxIndicator, CheckboxRoot } from 'reka-ui'
 import { computed, onBeforeUnmount, onMounted, ref, useId, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
@@ -25,7 +25,8 @@ import {
   isFieldColumn,
   nextSort,
   type DataTableColumn,
-  type DataTableRowKey,
+  type DataTableFieldColumn,
+  type DataTableRow,
   type DataTableSort,
   type DataTableSortable,
 } from './types'
@@ -38,14 +39,6 @@ const props = withDefaults(
     rows: TRow[]
     /** Column definitions, in display order. */
     columns: DataTableColumn<TRow>[]
-    /**
-     * What makes a row unique — a field name, or a function.
-     *
-     * Required rather than defaulting to the array index, because an index is
-     * not an identity: once the table can sort or filter, index keys make Vue
-     * reuse the wrong DOM and cell state ends up on the wrong row.
-     */
-    rowKey: DataTableRowKey<TRow>
     /**
      * Accessible name for the table.
      *
@@ -119,16 +112,16 @@ const props = withDefaults(
 )
 
 /** The sorted column and direction. `undefined` is unsorted. */
-const sort = defineModel<DataTableSort | undefined>('sort', { default: undefined })
+const sort = defineModel<DataTableSort<TRow> | undefined>('sort', { default: undefined })
 
 /**
- * The selected rows, as `rowKey` values.
+ * The selected rows, by id.
  *
  * Always an array, including in `single` mode where it holds at most one. Two
  * different shapes for one model would mean every consumer branching on the
  * mode to read their own state.
  */
-const selected = defineModel<PropertyKey[]>('selected', { default: () => [] })
+const selected = defineModel<TRow['id'][]>('selected', { default: () => [] })
 
 type CellSlotProps = { row: TRow; column: DataTableColumn<TRow>; value: unknown; index: number }
 
@@ -186,10 +179,14 @@ onBeforeUnmount(() => resizeObserver?.disconnect())
 // Row and column changes alter the table's size without resizing the box.
 watch(() => [props.rows.length, props.columns.length, props.loading], measure, { flush: 'post' })
 
-function sortValueOf(row: TRow, column: DataTableColumn<TRow>): DataTableSortable {
+function sortValueOf(row: TRow, column: DataTableFieldColumn<TRow>): DataTableSortable {
   if (column.sortValue !== undefined) return column.sortValue(row)
-  if (!isFieldColumn(column)) return undefined
   return readField(row, column.key) as DataTableSortable
+}
+
+/** Only a field column can be sorted — `DataTableSort` names a field of the row. */
+function isSortable(column: DataTableColumn<TRow>): column is DataTableFieldColumn<TRow> {
+  return isFieldColumn(column) && column.sortable === true
 }
 
 /**
@@ -203,7 +200,10 @@ const displayRows = computed(() => {
   const active = sort.value
   if (props.sortMode !== 'client' || active === undefined) return props.rows
 
-  const column = props.columns.find((candidate) => columnId(candidate) === active.id)
+  const column = props.columns.find(
+    (candidate): candidate is DataTableFieldColumn<TRow> =>
+      isFieldColumn(candidate) && candidate.key === active.key
+  )
   if (column === undefined) return props.rows
 
   return [...props.rows].sort((a, b) =>
@@ -216,20 +216,20 @@ const isEmpty = computed(() => !props.loading && props.rows.length === 0)
 function sortStateOf(
   column: DataTableColumn<TRow>
 ): 'ascending' | 'descending' | 'none' | undefined {
-  if (column.sortable !== true) return undefined
+  if (!isSortable(column)) return undefined
   // `none` rather than omitted: it is what tells a screen reader the column is
   // sortable but not currently sorted.
-  if (sort.value?.id !== columnId(column)) return 'none'
+  if (sort.value?.key !== column.key) return 'none'
   return sort.value.direction === 'asc' ? 'ascending' : 'descending'
 }
 
 function isSortedBy(column: DataTableColumn<TRow>): boolean {
-  return sort.value?.id === columnId(column)
+  return isFieldColumn(column) && sort.value?.key === column.key
 }
 
 function toggleSort(column: DataTableColumn<TRow>): void {
-  if (column.sortable !== true) return
-  sort.value = nextSort(sort.value, columnId(column))
+  if (!isSortable(column)) return
+  sort.value = nextSort(sort.value, column.key)
 }
 
 /** Groups the radios in `single` mode without needing a wrapper element. */
@@ -241,7 +241,7 @@ const selectedKeys = computed(() => new Set(selected.value))
 const columnCount = computed(() => props.columns.length + (props.selectable === undefined ? 0 : 1))
 
 /** The keys on screen. Not the whole data set — see `toggleAll`. */
-const visibleKeys = computed(() => displayRows.value.map((row, index) => keyFor(row, index)))
+const visibleKeys = computed(() => displayRows.value.map((row) => row.id))
 
 const allVisibleSelected = computed(
   () =>
@@ -271,7 +271,7 @@ function toggleAll(): void {
     : [...selected.value, ...visibleKeys.value.filter((key) => !selectedKeys.value.has(key))]
 }
 
-function setRowSelected(key: PropertyKey, isSelected: boolean): void {
+function setRowSelected(key: TRow['id'], isSelected: boolean): void {
   if (props.selectable === 'single') {
     selected.value = isSelected ? [key] : []
     return
@@ -292,12 +292,6 @@ function labelFor(row: TRow, index: number): string {
  */
 function readField(row: TRow, field: string): unknown {
   return (row as Record<string, unknown>)[field]
-}
-
-function keyFor(row: TRow, index: number): PropertyKey {
-  const rowKey = props.rowKey
-  if (typeof rowKey === 'function') return rowKey(row, index)
-  return readField(row, rowKey) as PropertyKey
 }
 
 function cellValue(row: TRow, column: DataTableColumn<TRow>): unknown {
@@ -428,7 +422,7 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
               button would have it announced twice.
             -->
             <button
-              v-if="column.sortable === true"
+              v-if="isSortable(column)"
               type="button"
               :class="dataTableSortButtonVariants({ align: column.align ?? 'start' })"
               @click="toggleSort(column)"
@@ -442,7 +436,7 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
               >
                 <path
                   :d="
-                    sort?.id === columnId(column) && sort.direction === 'desc'
+                    isSortedBy(column) && sort?.direction === 'desc'
                       ? 'm6 8 4 4 4-4'
                       : 'm6 12 4-4 4 4'
                   "
@@ -500,12 +494,12 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
         <tr
           v-for="(row, index) in displayRows"
           v-else
-          :key="keyFor(row, index)"
-          :data-selected="selectedKeys.has(keyFor(row, index)) ? '' : undefined"
+          :key="row.id"
+          :data-selected="selectedKeys.has(row.id) ? '' : undefined"
           :class="
             dataTableRowVariants({
               interactive: props.hoverable,
-              selected: selectedKeys.has(keyFor(row, index)),
+              selected: selectedKeys.has(row.id),
             })
           "
         >
@@ -520,10 +514,10 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
           >
             <CheckboxRoot
               v-if="props.selectable === 'multiple'"
-              :model-value="selectedKeys.has(keyFor(row, index))"
+              :model-value="selectedKeys.has(row.id)"
               :aria-label="labelFor(row, index)"
               :class="dataTableCheckboxVariants({ size: props.size })"
-              @update:model-value="setRowSelected(keyFor(row, index), $event === true)"
+              @update:model-value="setRowSelected(row.id, $event === true)"
             >
               <CheckboxIndicator class="flex items-center justify-center">
                 <svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -547,10 +541,10 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
               v-else
               type="radio"
               :name="radioName"
-              :checked="selectedKeys.has(keyFor(row, index))"
+              :checked="selectedKeys.has(row.id)"
               :aria-label="labelFor(row, index)"
               :class="dataTableRadioVariants({ size: props.size })"
-              @change="setRowSelected(keyFor(row, index), true)"
+              @change="setRowSelected(row.id, true)"
             />
           </td>
 

@@ -13,8 +13,8 @@ interface TablePaginationArgs {
   total: number
   siblingCount: number
   showEdges: boolean
-  showPageSize: boolean
-  showSummary: boolean
+  hidePageSize: boolean
+  hideSummary: boolean
   size: (typeof sizes)[number]
   disabled: boolean
 }
@@ -40,8 +40,8 @@ const meta: Meta<TablePaginationArgs> = {
     total: 247,
     siblingCount: 1,
     showEdges: true,
-    showPageSize: true,
-    showSummary: true,
+    hidePageSize: false,
+    hideSummary: false,
     size: 'md',
     disabled: false,
   },
@@ -49,8 +49,8 @@ const meta: Meta<TablePaginationArgs> = {
     total: { control: 'number' },
     siblingCount: { control: { type: 'number', min: 0, max: 3 } },
     showEdges: { control: 'boolean' },
-    showPageSize: { control: 'boolean' },
-    showSummary: { control: 'boolean' },
+    hidePageSize: { control: 'boolean' },
+    hideSummary: { control: 'boolean' },
     size: { control: 'inline-radio', options: sizes },
     disabled: { control: 'boolean' },
   },
@@ -114,7 +114,7 @@ export const Sizes: Story = {
 
 /** Numbers only, for a compact toolbar. */
 export const Minimal: Story = {
-  args: { showPageSize: false, showSummary: false },
+  args: { hidePageSize: true, hideSummary: true },
 }
 
 /** Replacing the summary — for another language, or another way of counting. */
@@ -169,9 +169,10 @@ export const JumpToPage: Story = {
 }
 
 /**
- * Changing the page size keeps the first visible row visible instead of
- * resetting to page 1 — page 9 at 10 rows starts at row 81, which lands on
- * page 4 at 25 rows.
+ * Changing the page size emits `update:pageSize` and **nothing else** — the page
+ * stays where it was. Most applications reset it to 1 in response; that is one
+ * line at the call site, and it belongs there because only the application knows
+ * whether it also means a refetch.
  */
 export const ChangingPageSize: Story = {
   render: (args) => stateful(args, 9),
@@ -183,8 +184,9 @@ export const ChangingPageSize: Story = {
     await userEvent.click(canvas.getByLabelText('Rows per page'))
     await userEvent.click(await within(document.body).findByRole('option', { name: '25' }))
 
-    await expect(canvas.getByText('76–100 of 247')).toBeInTheDocument()
-    await expect(canvas.getByRole('button', { current: 'page' })).toHaveTextContent('4')
+    // Still page 9, now showing rows 201–225. The component moved nothing.
+    await expect(canvas.getByRole('button', { current: 'page' })).toHaveTextContent('9')
+    await expect(canvas.getByText('201–225 of 247')).toBeInTheDocument()
   },
 }
 

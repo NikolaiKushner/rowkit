@@ -104,7 +104,7 @@ const meta: Meta<DataTableArgs> = {
     setup: () => ({ args, users, columns }),
     template: `
       <div class="w-full max-w-3xl">
-        <DataTable v-bind="args" :rows="users" :columns="columns" row-key="id" />
+        <DataTable v-bind="args" :rows="users" :columns="columns" />
       </div>
     `,
   }),
@@ -144,7 +144,7 @@ export const Empty: Story = {
           v-bind="args"
           :rows="[]"
           :columns="columns"
-          row-key="id"
+         
           empty-title="No team members"
           empty-description="Invite someone to get started."
         />
@@ -169,7 +169,7 @@ export const CustomCells: Story = {
     }),
     template: `
       <div class="w-full max-w-3xl">
-        <DataTable :rows="users" :columns="columns" row-key="id" caption="Team members">
+        <DataTable :rows="users" :columns="columns" caption="Team members">
           <template #[\`cell:status\`]="{ value }">
             <Badge :variant="tone(value)" dot>{{ value }}</Badge>
           </template>
@@ -199,7 +199,7 @@ export const ComputedColumn: Story = {
     }),
     template: `
       <div class="w-full max-w-2xl">
-        <DataTable :rows="users" :columns="columns" row-key="id" caption="Billing">
+        <DataTable :rows="users" :columns="columns" caption="Billing">
           <template #[\`cell:cost\`]="{ row }">
             \${{ row.seats * 12 }}
           </template>
@@ -230,7 +230,7 @@ export const StickyColumn: Story = {
     }),
     template: `
       <div class="w-full max-w-md">
-        <DataTable :rows="users" :columns="columns" row-key="id" caption="Team members">
+        <DataTable :rows="users" :columns="columns" caption="Team members">
           <template #[\`cell:notes\`]>Scroll sideways to see the pinned column.</template>
         </DataTable>
       </div>
@@ -260,7 +260,7 @@ export const StickyHeader: Story = {
         <DataTable
           :rows="rows"
           :columns="columns"
-          row-key="id"
+         
           caption="Team members"
           class="max-h-80"
         />
@@ -286,7 +286,7 @@ function clientSorted() {
         <DataTable
           :rows="users"
           :columns="columns"
-          row-key="id"
+         
           caption="Team members"
           sort-mode="client"
           v-model:sort="sort"
@@ -322,7 +322,7 @@ export const ManualSorting: Story = {
         <DataTable
           :rows="users"
           :columns="columns"
-          row-key="id"
+         
           caption="Team members"
           v-model:sort="sort"
         />
@@ -349,14 +349,14 @@ export const CustomSortValue: Story = {
           sortValue: (row: User) => ({ active: 0, invited: 1, suspended: 2 })[row.status],
         },
       ],
-      sort: ref({ id: 'status', direction: 'asc' }),
+      sort: ref({ key: 'status', direction: 'asc' }),
     }),
     template: `
       <div class="w-full max-w-2xl">
         <DataTable
           :rows="users"
           :columns="columns"
-          row-key="id"
+         
           caption="Team members"
           sort-mode="client"
           v-model:sort="sort"
@@ -440,7 +440,7 @@ function selectable(mode: 'single' | 'multiple') {
         <DataTable
           :rows="users"
           :columns="columns"
-          row-key="id"
+         
           caption="Team members"
           :selectable="mode"
           :row-label="(row) => 'Select ' + row.name"
@@ -468,14 +468,14 @@ export const SelectionWithSorting: Story = {
       users,
       columns: sortableColumns,
       selected: ref<(string | number)[]>([3]),
-      sort: ref({ id: 'name', direction: 'asc' }),
+      sort: ref({ key: 'name', direction: 'asc' }),
     }),
     template: `
       <div class="w-full max-w-3xl">
         <DataTable
           :rows="users"
           :columns="columns"
-          row-key="id"
+         
           caption="Team members"
           selectable="multiple"
           sort-mode="client"

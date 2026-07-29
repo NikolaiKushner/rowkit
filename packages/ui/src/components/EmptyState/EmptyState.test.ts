@@ -36,6 +36,46 @@ describe('EmptyState', () => {
     })
   })
 
+  describe('reason', () => {
+    it('defaults to no-data and supplies no description', () => {
+      // What to do when nothing exists yet is domain-specific; a guess would be
+      // worse copy than silence.
+      expect(mount(EmptyState, { props: { title } }).find('p').exists()).toBe(false)
+    })
+
+    it('supplies generic copy for no-results', () => {
+      const el = mount(EmptyState, { props: { title, reason: 'no-results' } })
+      expect(el.find('p').text()).toContain('Try removing a filter')
+    })
+
+    it('supplies generic copy for an error', () => {
+      const el = mount(EmptyState, { props: { title, reason: 'error' } })
+      expect(el.find('p').text()).toContain('Something went wrong')
+    })
+
+    it('lets an explicit description win over the default', () => {
+      const el = mount(EmptyState, {
+        props: { title, reason: 'error', description: 'The billing service is down.' },
+      })
+      expect(el.find('p').text()).toBe('The billing service is down.')
+    })
+
+    it('tints an error explanation without shouting in the heading', () => {
+      // A red heading reads as an alert and pulls the eye off the sentence
+      // that says what to do.
+      const el = mount(EmptyState, { props: { title, reason: 'error' } })
+      expect(el.find('p').classes()).toContain('text-danger-on-subtle')
+      expect(el.find('h2').classes()).toContain('text-text')
+    })
+
+    it('keeps the other two reasons muted', () => {
+      for (const reason of ['no-data', 'no-results'] as const) {
+        const el = mount(EmptyState, { props: { title, reason, description: 'x' } })
+        expect(el.find('p').classes(), reason).toContain('text-text-muted')
+      }
+    })
+  })
+
   describe('announcement', () => {
     it('is silent by default', () => {
       // A first-run empty state is just what the page says; nothing changed.

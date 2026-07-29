@@ -5,5 +5,6 @@ export {
   emptyStateIconVariants,
   emptyStateTitleVariants,
   emptyStateVariants,
+  type EmptyStateReason,
   type EmptyStateVariants,
 } from './EmptyState.variants'

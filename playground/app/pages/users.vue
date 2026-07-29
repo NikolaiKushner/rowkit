@@ -90,7 +90,7 @@ const statusOptions: SelectOption<string>[] = statuses.map((status) => ({
 const search = ref('')
 const role = ref<string>()
 const status = ref<string>()
-const sort = ref<DataTableSort>()
+const sort = ref<DataTableSort<User>>()
 const page = ref(1)
 const pageSize = ref(10)
 const selected = ref<PropertyKey[]>([])
@@ -144,7 +144,7 @@ const sorted = computed(() => {
   const active = sort.value
   if (active === undefined) return filtered.value
 
-  const column = columns.find((candidate) => (candidate.id ?? candidate.key) === active.id)
+  const column = columns.find((candidate) => candidate.key === active.key)
   if (column === undefined) return filtered.value
 
   const valueOf = (row: User) =>
@@ -188,11 +188,13 @@ function clearFilters() {
 }
 
 /**
- * Narrowing the results has to reset the page — `TablePagination` clamps a page
- * that runs past the end, but landing on page 1 is what the user expects after
- * changing what they are looking at. Sorting resets it for the same reason.
+ * Resetting the page is the application's job, not the component's.
+ *
+ * `TablePagination` deliberately never moves the page itself — so narrowing the
+ * results, re-sorting, or changing the page size all reset it here. Without
+ * this the user lands on page 9 of a two-page result and sees nothing.
  */
-watch([search, role, status, sort], () => {
+watch([search, role, status, sort, pageSize], () => {
   page.value = 1
 })
 
@@ -258,7 +260,6 @@ const selectedCount = computed(() => selected.value.length)
       v-model:selected="selected"
       :rows="pageRows"
       :columns="columns"
-      row-key="id"
       caption="Users"
       selectable="multiple"
       :row-label="(row: User) => `Select ${row.name}`"

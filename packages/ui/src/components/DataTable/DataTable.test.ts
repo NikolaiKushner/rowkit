@@ -28,7 +28,7 @@ const DataTable = RawDataTable as unknown as Component
 
 function setup(props: Record<string, unknown> = {}) {
   return mount(DataTable, {
-    props: { rows, columns, rowKey: 'id', caption: 'Users', ...props },
+    props: { rows, columns, caption: 'Users', ...props },
   })
 }
 
@@ -113,7 +113,7 @@ describe('DataTable', () => {
   describe('slots', () => {
     it('renders a per-column cell slot', () => {
       const el = mount(DataTable, {
-        props: { rows, columns, rowKey: 'id', caption: 'Users' },
+        props: { rows, columns, caption: 'Users' },
         slots: { 'cell:role': '<template #[`cell:role`]="{ value }">[{{ value }}]</template>' },
       })
       expect(el.text()).toContain('[Owner]')
@@ -121,7 +121,7 @@ describe('DataTable', () => {
 
     it('falls back to the general cell slot', () => {
       const el = mount(DataTable, {
-        props: { rows: rows.slice(0, 1), columns, rowKey: 'id', caption: 'Users' },
+        props: { rows: rows.slice(0, 1), columns, caption: 'Users' },
         slots: { cell: '<template #cell="{ value }">·{{ value }}·</template>' },
       })
       expect(el.text()).toContain('·Ada Lovelace·')
@@ -130,7 +130,7 @@ describe('DataTable', () => {
 
     it('prefers the per-column slot over the general one', () => {
       const el = mount(DataTable, {
-        props: { rows: rows.slice(0, 1), columns, rowKey: 'id', caption: 'Users' },
+        props: { rows: rows.slice(0, 1), columns, caption: 'Users' },
         slots: {
           cell: '<template #cell="{ value }">general-{{ value }}</template>',
           'cell:role': '<template #[`cell:role`]="{ value }">column-{{ value }}</template>',
@@ -145,7 +145,6 @@ describe('DataTable', () => {
         props: {
           rows: rows.slice(0, 1),
           columns: [...columns, { id: 'actions', header: 'Actions' }],
-          rowKey: 'id',
           caption: 'Users',
         },
         slots: { 'cell:actions': '<template #[`cell:actions`]><button>Edit</button></template>' },
@@ -199,7 +198,7 @@ describe('DataTable', () => {
 
     it('can be replaced through the slot', () => {
       const el = mount(DataTable, {
-        props: { rows: [], columns, rowKey: 'id', caption: 'Users' },
+        props: { rows: [], columns, caption: 'Users' },
         slots: { empty: '<p>Custom</p>' },
       })
       expect(el.text()).toContain('Custom')
@@ -309,7 +308,7 @@ describe('DataTable', () => {
     it('reflects the active sort on the right column only', () => {
       const headers = setup({
         columns: sortable,
-        sort: { id: 'seats', direction: 'desc' },
+        sort: { key: 'seats', direction: 'desc' },
       }).findAll('th')
       expect(headers[0]?.attributes('aria-sort')).toBe('none')
       expect(headers[2]?.attributes('aria-sort')).toBe('descending')
@@ -317,7 +316,7 @@ describe('DataTable', () => {
 
     it('labels the button with the column name alone', () => {
       // aria-sort already announces the state; repeating it says it twice.
-      const el = setup({ columns: sortable, sort: { id: 'name', direction: 'asc' } })
+      const el = setup({ columns: sortable, sort: { key: 'name', direction: 'asc' } })
       expect(el.find('th button').text()).toBe('Name')
     })
 
@@ -325,26 +324,26 @@ describe('DataTable', () => {
       it('starts ascending', async () => {
         const el = setup({ columns: sortable })
         await el.find('th button').trigger('click')
-        expect(el.emitted('update:sort')?.at(-1)).toEqual([{ id: 'name', direction: 'asc' }])
+        expect(el.emitted('update:sort')?.at(-1)).toEqual([{ key: 'name', direction: 'asc' }])
       })
 
       it('goes ascending to descending', async () => {
-        const el = setup({ columns: sortable, sort: { id: 'name', direction: 'asc' } })
+        const el = setup({ columns: sortable, sort: { key: 'name', direction: 'asc' } })
         await el.find('th button').trigger('click')
-        expect(el.emitted('update:sort')?.at(-1)).toEqual([{ id: 'name', direction: 'desc' }])
+        expect(el.emitted('update:sort')?.at(-1)).toEqual([{ key: 'name', direction: 'desc' }])
       })
 
       it('returns to unsorted from descending', async () => {
         // Without a third step there is no way back to the server's own order.
-        const el = setup({ columns: sortable, sort: { id: 'name', direction: 'desc' } })
+        const el = setup({ columns: sortable, sort: { key: 'name', direction: 'desc' } })
         await el.find('th button').trigger('click')
         expect(el.emitted('update:sort')?.at(-1)).toEqual([undefined])
       })
 
       it('restarts ascending when a different column is chosen', async () => {
-        const el = setup({ columns: sortable, sort: { id: 'name', direction: 'desc' } })
+        const el = setup({ columns: sortable, sort: { key: 'name', direction: 'desc' } })
         await el.findAll('th button')[1]?.trigger('click')
-        expect(el.emitted('update:sort')?.at(-1)).toEqual([{ id: 'seats', direction: 'asc' }])
+        expect(el.emitted('update:sort')?.at(-1)).toEqual([{ key: 'seats', direction: 'asc' }])
       })
 
       it('ignores a click on a column that does not sort', () => {
@@ -355,7 +354,7 @@ describe('DataTable', () => {
 
     describe('manual mode', () => {
       it('leaves the rows in the order given', () => {
-        const el = setup({ columns: sortable, sort: { id: 'name', direction: 'desc' } })
+        const el = setup({ columns: sortable, sort: { key: 'name', direction: 'desc' } })
         expect(names(el)).toEqual(['Ada Lovelace', 'Grace Hopper', 'Alan Turing'])
       })
     })
@@ -365,7 +364,7 @@ describe('DataTable', () => {
         const el = setup({
           columns: sortable,
           sortMode: 'client',
-          sort: { id: 'name', direction: 'asc' },
+          sort: { key: 'name', direction: 'asc' },
         })
         expect(names(el)).toEqual(['Ada Lovelace', 'Alan Turing', 'Grace Hopper'])
       })
@@ -374,7 +373,7 @@ describe('DataTable', () => {
         const el = setup({
           columns: sortable,
           sortMode: 'client',
-          sort: { id: 'name', direction: 'desc' },
+          sort: { key: 'name', direction: 'desc' },
         })
         expect(names(el)).toEqual(['Grace Hopper', 'Alan Turing', 'Ada Lovelace'])
       })
@@ -384,14 +383,14 @@ describe('DataTable', () => {
         const el = setup({
           columns: sortable,
           sortMode: 'client',
-          sort: { id: 'seats', direction: 'asc' },
+          sort: { key: 'seats', direction: 'asc' },
         })
         expect(names(el)).toEqual(['Alan Turing', 'Ada Lovelace', 'Grace Hopper'])
       })
 
       it('does not mutate the rows it was given', () => {
         const original = [...rows]
-        setup({ columns: sortable, sortMode: 'client', sort: { id: 'name', direction: 'desc' } })
+        setup({ columns: sortable, sortMode: 'client', sort: { key: 'name', direction: 'desc' } })
         expect(rows).toEqual(original)
       })
 
@@ -411,7 +410,7 @@ describe('DataTable', () => {
             },
           ],
           sortMode: 'client',
-          sort: { id: 'rank', direction: 'desc' },
+          sort: { key: 'rank', direction: 'desc' },
         })
         expect(names(el)).toEqual(['low', 'high'])
       })
@@ -558,7 +557,7 @@ describe('DataTable', () => {
         selectable: 'multiple',
         selected: [3],
         sortMode: 'client',
-        sort: { id: 'name', direction: 'asc' },
+        sort: { key: 'name', direction: 'asc' },
       })
       const marked = el
         .findAll('tbody tr')
@@ -597,16 +596,16 @@ describe('DataTable', () => {
 
   describe('the sort cycle helper', () => {
     it('walks asc, desc, off', () => {
-      const first = nextSort(undefined, 'name')
-      expect(first).toEqual({ id: 'name', direction: 'asc' })
-      const second = nextSort(first, 'name')
-      expect(second).toEqual({ id: 'name', direction: 'desc' })
-      expect(nextSort(second, 'name')).toBeUndefined()
+      const first = nextSort<User>(undefined, 'name')
+      expect(first).toEqual({ key: 'name', direction: 'asc' })
+      const second = nextSort<User>(first, 'name')
+      expect(second).toEqual({ key: 'name', direction: 'desc' })
+      expect(nextSort<User>(second, 'name')).toBeUndefined()
     })
 
     it('resets to ascending on a new column', () => {
-      expect(nextSort({ id: 'name', direction: 'desc' }, 'seats')).toEqual({
-        id: 'seats',
+      expect(nextSort<User>({ key: 'name', direction: 'desc' }, 'seats')).toEqual({
+        key: 'seats',
         direction: 'asc',
       })
     })

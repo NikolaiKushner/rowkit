@@ -46,18 +46,33 @@ export const emptyStateTitleVariants = cva('font-medium text-text', {
 })
 
 /**
+ * Why the view is empty. Three situations that look identical and demand
+ * different actions.
+ */
+export type EmptyStateReason = 'no-data' | 'no-results' | 'error'
+
+/**
  * Width-capped on purpose. An explanation that runs the full width of a table
  * is a paragraph nobody reads; the limit keeps it to a couple of lines.
+ *
+ * `reason` tints the explanation rather than the title. A red heading reads as
+ * an alert and pulls the eye away from the sentence that says what to do; the
+ * failure needs to be legible, not loud.
  */
-export const emptyStateDescriptionVariants = cva('text-balance text-text-muted', {
+export const emptyStateDescriptionVariants = cva('text-balance', {
   variants: {
     size: {
       sm: 'max-w-xs text-xs',
       md: 'max-w-sm text-sm',
       lg: 'max-w-md text-sm',
     },
+    reason: {
+      'no-data': 'text-text-muted',
+      'no-results': 'text-text-muted',
+      error: 'text-danger-on-subtle',
+    },
   },
-  defaultVariants: { size: 'md' },
+  defaultVariants: { size: 'md', reason: 'no-data' },
 })
 
 export const emptyStateActionsVariants = cva('flex flex-wrap items-center justify-center', {

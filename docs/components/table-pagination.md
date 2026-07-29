@@ -43,8 +43,8 @@ numbers. Built on Reka UI's `Pagination` primitive.
 | `pageSizeOptions` | `number[]`     | `[10, 25, 50, 100]` | Choices in the rows-per-page control           |
 | `siblingCount`    | `number`       | `1`                 | Page numbers shown either side of the current  |
 | `showEdges`       | `boolean`      | `true`              | Always show first and last page, with ellipses |
-| `showPageSize`    | `boolean`      | `true`              | Show the rows-per-page control                 |
-| `showSummary`     | `boolean`      | `true`              | Show the range summary                         |
+| `hidePageSize`    | `boolean`      | `false`             | Hide the rows-per-page control                 |
+| `hideSummary`     | `boolean`      | `false`             | Hide the range summary                         |
 | `pageSizeLabel`   | `string`       | `'Rows per page'`   | Label for the rows-per-page control            |
 | `label`           | `string`       | `'Pagination'`      | Accessible name for the navigation landmark    |
 | `previousLabel`   | `string`       | `'Previous page'`   | Accessible name for the previous control       |
@@ -68,15 +68,28 @@ numbers. Built on Reka UI's `Pagination` primitive.
 
 ## Behaviour worth knowing
 
-**Changing the page size keeps your place.** Someone on page 9 of 10-row pages
-is looking at row 81; switching to 25 rows puts them on page 4, which still
-contains row 81. Resetting to page 1 is the common implementation and it
-silently loses the user's position in a long list.
+**This component never moves the page by itself.** Changing the page size emits
+`update:pageSize` and nothing else; a shrinking `total` emits nothing at all.
+Both are yours to respond to, because only you know whether a page change means
+a refetch, a URL rewrite, or nothing.
 
-**The page is pulled back into range when the data shrinks.** Apply a filter
-that cuts 247 rows to 12 while on page 9 and the page becomes 2. Without this
-the table renders nothing and looks broken — the single most common pagination
-bug.
+Most applications reset to page 1 when the result set or the ordering changes,
+and that is one line at the call site:
+
+```ts
+watch([search, filters, sort, pageSize], () => {
+  page.value = 1
+})
+```
+
+Do wire it. Without it a user who filters 247 rows down to 12 while on page 9
+stays on page 9 and sees an empty table. The component could clamp that for you
+— an earlier version did — but a component taking a second decision on your
+behalf is how "why did my page jump" bugs happen, and it fights applications
+that already handle it.
+
+**With `total: 0` every control is disabled rather than hidden**, so the row
+keeps its height and the layout does not jump when results arrive.
 
 **`showEdges` defaults to `true`, unlike the Reka primitive underneath.** With
 it off, a user on page 12 of 25 sees only `11 12 13`: no sense of how far the

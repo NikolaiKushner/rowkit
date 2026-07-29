@@ -19,7 +19,7 @@ Read `docs/conventions.md` before designing a component API. Prop naming, state 
 - **Tailwind CSS v4** — configured via the `@theme` block in CSS. There is no `tailwind.config.js`.
 - **cva** (class-variance-authority) + **tailwind-merge** for variant management
 - **Vite library mode** + **vite-plugin-dts** for declaration files
-- **Vitest** + **Storybook 9** (`@storybook/addon-vitest`, `@storybook/addon-a11y`)
+- **Vitest** + **Storybook 10** (`@storybook/addon-vitest`, `@storybook/addon-a11y` as a gate, not a panel). Storybook 10, not 9: `@storybook/vue3-vite@9` peers on Vite 7 and this repo is on Vite 8.
 - **VitePress** for documentation
 - **pnpm workspaces** — monorepo with `packages/tokens` and `packages/ui`
 
