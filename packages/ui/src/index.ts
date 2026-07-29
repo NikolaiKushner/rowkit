@@ -10,6 +10,7 @@ export * from './components/Skeleton'
 export * from './components/TablePagination'
 
 export { cn } from './utils/cn'
+export { useClientSort } from './composables/useClientSort'
 
 /**
  * The `rowkit` version this build was produced from.

@@ -35,7 +35,7 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 - [x] 🟢 **Button** — variants, sizes, loading state, icon slots
 - [x] 🟢 **Input / Field** — label, hint, error, required, disabled
 - [x] 🟢 **Select** — searchable, keyboard nav, async options
-- [x] 🟢 **Badge** — status semantics (success / warning / danger / neutral)
+- [x] 🟢 **Badge** — status semantics (neutral / primary / success / warning / danger), three appearances
 
 ### Data layer
 

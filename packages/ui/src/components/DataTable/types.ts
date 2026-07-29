@@ -211,19 +211,6 @@ export interface DataTableProps<TRow> {
   /** Description for the built-in empty state. */
   emptyDescription?: string
   /**
-   * Who does the sorting.
-   *
-   * `manual` reports the sort and leaves the rows alone — correct whenever
-   * the server orders and pages the data, which is the case this library is
-   * built for. `client` reorders `rows` in place.
-   *
-   * Defaults to `manual` because the wrong choice fails quietly: `client`
-   * combined with server-side pagination sorts only the page you can see, and
-   * a table that looks sorted but is not is worse than one that plainly is
-   * not.
-   */
-  sortMode?: 'manual' | 'client'
-  /**
    * Adds a selection column.
    *
    * `multiple` gives checkboxes and a select-all in the header; `single`
@@ -244,7 +231,12 @@ export interface DataTableProps<TRow> {
   selectAllLabel?: string
   /** Row height and text size. */
   size?: NonNullable<DataTableVariants['size']>
-  /** Highlights rows on hover. Only turn this on when a row does something. */
+  /**
+   * Highlights rows on hover. Only turn this on when a row does something.
+   *
+   * Implied by a `row:click` listener, since a row that responds to a click
+   * should look like it will.
+   */
   hoverable?: boolean
   /** Additional classes for the scroll container, merged so a consumer's utility wins. */
   class?: HTMLAttributes['class']

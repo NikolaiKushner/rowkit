@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="TRow extends DataTableRow">
 import { CheckboxIndicator, CheckboxRoot } from 'reka-ui'
-import { computed, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import { cn } from '../../utils/cn'
 import EmptyState from '../EmptyState/EmptyState.vue'
 import Skeleton from '../Skeleton/Skeleton.vue'
@@ -20,7 +20,6 @@ import {
 } from './DataTable.variants'
 import {
   columnId,
-  compareSortable,
   isFieldColumn,
   nextSort,
   type DataTableColumn,
@@ -28,7 +27,6 @@ import {
   type DataTableFieldColumn,
   type DataTableRow,
   type DataTableSort,
-  type DataTableSortable,
 } from './types'
 
 defineOptions({ name: 'RkDataTable' })
@@ -39,7 +37,6 @@ const props = withDefaults(defineProps<DataTableProps<TRow>>(), {
   loadingRows: 5,
   loadingLabel: 'Loading',
   emptyTitle: 'Nothing to show',
-  sortMode: 'manual',
   selectionLabel: 'Select',
   selectAllLabel: 'Select all rows',
   size: 'md',
@@ -60,12 +57,27 @@ const selected = defineModel<TRow['id'][]>('selected', { default: () => [] })
 
 type CellSlotProps = { row: TRow; column: DataTableColumn<TRow>; value: unknown; index: number }
 
+const emit = defineEmits<{
+  /**
+   * A row was activated — clicked, or focused and confirmed with Enter or
+   * Space.
+   *
+   * Adding a listener puts rows in the tab order. **A clickable row is an
+   * enhancement, never the only path**: whatever it does must also exist as a
+   * real control inside the row, because a pointer-only affordance is
+   * unreachable for anyone not using a pointer.
+   */
+  'row:click': [row: TRow]
+}>()
+
 defineSlots<
   {
     /** Fallback renderer for every cell. */
     cell?: (props: CellSlotProps) => unknown
     /** Replaces the built-in empty state. */
     empty?: () => unknown
+    /** Replaces the placeholder rows shown while loading. */
+    loading?: () => unknown
   } & Record<`cell:${string}`, ((props: CellSlotProps) => unknown) | undefined>
 >()
 
@@ -114,9 +126,34 @@ onBeforeUnmount(() => resizeObserver?.disconnect())
 // Row and column changes alter the table's size without resizing the box.
 watch(() => [props.rows.length, props.columns.length, props.loading], measure, { flush: 'post' })
 
-function sortValueOf(row: TRow, column: DataTableFieldColumn<TRow>): DataTableSortable {
-  if (column.sortValue !== undefined) return column.sortValue(row)
-  return readField(row, column.key) as DataTableSortable
+/**
+ * Rows are only interactive when someone is listening. Without a `row:click`
+ * handler they stay out of the tab order entirely, rather than adding a tab
+ * stop per row to every table in the library.
+ */
+const instance = getCurrentInstance()
+
+// A declared emit is stripped from `$attrs`, so the listener has to be read off
+// the vnode. The key is `onRow:click` — Vue prefixes `on` and leaves the rest,
+// colon included.
+const isClickable = computed(() => instance?.vnode.props?.['onRow:click'] !== undefined)
+
+const rowsAreInteractive = computed(() => props.hoverable || isClickable.value)
+
+function activateRow(row: TRow, event: MouseEvent | KeyboardEvent): void {
+  if (!isClickable.value) return
+  // A click on a control inside the row belongs to that control. Without this,
+  // ticking a checkbox or pressing Edit also fires the row.
+  const target = event.target
+  if (target instanceof Element && target.closest('button, a, input, select, textarea, label')) {
+    return
+  }
+  if (event instanceof KeyboardEvent) {
+    if (event.key !== 'Enter' && event.key !== ' ') return
+    // Space scrolls the page otherwise.
+    event.preventDefault()
+  }
+  emit('row:click', row)
 }
 
 /** Only a field column can be sorted — `DataTableSort` names a field of the row. */
@@ -125,26 +162,15 @@ function isSortable(column: DataTableColumn<TRow>): column is DataTableFieldColu
 }
 
 /**
- * The rows as rendered. A copy is sorted, never `props.rows` itself — mutating
- * a prop would reorder the caller's array behind its back.
+ * The rows as rendered — which is exactly `props.rows`.
  *
- * `Array.prototype.sort` is stable, so rows that tie keep the order they
- * arrived in rather than shuffling on every re-sort.
+ * The table never sorts its own data. It reports the sort the user asked for
+ * and renders what it is handed, so a server-paged table cannot end up
+ * reordering only the page on screen and looking sorted while being wrong.
+ * `useClientSort` provides the local convenience for tables that hold
+ * everything.
  */
-const displayRows = computed(() => {
-  const active = sort.value
-  if (props.sortMode !== 'client' || active === undefined) return props.rows
-
-  const column = props.columns.find(
-    (candidate): candidate is DataTableFieldColumn<TRow> =>
-      isFieldColumn(candidate) && candidate.key === active.key
-  )
-  if (column === undefined) return props.rows
-
-  return [...props.rows].sort((a, b) =>
-    compareSortable(sortValueOf(a, column), sortValueOf(b, column), active.direction)
-  )
-})
+const displayRows = computed(() => props.rows)
 
 const isEmpty = computed(() => !props.loading && props.rows.length === 0)
 
@@ -391,31 +417,33 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
 
       <tbody :aria-busy="props.loading ? 'true' : undefined">
         <template v-if="props.loading">
-          <tr v-for="row in props.loadingRows" :key="`skeleton-${row}`">
-            <td
-              v-if="props.selectable !== undefined"
-              :class="dataTableSelectCellVariants({ size: props.size })"
-            >
-              <Skeleton variant="rect" :class="props.size === 'sm' ? 'size-3.5' : 'size-4'" />
-            </td>
-            <td
-              v-for="column in props.columns"
-              :key="columnId(column)"
-              :class="
-                cn(
-                  dataTableCellVariants({
-                    size: props.size,
-                    align: column.align ?? 'start',
-                    pinned: column.sticky ?? false,
-                  }),
-                  pinnedClass(column)
-                )
-              "
-            >
-              <!-- Decorative by default: one announcement above, not one per cell. -->
-              <Skeleton />
-            </td>
-          </tr>
+          <slot name="loading">
+            <tr v-for="row in props.loadingRows" :key="`skeleton-${row}`">
+              <td
+                v-if="props.selectable !== undefined"
+                :class="dataTableSelectCellVariants({ size: props.size })"
+              >
+                <Skeleton variant="rect" :class="props.size === 'sm' ? 'size-3.5' : 'size-4'" />
+              </td>
+              <td
+                v-for="column in props.columns"
+                :key="columnId(column)"
+                :class="
+                  cn(
+                    dataTableCellVariants({
+                      size: props.size,
+                      align: column.align ?? 'start',
+                      pinned: column.sticky ?? false,
+                    }),
+                    pinnedClass(column)
+                  )
+                "
+              >
+                <!-- Decorative by default: one announcement above, not one per cell. -->
+                <Skeleton />
+              </td>
+            </tr>
+          </slot>
         </template>
 
         <tr v-else-if="isEmpty">
@@ -431,12 +459,15 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
           v-else
           :key="row.id"
           :data-selected="selectedKeys.has(row.id) ? '' : undefined"
+          :tabindex="isClickable ? 0 : undefined"
           :class="
             dataTableRowVariants({
-              interactive: props.hoverable,
+              interactive: rowsAreInteractive,
               selected: selectedKeys.has(row.id),
             })
           "
+          @click="activateRow(row, $event)"
+          @keydown="activateRow(row, $event)"
         >
           <!--
             No `aria-selected` on the row. It is only valid inside a `grid`, and

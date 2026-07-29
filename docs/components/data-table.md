@@ -86,6 +86,7 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 | `cell:<id>` | `{ row, column, value, index }` | Renders one column's cells        |
 | `cell`      | `{ row, column, value, index }` | Fallback for every cell           |
 | `empty`     | —                               | Replaces the built-in empty state |
+| `loading`   | —                               | Replaces the placeholder rows     |
 
 Resolution order is per-column slot, then the general `cell` slot, then the raw
 value. That chain is what lets a table declare twelve columns and write markup
@@ -115,11 +116,23 @@ Mark a column `sortable` and bind `v-model:sort`.
 <DataTable :rows="users" :columns="columns" caption="Users" v-model:sort="sort" />
 ```
 
-**`sortMode` defaults to `manual`**, meaning the table reports the sort and
-leaves `rows` untouched. That is the right default for this library: if the
-server orders and pages the data, sorting locally would reorder only the page
-you can see, producing a table that looks sorted and is not. Set
-`sortMode="client"` when the table holds every row it will ever show.
+**The table never sorts its own rows.** It reports the sort the user asked for
+and renders what it is handed. That keeps server-driven and client-driven usage
+identical from the table's point of view — the moment a table sorts its own
+`rows`, a server-paged one silently reorders just the page on screen and looks
+sorted while being wrong.
+
+For a table that holds every row it will ever show, `useClientSort` does the
+sorting outside the component, where it is testable without mounting anything:
+
+```ts
+const sort = ref<DataTableSort<User>>()
+const rows = useClientSort(users, sort, columns)
+```
+
+```vue
+<DataTable :rows="rows" :columns="columns" v-model:sort="sort" caption="Users" />
+```
 
 **The cycle is ascending, descending, then unsorted.** The third step is the one
 usually missing, and it matters — without it there is no way back to the order
@@ -225,13 +238,27 @@ scrolling div will not work.
 `shadow-scroll-x` token. Without the cue, a user scrolled to the right has no
 signal that the table continues past the pinned edge.
 
+## Clickable rows
+
+Listening for `row:click` puts rows in the tab order and activates them on
+<kbd>Enter</kbd> and <kbd>Space</kbd>. Without a listener they stay out of the
+tab order entirely, so a table of plain data adds no tab stops.
+
+A click on a control inside the row — a checkbox, an Edit button — does not fire
+`row:click`. Ticking a checkbox should not also open the row.
+
+**A clickable row is an enhancement, never the only path.** Whatever the row
+click does must also exist as a real control inside the row. A pointer-only
+affordance is unreachable for anyone not using a pointer, and a row is not an
+announced, discoverable target the way a link or a button is.
+
 ## Keyboard
 
-| Key                                                 | Action                                                                                 |
-| --------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| <kbd>Tab</kbd>                                      | Reaches the container when it scrolls, sortable headers, and any controls inside cells |
-| <kbd>Enter</kbd> / <kbd>Space</kbd>                 | Advances the sort on a focused header                                                  |
-| <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> | Scroll the container while it has focus                                                |
+| Key                                                 | Action                                                                                                                   |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| <kbd>Tab</kbd>                                      | Reaches the container when it scrolls, sortable headers, rows with a `row:click` listener, and any controls inside cells |
+| <kbd>Enter</kbd> / <kbd>Space</kbd>                 | Advances the sort on a focused header                                                                                    |
+| <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> | Scroll the container while it has focus                                                                                  |
 
 There is no grid navigation. This is a `table`, not a `grid` — cells are content
 rather than composite widget children, and screen readers already provide table
@@ -276,11 +303,17 @@ omitting the attribute would leave no signal that the column sorts at all.
 
 ## Performance
 
-There is no virtualization. Rendering is linear in rows × columns, and a few
-hundred rows is comfortable. Past roughly a thousand, paginate with
-`TablePagination` — which is the better interaction anyway, since nobody scrolls
-through ten thousand rows looking for something. Virtualization is a candidate
-for a later release; pagination is the answer today.
+There is no virtualization, deliberately — and it is measured rather than
+asserted. See [004 — DataTable performance](../decisions/004-datatable-performance.md).
+
+The short version: **scrolling does not care how many rows there are.** Frame
+times over a 10,000-row table are identical to a four-row one, because the
+browser paints only what is visible. What does grow is initial render — about
+640 ms for 10,000 rows against 66 ms for four, and linear in between.
+
+So the threshold is a render-time one: **above ~500 rows, paginate** with
+`TablePagination`. That is the better interaction regardless, since nobody
+scrolls ten thousand rows looking for something.
 
 ## Dark mode
 

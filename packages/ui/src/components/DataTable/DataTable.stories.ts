@@ -4,7 +4,8 @@ import { expect, userEvent, within } from 'storybook/test'
 import Badge from '../Badge/Badge.vue'
 import Button from '../Button/Button.vue'
 import RawDataTable from './DataTable.vue'
-import type { DataTableColumn } from './types'
+import { useClientSort } from '../../composables/useClientSort'
+import type { DataTableColumn, DataTableSort } from './types'
 
 /** A generic SFC does not satisfy the `Component` index signature of a `components` map. */
 const DataTable = RawDataTable as unknown as ConcreteComponent
@@ -280,17 +281,13 @@ const sortableColumns: DataTableColumn<User>[] = [
 function clientSorted() {
   return {
     components: { DataTable },
-    setup: () => ({ users, columns: sortableColumns, sort: ref(undefined) }),
+    setup: () => {
+      const sort = ref<DataTableSort<User>>()
+      return { rows: useClientSort(users, sort, sortableColumns), columns: sortableColumns, sort }
+    },
     template: `
       <div class="w-full max-w-3xl">
-        <DataTable
-          :rows="users"
-          :columns="columns"
-         
-          caption="Team members"
-          sort-mode="client"
-          v-model:sort="sort"
-        />
+        <DataTable :rows="rows" :columns="columns" caption="Team members" v-model:sort="sort" />
       </div>
     `,
   }
@@ -338,29 +335,22 @@ export const ManualSorting: Story = {
 export const CustomSortValue: Story = {
   render: () => ({
     components: { DataTable },
-    setup: () => ({
-      users,
-      columns: [
+    setup: () => {
+      const statusColumns: DataTableColumn<User>[] = [
         { key: 'name', header: 'Name', sortable: true },
         {
           key: 'status',
           header: 'Status',
           sortable: true,
-          sortValue: (row: User) => ({ active: 0, invited: 1, suspended: 2 })[row.status],
+          sortValue: (row) => ({ active: 0, invited: 1, suspended: 2 })[row.status],
         },
-      ],
-      sort: ref({ key: 'status', direction: 'asc' }),
-    }),
+      ]
+      const sort = ref<DataTableSort<User>>({ key: 'status', direction: 'asc' })
+      return { sort, rows: useClientSort(users, sort, statusColumns), columns: statusColumns }
+    },
     template: `
       <div class="w-full max-w-2xl">
-        <DataTable
-          :rows="users"
-          :columns="columns"
-         
-          caption="Team members"
-          sort-mode="client"
-          v-model:sort="sort"
-        />
+        <DataTable :rows="rows" :columns="columns" caption="Team members" v-model:sort="sort" />
       </div>
     `,
   }),
@@ -568,5 +558,48 @@ export const LoadingIsAnnouncedOnce: Story = {
 
     // The placeholder bars themselves stay silent.
     await expect(canvas.queryAllByRole('status')).toHaveLength(1)
+  },
+}
+
+/**
+ * The benchmark. **Measures rendering, not sorting** — the rows are pre-sorted
+ * and the table is handed them ready to paint, which is exactly what the table
+ * does in production since it never sorts its own data.
+ *
+ * `useClientSort` carries its own timing, in its tests. Keeping the two apart
+ * stops either cost hiding behind the other.
+ *
+ * Numbers and the virtualization decision live in
+ * `docs/decisions/004-datatable-performance.md`.
+ */
+export const TenThousandRows: Story = {
+  // The a11y scan is off here alone. axe walks every node, and 10,000 rows of
+  // identical markup takes minutes to tell us what Default already asserts.
+  parameters: { a11y: { test: 'off' } },
+  render: () => ({
+    components: { DataTable },
+    setup: () => ({
+      rows: Array.from({ length: 10_000 }, (_, i) => ({
+        id: i + 1,
+        name: `Person ${String(i + 1).padStart(5, '0')}`,
+        email: `person${String(i + 1)}@example.com`,
+        role: i % 3 === 0 ? 'Admin' : 'Member',
+        status: 'active' as const,
+        seats: i % 24,
+      })),
+      columns,
+    }),
+    template: `
+      <div class="w-full max-w-3xl">
+        <DataTable :rows="rows" :columns="columns" caption="Ten thousand people" class="max-h-96" />
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // Every row is really in the DOM — there is no virtualization, deliberately.
+    // Timings are measured out-of-band with Playwright; see decision 004.
+    await expect(canvas.getAllByRole('row')).toHaveLength(10_001)
   },
 }

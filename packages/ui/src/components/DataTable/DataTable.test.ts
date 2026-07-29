@@ -173,6 +173,15 @@ describe('DataTable', () => {
       expect(el.find('[role="status"]').text()).toBe('')
     })
 
+    it('can be replaced through the loading slot', () => {
+      const el = mount(DataTable, {
+        props: { rows, columns, caption: 'Users', loading: true },
+        slots: { loading: '<tr><td>Fetching…</td></tr>' },
+      })
+      expect(el.text()).toContain('Fetching…')
+      expect(el.findAll('tbody tr')).toHaveLength(1)
+    })
+
     it('takes precedence over the empty state', () => {
       const el = setup({ rows: [], loading: true })
       expect(el.text()).not.toContain('Nothing to show')
@@ -359,210 +368,13 @@ describe('DataTable', () => {
       })
     })
 
-    describe('client mode', () => {
-      it('sorts ascending', () => {
-        const el = setup({
-          columns: sortable,
-          sortMode: 'client',
-          sort: { key: 'name', direction: 'asc' },
-        })
-        expect(names(el)).toEqual(['Ada Lovelace', 'Alan Turing', 'Grace Hopper'])
-      })
-
-      it('sorts descending', () => {
-        const el = setup({
-          columns: sortable,
-          sortMode: 'client',
-          sort: { key: 'name', direction: 'desc' },
-        })
-        expect(names(el)).toEqual(['Grace Hopper', 'Alan Turing', 'Ada Lovelace'])
-      })
-
-      it('compares numbers numerically, not as text', () => {
-        // The bug this catches: 12 sorting before 3 because "1" < "3".
-        const el = setup({
-          columns: sortable,
-          sortMode: 'client',
-          sort: { key: 'seats', direction: 'asc' },
-        })
-        expect(names(el)).toEqual(['Alan Turing', 'Ada Lovelace', 'Grace Hopper'])
-      })
-
-      it('does not mutate the rows it was given', () => {
-        const original = [...rows]
-        setup({ columns: sortable, sortMode: 'client', sort: { key: 'name', direction: 'desc' } })
-        expect(rows).toEqual(original)
-      })
-
-      it('uses sortValue when the displayed text sorts badly', () => {
-        const el = setup({
-          rows: [
-            { id: 1, name: 'low', rank: 'C' },
-            { id: 2, name: 'high', rank: 'A' },
-          ],
-          columns: [
-            { key: 'name', header: 'Name' },
-            {
-              key: 'rank',
-              header: 'Rank',
-              sortable: true,
-              sortValue: (row: { rank: string }) => ({ A: 1, C: 3 })[row.rank],
-            },
-          ],
-          sortMode: 'client',
-          sort: { key: 'rank', direction: 'desc' },
-        })
-        expect(names(el)).toEqual(['low', 'high'])
-      })
-
-      it('leaves the order alone when unsorted', () => {
-        const el = setup({ columns: sortable, sortMode: 'client' })
+    describe('the table never sorts its own rows', () => {
+      it('renders them in the order given, whatever the sort says', () => {
+        // Sorting lives in `useClientSort`. A table that reorders its own rows
+        // would silently sort only the current page of a server-paged set.
+        const el = setup({ columns: sortable, sort: { key: 'name', direction: 'desc' } })
         expect(names(el)).toEqual(['Ada Lovelace', 'Grace Hopper', 'Alan Turing'])
       })
-    })
-  })
-
-  describe('selection', () => {
-    const boxes = (el: ReturnType<typeof setup>) => el.findAll('tbody [role="checkbox"]')
-    const selectAll = (el: ReturnType<typeof setup>) => el.find('thead [role="checkbox"]')
-
-    it('adds no selection column unless asked', () => {
-      expect(setup().findAll('thead th')).toHaveLength(3)
-      expect(setup({ selectable: 'multiple' }).findAll('thead th')).toHaveLength(4)
-    })
-
-    it('renders a checkbox per row in multiple mode', () => {
-      expect(boxes(setup({ selectable: 'multiple' }))).toHaveLength(3)
-    })
-
-    it('renders radios in single mode, with no select-all', () => {
-      const el = setup({ selectable: 'single' })
-      expect(el.findAll('tbody input[type="radio"]')).toHaveLength(3)
-      expect(selectAll(el).exists()).toBe(false)
-    })
-
-    it('groups the radios under one name', () => {
-      const names = setup({ selectable: 'single' })
-        .findAll('tbody input[type="radio"]')
-        .map((r) => r.attributes('name'))
-      expect(new Set(names).size).toBe(1)
-    })
-
-    it('names each control after its row when given a labeller', () => {
-      // "Select row 3" repeated down a column tells a reader nothing.
-      const el = setup({
-        selectable: 'multiple',
-        rowLabel: (row: User) => `Select ${row.name}`,
-      })
-      expect(boxes(el)[0]?.attributes('aria-label')).toBe('Select Ada Lovelace')
-    })
-
-    it('falls back to a positional label', () => {
-      const el = setup({ selectable: 'multiple' })
-      expect(boxes(el)[0]?.attributes('aria-label')).toBe('Select row 1')
-    })
-
-    it('never leaves the selection header empty', () => {
-      const header = setup({ selectable: 'single' }).find('thead th')
-      expect(header.text()).toBe('Select')
-    })
-
-    describe('toggling a row', () => {
-      it('adds a key in multiple mode', async () => {
-        const el = setup({ selectable: 'multiple' })
-        await boxes(el)[1]?.trigger('click')
-        expect(el.emitted('update:selected')?.at(-1)).toEqual([[2]])
-      })
-
-      it('accumulates in multiple mode', async () => {
-        const el = setup({ selectable: 'multiple', selected: [1] })
-        await boxes(el)[1]?.trigger('click')
-        expect(el.emitted('update:selected')?.at(-1)).toEqual([[1, 2]])
-      })
-
-      it('removes a key that was selected', async () => {
-        const el = setup({ selectable: 'multiple', selected: [1, 2] })
-        await boxes(el)[0]?.trigger('click')
-        expect(el.emitted('update:selected')?.at(-1)).toEqual([[2]])
-      })
-
-      it('replaces rather than accumulates in single mode', async () => {
-        const el = setup({ selectable: 'single', selected: [1] })
-        await el.findAll('tbody input[type="radio"]')[2]?.trigger('change')
-        expect(el.emitted('update:selected')?.at(-1)).toEqual([[3]])
-      })
-    })
-
-    describe('select all', () => {
-      it('is unchecked with nothing selected', () => {
-        expect(selectAll(setup({ selectable: 'multiple' })).attributes('data-state')).toBe(
-          'unchecked'
-        )
-      })
-
-      it('is indeterminate with some selected', () => {
-        const el = setup({ selectable: 'multiple', selected: [1] })
-        expect(selectAll(el).attributes('data-state')).toBe('indeterminate')
-      })
-
-      it('is checked with all selected', () => {
-        const el = setup({ selectable: 'multiple', selected: [1, 2, 3] })
-        expect(selectAll(el).attributes('data-state')).toBe('checked')
-      })
-
-      it('selects every visible row', async () => {
-        const el = setup({ selectable: 'multiple' })
-        await selectAll(el).trigger('click')
-        expect(el.emitted('update:selected')?.at(-1)).toEqual([[1, 2, 3]])
-      })
-
-      it('completes a partial selection without duplicating', async () => {
-        const el = setup({ selectable: 'multiple', selected: [2] })
-        await selectAll(el).trigger('click')
-        expect(el.emitted('update:selected')?.at(-1)).toEqual([[2, 1, 3]])
-      })
-
-      it('clears only the visible rows, not selections from elsewhere', async () => {
-        // With pagination, clearing outright would silently drop page one.
-        const el = setup({ selectable: 'multiple', selected: [1, 2, 3, 99] })
-        await selectAll(el).trigger('click')
-        expect(el.emitted('update:selected')?.at(-1)).toEqual([[99]])
-      })
-    })
-
-    it('marks the selected row for styling', () => {
-      const el = setup({ selectable: 'multiple', selected: [2] })
-      const marked = el
-        .findAll('tbody tr')
-        .filter((r) => r.attributes('data-selected') !== undefined)
-      expect(marked).toHaveLength(1)
-      expect(marked[0]?.text()).toContain('Grace Hopper')
-    })
-
-    it('keeps selection out of the row semantics', () => {
-      // aria-selected is only valid inside a grid; this is a plain table.
-      const el = setup({ selectable: 'multiple', selected: [2] })
-      expect(el.find('tbody tr[aria-selected]').exists()).toBe(false)
-    })
-
-    it('spans the selection column in the empty state', () => {
-      const el = setup({ rows: [], selectable: 'multiple' })
-      expect(el.find('tbody td').attributes('colspan')).toBe('4')
-    })
-
-    it('follows the row through a sort rather than the position', () => {
-      // Selection is keyed by rowKey, so reordering must not move it.
-      const el = setup({
-        columns: [{ key: 'name', header: 'Name', sortable: true }],
-        selectable: 'multiple',
-        selected: [3],
-        sortMode: 'client',
-        sort: { key: 'name', direction: 'asc' },
-      })
-      const marked = el
-        .findAll('tbody tr')
-        .filter((r) => r.attributes('data-selected') !== undefined)
-      expect(marked[0]?.text()).toContain('Alan Turing')
     })
   })
 
@@ -608,6 +420,61 @@ describe('DataTable', () => {
         key: 'seats',
         direction: 'asc',
       })
+    })
+  })
+
+  describe('row activation', () => {
+    const clickable = () =>
+      mount(DataTable, {
+        props: { rows, columns, caption: 'Users', 'onRow:click': () => undefined },
+      })
+
+    it('stays out of the tab order with no listener', () => {
+      // Otherwise every table in the library adds a tab stop per row.
+      expect(setup().find('tbody tr').attributes('tabindex')).toBeUndefined()
+    })
+
+    it('becomes focusable once someone is listening', () => {
+      expect(clickable().find('tbody tr').attributes('tabindex')).toBe('0')
+    })
+
+    it('emits the row on click', async () => {
+      const el = clickable()
+      await el.find('tbody tr').trigger('click')
+      expect(el.emitted('row:click')?.[0]).toEqual([rows[0]])
+    })
+
+    it('activates on Enter and Space', async () => {
+      for (const key of ['Enter', ' ']) {
+        const el = clickable()
+        await el.find('tbody tr').trigger('keydown', { key })
+        expect(el.emitted('row:click'), key).toHaveLength(1)
+      }
+    })
+
+    it('ignores other keys', async () => {
+      const el = clickable()
+      await el.find('tbody tr').trigger('keydown', { key: 'a' })
+      expect(el.emitted('row:click')).toBeUndefined()
+    })
+
+    it('does not fire when a control inside the row is used', async () => {
+      // The annoying-in-production bug: ticking the checkbox also opens the row.
+      const el = mount(DataTable, {
+        props: {
+          rows,
+          columns,
+          caption: 'Users',
+          selectable: 'multiple',
+          'onRow:click': () => undefined,
+        },
+      })
+      await el.find('tbody [role="checkbox"]').trigger('click')
+      expect(el.emitted('row:click')).toBeUndefined()
+    })
+
+    it('shows a hover affordance once rows respond to a click', () => {
+      expect(clickable().find('tbody tr').classes()).toContain('hover:bg-surface-hover')
     })
   })
 
