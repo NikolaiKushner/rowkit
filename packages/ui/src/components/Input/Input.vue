@@ -1,41 +1,18 @@
 <script setup lang="ts">
-import { computed, type HTMLAttributes } from 'vue'
+import { computed } from 'vue'
 import { cn } from '../../utils/cn'
 import { useFieldContext } from '../Field/context'
-import { inputVariants, type InputVariants } from './Input.variants'
+import { inputVariants } from './Input.variants'
+
+import type { InputProps } from './types'
 
 defineOptions({ name: 'RkInput', inheritAttrs: false })
 
-const props = withDefaults(
-  defineProps<{
-    /** Control height and text size. */
-    size?: NonNullable<InputVariants['size']>
-    /**
-     * Native input type. Deliberately excludes `checkbox`, `radio` and `file`,
-     * which need different markup and a different control.
-     */
-    type?: 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number' | 'date'
-    /** Short example of the expected value. Never a substitute for a label. */
-    placeholder?: string
-    /** Disables the input. A surrounding disabled `Field` also disables it. */
-    disabled?: boolean
-    /** Marks the value invalid. A `Field` with an `error` also sets it. */
-    invalid?: boolean
-    /** Marks the input required. A required `Field` also sets it. */
-    required?: boolean
-    /** Makes the value read-only while keeping it focusable and selectable. */
-    readonly?: boolean
-    /** Id for the input. Inherited from a surrounding `Field` when omitted. */
-    id?: string
-    /** Additional classes, merged so a consumer's utility wins. */
-    class?: HTMLAttributes['class']
-  }>(),
-  {
-    size: 'md',
-    type: 'text',
-    readonly: false,
-  }
-)
+const props = withDefaults(defineProps<InputProps>(), {
+  size: 'md',
+  type: 'text',
+  readonly: false,
+})
 
 /** The input's value. */
 const model = defineModel<string | number | undefined>({ default: undefined })

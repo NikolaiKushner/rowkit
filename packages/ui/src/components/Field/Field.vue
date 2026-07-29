@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Label } from 'reka-ui'
-import { computed, toRef, useId, type HTMLAttributes } from 'vue'
+import { computed, toRef, useId } from 'vue'
 import { cn } from '../../utils/cn'
 import { provideFieldContext } from './context'
 import {
@@ -8,48 +8,18 @@ import {
   fieldHintVariants,
   fieldLabelVariants,
   fieldVariants,
-  type FieldVariants,
 } from './Field.variants'
+
+import type { FieldProps } from './types'
 
 defineOptions({ name: 'RkField' })
 
-const props = withDefaults(
-  defineProps<{
-    /** Visible label. Always render one — a placeholder is not a label. */
-    label?: string
-    /** Help text shown below the control while it is valid. */
-    hint?: string
-    /**
-     * Validation message. Its presence is what puts the field into the error
-     * state; there is no separate `invalid` flag to keep in sync.
-     */
-    error?: string
-    /** Marks the control required and shows the required indicator. */
-    required?: boolean
-    /** Disables the control inside. */
-    disabled?: boolean
-    /** Sizes the label, hint and error together with the control. */
-    size?: NonNullable<FieldVariants['size']>
-    /**
-     * Id for the control. Generated when omitted — supply one only when
-     * something outside the field needs to reference it.
-     */
-    id?: string
-    /**
-     * Hides the label visually while leaving it available to screen readers.
-     * For a search box in a toolbar whose purpose is obvious from context.
-     */
-    labelSrOnly?: boolean
-    /** Additional classes, merged so a consumer's utility wins. */
-    class?: HTMLAttributes['class']
-  }>(),
-  {
-    required: false,
-    disabled: false,
-    size: 'md',
-    labelSrOnly: false,
-  }
-)
+const props = withDefaults(defineProps<FieldProps>(), {
+  required: false,
+  disabled: false,
+  size: 'md',
+  labelSrOnly: false,
+})
 
 defineSlots<{
   /** The control. Receives the generated id through the field context. */

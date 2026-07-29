@@ -1,0 +1,36 @@
+[
+  {
+    "name": "rowkit — full library (brotli)",
+    "path": "packages/ui/dist/index.js",
+    "import": "*",
+    "limit": "14 kB",
+    "ignore": [
+      "vue",
+      "reka-ui",
+      "@rowkit/tokens",
+      "clsx",
+      "tailwind-merge",
+      "class-variance-authority"
+    ]
+  },
+  {
+    "name": "rowkit — Button only, proves tree-shaking (brotli)",
+    "path": "packages/ui/dist/index.js",
+    "import": "{ Button }",
+    "limit": "3.5 kB",
+    "ignore": [
+      "vue",
+      "reka-ui",
+      "@rowkit/tokens",
+      "clsx",
+      "tailwind-merge",
+      "class-variance-authority"
+    ]
+  },
+  {
+    "name": "@rowkit/tokens (brotli)",
+    "path": "packages/tokens/dist/index.js",
+    "import": "*",
+    "limit": "3 kB"
+  }
+]
