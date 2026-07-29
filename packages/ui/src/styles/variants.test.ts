@@ -26,6 +26,12 @@ import {
   selectTriggerVariants,
 } from '../components/Select/Select.variants'
 import { skeletonVariants } from '../components/Skeleton/Skeleton.variants'
+import {
+  tablePaginationEllipsisVariants,
+  tablePaginationItemVariants,
+  tablePaginationSummaryVariants,
+  tablePaginationVariants,
+} from '../components/TablePagination/TablePagination.variants'
 
 /**
  * Every class a component can emit has to produce CSS.
@@ -99,6 +105,10 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['EmptyState title', emptyStateTitleVariants],
   ['EmptyState description', emptyStateDescriptionVariants],
   ['EmptyState actions', emptyStateActionsVariants],
+  ['TablePagination', tablePaginationVariants],
+  ['TablePagination item', tablePaginationItemVariants],
+  ['TablePagination ellipsis', tablePaginationEllipsisVariants],
+  ['TablePagination summary', tablePaginationSummaryVariants],
 ]
 
 let css = ''

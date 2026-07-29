@@ -5,6 +5,7 @@ export * from './components/Field'
 export * from './components/Input'
 export * from './components/Select'
 export * from './components/Skeleton'
+export * from './components/TablePagination'
 
 export { cn } from './utils/cn'
 
