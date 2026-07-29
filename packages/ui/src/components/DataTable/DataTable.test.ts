@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils'
 import type { Component } from 'vue'
 import { describe, expect, it } from 'vitest'
 import RawDataTable from './DataTable.vue'
-import { columnId, isFieldColumn, type DataTableColumn } from './types'
+import { columnId, compareSortable, isFieldColumn, nextSort, type DataTableColumn } from './types'
 
 interface User {
   id: number
@@ -268,6 +268,191 @@ describe('DataTable', () => {
     it('distinguishes field columns from custom ones', () => {
       expect(isFieldColumn<User>({ key: 'name', header: 'Name' })).toBe(true)
       expect(isFieldColumn<User>({ id: 'actions', header: 'Actions' })).toBe(false)
+    })
+  })
+
+  describe('sorting', () => {
+    const sortable: DataTableColumn<User>[] = [
+      { key: 'name', header: 'Name', sortable: true },
+      { key: 'role', header: 'Role' },
+      { key: 'seats', header: 'Seats', sortable: true, align: 'end' },
+    ]
+
+    const names = (el: ReturnType<typeof setup>) =>
+      el.findAll('tbody tr').map((r) => r.findAll('td')[0]?.text())
+
+    it('makes only sortable headers into buttons', () => {
+      // A `<th>` with a click handler is unreachable by keyboard.
+      const el = setup({ columns: sortable })
+      expect(el.findAll('th button')).toHaveLength(2)
+    })
+
+    it('marks a sortable column as unsorted rather than omitting aria-sort', () => {
+      // `none` is what says "sortable, but not currently sorted".
+      const headers = setup({ columns: sortable }).findAll('th')
+      expect(headers[0]?.attributes('aria-sort')).toBe('none')
+      expect(headers[1]?.attributes('aria-sort')).toBeUndefined()
+    })
+
+    it('reflects the active sort on the right column only', () => {
+      const headers = setup({
+        columns: sortable,
+        sort: { id: 'seats', direction: 'desc' },
+      }).findAll('th')
+      expect(headers[0]?.attributes('aria-sort')).toBe('none')
+      expect(headers[2]?.attributes('aria-sort')).toBe('descending')
+    })
+
+    it('labels the button with the column name alone', () => {
+      // aria-sort already announces the state; repeating it says it twice.
+      const el = setup({ columns: sortable, sort: { id: 'name', direction: 'asc' } })
+      expect(el.find('th button').text()).toBe('Name')
+    })
+
+    describe('the cycle', () => {
+      it('starts ascending', async () => {
+        const el = setup({ columns: sortable })
+        await el.find('th button').trigger('click')
+        expect(el.emitted('update:sort')?.at(-1)).toEqual([{ id: 'name', direction: 'asc' }])
+      })
+
+      it('goes ascending to descending', async () => {
+        const el = setup({ columns: sortable, sort: { id: 'name', direction: 'asc' } })
+        await el.find('th button').trigger('click')
+        expect(el.emitted('update:sort')?.at(-1)).toEqual([{ id: 'name', direction: 'desc' }])
+      })
+
+      it('returns to unsorted from descending', async () => {
+        // Without a third step there is no way back to the server's own order.
+        const el = setup({ columns: sortable, sort: { id: 'name', direction: 'desc' } })
+        await el.find('th button').trigger('click')
+        expect(el.emitted('update:sort')?.at(-1)).toEqual([undefined])
+      })
+
+      it('restarts ascending when a different column is chosen', async () => {
+        const el = setup({ columns: sortable, sort: { id: 'name', direction: 'desc' } })
+        await el.findAll('th button')[1]?.trigger('click')
+        expect(el.emitted('update:sort')?.at(-1)).toEqual([{ id: 'seats', direction: 'asc' }])
+      })
+
+      it('ignores a click on a column that does not sort', () => {
+        const el = setup({ columns: sortable })
+        expect(el.findAll('th')[1]?.find('button').exists()).toBe(false)
+      })
+    })
+
+    describe('manual mode', () => {
+      it('leaves the rows in the order given', () => {
+        const el = setup({ columns: sortable, sort: { id: 'name', direction: 'desc' } })
+        expect(names(el)).toEqual(['Ada Lovelace', 'Grace Hopper', 'Alan Turing'])
+      })
+    })
+
+    describe('client mode', () => {
+      it('sorts ascending', () => {
+        const el = setup({
+          columns: sortable,
+          sortMode: 'client',
+          sort: { id: 'name', direction: 'asc' },
+        })
+        expect(names(el)).toEqual(['Ada Lovelace', 'Alan Turing', 'Grace Hopper'])
+      })
+
+      it('sorts descending', () => {
+        const el = setup({
+          columns: sortable,
+          sortMode: 'client',
+          sort: { id: 'name', direction: 'desc' },
+        })
+        expect(names(el)).toEqual(['Grace Hopper', 'Alan Turing', 'Ada Lovelace'])
+      })
+
+      it('compares numbers numerically, not as text', () => {
+        // The bug this catches: 12 sorting before 3 because "1" < "3".
+        const el = setup({
+          columns: sortable,
+          sortMode: 'client',
+          sort: { id: 'seats', direction: 'asc' },
+        })
+        expect(names(el)).toEqual(['Alan Turing', 'Ada Lovelace', 'Grace Hopper'])
+      })
+
+      it('does not mutate the rows it was given', () => {
+        const original = [...rows]
+        setup({ columns: sortable, sortMode: 'client', sort: { id: 'name', direction: 'desc' } })
+        expect(rows).toEqual(original)
+      })
+
+      it('uses sortValue when the displayed text sorts badly', () => {
+        const el = setup({
+          rows: [
+            { id: 1, name: 'low', rank: 'C' },
+            { id: 2, name: 'high', rank: 'A' },
+          ],
+          columns: [
+            { key: 'name', header: 'Name' },
+            {
+              key: 'rank',
+              header: 'Rank',
+              sortable: true,
+              sortValue: (row: { rank: string }) => ({ A: 1, C: 3 })[row.rank],
+            },
+          ],
+          sortMode: 'client',
+          sort: { id: 'rank', direction: 'desc' },
+        })
+        expect(names(el)).toEqual(['low', 'high'])
+      })
+
+      it('leaves the order alone when unsorted', () => {
+        const el = setup({ columns: sortable, sortMode: 'client' })
+        expect(names(el)).toEqual(['Ada Lovelace', 'Grace Hopper', 'Alan Turing'])
+      })
+    })
+  })
+
+  describe('the comparator', () => {
+    it('sinks blanks in both directions', () => {
+      // Nobody sorts a column to find the rows with nothing in it.
+      expect(compareSortable(null, 'a', 'asc')).toBeGreaterThan(0)
+      expect(compareSortable(null, 'a', 'desc')).toBeGreaterThan(0)
+      expect(compareSortable(undefined, 1, 'desc')).toBeGreaterThan(0)
+    })
+
+    it('treats two blanks as equal', () => {
+      expect(compareSortable(null, undefined, 'asc')).toBe(0)
+    })
+
+    it('compares strings by locale, not code point', () => {
+      expect(compareSortable('Ärger', 'Beta', 'asc')).toBeLessThan(0)
+    })
+
+    it('compares dates chronologically', () => {
+      const early = new Date('2020-01-01')
+      const late = new Date('2024-01-01')
+      expect(compareSortable(early, late, 'asc')).toBeLessThan(0)
+      expect(compareSortable(early, late, 'desc')).toBeGreaterThan(0)
+    })
+
+    it('orders false before true', () => {
+      expect(compareSortable(false, true, 'asc')).toBeLessThan(0)
+    })
+  })
+
+  describe('the sort cycle helper', () => {
+    it('walks asc, desc, off', () => {
+      const first = nextSort(undefined, 'name')
+      expect(first).toEqual({ id: 'name', direction: 'asc' })
+      const second = nextSort(first, 'name')
+      expect(second).toEqual({ id: 'name', direction: 'desc' })
+      expect(nextSort(second, 'name')).toBeUndefined()
+    })
+
+    it('resets to ascending on a new column', () => {
+      expect(nextSort({ id: 'name', direction: 'desc' }, 'seats')).toEqual({
+        id: 'seats',
+        direction: 'asc',
+      })
     })
   })
 

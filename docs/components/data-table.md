@@ -1,7 +1,7 @@
 # DataTable
 
-**Stage:** 🟡 Experimental — sorting and row selection are not built yet, and the
-API for them may change what is here.
+**Stage:** 🟡 Experimental — row selection is not built yet, and adding it may
+change what is here.
 
 A typed table. Column definitions are constrained to the row type, cells render
 through per-column slots, and the loading and empty states are built in.
@@ -43,6 +43,8 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 | `id`           | `string`                       | Slot name. Required when there is no `key`            |
 | `header`       | `string`                       | Heading text                                          |
 | `headerSrOnly` | `boolean`                      | Hide the heading visually, keep it for screen readers |
+| `sortable`     | `boolean`                      | Makes the header a sort control                       |
+| `sortValue`    | `(row: TRow) => Sortable`      | What to compare, when the displayed text sorts badly  |
 | `align`        | `'start' \| 'center' \| 'end'` | Use `end` for numbers                                 |
 | `width`        | `string`                       | A CSS width                                           |
 | `sticky`       | `boolean`                      | Pin the column to the start edge while scrolling      |
@@ -63,9 +65,16 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 | `loadingLabel`     | `string`                                      | `'Loading'`         | Announced while loading               |
 | `emptyTitle`       | `string`                                      | `'Nothing to show'` | Title for the built-in empty state    |
 | `emptyDescription` | `string`                                      | —                   | Description for the empty state       |
+| `sortMode`         | `'manual' \| 'client'`                        | `'manual'`          | Who reorders the rows                 |
 | `size`             | `'sm' \| 'md'`                                | `'md'`              | Row height and text size              |
 | `hoverable`        | `boolean`                                     | `false`             | Highlight rows on hover               |
 | `class`            | `string`                                      | —                   | Merged onto the scroll container      |
+
+### v-model
+
+| Model          | Type                         | Description                      |
+| -------------- | ---------------------------- | -------------------------------- |
+| `v-model:sort` | `DataTableSort \| undefined` | `{ id, direction }`, or unsorted |
 
 ### Slots
 
@@ -94,6 +103,53 @@ only for the two that need it.
 - **For very large sets, yet.** See the note below — there is no virtualization.
 - **Where a card grid reads better.** Tables are for comparing values down a
   column. If nobody compares, a table is just a grid with lines.
+
+## Sorting
+
+Mark a column `sortable` and bind `v-model:sort`.
+
+```vue
+<DataTable :rows="users" :columns="columns" row-key="id" caption="Users" v-model:sort="sort" />
+```
+
+**`sortMode` defaults to `manual`**, meaning the table reports the sort and
+leaves `rows` untouched. That is the right default for this library: if the
+server orders and pages the data, sorting locally would reorder only the page
+you can see, producing a table that looks sorted and is not. Set
+`sortMode="client"` when the table holds every row it will ever show.
+
+**The cycle is ascending, descending, then unsorted.** The third step is the one
+usually missing, and it matters — without it there is no way back to the order
+the data arrived in, which for a server-ordered table is often the meaningful
+one. A new column always restarts at ascending.
+
+**Blanks sink in both directions.** Letting `null` float to the top on a
+descending sort is the common behaviour and the wrong one: nobody sorts a column
+to find the rows with nothing in it, and it buries the data they asked for.
+
+**Numbers compare numerically and strings by locale.** So 12 sorts after 3
+rather than before it, and "Ärger" files next to "Arger" rather than after "Z".
+Dates compare chronologically.
+
+Use `sortValue` when the displayed text sorts badly — a status with a meaningful
+order, a formatted date, a name assembled from two fields:
+
+```ts
+{
+  key: 'status',
+  header: 'Status',
+  sortable: true,
+  sortValue: (row) => ({ active: 0, invited: 1, suspended: 2 })[row.status],
+}
+```
+
+Only one column sorts at a time. Multi-column sorting would mean `sort` becoming
+an array and the header showing its position in the order; the state shape is
+the breaking part, so it is deliberately not modelled as a single value that
+would have to change later — a future `sort` array is the intended path.
+
+**Sorting does not reset the page.** If you page as well, reset `page` to 1 when
+`sort` changes; the table has no knowledge of pagination.
 
 ## Behaviour worth knowing
 
@@ -124,10 +180,11 @@ signal that the table continues past the pinned edge.
 
 ## Keyboard
 
-| Key                                                 | Action                                                                |
-| --------------------------------------------------- | --------------------------------------------------------------------- |
-| <kbd>Tab</kbd>                                      | Reaches the container when it scrolls, then any controls inside cells |
-| <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> | Scroll the container while it has focus                               |
+| Key                                                 | Action                                                                                 |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| <kbd>Tab</kbd>                                      | Reaches the container when it scrolls, sortable headers, and any controls inside cells |
+| <kbd>Enter</kbd> / <kbd>Space</kbd>                 | Advances the sort on a focused header                                                  |
+| <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> | Scroll the container while it has focus                                                |
 
 There is no grid navigation. This is a `table`, not a `grid` — cells are content
 rather than composite widget children, and screen readers already provide table
@@ -151,6 +208,15 @@ loading table does not announce thirty times.
 
 **The empty state's heading is an `h3`**, sitting under the page's own heading
 rather than restarting the outline.
+
+**A sortable header is a real `<button>`.** A `<th>` with a click handler cannot
+be reached by keyboard at all, and `aria-sort` describes the state without
+offering any way to change it.
+
+**The button's label is only the column name.** `aria-sort` on the `<th>` already
+conveys "sorted ascending", so adding it to the label has it announced twice.
+Every sortable column carries `aria-sort="none"` until it is the sorted one —
+omitting the attribute would leave no signal that the column sorts at all.
 
 ## Performance
 

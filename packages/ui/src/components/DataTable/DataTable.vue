@@ -9,11 +9,22 @@ import {
   dataTableHeaderCellVariants,
   dataTablePinnedShadow,
   dataTableRowVariants,
+  dataTableSortButtonVariants,
+  dataTableSortIconVariants,
   dataTableVariants,
   dataTableWrapperVariants,
   type DataTableVariants,
 } from './DataTable.variants'
-import { columnId, isFieldColumn, type DataTableColumn, type DataTableRowKey } from './types'
+import {
+  columnId,
+  compareSortable,
+  isFieldColumn,
+  nextSort,
+  type DataTableColumn,
+  type DataTableRowKey,
+  type DataTableSort,
+  type DataTableSortable,
+} from './types'
 
 defineOptions({ name: 'RkDataTable' })
 
@@ -50,6 +61,19 @@ const props = withDefaults(
     emptyTitle?: string
     /** Description for the built-in empty state. */
     emptyDescription?: string
+    /**
+     * Who does the sorting.
+     *
+     * `manual` reports the sort and leaves the rows alone — correct whenever
+     * the server orders and pages the data, which is the case this library is
+     * built for. `client` reorders `rows` in place.
+     *
+     * Defaults to `manual` because the wrong choice fails quietly: `client`
+     * combined with server-side pagination sorts only the page you can see, and
+     * a table that looks sorted but is not is worse than one that plainly is
+     * not.
+     */
+    sortMode?: 'manual' | 'client'
     /** Row height and text size. */
     size?: NonNullable<DataTableVariants['size']>
     /** Highlights rows on hover. Only turn this on when a row does something. */
@@ -63,10 +87,14 @@ const props = withDefaults(
     loadingRows: 5,
     loadingLabel: 'Loading',
     emptyTitle: 'Nothing to show',
+    sortMode: 'manual',
     size: 'md',
     hoverable: false,
   }
 )
+
+/** The sorted column and direction. `undefined` is unsorted. */
+const sort = defineModel<DataTableSort | undefined>('sort', { default: undefined })
 
 type CellSlotProps = { row: TRow; column: DataTableColumn<TRow>; value: unknown; index: number }
 
@@ -124,7 +152,51 @@ onBeforeUnmount(() => resizeObserver?.disconnect())
 // Row and column changes alter the table's size without resizing the box.
 watch(() => [props.rows.length, props.columns.length, props.loading], measure, { flush: 'post' })
 
+function sortValueOf(row: TRow, column: DataTableColumn<TRow>): DataTableSortable {
+  if (column.sortValue !== undefined) return column.sortValue(row)
+  if (!isFieldColumn(column)) return undefined
+  return readField(row, column.key) as DataTableSortable
+}
+
+/**
+ * The rows as rendered. A copy is sorted, never `props.rows` itself — mutating
+ * a prop would reorder the caller's array behind its back.
+ *
+ * `Array.prototype.sort` is stable, so rows that tie keep the order they
+ * arrived in rather than shuffling on every re-sort.
+ */
+const displayRows = computed(() => {
+  const active = sort.value
+  if (props.sortMode !== 'client' || active === undefined) return props.rows
+
+  const column = props.columns.find((candidate) => columnId(candidate) === active.id)
+  if (column === undefined) return props.rows
+
+  return [...props.rows].sort((a, b) =>
+    compareSortable(sortValueOf(a, column), sortValueOf(b, column), active.direction)
+  )
+})
+
 const isEmpty = computed(() => !props.loading && props.rows.length === 0)
+
+function sortStateOf(
+  column: DataTableColumn<TRow>
+): 'ascending' | 'descending' | 'none' | undefined {
+  if (column.sortable !== true) return undefined
+  // `none` rather than omitted: it is what tells a screen reader the column is
+  // sortable but not currently sorted.
+  if (sort.value?.id !== columnId(column)) return 'none'
+  return sort.value.direction === 'asc' ? 'ascending' : 'descending'
+}
+
+function isSortedBy(column: DataTableColumn<TRow>): boolean {
+  return sort.value?.id === columnId(column)
+}
+
+function toggleSort(column: DataTableColumn<TRow>): void {
+  if (column.sortable !== true) return
+  sort.value = nextSort(sort.value, columnId(column))
+}
 
 /**
  * Field names are widened to `string` before indexing. `keyof TRow` is still
@@ -209,6 +281,7 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
             v-for="column in props.columns"
             :key="columnId(column)"
             scope="col"
+            :aria-sort="sortStateOf(column)"
             :style="column.width === undefined ? undefined : { width: column.width }"
             :class="
               cn(
@@ -223,9 +296,43 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
               )
             "
           >
-            <!-- Never an empty `<th>`: a column with no name is a column a
-                 screen reader cannot announce. -->
-            <span :class="column.headerSrOnly === true && 'sr-only'">{{ column.header }}</span>
+            <!--
+              Never an empty `<th>`: a column with no name is a column a screen
+              reader cannot announce.
+
+              The label is only ever the column name. `aria-sort` on the `<th>`
+              already conveys the state, so repeating "sorted ascending" in the
+              button would have it announced twice.
+            -->
+            <button
+              v-if="column.sortable === true"
+              type="button"
+              :class="dataTableSortButtonVariants({ align: column.align ?? 'start' })"
+              @click="toggleSort(column)"
+            >
+              <span :class="column.headerSrOnly === true && 'sr-only'">{{ column.header }}</span>
+              <svg
+                :class="dataTableSortIconVariants({ active: isSortedBy(column) })"
+                viewBox="0 0 20 20"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  :d="
+                    sort?.id === columnId(column) && sort.direction === 'desc'
+                      ? 'm6 8 4 4 4-4'
+                      : 'm6 12 4-4 4 4'
+                  "
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <span v-else :class="column.headerSrOnly === true && 'sr-only'">
+              {{ column.header }}
+            </span>
           </th>
         </tr>
       </thead>
@@ -262,7 +369,7 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
         </tr>
 
         <tr
-          v-for="(row, index) in props.rows"
+          v-for="(row, index) in displayRows"
           v-else
           :key="keyFor(row, index)"
           :class="dataTableRowVariants({ interactive: props.hoverable })"

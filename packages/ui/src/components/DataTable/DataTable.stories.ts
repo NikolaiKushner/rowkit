@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import type { ConcreteComponent } from 'vue'
-import { expect, within } from 'storybook/test'
+import { ref, type ConcreteComponent } from 'vue'
+import { expect, userEvent, within } from 'storybook/test'
 import Badge from '../Badge/Badge.vue'
 import Button from '../Button/Button.vue'
 import RawDataTable from './DataTable.vue'
@@ -267,6 +267,166 @@ export const StickyHeader: Story = {
       </div>
     `,
   }),
+}
+
+const sortableColumns: DataTableColumn<User>[] = [
+  { key: 'name', header: 'Name', sortable: true },
+  { key: 'email', header: 'Email' },
+  { key: 'role', header: 'Role', sortable: true },
+  { key: 'seats', header: 'Seats', sortable: true, align: 'end' },
+]
+
+/** Sorting handled locally. Fine for a table that holds all its rows. */
+function clientSorted() {
+  return {
+    components: { DataTable },
+    setup: () => ({ users, columns: sortableColumns, sort: ref(undefined) }),
+    template: `
+      <div class="w-full max-w-3xl">
+        <DataTable
+          :rows="users"
+          :columns="columns"
+          row-key="id"
+          caption="Team members"
+          sort-mode="client"
+          v-model:sort="sort"
+        />
+      </div>
+    `,
+  }
+}
+
+/**
+ * Click a header to sort. The cycle is ascending, descending, then back to the
+ * order the rows arrived in.
+ */
+export const Sortable: Story = {
+  render: clientSorted,
+}
+
+/**
+ * `manual` is the default: the table reports the sort and touches nothing.
+ * This is the mode to use whenever the server orders and pages the data —
+ * sorting locally would only reorder the page you can see.
+ */
+export const ManualSorting: Story = {
+  render: () => ({
+    components: { DataTable },
+    setup: () => ({ users, columns: sortableColumns, sort: ref(undefined) }),
+    template: `
+      <div class="flex w-full max-w-3xl flex-col gap-3">
+        <p class="text-sm text-text-muted">
+          Emitted sort: <code>{{ sort ? sort.id + ' ' + sort.direction : 'none' }}</code>
+          — the rows below never move.
+        </p>
+        <DataTable
+          :rows="users"
+          :columns="columns"
+          row-key="id"
+          caption="Team members"
+          v-model:sort="sort"
+        />
+      </div>
+    `,
+  }),
+}
+
+/**
+ * `sortValue` when the displayed text sorts badly. Status here has a meaningful
+ * order — active, invited, suspended — that alphabetical sorting destroys.
+ */
+export const CustomSortValue: Story = {
+  render: () => ({
+    components: { DataTable },
+    setup: () => ({
+      users,
+      columns: [
+        { key: 'name', header: 'Name', sortable: true },
+        {
+          key: 'status',
+          header: 'Status',
+          sortable: true,
+          sortValue: (row: User) => ({ active: 0, invited: 1, suspended: 2 })[row.status],
+        },
+      ],
+      sort: ref({ id: 'status', direction: 'asc' }),
+    }),
+    template: `
+      <div class="w-full max-w-2xl">
+        <DataTable
+          :rows="users"
+          :columns="columns"
+          row-key="id"
+          caption="Team members"
+          sort-mode="client"
+          v-model:sort="sort"
+        />
+      </div>
+    `,
+  }),
+}
+
+/** The full cycle, and the aria-sort state at each step. */
+export const SortingCycle: Story = {
+  render: clientSorted,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const header = () => canvas.getByRole('columnheader', { name: 'Name' })
+    const firstCell = () => canvas.getAllByRole('row')[1]?.querySelector('td')
+
+    await expect(header()).toHaveAttribute('aria-sort', 'none')
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Name' }))
+    await expect(header()).toHaveAttribute('aria-sort', 'ascending')
+    await expect(firstCell()).toHaveTextContent('Ada Lovelace')
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Name' }))
+    await expect(header()).toHaveAttribute('aria-sort', 'descending')
+    await expect(firstCell()).toHaveTextContent('Katherine Johnson')
+
+    // Third click returns to the original order, not back to ascending.
+    await userEvent.click(canvas.getByRole('button', { name: 'Name' }))
+    await expect(header()).toHaveAttribute('aria-sort', 'none')
+    await expect(firstCell()).toHaveTextContent('Ada Lovelace')
+  },
+}
+
+/** Numbers compare numerically — 12 after 3, not before it. */
+export const NumericSorting: Story = {
+  render: clientSorted,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Seats' }))
+
+    const seats = canvas
+      .getAllByRole('row')
+      .slice(1)
+      .map((row) => row.querySelectorAll('td')[3]?.textContent?.trim())
+    await expect(seats).toEqual(['0', '1', '3', '12'])
+  },
+}
+
+/** Only one column is ever sorted, and the header is operable by keyboard. */
+export const SortingIsKeyboardOperable: Story = {
+  render: clientSorted,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    const button = canvas.getByRole('button', { name: 'Role' })
+    button.focus()
+    await userEvent.keyboard('{Enter}')
+
+    await expect(canvas.getByRole('columnheader', { name: 'Role' })).toHaveAttribute(
+      'aria-sort',
+      'ascending'
+    )
+    // Exactly one sorted column, whatever else is sortable.
+    const sorted = canvas
+      .getAllByRole('columnheader')
+      .filter((h) => ['ascending', 'descending'].includes(h.getAttribute('aria-sort') ?? ''))
+    await expect(sorted).toHaveLength(1)
+  },
 }
 
 /** The accessible contract: a named table with scoped column headers. */

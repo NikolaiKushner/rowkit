@@ -64,6 +64,47 @@ export const dataTableHeaderCellVariants = cva(
   }
 )
 
+/**
+ * The header becomes a real button when the column sorts. A `<th>` with a click
+ * handler is not reachable by keyboard, and `aria-sort` describes the state
+ * without providing any way to change it.
+ */
+export const dataTableSortButtonVariants = cva(
+  [
+    'group inline-flex w-full cursor-pointer items-center gap-1',
+    'rounded-xs font-medium text-inherit',
+    'transition-colors duration-fast ease-standard hover:text-text',
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+  ],
+  {
+    variants: {
+      align: {
+        start: 'justify-start',
+        center: 'justify-center',
+        end: 'justify-end',
+      },
+    },
+    defaultVariants: { align: 'start' },
+  }
+)
+
+/**
+ * Present but transparent when the column is unsorted, so revealing it on hover
+ * does not shift the header text sideways.
+ */
+export const dataTableSortIconVariants = cva(
+  'size-3.5 shrink-0 transition-opacity duration-fast ease-standard',
+  {
+    variants: {
+      active: {
+        true: 'opacity-100',
+        false: 'opacity-0 group-hover:opacity-60 group-focus-visible:opacity-60',
+      },
+    },
+    defaultVariants: { active: false },
+  }
+)
+
 export const dataTableCellVariants = cva('border-t border-border-subtle text-text', {
   variants: {
     size: {

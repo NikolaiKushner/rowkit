@@ -11,6 +11,8 @@ import {
   dataTableCellVariants,
   dataTableHeaderCellVariants,
   dataTableRowVariants,
+  dataTableSortButtonVariants,
+  dataTableSortIconVariants,
   dataTableVariants,
   dataTableWrapperVariants,
 } from '../components/DataTable/DataTable.variants'
@@ -137,6 +139,8 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['DataTable header cell', dataTableHeaderCellVariants],
   ['DataTable cell', dataTableCellVariants],
   ['DataTable row', dataTableRowVariants],
+  ['DataTable sort button', dataTableSortButtonVariants],
+  ['DataTable sort icon', dataTableSortIconVariants],
 ]
 
 let css = ''
