@@ -18,6 +18,7 @@ import {
   selectItemVariants,
   selectTriggerVariants,
 } from '../components/Select/Select.variants'
+import { skeletonVariants } from '../components/Skeleton/Skeleton.variants'
 
 /**
  * Every class a component can emit has to produce CSS.
@@ -85,6 +86,7 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Select trigger', selectTriggerVariants],
   ['Select content', selectContentVariants],
   ['Select item', selectItemVariants],
+  ['Skeleton', skeletonVariants],
 ]
 
 let css = ''

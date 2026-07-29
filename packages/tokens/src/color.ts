@@ -157,6 +157,18 @@ export const semanticColorLight = {
   'surface-selected': ref('primary-50'),
   /** Disabled control background. */
   'surface-disabled': ref('neutral-100'),
+  /**
+   * Loading placeholder fill.
+   *
+   * Its own token rather than a reuse of `surface-active`, which means "this
+   * row is being pressed". A skeleton is never interactive, so borrowing an
+   * interaction token would tie the two together for any future re-theme.
+   *
+   * Exempt from contrast rules: skeletons are `aria-hidden` decoration
+   * standing in for content that has not arrived, so there is nothing for a
+   * reader to perceive and WCAG 1.4.11 does not apply.
+   */
+  skeleton: ref('neutral-200'),
 
   /** Primary body and heading text. */
   text: ref('neutral-900'),
@@ -258,6 +270,9 @@ export const semanticColorDark = {
   'surface-active': ref('neutral-700'),
   'surface-selected': ref('primary-950'),
   'surface-disabled': ref('neutral-800'),
+  // Lifts off `surface` (neutral-900) rather than receding. On a dark page a
+  // placeholder darker than its card reads as a hole in the layout.
+  skeleton: ref('neutral-800'),
 
   text: ref('neutral-50'),
   'text-muted': ref('neutral-400'),
