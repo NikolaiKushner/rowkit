@@ -1,0 +1,11 @@
+/*
+ * The workshop consumes rowkit exactly the way an app does: Tailwind first,
+ * then rowkit's theme layer.
+ *
+ * @source is needed because the stories and components are read from source
+ * here rather than from the built bundle that dist/styles.css points at.
+ */
+@import 'tailwindcss';
+@import '@rowkit/tokens/css';
+
+@source '../packages/ui/src';

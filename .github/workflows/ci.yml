@@ -35,6 +35,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # First, not last. Every package consumes its workspace dependencies
+      # through their published dist rather than a path alias — deliberately, so
+      # they exercise the shape a consumer gets — which means nothing
+      # downstream resolves until those dists exist. That includes lint: the
+      # type-aware rules read an unbuilt import as `error` and report every use
+      # of it as unsafe, which is a confusing way to be told the build is
+      # missing.
+      - name: Build
+        run: pnpm build
+
       - name: Lint
         run: pnpm lint
 
@@ -44,10 +54,12 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      # Story tests run in a real browser, so the binary has to be present.
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Test
         run: pnpm test
 
-      # Runs last: it is the slowest gate and the one most likely to be
-      # fixed by whatever the earlier gates already caught.
-      - name: Build
-        run: pnpm build
+      - name: Build Storybook
+        run: pnpm build-storybook

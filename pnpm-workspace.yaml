@@ -1,2 +1,11 @@
 packages:
   - 'packages/*'
+  - 'playground'
+
+allowBuilds:
+  # Storybook's bundler ships prebuilt binaries it links on install.
+  esbuild: true
+  # vue-demi's postinstall picks the shim matching the installed Vue major.
+  # reka-ui pulls it in transitively; without the script it can resolve to the
+  # Vue 2 build.
+  vue-demi: true

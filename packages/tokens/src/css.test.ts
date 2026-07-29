@@ -43,9 +43,12 @@ describe('every token reaches the stylesheet', () => {
     ['line heights', lineHeight, '--leading-'],
     ['radii', radius, '--radius-'],
     ['shadows', shadow, '--shadow-'],
-    ['durations', duration, '--duration-'],
+    // These prefixes are Tailwind v4 theme namespaces, not free-form names —
+    // see the note in css.ts. packages/ui/src/styles/theme.test.ts compiles
+    // them for real and is what catches a wrong one.
+    ['durations', duration, '--transition-duration-'],
     ['easings', easing, '--ease-'],
-    ['stacking layers', zIndex, '--z-'],
+    ['stacking layers', zIndex, '--z-index-'],
   ]
 
   it.each(cases)('%s', (_label, scale, prefix) => {

@@ -32,10 +32,10 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 
 ### Foundations
 
-- [ ] 🔴 **Button** — variants, sizes, loading state, icon slots
-- [ ] 🔴 **Input / Field** — label, hint, error, required, disabled
-- [ ] 🔴 **Select** — searchable, keyboard nav, async options
-- [ ] 🔴 **Badge** — status semantics (success / warning / danger / neutral)
+- [x] 🟢 **Button** — variants, sizes, loading state, icon slots
+- [x] 🟢 **Input / Field** — label, hint, error, required, disabled
+- [x] 🟢 **Select** — searchable, keyboard nav, async options
+- [x] 🟢 **Badge** — status semantics (success / warning / danger / neutral)
 
 ### Data layer
 
@@ -55,13 +55,13 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 
 ## Build phases
 
-- [ ] **Phase 0 — Foundation.** Monorepo, Vite library mode, TypeScript strict, ESLint, Vitest, CI.
+- [x] **Phase 0 — Foundation.** Monorepo, Vite library mode, TypeScript strict, ESLint, Vitest, CI.
       *Done when:* a throwaway component builds, emits correct `.d.ts`, and imports with working types in the playground.
 
-- [ ] **Phase 1 — Token system.** Color scales, semantic mappings, spacing, typography, radii, shadows, z-index, motion. Dark mode. Standalone `@rowkit/tokens` package.
+- [x] **Phase 1 — Token system.** Color scales, semantic mappings, spacing, typography, radii, shadows, z-index, motion. Dark mode. Standalone `@rowkit/tokens` package.
       *Done when:* dark mode toggles with zero hardcoded colors anywhere, and `import { tokens } from '@rowkit/tokens'` is fully typed.
 
-- [ ] **Phase 2 — Core components.** The four foundations, one at a time, each fully complete before the next.
+- [x] **Phase 2 — Core components.** The four foundations, one at a time, each fully complete before the next.
       *Done when:* all four at Stable, playground renders a working form using only rowkit components.
 
 - [ ] **Phase 3 — Data layer.** The five data components. DataTable is the centerpiece.

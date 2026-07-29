@@ -28,6 +28,7 @@ const pairings: readonly Pairing[] = [
   ['muted text on the page', 'text-muted', 'background', AA_TEXT],
   ['muted text on a surface', 'text-muted', 'surface', AA_TEXT],
 
+  ['label on a neutral button', 'neutral-on-solid', 'neutral-solid', AA_TEXT],
   ['label on a primary button', 'primary-on-solid', 'primary-solid', AA_TEXT],
   ['label on a success button', 'success-on-solid', 'success-solid', AA_TEXT],
   ['label on a warning button', 'warning-on-solid', 'warning-solid', AA_TEXT],
@@ -36,11 +37,13 @@ const pairings: readonly Pairing[] = [
   // Hover keeps the same label colour, so the hovered fill has to clear the
   // bar too. Amber is the one that nearly slipped: darkening on hover would
   // have dropped its dark label to 3.27:1.
+  ['label on a hovered neutral button', 'neutral-on-solid', 'neutral-solid-hover', AA_TEXT],
   ['label on a hovered primary button', 'primary-on-solid', 'primary-solid-hover', AA_TEXT],
   ['label on a hovered success button', 'success-on-solid', 'success-solid-hover', AA_TEXT],
   ['label on a hovered warning button', 'warning-on-solid', 'warning-solid-hover', AA_TEXT],
   ['label on a hovered danger button', 'danger-on-solid', 'danger-solid-hover', AA_TEXT],
 
+  ['text in a neutral badge', 'neutral-on-subtle', 'neutral-subtle', AA_TEXT],
   ['text in a primary badge', 'primary-on-subtle', 'primary-subtle', AA_TEXT],
   ['text in a success badge', 'success-on-subtle', 'success-subtle', AA_TEXT],
   ['text in a warning badge', 'warning-on-subtle', 'warning-subtle', AA_TEXT],
@@ -66,7 +69,7 @@ describe('solid fills are distinguishable from the page behind them', () => {
   // A button whose label is legible but whose body blends into the page is
   // still broken. This is what ruled out mirroring light mode's 600 fill in
   // dark mode, where it only reached 3.6:1 against the background.
-  const families = ['primary', 'success', 'warning', 'danger'] as const
+  const families = ['neutral', 'primary', 'success', 'warning', 'danger'] as const
 
   it.each([
     ['light', semanticColorLight],

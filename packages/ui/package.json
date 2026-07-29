@@ -32,6 +32,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./styles": "./dist/styles.css",
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -42,13 +43,23 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "build": "vue-tsc -b tsconfig.lib.json --force && vite build",
+    "build": "vue-tsc -b tsconfig.lib.json --force && vite build && node scripts/emit-styles.mjs",
     "typecheck": "vue-tsc -b --force"
   },
   "peerDependencies": {
+    "tailwindcss": "^4.0.0",
     "vue": "^3.5.0"
   },
   "dependencies": {
-    "@rowkit/tokens": "workspace:^"
+    "@rowkit/tokens": "workspace:^",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "reka-ui": "^2.10.1",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@vue/test-utils": "^2.4.11",
+    "tailwindcss": "^4.3.3",
+    "vue": "^3.5.40"
   }
 }

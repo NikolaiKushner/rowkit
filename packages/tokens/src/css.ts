@@ -53,11 +53,15 @@ export function buildThemeCss(): string {
     ...entries(shadow, (k) => `--shadow-${k}`),
     '',
     section('motion'),
-    ...entries(duration, (k) => `--duration-${k}`),
+    // Tailwind v4's namespaces are `--transition-duration-*` and `--ease-*`.
+    // A name outside a namespace it recognises is not an error — it simply
+    // generates no utility, which is why `duration-fast` silently produced
+    // nothing until the compile test in packages/ui went looking for it.
+    ...entries(duration, (k) => `--transition-duration-${k}`),
     ...entries(easing, (k) => `--ease-${k}`),
     '',
     section('stacking layers'),
-    ...entries(zIndex, (k) => `--z-${k}`),
+    ...entries(zIndex, (k) => `--z-index-${k}`),
     '}',
     '',
     '/* Dark mode repoints semantic tokens only. Primitives are theme-agnostic. */',

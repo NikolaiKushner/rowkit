@@ -28,9 +28,9 @@ const rootVars = [
   decl(spacing, 'spacing-'),
   decl(radius, 'radius-'),
   decl(shadow, 'shadow-'),
-  decl(motion.duration, 'duration-'),
+  decl(motion.duration, 'transition-duration-'),
   decl(motion.easing, 'ease-'),
-  decl(zIndex, 'z-'),
+  decl(zIndex, 'z-index-'),
   decl(font.family, 'font-'),
   // Font sizes are a paired scale, so they cannot go through decl().
   Object.entries(font.size)
@@ -110,7 +110,7 @@ ${darkVars}
         font-size: var(--text-sm, 0.875rem);
         background: var(--color-background);
         color: var(--color-text);
-        transition: background var(--duration-normal) var(--ease-standard);
+        transition: background var(--transition-duration-normal) var(--ease-standard);
       }
       header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-8); }
       h1 { font-size: 1.5rem; font-weight: var(--font-weight-bold); margin: 0; }
@@ -201,11 +201,11 @@ ${darkVars}
     ${tokenTable('shadow', shadow, 'shadow-', (_k, v) => `<div class="demo-box" style="width: 72px; height: 40px; border-radius: var(--radius-md); box-shadow: ${v}"></div>`)}
 
     <h2>Motion</h2>
-    ${tokenTable('duration', motion.duration, 'duration-')}
+    ${tokenTable('duration', motion.duration, 'transition-duration-')}
     ${tokenTable('easing', motion.easing, 'ease-')}
 
     <h2>Stacking layers</h2>
-    ${tokenTable('z-index', zIndex, 'z-')}
+    ${tokenTable('z-index', zIndex, 'z-index-')}
 
     <script>
       const toggle = document.getElementById('toggle')
