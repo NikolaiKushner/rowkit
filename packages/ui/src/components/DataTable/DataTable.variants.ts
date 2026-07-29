@@ -116,28 +116,93 @@ export const dataTableCellVariants = cva('border-t border-border-subtle text-tex
       center: 'text-center',
       end: 'text-end',
     },
+    // `bg-inherit`, so the row's own background — including selected and hover —
+    // shows through instead of being painted over.
     pinned: {
-      true: 'sticky left-0 bg-surface',
+      true: 'sticky left-0 bg-inherit',
       false: '',
     },
   },
   defaultVariants: { size: 'md', align: 'start', pinned: false },
 })
 
-export const dataTableRowVariants = cva('transition-colors duration-fast ease-standard', {
+/**
+ * The row owns the background, not the cell.
+ *
+ * A pinned cell has to be opaque or the rows underneath show through it while
+ * scrolling, but hardcoding `bg-surface` there would paint over the selected
+ * and hover states. `bg-inherit` on the cell and a real colour on the row keeps
+ * one source of truth.
+ */
+export const dataTableRowVariants = cva(
+  'bg-surface transition-colors duration-fast ease-standard',
+  {
+    variants: {
+      /**
+       * Row hover is off unless the row does something. A highlight that follows
+       * the pointer across static data suggests the row is clickable when it is
+       * not.
+       */
+      interactive: {
+        true: 'hover:bg-surface-hover',
+        false: '',
+      },
+      /** Selected wins over hover — losing the highlight on hover hides the state. */
+      selected: {
+        true: 'bg-surface-selected hover:bg-surface-selected',
+        false: '',
+      },
+    },
+    defaultVariants: { interactive: false, selected: false },
+  }
+)
+
+export const dataTableSelectCellVariants = cva('w-px border-t border-border-subtle', {
   variants: {
-    /**
-     * Row hover is off unless the row does something. A highlight that follows
-     * the pointer across static data suggests the row is clickable when it is
-     * not.
-     */
-    interactive: {
-      true: 'hover:bg-surface-hover',
-      false: '',
+    size: {
+      sm: 'h-8 px-2',
+      md: 'h-10 px-3',
     },
   },
-  defaultVariants: { interactive: false },
+  defaultVariants: { size: 'md' },
 })
+
+export const dataTableCheckboxVariants = cva(
+  [
+    'flex shrink-0 cursor-pointer items-center justify-center rounded-xs border',
+    'border-border-control bg-surface text-primary-on-solid',
+    'transition-colors duration-fast ease-standard',
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+    'data-[state=checked]:border-primary-solid data-[state=checked]:bg-primary-solid',
+    'data-[state=indeterminate]:border-primary-solid data-[state=indeterminate]:bg-primary-solid',
+    'disabled:cursor-not-allowed disabled:border-border disabled:bg-surface-disabled',
+  ],
+  {
+    variants: {
+      size: {
+        sm: 'size-3.5',
+        md: 'size-4',
+      },
+    },
+    defaultVariants: { size: 'md' },
+  }
+)
+
+export const dataTableRadioVariants = cva(
+  [
+    'cursor-pointer accent-primary-solid',
+    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+  ],
+  {
+    variants: {
+      size: {
+        sm: 'size-3.5',
+        md: 'size-4',
+      },
+    },
+    defaultVariants: { size: 'md' },
+  }
+)
 
 /** Applied to pinned cells once the table is scrolled away from the start. */
 export const dataTablePinnedShadow = 'shadow-scroll-x'

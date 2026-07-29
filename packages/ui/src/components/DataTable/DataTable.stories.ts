@@ -429,6 +429,118 @@ export const SortingIsKeyboardOperable: Story = {
   },
 }
 
+/** Checkboxes, a select-all, and a count of what is picked. */
+function selectable(mode: 'single' | 'multiple') {
+  return {
+    components: { DataTable },
+    setup: () => ({ users, columns, mode, selected: ref<(string | number)[]>([]) }),
+    template: `
+      <div class="flex w-full max-w-3xl flex-col gap-3">
+        <p class="text-sm text-text-muted">Selected: {{ selected.length }}</p>
+        <DataTable
+          :rows="users"
+          :columns="columns"
+          row-key="id"
+          caption="Team members"
+          :selectable="mode"
+          :row-label="(row) => 'Select ' + row.name"
+          v-model:selected="selected"
+        />
+      </div>
+    `,
+  }
+}
+
+export const SelectableRows: Story = {
+  render: () => selectable('multiple'),
+}
+
+/** Radios, and no select-all — there is nothing to select all of. */
+export const SingleSelection: Story = {
+  render: () => selectable('single'),
+}
+
+/** Selection and sorting together: the selection follows the row, not the position. */
+export const SelectionWithSorting: Story = {
+  render: () => ({
+    components: { DataTable },
+    setup: () => ({
+      users,
+      columns: sortableColumns,
+      selected: ref<(string | number)[]>([3]),
+      sort: ref({ id: 'name', direction: 'asc' }),
+    }),
+    template: `
+      <div class="w-full max-w-3xl">
+        <DataTable
+          :rows="users"
+          :columns="columns"
+          row-key="id"
+          caption="Team members"
+          selectable="multiple"
+          sort-mode="client"
+          :row-label="(row) => 'Select ' + row.name"
+          v-model:selected="selected"
+          v-model:sort="sort"
+        />
+      </div>
+    `,
+  }),
+}
+
+/** The select-all cycles through unchecked, indeterminate and checked. */
+export const SelectAllIsTriState: Story = {
+  render: () => selectable('multiple'),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const all = () => canvas.getByRole('checkbox', { name: 'Select all rows' })
+
+    await expect(all()).toHaveAttribute('data-state', 'unchecked')
+
+    await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Ada Lovelace' }))
+    await expect(all()).toHaveAttribute('data-state', 'indeterminate')
+
+    await userEvent.click(all())
+    await expect(all()).toHaveAttribute('data-state', 'checked')
+    await expect(canvas.getByText('Selected: 4')).toBeInTheDocument()
+
+    // Checked means the next click clears.
+    await userEvent.click(all())
+    await expect(canvas.getByText('Selected: 0')).toBeInTheDocument()
+  },
+}
+
+/** Picking a second row replaces the first in single mode. */
+export const SingleSelectionReplaces: Story = {
+  render: () => selectable('single'),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await userEvent.click(canvas.getByRole('radio', { name: 'Select Ada Lovelace' }))
+    await expect(canvas.getByText('Selected: 1')).toBeInTheDocument()
+
+    await userEvent.click(canvas.getByRole('radio', { name: 'Select Grace Hopper' }))
+    await expect(canvas.getByText('Selected: 1')).toBeInTheDocument()
+    await expect(canvas.getByRole('radio', { name: 'Select Grace Hopper' })).toBeChecked()
+    await expect(canvas.getByRole('radio', { name: 'Select Ada Lovelace' })).not.toBeChecked()
+  },
+}
+
+/** Every control names its own row rather than its position. */
+export const SelectionIsLabelled: Story = {
+  render: () => selectable('multiple'),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // A column of "Select row 3" is nearly useless read out of context.
+    for (const user of users) {
+      await expect(
+        canvas.getByRole('checkbox', { name: `Select ${user.name}` })
+      ).toBeInTheDocument()
+    }
+  },
+}
+
 /** The accessible contract: a named table with scoped column headers. */
 export const Accessibility: Story = {
   play: async ({ canvasElement }) => {

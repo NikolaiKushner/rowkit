@@ -39,9 +39,7 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 
 ### Data layer
 
-- [ ] 🟡 **DataTable** — typed column defs, sorting, row selection, sticky header
-      *Built:* typed columns, cell slots, sticky header, pinned columns, loading and empty states, single-column sorting.
-      *Remaining:* row selection.
+- [x] 🟢 **DataTable** — typed column defs, sorting, row selection, sticky header
 - [x] 🟢 **TablePagination** — page size, jump-to-page, total count
 - [x] 🟢 **FilterBar** — composable filter chips with applied-state display
 - [x] 🟢 **EmptyState** — the screen every dashboard needs and nobody designs

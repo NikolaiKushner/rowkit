@@ -9,8 +9,11 @@ import { buttonVariants } from '../components/Button/Button.variants'
 import {
   dataTableCaptionVariants,
   dataTableCellVariants,
+  dataTableCheckboxVariants,
   dataTableHeaderCellVariants,
+  dataTableRadioVariants,
   dataTableRowVariants,
+  dataTableSelectCellVariants,
   dataTableSortButtonVariants,
   dataTableSortIconVariants,
   dataTableVariants,
@@ -139,6 +142,9 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['DataTable header cell', dataTableHeaderCellVariants],
   ['DataTable cell', dataTableCellVariants],
   ['DataTable row', dataTableRowVariants],
+  ['DataTable select cell', dataTableSelectCellVariants],
+  ['DataTable checkbox', dataTableCheckboxVariants],
+  ['DataTable radio', dataTableRadioVariants],
   ['DataTable sort button', dataTableSortButtonVariants],
   ['DataTable sort icon', dataTableSortIconVariants],
 ]

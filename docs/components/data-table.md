@@ -1,7 +1,6 @@
 # DataTable
 
-**Stage:** 🟡 Experimental — row selection is not built yet, and adding it may
-change what is here.
+**Stage:** 🟢 Stable
 
 A typed table. Column definitions are constrained to the row type, cells render
 through per-column slots, and the loading and empty states are built in.
@@ -66,15 +65,20 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 | `emptyTitle`       | `string`                                      | `'Nothing to show'` | Title for the built-in empty state    |
 | `emptyDescription` | `string`                                      | —                   | Description for the empty state       |
 | `sortMode`         | `'manual' \| 'client'`                        | `'manual'`          | Who reorders the rows                 |
+| `selectable`       | `'single' \| 'multiple'`                      | —                   | Adds a selection column               |
+| `rowLabel`         | `(row, index) => string`                      | —                   | Accessible name for a row's control   |
+| `selectionLabel`   | `string`                                      | `'Select'`          | Name for the selection column         |
+| `selectAllLabel`   | `string`                                      | `'Select all rows'` | Name for the select-all control       |
 | `size`             | `'sm' \| 'md'`                                | `'md'`              | Row height and text size              |
 | `hoverable`        | `boolean`                                     | `false`             | Highlight rows on hover               |
 | `class`            | `string`                                      | —                   | Merged onto the scroll container      |
 
 ### v-model
 
-| Model          | Type                         | Description                      |
-| -------------- | ---------------------------- | -------------------------------- |
-| `v-model:sort` | `DataTableSort \| undefined` | `{ id, direction }`, or unsorted |
+| Model              | Type                         | Description                       |
+| ------------------ | ---------------------------- | --------------------------------- |
+| `v-model:sort`     | `DataTableSort \| undefined` | `{ id, direction }`, or unsorted  |
+| `v-model:selected` | `PropertyKey[]`              | Selected rows, as `rowKey` values |
 
 ### Slots
 
@@ -151,6 +155,40 @@ would have to change later — a future `sort` array is the intended path.
 **Sorting does not reset the page.** If you page as well, reset `page` to 1 when
 `sort` changes; the table has no knowledge of pagination.
 
+## Selection
+
+```vue
+<DataTable
+  :rows="users"
+  :columns="columns"
+  row-key="id"
+  caption="Users"
+  selectable="multiple"
+  :row-label="(row) => `Select ${row.name}`"
+  v-model:selected="selected"
+/>
+```
+
+`multiple` gives checkboxes with a tri-state select-all in the header. `single`
+gives radios and no select-all — there is nothing to select all of.
+
+**`selected` is always an array**, including in `single` mode where it holds at
+most one entry. Two shapes for one model would make every consumer branch on the
+mode just to read their own state.
+
+**Selection is keyed by `rowKey`, so it survives sorting.** Reorder the table and
+the same records stay picked, rather than the same positions.
+
+**Supply `rowLabel`.** The default is "Select row 3", and a column of those is
+close to useless read out of context. Name the row.
+
+**Select-all covers the rows on screen, and leaves the rest alone.** With
+pagination that distinction matters: selecting all on page two adds to what you
+picked on page one rather than replacing it, and clearing removes only what is
+visible. "All" cannot mean rows the table has never been handed — if you need
+"select all 4,312 matches", that is an application-level decision about a query,
+not a checkbox.
+
 ## Behaviour worth knowing
 
 **`rowKey` is required.** An array index is not an identity: as soon as the
@@ -212,6 +250,15 @@ rather than restarting the outline.
 **A sortable header is a real `<button>`.** A `<th>` with a click handler cannot
 be reached by keyboard at all, and `aria-sort` describes the state without
 offering any way to change it.
+
+**Selection is not `aria-selected` on the row.** That attribute is only valid
+inside a `grid`, and this is a plain `table`; the checkbox's own state carries
+the selection. Rows get a `data-selected` attribute for styling instead.
+
+**Single selection uses native radios rather than Reka's `RadioGroup`.** That
+primitive's root owns the roving tabstop and would have to wrap the table,
+putting `role="radiogroup"` on it and destroying its table semantics. A shared
+`name` groups native radios with no wrapper at all.
 
 **The button's label is only the column name.** `aria-sort` on the `<th>` already
 conveys "sorted ascending", so adding it to the label has it announced twice.

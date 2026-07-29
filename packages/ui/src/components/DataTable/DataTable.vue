@@ -1,14 +1,18 @@
 <script setup lang="ts" generic="TRow extends object">
-import { computed, onBeforeUnmount, onMounted, ref, watch, type HTMLAttributes } from 'vue'
+import { CheckboxIndicator, CheckboxRoot } from 'reka-ui'
+import { computed, onBeforeUnmount, onMounted, ref, useId, watch, type HTMLAttributes } from 'vue'
 import { cn } from '../../utils/cn'
 import EmptyState from '../EmptyState/EmptyState.vue'
 import Skeleton from '../Skeleton/Skeleton.vue'
 import {
   dataTableCaptionVariants,
   dataTableCellVariants,
+  dataTableCheckboxVariants,
   dataTableHeaderCellVariants,
   dataTablePinnedShadow,
+  dataTableRadioVariants,
   dataTableRowVariants,
+  dataTableSelectCellVariants,
   dataTableSortButtonVariants,
   dataTableSortIconVariants,
   dataTableVariants,
@@ -74,6 +78,25 @@ const props = withDefaults(
      * not.
      */
     sortMode?: 'manual' | 'client'
+    /**
+     * Adds a selection column.
+     *
+     * `multiple` gives checkboxes and a select-all in the header; `single`
+     * gives radios and no select-all, since there is nothing to select all of.
+     */
+    selectable?: 'single' | 'multiple'
+    /**
+     * Accessible name for each row's selection control.
+     *
+     * Worth supplying. The default is "Select row 3", and a column of those is
+     * nearly useless to anyone reading them out of context — name the row:
+     * `(row) => \`Select \${row.name}\``.
+     */
+    rowLabel?: (row: TRow, index: number) => string
+    /** Accessible name for the selection column. */
+    selectionLabel?: string
+    /** Accessible name for the select-all control. */
+    selectAllLabel?: string
     /** Row height and text size. */
     size?: NonNullable<DataTableVariants['size']>
     /** Highlights rows on hover. Only turn this on when a row does something. */
@@ -88,6 +111,8 @@ const props = withDefaults(
     loadingLabel: 'Loading',
     emptyTitle: 'Nothing to show',
     sortMode: 'manual',
+    selectionLabel: 'Select',
+    selectAllLabel: 'Select all rows',
     size: 'md',
     hoverable: false,
   }
@@ -95,6 +120,15 @@ const props = withDefaults(
 
 /** The sorted column and direction. `undefined` is unsorted. */
 const sort = defineModel<DataTableSort | undefined>('sort', { default: undefined })
+
+/**
+ * The selected rows, as `rowKey` values.
+ *
+ * Always an array, including in `single` mode where it holds at most one. Two
+ * different shapes for one model would mean every consumer branching on the
+ * mode to read their own state.
+ */
+const selected = defineModel<PropertyKey[]>('selected', { default: () => [] })
 
 type CellSlotProps = { row: TRow; column: DataTableColumn<TRow>; value: unknown; index: number }
 
@@ -198,6 +232,59 @@ function toggleSort(column: DataTableColumn<TRow>): void {
   sort.value = nextSort(sort.value, columnId(column))
 }
 
+/** Groups the radios in `single` mode without needing a wrapper element. */
+const radioName = useId()
+
+const selectedKeys = computed(() => new Set(selected.value))
+
+/** Total columns rendered, so the empty state spans the selection column too. */
+const columnCount = computed(() => props.columns.length + (props.selectable === undefined ? 0 : 1))
+
+/** The keys on screen. Not the whole data set — see `toggleAll`. */
+const visibleKeys = computed(() => displayRows.value.map((row, index) => keyFor(row, index)))
+
+const allVisibleSelected = computed(
+  () =>
+    visibleKeys.value.length > 0 && visibleKeys.value.every((key) => selectedKeys.value.has(key))
+)
+
+const someVisibleSelected = computed(() =>
+  visibleKeys.value.some((key) => selectedKeys.value.has(key))
+)
+
+const selectAllState = computed<boolean | 'indeterminate'>(() => {
+  if (allVisibleSelected.value) return true
+  return someVisibleSelected.value ? 'indeterminate' : false
+})
+
+/**
+ * Select-all covers the rows on screen, and leaves any others alone.
+ *
+ * With pagination that distinction is the whole game: clearing the selection
+ * outright would silently drop rows the user picked on page one, and selecting
+ * "all" cannot mean rows the table has never been given.
+ */
+function toggleAll(): void {
+  const visible = new Set(visibleKeys.value)
+  selected.value = allVisibleSelected.value
+    ? selected.value.filter((key) => !visible.has(key))
+    : [...selected.value, ...visibleKeys.value.filter((key) => !selectedKeys.value.has(key))]
+}
+
+function setRowSelected(key: PropertyKey, isSelected: boolean): void {
+  if (props.selectable === 'single') {
+    selected.value = isSelected ? [key] : []
+    return
+  }
+  selected.value = isSelected
+    ? [...selected.value, key]
+    : selected.value.filter((candidate) => candidate !== key)
+}
+
+function labelFor(row: TRow, index: number): string {
+  return props.rowLabel?.(row, index) ?? `Select row ${String(index + 1)}`
+}
+
 /**
  * Field names are widened to `string` before indexing. `keyof TRow` is still
  * generic here, so an index expression typed with it cannot be resolved — the
@@ -278,6 +365,42 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
       <thead>
         <tr>
           <th
+            v-if="props.selectable !== undefined"
+            scope="col"
+            :class="
+              cn(
+                dataTableHeaderCellVariants({ size: props.size, sticky: true }),
+                dataTableSelectCellVariants({ size: props.size })
+              )
+            "
+          >
+            <!--
+              Single selection has nothing to select all of, so the column is
+              named in text instead. Either way the header is never empty.
+            -->
+            <CheckboxRoot
+              v-if="props.selectable === 'multiple'"
+              :model-value="selectAllState"
+              :aria-label="props.selectAllLabel"
+              :class="dataTableCheckboxVariants({ size: props.size })"
+              @update:model-value="toggleAll"
+            >
+              <CheckboxIndicator class="flex items-center justify-center">
+                <svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path
+                    :d="selectAllState === 'indeterminate' ? 'M3 6h6' : 'm2.5 6 2.5 2.5L9.5 3.5'"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </CheckboxIndicator>
+            </CheckboxRoot>
+            <span v-else class="sr-only">{{ props.selectionLabel }}</span>
+          </th>
+
+          <th
             v-for="column in props.columns"
             :key="columnId(column)"
             scope="col"
@@ -341,6 +464,12 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
         <template v-if="props.loading">
           <tr v-for="row in props.loadingRows" :key="`skeleton-${row}`">
             <td
+              v-if="props.selectable !== undefined"
+              :class="dataTableSelectCellVariants({ size: props.size })"
+            >
+              <Skeleton variant="rect" :class="props.size === 'sm' ? 'size-3.5' : 'size-4'" />
+            </td>
+            <td
               v-for="column in props.columns"
               :key="columnId(column)"
               :class="
@@ -361,7 +490,7 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
         </template>
 
         <tr v-else-if="isEmpty">
-          <td :colspan="props.columns.length" class="border-t border-border-subtle">
+          <td :colspan="columnCount" class="border-t border-border-subtle">
             <slot name="empty">
               <EmptyState v-bind="emptyStateProps" />
             </slot>
@@ -372,8 +501,59 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
           v-for="(row, index) in displayRows"
           v-else
           :key="keyFor(row, index)"
-          :class="dataTableRowVariants({ interactive: props.hoverable })"
+          :data-selected="selectedKeys.has(keyFor(row, index)) ? '' : undefined"
+          :class="
+            dataTableRowVariants({
+              interactive: props.hoverable,
+              selected: selectedKeys.has(keyFor(row, index)),
+            })
+          "
         >
+          <!--
+            No `aria-selected` on the row. It is only valid inside a `grid`, and
+            this is a plain `table`; the control's own checked state is what
+            carries the selection.
+          -->
+          <td
+            v-if="props.selectable !== undefined"
+            :class="dataTableSelectCellVariants({ size: props.size })"
+          >
+            <CheckboxRoot
+              v-if="props.selectable === 'multiple'"
+              :model-value="selectedKeys.has(keyFor(row, index))"
+              :aria-label="labelFor(row, index)"
+              :class="dataTableCheckboxVariants({ size: props.size })"
+              @update:model-value="setRowSelected(keyFor(row, index), $event === true)"
+            >
+              <CheckboxIndicator class="flex items-center justify-center">
+                <svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path
+                    d="m2.5 6 2.5 2.5L9.5 3.5"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </CheckboxIndicator>
+            </CheckboxRoot>
+            <!--
+              A native radio, not Reka's RadioGroup. That primitive's root owns
+              the roving tabstop and would have to wrap the table, putting
+              `role="radiogroup"` on it and destroying its table semantics. A
+              shared `name` groups native radios with no wrapper at all.
+            -->
+            <input
+              v-else
+              type="radio"
+              :name="radioName"
+              :checked="selectedKeys.has(keyFor(row, index))"
+              :aria-label="labelFor(row, index)"
+              :class="dataTableRadioVariants({ size: props.size })"
+              @change="setRowSelected(keyFor(row, index), true)"
+            />
+          </td>
+
           <td
             v-for="column in props.columns"
             :key="columnId(column)"

@@ -226,9 +226,21 @@ describe('DataTable', () => {
       expect(el.find('tbody td').classes()).toContain('left-0')
     })
 
-    it('gives a pinned body cell its own background so rows do not show through', () => {
+    it('gives a pinned body cell an opaque background so rows do not show through', () => {
+      // Inherited from the row rather than hardcoded, so selected and hover
+      // states are not painted over by the pinned column.
       const el = setup({ columns: [{ key: 'name', header: 'Name', sticky: true }] })
-      expect(el.find('tbody td').classes()).toContain('bg-surface')
+      expect(el.find('tbody td').classes()).toContain('bg-inherit')
+      expect(el.find('tbody tr').classes()).toContain('bg-surface')
+    })
+
+    it('lets a selected row show through its pinned cell', () => {
+      const el = setup({
+        columns: [{ key: 'name', header: 'Name', sticky: true }],
+        selectable: 'multiple',
+        selected: [1],
+      })
+      expect(el.find('tbody tr').classes()).toContain('bg-surface-selected')
     })
 
     it('has no scroll shadow until the table is actually scrolled', () => {
@@ -408,6 +420,150 @@ describe('DataTable', () => {
         const el = setup({ columns: sortable, sortMode: 'client' })
         expect(names(el)).toEqual(['Ada Lovelace', 'Grace Hopper', 'Alan Turing'])
       })
+    })
+  })
+
+  describe('selection', () => {
+    const boxes = (el: ReturnType<typeof setup>) => el.findAll('tbody [role="checkbox"]')
+    const selectAll = (el: ReturnType<typeof setup>) => el.find('thead [role="checkbox"]')
+
+    it('adds no selection column unless asked', () => {
+      expect(setup().findAll('thead th')).toHaveLength(3)
+      expect(setup({ selectable: 'multiple' }).findAll('thead th')).toHaveLength(4)
+    })
+
+    it('renders a checkbox per row in multiple mode', () => {
+      expect(boxes(setup({ selectable: 'multiple' }))).toHaveLength(3)
+    })
+
+    it('renders radios in single mode, with no select-all', () => {
+      const el = setup({ selectable: 'single' })
+      expect(el.findAll('tbody input[type="radio"]')).toHaveLength(3)
+      expect(selectAll(el).exists()).toBe(false)
+    })
+
+    it('groups the radios under one name', () => {
+      const names = setup({ selectable: 'single' })
+        .findAll('tbody input[type="radio"]')
+        .map((r) => r.attributes('name'))
+      expect(new Set(names).size).toBe(1)
+    })
+
+    it('names each control after its row when given a labeller', () => {
+      // "Select row 3" repeated down a column tells a reader nothing.
+      const el = setup({
+        selectable: 'multiple',
+        rowLabel: (row: User) => `Select ${row.name}`,
+      })
+      expect(boxes(el)[0]?.attributes('aria-label')).toBe('Select Ada Lovelace')
+    })
+
+    it('falls back to a positional label', () => {
+      const el = setup({ selectable: 'multiple' })
+      expect(boxes(el)[0]?.attributes('aria-label')).toBe('Select row 1')
+    })
+
+    it('never leaves the selection header empty', () => {
+      const header = setup({ selectable: 'single' }).find('thead th')
+      expect(header.text()).toBe('Select')
+    })
+
+    describe('toggling a row', () => {
+      it('adds a key in multiple mode', async () => {
+        const el = setup({ selectable: 'multiple' })
+        await boxes(el)[1]?.trigger('click')
+        expect(el.emitted('update:selected')?.at(-1)).toEqual([[2]])
+      })
+
+      it('accumulates in multiple mode', async () => {
+        const el = setup({ selectable: 'multiple', selected: [1] })
+        await boxes(el)[1]?.trigger('click')
+        expect(el.emitted('update:selected')?.at(-1)).toEqual([[1, 2]])
+      })
+
+      it('removes a key that was selected', async () => {
+        const el = setup({ selectable: 'multiple', selected: [1, 2] })
+        await boxes(el)[0]?.trigger('click')
+        expect(el.emitted('update:selected')?.at(-1)).toEqual([[2]])
+      })
+
+      it('replaces rather than accumulates in single mode', async () => {
+        const el = setup({ selectable: 'single', selected: [1] })
+        await el.findAll('tbody input[type="radio"]')[2]?.trigger('change')
+        expect(el.emitted('update:selected')?.at(-1)).toEqual([[3]])
+      })
+    })
+
+    describe('select all', () => {
+      it('is unchecked with nothing selected', () => {
+        expect(selectAll(setup({ selectable: 'multiple' })).attributes('data-state')).toBe(
+          'unchecked'
+        )
+      })
+
+      it('is indeterminate with some selected', () => {
+        const el = setup({ selectable: 'multiple', selected: [1] })
+        expect(selectAll(el).attributes('data-state')).toBe('indeterminate')
+      })
+
+      it('is checked with all selected', () => {
+        const el = setup({ selectable: 'multiple', selected: [1, 2, 3] })
+        expect(selectAll(el).attributes('data-state')).toBe('checked')
+      })
+
+      it('selects every visible row', async () => {
+        const el = setup({ selectable: 'multiple' })
+        await selectAll(el).trigger('click')
+        expect(el.emitted('update:selected')?.at(-1)).toEqual([[1, 2, 3]])
+      })
+
+      it('completes a partial selection without duplicating', async () => {
+        const el = setup({ selectable: 'multiple', selected: [2] })
+        await selectAll(el).trigger('click')
+        expect(el.emitted('update:selected')?.at(-1)).toEqual([[2, 1, 3]])
+      })
+
+      it('clears only the visible rows, not selections from elsewhere', async () => {
+        // With pagination, clearing outright would silently drop page one.
+        const el = setup({ selectable: 'multiple', selected: [1, 2, 3, 99] })
+        await selectAll(el).trigger('click')
+        expect(el.emitted('update:selected')?.at(-1)).toEqual([[99]])
+      })
+    })
+
+    it('marks the selected row for styling', () => {
+      const el = setup({ selectable: 'multiple', selected: [2] })
+      const marked = el
+        .findAll('tbody tr')
+        .filter((r) => r.attributes('data-selected') !== undefined)
+      expect(marked).toHaveLength(1)
+      expect(marked[0]?.text()).toContain('Grace Hopper')
+    })
+
+    it('keeps selection out of the row semantics', () => {
+      // aria-selected is only valid inside a grid; this is a plain table.
+      const el = setup({ selectable: 'multiple', selected: [2] })
+      expect(el.find('tbody tr[aria-selected]').exists()).toBe(false)
+    })
+
+    it('spans the selection column in the empty state', () => {
+      const el = setup({ rows: [], selectable: 'multiple' })
+      expect(el.find('tbody td').attributes('colspan')).toBe('4')
+    })
+
+    it('follows the row through a sort rather than the position', () => {
+      // Selection is keyed by rowKey, so reordering must not move it.
+      const el = setup({
+        columns: [{ key: 'name', header: 'Name', sortable: true }],
+        selectable: 'multiple',
+        selected: [3],
+        sortMode: 'client',
+        sort: { id: 'name', direction: 'asc' },
+      })
+      const marked = el
+        .findAll('tbody tr')
+        .filter((r) => r.attributes('data-selected') !== undefined)
+      expect(marked[0]?.text()).toContain('Alan Turing')
     })
   })
 
