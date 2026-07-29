@@ -64,7 +64,7 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 - [x] **Phase 2 — Core components.** The four foundations, one at a time, each fully complete before the next.
       *Done when:* all four at Stable, playground renders a working form using only rowkit components.
 
-- [ ] **Phase 3 — Data layer.** The five data components. DataTable is the centerpiece.
+- [x] **Phase 3 — Data layer.** The five data components. DataTable is the centerpiece.
       *Done when:* playground has a working "users admin" page — filterable, sortable, paginated, with loading and empty states.
 
 - [ ] **Phase 4 — Overlays.** Dialog, Toast, Tooltip. SSR-safe.
