@@ -35,18 +35,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # First, not last. Every package consumes its workspace dependencies
+      # through their published dist rather than a path alias — deliberately, so
+      # they exercise the shape a consumer gets — which means nothing
+      # downstream resolves until those dists exist. That includes lint: the
+      # type-aware rules read an unbuilt import as `error` and report every use
+      # of it as unsafe, which is a confusing way to be told the build is
+      # missing.
+      - name: Build
+        run: pnpm build
+
       - name: Lint
         run: pnpm lint
 
       - name: Check formatting
         run: pnpm format:check
-
-      # Runs before typecheck and test, not after. `packages/ui` consumes
-      # `@rowkit/tokens` through its published dist rather than a path alias —
-      # deliberately, so it exercises the shape a consumer gets — which means
-      # nothing downstream can resolve until tokens has been built.
-      - name: Build
-        run: pnpm build
 
       - name: Typecheck
         run: pnpm typecheck
