@@ -6,3 +6,4 @@ export {
   tablePaginationVariants,
   type TablePaginationVariants,
 } from './TablePagination.variants'
+export type { TablePaginationProps } from './types'

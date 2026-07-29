@@ -12,6 +12,7 @@ export {
   type DataTableSort,
   type DataTableSortDirection,
   type DataTableSortable,
+  type DataTableProps,
 } from './types'
 export {
   dataTableCaptionVariants,

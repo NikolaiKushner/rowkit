@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from 'vue'
+import type { DataTableVariants } from './DataTable.variants'
 
 /**
  * The minimum a row must provide.
@@ -177,4 +178,74 @@ export function nextSort<TRow>(
   if (current?.key !== key) return { key, direction: 'asc' }
   if (current.direction === 'asc') return { key, direction: 'desc' }
   return undefined
+}
+
+/**
+ * Props for `DataTable`.
+ *
+ * Declared here rather than inline in the SFC because `<script setup>` cannot
+ * export a type, and a consumer annotating their own wrapper needs one.
+ */
+export interface DataTableProps<TRow> {
+  /** The rows to render. */
+  rows: TRow[]
+  /** Column definitions, in display order. */
+  columns: DataTableColumn<TRow>[]
+  /**
+   * Accessible name for the table.
+   *
+   * Required. A table with no name is an unlabelled region, and a screen
+   * reader user listing tables on a page sees only "table" repeated.
+   */
+  caption: string
+  /** Shows the caption. It is available to assistive technology either way. */
+  captionVisible?: boolean
+  /** Swaps the body for placeholder rows. */
+  loading?: boolean
+  /** How many placeholder rows to show while loading. */
+  loadingRows?: number
+  /** Announced while loading. */
+  loadingLabel?: string
+  /** Title for the built-in empty state. */
+  emptyTitle?: string
+  /** Description for the built-in empty state. */
+  emptyDescription?: string
+  /**
+   * Who does the sorting.
+   *
+   * `manual` reports the sort and leaves the rows alone — correct whenever
+   * the server orders and pages the data, which is the case this library is
+   * built for. `client` reorders `rows` in place.
+   *
+   * Defaults to `manual` because the wrong choice fails quietly: `client`
+   * combined with server-side pagination sorts only the page you can see, and
+   * a table that looks sorted but is not is worse than one that plainly is
+   * not.
+   */
+  sortMode?: 'manual' | 'client'
+  /**
+   * Adds a selection column.
+   *
+   * `multiple` gives checkboxes and a select-all in the header; `single`
+   * gives radios and no select-all, since there is nothing to select all of.
+   */
+  selectable?: 'single' | 'multiple'
+  /**
+   * Accessible name for each row's selection control.
+   *
+   * Worth supplying. The default is "Select row 3", and a column of those is
+   * nearly useless to anyone reading them out of context — name the row:
+   * `(row) => \`Select \${row.name}\``.
+   */
+  rowLabel?: (row: TRow, index: number) => string
+  /** Accessible name for the selection column. */
+  selectionLabel?: string
+  /** Accessible name for the select-all control. */
+  selectAllLabel?: string
+  /** Row height and text size. */
+  size?: NonNullable<DataTableVariants['size']>
+  /** Highlights rows on hover. Only turn this on when a row does something. */
+  hoverable?: boolean
+  /** Additional classes for the scroll container, merged so a consumer's utility wins. */
+  class?: HTMLAttributes['class']
 }

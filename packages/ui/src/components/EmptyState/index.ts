@@ -8,3 +8,4 @@ export {
   type EmptyStateReason,
   type EmptyStateVariants,
 } from './EmptyState.variants'
+export type { EmptyStateProps } from './types'

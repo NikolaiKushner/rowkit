@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch, type HTMLAttributes } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { cn } from '../../utils/cn'
 import Button from '../Button/Button.vue'
 import Field from '../Field/Field.vue'
@@ -11,68 +11,24 @@ import {
   filterBarControlsVariants,
   filterBarSummaryVariants,
   filterBarVariants,
-  type FilterBarVariants,
 } from './FilterBar.variants'
 import type { FilterChip } from './types'
 
+import type { FilterBarProps } from './types'
+
 defineOptions({ name: 'RkFilterBar' })
 
-const props = withDefaults(
-  defineProps<{
-    /**
-     * The filters currently applied, shown as chips.
-     *
-     * Derived from your filter state rather than owned here — this component
-     * displays what is applied and asks to remove it; the application decides
-     * what that means.
-     */
-    filters?: FilterChip[]
-    /**
-     * Number of matching rows. Announced politely when it changes, which is
-     * the only feedback a screen reader user gets that a filter did anything.
-     */
-    resultCount?: number
-    /** Shows the search box. */
-    searchable?: boolean
-    /** Placeholder for the search box. */
-    searchPlaceholder?: string
-    /** Accessible name for the search box. Visually hidden. */
-    searchLabel?: string
-    /** Label for the clear-all control. */
-    clearLabel?: string
-    /**
-     * Accessible name for the chip's remove control. `{filter}` is replaced
-     * with the chip's text.
-     */
-    removeLabel?: string
-    /**
-     * Accessible name for the region.
-     *
-     * The bar is a `search` landmark, so it can be reached by landmark
-     * navigation instead of only by tabbing through the controls. Give
-     * concurrent instances distinct names — two landmarks sharing one is an
-     * axe `landmark-unique` violation.
-     */
-    label?: string
-    /** Control height and text size. */
-    size?: NonNullable<FilterBarVariants['size']>
-    /** Disables every control. */
-    disabled?: boolean
-    /** Additional classes, merged so a consumer's utility wins. */
-    class?: HTMLAttributes['class']
-  }>(),
-  {
-    filters: () => [],
-    searchable: true,
-    searchPlaceholder: 'Search…',
-    searchLabel: 'Search',
-    clearLabel: 'Clear all',
-    removeLabel: 'Remove {filter} filter',
-    label: 'Filters',
-    size: 'md',
-    disabled: false,
-  }
-)
+const props = withDefaults(defineProps<FilterBarProps>(), {
+  filters: () => [],
+  searchable: true,
+  searchPlaceholder: 'Search…',
+  searchLabel: 'Search',
+  clearLabel: 'Clear all',
+  removeLabel: 'Remove {filter} filter',
+  label: 'Filters',
+  size: 'md',
+  disabled: false,
+})
 
 const emit = defineEmits<{
   /** A chip's remove control was activated. The payload is the chip's `id`. */

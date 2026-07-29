@@ -7,7 +7,7 @@ import {
   PaginationPrev,
   PaginationRoot,
 } from 'reka-ui'
-import { computed, type HTMLAttributes } from 'vue'
+import { computed } from 'vue'
 import { cn } from '../../utils/cn'
 import Field from '../Field/Field.vue'
 import Select from '../Select/Select.vue'
@@ -17,61 +17,25 @@ import {
   tablePaginationItemVariants,
   tablePaginationSummaryVariants,
   tablePaginationVariants,
-  type TablePaginationVariants,
 } from './TablePagination.variants'
+
+import type { TablePaginationProps } from './types'
 
 defineOptions({ name: 'RkTablePagination' })
 
-const props = withDefaults(
-  defineProps<{
-    /** Total number of rows across all pages. */
-    total: number
-    /** Choices offered in the rows-per-page control. */
-    pageSizeOptions?: number[]
-    /** How many page numbers to show on each side of the current one. */
-    siblingCount?: number
-    /**
-     * Always show the first and last page, with ellipses between.
-     *
-     * On by default, unlike the Reka primitive underneath. Without it a user on
-     * page 12 of 25 sees only `11 12 13` — no indication of how far the table
-     * runs and no way to reach the end. For a table that extent is information,
-     * not decoration.
-     */
-    showEdges?: boolean
-    /** Hides the rows-per-page control. */
-    hidePageSize?: boolean
-    /** Hides the "1–10 of 247" summary. */
-    hideSummary?: boolean
-    /** Label for the rows-per-page control. */
-    pageSizeLabel?: string
-    /** Accessible name for the navigation region. */
-    label?: string
-    /** Accessible name for the previous-page control. */
-    previousLabel?: string
-    /** Accessible name for the next-page control. */
-    nextLabel?: string
-    /** Control height and text size. */
-    size?: NonNullable<TablePaginationVariants['size']>
-    /** Disables every control. */
-    disabled?: boolean
-    /** Additional classes, merged so a consumer's utility wins. */
-    class?: HTMLAttributes['class']
-  }>(),
-  {
-    pageSizeOptions: () => [10, 25, 50, 100],
-    siblingCount: 1,
-    showEdges: true,
-    hidePageSize: false,
-    hideSummary: false,
-    pageSizeLabel: 'Rows per page',
-    label: 'Pagination',
-    previousLabel: 'Previous page',
-    nextLabel: 'Next page',
-    size: 'md',
-    disabled: false,
-  }
-)
+const props = withDefaults(defineProps<TablePaginationProps>(), {
+  pageSizeOptions: () => [10, 25, 50, 100],
+  siblingCount: 1,
+  showEdges: true,
+  hidePageSize: false,
+  hideSummary: false,
+  pageSizeLabel: 'Rows per page',
+  label: 'Pagination',
+  previousLabel: 'Previous page',
+  nextLabel: 'Next page',
+  size: 'md',
+  disabled: false,
+})
 
 /** The current page, 1-based. */
 const page = defineModel<number>('page', { default: 1 })
