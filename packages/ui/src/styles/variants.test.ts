@@ -7,6 +7,14 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { badgeVariants } from '../components/Badge/Badge.variants'
 import { buttonVariants } from '../components/Button/Button.variants'
 import {
+  dataTableCaptionVariants,
+  dataTableCellVariants,
+  dataTableHeaderCellVariants,
+  dataTableRowVariants,
+  dataTableVariants,
+  dataTableWrapperVariants,
+} from '../components/DataTable/DataTable.variants'
+import {
   emptyStateActionsVariants,
   emptyStateDescriptionVariants,
   emptyStateIconVariants,
@@ -123,6 +131,12 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['FilterBar chip', filterBarChipVariants],
   ['FilterBar chip remove', filterBarChipRemoveVariants],
   ['FilterBar summary', filterBarSummaryVariants],
+  ['DataTable wrapper', dataTableWrapperVariants],
+  ['DataTable', dataTableVariants],
+  ['DataTable caption', dataTableCaptionVariants],
+  ['DataTable header cell', dataTableHeaderCellVariants],
+  ['DataTable cell', dataTableCellVariants],
+  ['DataTable row', dataTableRowVariants],
 ]
 
 let css = ''

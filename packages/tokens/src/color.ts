@@ -172,8 +172,16 @@ export const semanticColorLight = {
 
   /** Primary body and heading text. */
   text: ref('neutral-900'),
-  /** Secondary text, column labels, help text. */
-  'text-muted': ref('neutral-500'),
+  /**
+   * Secondary text, column labels, help text.
+   *
+   * `neutral-600`, not `500`. A table header is muted text on `surface-subtle`,
+   * and at `500` that pairing reached only 4.41:1 — passing on white, failing
+   * WCAG 1.4.3 on the recessed surface this token is most often used against.
+   * `600` clears it at 6.90:1 and is still 2.3× lighter than `text`, so the
+   * hierarchy survives.
+   */
+  'text-muted': ref('neutral-600'),
   /** Placeholders and de-emphasised metadata. */
   'text-subtle': ref('neutral-400'),
   /** Text on a disabled control. */

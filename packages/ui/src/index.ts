@@ -1,5 +1,6 @@
 export * from './components/Badge'
 export * from './components/Button'
+export * from './components/DataTable'
 export * from './components/EmptyState'
 export * from './components/FilterBar'
 export * from './components/Field'
