@@ -14,6 +14,14 @@ import {
   emptyStateVariants,
 } from '../components/EmptyState/EmptyState.variants'
 import {
+  filterBarChipRemoveVariants,
+  filterBarChipsVariants,
+  filterBarChipVariants,
+  filterBarControlsVariants,
+  filterBarSummaryVariants,
+  filterBarVariants,
+} from '../components/FilterBar/FilterBar.variants'
+import {
   fieldErrorVariants,
   fieldHintVariants,
   fieldLabelVariants,
@@ -109,6 +117,12 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['TablePagination item', tablePaginationItemVariants],
   ['TablePagination ellipsis', tablePaginationEllipsisVariants],
   ['TablePagination summary', tablePaginationSummaryVariants],
+  ['FilterBar', filterBarVariants],
+  ['FilterBar controls', filterBarControlsVariants],
+  ['FilterBar chips', filterBarChipsVariants],
+  ['FilterBar chip', filterBarChipVariants],
+  ['FilterBar chip remove', filterBarChipRemoveVariants],
+  ['FilterBar summary', filterBarSummaryVariants],
 ]
 
 let css = ''
