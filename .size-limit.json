@@ -1,6 +1,6 @@
 [
   {
-    "name": "rowkit — full library (brotli)",
+    "name": "rowkit \u2014 full library (brotli)",
     "path": "packages/ui/dist/index.js",
     "import": "*",
     "limit": "14 kB",
@@ -14,10 +14,10 @@
     ]
   },
   {
-    "name": "rowkit — Button only, proves tree-shaking (brotli)",
+    "name": "rowkit \u2014 Button only, proves tree-shaking (brotli)",
     "path": "packages/ui/dist/index.js",
     "import": "{ Button }",
-    "limit": "3.5 kB",
+    "limit": "2 kB",
     "ignore": [
       "vue",
       "reka-ui",

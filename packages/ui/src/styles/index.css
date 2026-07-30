@@ -15,3 +15,96 @@
  * take `bg-red-500` away from the app that installed it.
  */
 @import '@rowkit/tokens/css';
+
+/*
+ * Overlay enter/exit animations.
+ *
+ * These live here rather than in `@rowkit/tokens` because a keyframe is
+ * structure, not a design value — the values it interpolates between are
+ * geometry, and the timing comes from the motion tokens through `var()`. The
+ * token package stays a set of scales.
+ *
+ * They are keyframe *animations* rather than transitions on purpose: Reka
+ * decides when to unmount a closing overlay by watching for a running
+ * animation. A transition alone would let the element disappear before the exit
+ * finished. Where reduced motion removes the animation entirely, Reka sees none
+ * and unmounts immediately, which is exactly the wanted behaviour.
+ */
+@theme {
+  --animate-overlay-in: overlay-in var(--transition-duration-fast) var(--ease-enter);
+  --animate-overlay-out: overlay-out var(--transition-duration-fast) var(--ease-exit);
+  --animate-dialog-in: dialog-in var(--transition-duration-normal) var(--ease-enter);
+  --animate-dialog-out: dialog-out var(--transition-duration-fast) var(--ease-exit);
+
+  @keyframes overlay-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes overlay-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  /*
+   * A small rise and scale, not a slide. Large travel is what makes overlay
+   * motion feel theatrical, and it is the shape reduced-motion users object to.
+   */
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem) scale(0.98);
+    }
+  }
+
+  @keyframes dialog-out {
+    to {
+      opacity: 0;
+      transform: translateY(0.25rem) scale(0.99);
+    }
+  }
+
+  --animate-tooltip-in: tooltip-in var(--transition-duration-fast) var(--ease-enter);
+  --animate-tooltip-out: tooltip-out var(--transition-duration-instant) var(--ease-exit);
+
+  /*
+   * Barely any travel. A tooltip appears next to the thing it labels, and
+   * motion that draws the eye away from that thing defeats the point.
+   */
+  @keyframes tooltip-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  }
+
+  @keyframes tooltip-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  --animate-toast-in: toast-in var(--transition-duration-normal) var(--ease-enter);
+  --animate-toast-out: toast-out var(--transition-duration-fast) var(--ease-exit);
+
+  /*
+   * A toast slides in from the edge it is anchored to, which is why the travel
+   * is on X rather than Y: every position preset is horizontally anchored, and
+   * a vertical entry would read as the stack reordering itself.
+   */
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateX(0.75rem);
+    }
+  }
+
+  @keyframes toast-out {
+    to {
+      opacity: 0;
+      transform: translateX(0.75rem);
+    }
+  }
+}

@@ -63,9 +63,11 @@ decisions on the consumer's behalf. Changing page size does not silently move
 the page; clearing a filter does not silently reset anything. The component
 emits what happened and the application decides what follows.
 
-Where convenience genuinely helps, it is **opt-in and named** — `DataTable`'s
-`sortMode="client"` — and the default is always the mode that cannot be
-silently wrong.
+Where convenience genuinely helps, it lives **outside the component** rather than
+behind a prop. `useClientSort` is the case: client-side sorting used to be a
+`sortMode` on `DataTable` and was moved out, because a prop makes the wrong mode
+reachable by accident — a server-paged table that sorts locally reorders only the
+page on screen and looks correct.
 
 ---
 
@@ -153,8 +155,22 @@ region — never to the top of the document. See `FilterBar`'s chip removal.
 the handler a no-op instead, so a keyboard user is not thrown out of the
 interface by their own action.
 
-**Motion is opt-out at the system level.** Looping animation is `motion-safe:`
-only.
+**Motion is opt-out at the system level — with one distinction.** An **ambient**
+loop is gated behind `motion-safe:`: it carries no information, so removing it
+costs nothing. `Skeleton`'s pulse is the example.
+
+A loop that is **the only thing telling the user something is happening** is
+exempt, deliberately and by name. `Button`'s spinner is the example: gating it
+would not reduce motion, it would remove the signal, leaving a reduced-motion
+user with a static ring that means nothing. Such an animation must stay small,
+centred and non-parallax — the shapes WCAG 2.3.3 concerns itself with are
+large-area and parallax — and the state must also reach assistive technology by
+another route, which for `Button` is `aria-busy`.
+
+`styles/motion.test.ts` enforces this: an ungated `animate-*` anywhere in a
+component fails unless it is in that file's exemption list with a written
+reason. Transitions are not covered — a 120ms colour fade on hover is not the
+concern.
 
 ---
 

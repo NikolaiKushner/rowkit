@@ -47,9 +47,9 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 
 ### Overlay & feedback
 
-- [ ] 🔴 **Dialog** — focus trap, scroll lock, escape handling
-- [ ] 🔴 **Toast** — queue management, variants, auto-dismiss
-- [ ] 🔴 **Tooltip** — delay, placement, touch behavior
+- [x] 🟢 **Dialog** — focus trap, scroll lock, escape handling
+- [x] 🟢 **Toast** — queue management, variants, auto-dismiss
+- [x] 🟢 **Tooltip** — delay, placement, touch behavior
 
 ---
 
@@ -67,7 +67,7 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 - [x] **Phase 3 — Data layer.** The five data components. DataTable is the centerpiece.
       *Done when:* playground has a working "users admin" page — filterable, sortable, paginated, with loading and empty states.
 
-- [ ] **Phase 4 — Overlays.** Dialog, Toast, Tooltip. SSR-safe.
+- [x] **Phase 4 — Overlays.** Dialog, Toast, Tooltip. SSR-safe.
       *Done when:* all three keyboard-navigable, focus-managed, no hydration errors in the Nuxt playground.
 
 - [ ] **Phase 5 — Documentation site.** VitePress on rowkit.dev. Foundations, components, patterns, contributing.

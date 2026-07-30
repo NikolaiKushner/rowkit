@@ -18,6 +18,10 @@ const external = [
   // copies of tailwind-merge would mean two separate class-group configs.
   /^clsx$/,
   /^tailwind-merge$/,
+  // Same reasoning, and it is a declared dependency either way. Bundling it
+  // also emitted a `dist/node_modules/` tree once the build stopped producing
+  // a single file.
+  /^class-variance-authority$/,
 ]
 
 export default defineConfig({
@@ -49,12 +53,13 @@ export default defineConfig({
     lib: {
       entry: fileURLToPath(new URL('src/index.ts', import.meta.url)),
       formats: ['es'],
-      fileName: () => 'index.js',
     },
     rollupOptions: {
       external,
       output: {
-        globals: { vue: 'Vue' },
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+        entryFileNames: '[name].js',
       },
     },
   },

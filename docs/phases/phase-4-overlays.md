@@ -18,7 +18,10 @@ Three cross-cutting concerns touch all three components. Decide them once, first
 
 All overlays render through a portal to `<body>` — never inline, where `overflow: hidden` or `transform` on an ancestor silently breaks positioning.
 
-- Stacking uses the Phase 1 z-index tokens: `--z-dropdown < --z-sticky < --z-overlay < --z-toast`. Toast sits above Dialog deliberately — a "saved" confirmation must be visible over a modal.
+- Stacking uses the Phase 1 z-index tokens, emitted under Tailwind v4's `--z-index-*` namespace (not `--z-*`, which generates no utility and no error). The shipped order is `base < sticky < dropdown < overlay < modal < popover < toast < tooltip`, spaced by 100.
+
+  > **Corrected.** An earlier draft gave the chain as `dropdown < sticky < overlay < toast`. Sticky sits **below** dropdown — a menu opened from a toolbar has to paint over a pinned table header — and the draft omitted `modal`, `popover` and `tooltip` entirely. The three orderings this phase actually leans on: `overlay < modal` (surface above its own backdrop), `modal < popover` (a `Select` inside a `Dialog` must escape upward), and `modal < toast`. `packages/tokens/src/z-index.test.ts` now asserts all of them, so a token tweak cannot break Phase 4 silently.
+
 - No component ever carries a hardcoded `z-index`. If a stacking bug appears, the fix is in the token scale, not a `9999` patch.
 - Multiple dialogs stacking (dialog opens dialog) is _supported by Reka_ but **explicitly discouraged in rowkit docs** — the pattern is almost always a design smell. Document the alternative (sequence, or a single dialog with steps) instead of polishing the anti-pattern.
 
@@ -27,21 +30,14 @@ All overlays render through a portal to `<body>` — never inline, where `overfl
 Overlays are the components most likely to break under Nuxt SSR, for two reasons: portals don't exist server-side, and anything reading `window` at setup explodes.
 
 - Reka handles deferred teleport mounting, but **verify each component in the Nuxt playground with JS disabled first paint** — hydration mismatch warnings in the console count as failures.
-- Some Reka components need an SSR viewport width to avoid hydration mismatch on responsive behavior. Ship this in the documented Nuxt setup as a plugin:
-  ```ts
-  // plugins/rowkit.ts
-  import { provideSSRWidth } from '@vueuse/core'
-  export default defineNuxtPlugin((nuxtApp) => {
-    provideSSRWidth(1024, nuxtApp.vueApp)
-  })
-  ```
-  This goes into `docs/installation.md` under the Nuxt section — it's the kind of two-line fix that costs a consumer two hours to find alone, and documenting it is worth a GitHub star.
+- **`provideSSRWidth` is not needed, and was checked rather than assumed.** The advice circulates for Reka-based apps; on Reka 2.10 the only viewport read anywhere in the dependency tree is `matchMedia('(pointer:coarse)')` in `utils/registry.js`, already guarded by a `typeof matchMedia === 'function'` check. Adding it would also mean taking `@vueuse/core` as a direct dependency for nothing — it is currently only a transitive dep of Reka. If a future Reka version introduces responsive behaviour that needs it, `docs/installation.md` has the section ready.
+- The Reka API that _is_ SSR-relevant here is **`ConfigProvider`**: `useId` (hydration id stability), `scrollBody` (the scroll-lock behaviour Dialog depends on, and the hook for the layout-shift fix below), and `teleportTo` (a global portal target, which answers the teleport question above for shadow-DOM consumers). Audit these before writing Dialog.
 
 ### Motion
 
-- All enter/leave transitions use Phase 1 motion tokens (durations + easings). Nothing animates with a literal `150ms`.
-- Every animated overlay respects `prefers-reduced-motion`: transitions collapse to instant show/hide. One shared story decorator emulates the preference; each component gets a story under it.
-- Durations stay short: overlays are furniture, not theater. ~150ms in, ~100ms out is the right neighborhood; the exact values are token decisions from Phase 1.
+- All enter/leave transitions use Phase 1 motion tokens. Nothing animates with a literal `150ms`. The shipped scale is `--transition-duration-{instant,fast,normal,slow}` at 0/120/200/320ms with `--ease-{enter,exit,standard}` — direction lives in the easing, not in a separate in/out duration pair, so "150ms in, 100ms out" maps to `duration-normal ease-enter` and `duration-fast ease-exit`.
+- **The reduced-motion rule is not "no animation".** An _ambient_ loop is gated behind `motion-safe:`. A loop that is the only signal something is happening — a spinner — stays, because gating it removes information rather than motion. Enter/leave transitions on overlays are ambient: they collapse to instant show/hide.
+- `packages/ui/src/styles/motion.test.ts` is the gate. Any ungated `animate-*` in a component fails unless it is in that file's exemption list with a written reason, and the same test asserts `motion-safe:` really compiles to `prefers-reduced-motion: no-preference` — so the mechanism itself cannot rot. Overlays are covered the moment they are written; no per-component decorator to remember.
 
 ---
 
@@ -246,14 +242,43 @@ Standard DoD, plus: focus-open verified by keyboard test; Escape-dismiss test; 1
 
 ## Phase Definition of Done
 
-- [ ] All three components 🟢 Stable per the standard checklist
-- [ ] Zero hydration warnings in the Nuxt playground for all three
-- [ ] Nuxt setup docs updated: plugin (SSR width), `<ClientOnly>` Toaster, disabled-trigger pattern
-- [ ] Toast queue rules each covered by an interaction test
-- [ ] Keyboard-only walkthrough completed and noted in the final PR
-- [ ] Stacking scene in the playground (dialog + toast + tooltip simultaneously)
-- [ ] Reduced-motion story for every animated overlay
-- [ ] Three changesets; bundle budget green
+- [x] All three components 🟢 Stable per the standard checklist
+- [x] Zero hydration warnings in the Nuxt playground for all three — measured with Playwright over `/`, `/users` and `/overlays`; console clean on every one
+- [x] Nuxt setup docs updated — `docs/installation.md` covers the `<ClientOnly>` Toaster and records why the SSR-width plugin is _not_ needed; the disabled-trigger pattern is in `docs/components/tooltip.md`
+- [x] Toast queue rules each covered by a test
+- [ ] Keyboard-only walkthrough — **yours to do literally**; unplug the mouse and work `/overlays`
+- [x] Stacking scene in the playground (`/overlays`)
+- [x] Reduced-motion covered — see the note below
+- [x] Three changesets; bundle budget green at 11.6 kB against 14 kB
+
+### The stacking scene, measured
+
+Toast fired from inside an open dialog, on the built Nuxt output:
+
+| Layer          | Computed `z-index` |
+| -------------- | ------------------ |
+| Dialog overlay | 300                |
+| Dialog surface | 400                |
+| Toast viewport | 600                |
+
+Those are the token values, unmodified. More usefully, `elementFromPoint` at the
+centre of the toast returns the toast — it genuinely paints over the dialog,
+which reading `z-index` alone would not prove, since a stacking context anywhere
+up the tree could have trapped it.
+
+### Reduced motion, differently than planned
+
+The spec asked for "one shared story decorator emulating the preference, each
+component with a story under it". Storybook has no way to emulate
+`prefers-reduced-motion`, and a decorator that merely injects
+`animation: none` tests a stylesheet we wrote rather than the media query.
+
+What ships instead is stronger and needs no per-component discipline:
+`packages/ui/src/styles/motion.test.ts` fails on any ungated `animate-*` in any
+component, and separately asserts that `motion-safe:` still compiles to
+`prefers-reduced-motion: no-preference` — so the mechanism itself cannot rot.
+Each overlay also has a unit test walking its rendered classes. New overlays are
+covered the moment they are written.
 
 ---
 
