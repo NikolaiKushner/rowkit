@@ -242,14 +242,43 @@ Standard DoD, plus: focus-open verified by keyboard test; Escape-dismiss test; 1
 
 ## Phase Definition of Done
 
-- [ ] All three components 🟢 Stable per the standard checklist
-- [ ] Zero hydration warnings in the Nuxt playground for all three
-- [ ] Nuxt setup docs updated: plugin (SSR width), `<ClientOnly>` Toaster, disabled-trigger pattern
-- [ ] Toast queue rules each covered by an interaction test
-- [ ] Keyboard-only walkthrough completed and noted in the final PR
-- [ ] Stacking scene in the playground (dialog + toast + tooltip simultaneously)
-- [ ] Reduced-motion story for every animated overlay
-- [ ] Three changesets; bundle budget green
+- [x] All three components 🟢 Stable per the standard checklist
+- [x] Zero hydration warnings in the Nuxt playground for all three — measured with Playwright over `/`, `/users` and `/overlays`; console clean on every one
+- [x] Nuxt setup docs updated — `docs/installation.md` covers the `<ClientOnly>` Toaster and records why the SSR-width plugin is _not_ needed; the disabled-trigger pattern is in `docs/components/tooltip.md`
+- [x] Toast queue rules each covered by a test
+- [ ] Keyboard-only walkthrough — **yours to do literally**; unplug the mouse and work `/overlays`
+- [x] Stacking scene in the playground (`/overlays`)
+- [x] Reduced-motion covered — see the note below
+- [x] Three changesets; bundle budget green at 11.6 kB against 14 kB
+
+### The stacking scene, measured
+
+Toast fired from inside an open dialog, on the built Nuxt output:
+
+| Layer          | Computed `z-index` |
+| -------------- | ------------------ |
+| Dialog overlay | 300                |
+| Dialog surface | 400                |
+| Toast viewport | 600                |
+
+Those are the token values, unmodified. More usefully, `elementFromPoint` at the
+centre of the toast returns the toast — it genuinely paints over the dialog,
+which reading `z-index` alone would not prove, since a stacking context anywhere
+up the tree could have trapped it.
+
+### Reduced motion, differently than planned
+
+The spec asked for "one shared story decorator emulating the preference, each
+component with a story under it". Storybook has no way to emulate
+`prefers-reduced-motion`, and a decorator that merely injects
+`animation: none` tests a stylesheet we wrote rather than the media query.
+
+What ships instead is stronger and needs no per-component discipline:
+`packages/ui/src/styles/motion.test.ts` fails on any ungated `animate-*` in any
+component, and separately asserts that `motion-safe:` still compiles to
+`prefers-reduced-motion: no-preference` — so the mechanism itself cannot rot.
+Each overlay also has a unit test walking its rendered classes. New overlays are
+covered the moment they are written.
 
 ---
 

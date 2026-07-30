@@ -3,8 +3,8 @@ import { Button } from 'rowkit'
 import { ref } from 'vue'
 
 /**
- * Shell for the playground. Two pages: the Phase 2 form, and the Phase 3
- * users-admin table.
+ * Shell for the playground. Three pages: the Phase 2 form, the Phase 3
+ * users-admin table, and the Phase 4 overlay stacking scene.
  */
 
 const isDark = ref(false)
@@ -32,6 +32,13 @@ function toggleTheme() {
             active-class="bg-surface-subtle text-text"
           >
             Users admin
+          </NuxtLink>
+          <NuxtLink
+            to="/overlays"
+            class="rounded-sm px-3 py-1.5 text-sm font-medium text-text-muted hover:bg-surface-hover hover:text-text"
+            active-class="bg-surface-subtle text-text"
+          >
+            Overlays
           </NuxtLink>
         </nav>
 
