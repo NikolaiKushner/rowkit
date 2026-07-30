@@ -9,6 +9,7 @@ export * from './components/Input'
 export * from './components/Select'
 export * from './components/Skeleton'
 export * from './components/TablePagination'
+export * from './components/Tooltip'
 
 export { cn } from './utils/cn'
 export { useClientSort } from './composables/useClientSort'

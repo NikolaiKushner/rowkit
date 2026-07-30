@@ -57,6 +57,7 @@ import {
   selectTriggerVariants,
 } from '../components/Select/Select.variants'
 import { skeletonVariants } from '../components/Skeleton/Skeleton.variants'
+import { tooltipContentVariants } from '../components/Tooltip/Tooltip.variants'
 import {
   tablePaginationEllipsisVariants,
   tablePaginationItemVariants,
@@ -163,6 +164,7 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Dialog body', dialogBodyVariants],
   ['Dialog footer', dialogFooterVariants],
   ['Dialog close', dialogCloseVariants],
+  ['Tooltip content', tooltipContentVariants],
   ['DataTable sort button', dataTableSortButtonVariants],
   ['DataTable sort icon', dataTableSortIconVariants],
 ]

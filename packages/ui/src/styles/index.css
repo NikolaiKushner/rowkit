@@ -65,4 +65,24 @@
       transform: translateY(0.25rem) scale(0.99);
     }
   }
+
+  --animate-tooltip-in: tooltip-in var(--transition-duration-fast) var(--ease-enter);
+  --animate-tooltip-out: tooltip-out var(--transition-duration-instant) var(--ease-exit);
+
+  /*
+   * Barely any travel. A tooltip appears next to the thing it labels, and
+   * motion that draws the eye away from that thing defeats the point.
+   */
+  @keyframes tooltip-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  }
+
+  @keyframes tooltip-out {
+    to {
+      opacity: 0;
+    }
+  }
 }
