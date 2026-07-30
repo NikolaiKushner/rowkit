@@ -28,7 +28,7 @@ Expected shape, adjust to what feedback actually says:
 
 **0.2 — the papercut release (~1 month after launch).** Nothing new; everything sharpened. Launch feedback always surfaces the same class of thing: a prop that should have a default, an event payload missing a field, a docs page that confused three people the same way. Batch them, ship them fast — a responsive 0.2 within weeks is the strongest "this is maintained" signal available.
 
-**0.3 — SE Ranking dogfooding round.** The strategic one: adopt rowkit (or its patterns) inside the work UI Kit commitment, and port back everything that real production usage exposes. This is the H2-overlap thesis paying out in both directions — the job validates the library, the library advances the job deliverable. Expect it to surface density/sizing needs (`size="sm"` on table rows, compact pagination) that portfolio usage never would.
+**0.3 — production dogfooding round.** The strategic one: adopt rowkit (or its patterns) in a real product UI, and port back everything that production usage exposes. Expect it to surface density/sizing needs (`size="sm"` on table rows, compact pagination) that portfolio usage never would.
 
 **0.4+ — the earned features.** Whichever of Part 2's candidates has accumulated actual demand.
 
@@ -52,7 +52,7 @@ Everything currently in ROADMAP's "Considered, not planned," expanded with what 
 
 **Row expansion on DataTable** — the most-requested table feature across every table library's issue tracker; expect it. _Graduates when:_ requested with concrete use cases twice. Design constraint decided now: expansion content is a slot, expansion state is controlled (`v-model:expanded` with row ids) — consistent with every other state decision in the library.
 
-**`Tabs`** — arguably belongs in a data-dense kit (dashboard sections). Reka primitive exists, cost is low. _Graduates when:_ dogfooding at SE Ranking wants it, which it likely will.
+**`Tabs`** — arguably belongs in a data-dense kit (dashboard sections). Reka primitive exists, cost is low. _Graduates when:_ production dogfooding wants it, which it likely will.
 
 **Compact density mode** — a `density: 'comfortable' | 'compact'` axis on the data components rather than per-component size props. _Graduates when:_ dogfooding confirms the need. Design it as a token-level switch (spacing tokens swap) rather than per-component logic — that's the token architecture earning its keep again.
 
@@ -121,4 +121,4 @@ This document gets re-read, briefly, on a schedule — not when anxiety strikes:
 - **Quarterly (1 h):** re-assess the 1.0 checklist honestly; prune candidates that stopped making sense; check the TypeScript unpin; decide the next minor's theme
 - **At 1.0:** rewrite Part 1 for the 1.x→2.0 horizon; archive the graduated items with links to their releases — that changelog-of-decisions becomes case-study material of its own
 
-And one standing question for every review, imported from the very start of this project: **is the library still serving the person building it?** rowkit exists to compound — portfolio, rate, the SE Ranking commitment, the freelance transition. If a quarter ever arrives where it's pure obligation and zero compounding, the right move is documented maintenance mode, not guilt. The asset keeps its value while parked; you don't.
+And one standing question for every review, imported from the very start of this project: **is the library still serving the person building it?** rowkit exists to compound — portfolio, rate, the freelance transition. If a quarter ever arrives where it's pure obligation and zero compounding, the right move is documented maintenance mode, not guilt. The asset keeps its value while parked; you don't.
