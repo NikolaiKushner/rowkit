@@ -21,8 +21,14 @@ const css = `${source}
  * Tailwind skips node_modules when scanning for class names. Registering the
  * bundle explicitly is what makes rowkit's own utilities get generated in a
  * consuming app.
+ *
+ * A glob, not a single file: the build emits one module per source file so
+ * that a consumer importing one component does not pull every component's
+ * class strings. The entry only re-exports and holds no classes of its own, so
+ * pointing at it alone would generate nothing — silently, which is the failure
+ * this directive exists to prevent.
  */
-@source './index.js';
+@source './**/*.js';
 `
 
 const distDir = join(packageDir, 'dist')
