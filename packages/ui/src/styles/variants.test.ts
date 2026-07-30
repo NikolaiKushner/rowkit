@@ -20,6 +20,16 @@ import {
   dataTableWrapperVariants,
 } from '../components/DataTable/DataTable.variants'
 import {
+  dialogBodyVariants,
+  dialogCloseVariants,
+  dialogContentVariants,
+  dialogDescriptionVariants,
+  dialogFooterVariants,
+  dialogHeaderVariants,
+  dialogOverlayVariants,
+  dialogTitleVariants,
+} from '../components/Dialog/Dialog.variants'
+import {
   emptyStateActionsVariants,
   emptyStateDescriptionVariants,
   emptyStateIconVariants,
@@ -145,6 +155,14 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['DataTable select cell', dataTableSelectCellVariants],
   ['DataTable checkbox', dataTableCheckboxVariants],
   ['DataTable radio', dataTableRadioVariants],
+  ['Dialog overlay', dialogOverlayVariants],
+  ['Dialog content', dialogContentVariants],
+  ['Dialog header', dialogHeaderVariants],
+  ['Dialog title', dialogTitleVariants],
+  ['Dialog description', dialogDescriptionVariants],
+  ['Dialog body', dialogBodyVariants],
+  ['Dialog footer', dialogFooterVariants],
+  ['Dialog close', dialogCloseVariants],
   ['DataTable sort button', dataTableSortButtonVariants],
   ['DataTable sort icon', dataTableSortIconVariants],
 ]

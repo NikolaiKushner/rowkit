@@ -56,16 +56,23 @@ describe('looping animation is gated or exempted', () => {
     const offenders: string[] = []
 
     for (const { path, content } of await sourceFiles()) {
-      // Every `animate-*` occurrence, with whatever immediately precedes it, so
-      // a `motion-safe:` prefix is visible.
-      for (const match of content.matchAll(/(motion-safe:)?\b(animate-[a-z0-9-]+)/g)) {
-        const [, gated, utility] = match
-        if (gated !== undefined) continue
-        if (utility !== undefined && utility in exemptions) continue
-        // Skip prose: the rule is about classes, and the comments explain it.
-        const line = content.slice(0, match.index).split('\n').pop() ?? ''
-        if (line.trimStart().startsWith('*') || line.trimStart().startsWith('//')) continue
-        offenders.push(`${path}: ${utility ?? '?'}`)
+      for (const [lineNumber, line] of content.split('\n').entries()) {
+        // Prose, not classes. The comments in these files discuss the rule.
+        const trimmed = line.trimStart()
+        if (trimmed.startsWith('*') || trimmed.startsWith('//') || trimmed.startsWith('/*'))
+          continue
+
+        // Whole class tokens, because variants stack: the gate on
+        // `motion-safe:data-[state=open]:animate-dialog-in` is not adjacent to
+        // the animation, and a regex expecting it to be reports a false
+        // positive. Anywhere in the token counts.
+        for (const token of line.split(/[\s'"`]+/)) {
+          if (!token.includes('animate-')) continue
+          if (token.includes('motion-safe:') || token.includes('motion-reduce:')) continue
+          const utility = /animate-[a-z0-9-]+/.exec(token)?.[0]
+          if (utility !== undefined && utility in exemptions) continue
+          offenders.push(`${path}:${String(lineNumber + 1)} — ${utility ?? token}`)
+        }
       }
     }
 

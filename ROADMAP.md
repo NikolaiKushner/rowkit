@@ -47,7 +47,7 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 
 ### Overlay & feedback
 
-- [ ] 🔴 **Dialog** — focus trap, scroll lock, escape handling
+- [x] 🟢 **Dialog** — focus trap, scroll lock, escape handling
 - [ ] 🔴 **Toast** — queue management, variants, auto-dismiss
 - [ ] 🔴 **Tooltip** — delay, placement, touch behavior
 
