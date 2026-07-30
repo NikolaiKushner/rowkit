@@ -91,7 +91,7 @@ The scale _values_ — ramp hues, step count, spacing base, what "muted" means �
 - [x] Spike passed: styled component renders in a fresh external app from the packed tarball — verified against packed tarballs in a clean consumer project, with `@source` resolving into `node_modules/rowkit/dist`
 - [x] Dark mode toggles with zero hardcoded values anywhere in the codebase
 - [x] `import { tokens } from '@rowkit/tokens'` fully typed
-- [ ] `docs/installation.md` drafted from the spike, Troubleshooting seeded — **not written.** The tarball install was verified, but against no written docs, so the artifact the protocol exists to produce does not exist. This is also the named home of the #1 Troubleshooting entry for the failure this architecture accepts: skip the setup step, get unstyled components
+- [x] `docs/installation.md` written, Troubleshooting seeded — **but after the spike, not during it.** The tarball install was verified first and the docs reconstructed later, in Phase 4, when the overlays needed an SSR section to live in. That is the wrong order and the Lessons below say why
 - [ ] `docs/foundations/tokens.md` lists every token — **not written**
 - [x] Changeset (retro-written in Phase 0b closure if missed at the time)
 
