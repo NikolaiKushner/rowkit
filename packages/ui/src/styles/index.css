@@ -85,4 +85,26 @@
       opacity: 0;
     }
   }
+
+  --animate-toast-in: toast-in var(--transition-duration-normal) var(--ease-enter);
+  --animate-toast-out: toast-out var(--transition-duration-fast) var(--ease-exit);
+
+  /*
+   * A toast slides in from the edge it is anchored to, which is why the travel
+   * is on X rather than Y: every position preset is horizontally anchored, and
+   * a vertical entry would read as the stack reordering itself.
+   */
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateX(0.75rem);
+    }
+  }
+
+  @keyframes toast-out {
+    to {
+      opacity: 0;
+      transform: translateX(0.75rem);
+    }
+  }
 }

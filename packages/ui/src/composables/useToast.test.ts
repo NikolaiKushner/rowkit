@@ -1,6 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useToast } from './useToast'
 
+/**
+ * These cover the **queue**: how many are visible, what waits, what coalesces.
+ *
+ * Countdown, hover-pause and swipe-to-dismiss are Reka's `ToastRoot`, so they
+ * are verified in `Toaster.stories.ts` against the real primitive rather than
+ * re-asserted against an implementation this file no longer has.
+ *
+ * Fake timers are here only so `Date.now()` can be advanced past the coalescing
+ * window.
+ */
 const api = useToast()
 
 beforeEach(() => {
@@ -23,7 +33,6 @@ describe('useToast', () => {
     })
 
     it('gives each toast a distinct id', () => {
-      // Same message, but far enough apart not to coalesce.
       const first = api.toast('Saved')
       vi.advanceTimersByTime(400)
       expect(api.toast('Saved')).not.toBe(first)
@@ -37,6 +46,15 @@ describe('useToast', () => {
     it.each(['success', 'warning', 'danger'] as const)('%s sets its own tone', (variant) => {
       api[variant]('Message')
       expect(api.visible.value[0]?.variant).toBe(variant)
+    })
+
+    it('defaults the duration, and passes a custom one through', () => {
+      api.toast('Default')
+      expect(api.visible.value[0]?.duration).toBe(5000)
+
+      api.dismissAll()
+      api.toast('Custom', { duration: 0 })
+      expect(api.visible.value[0]?.duration).toBe(0)
     })
 
     it('carries an action through', () => {
@@ -66,6 +84,16 @@ describe('useToast', () => {
       expect(messages()).toEqual(['Toast 2', 'Toast 3', 'Toast 4'])
     })
 
+    it('keeps waiting toasts in the queue, not on screen', () => {
+      // A queued toast has no `ToastRoot` until it is visible, which is what
+      // stops it counting down before anyone has seen it.
+      api.setMax(1)
+      api.toast('Visible')
+      api.toast('Waiting')
+      expect(messages()).toEqual(['Visible'])
+      expect(api.items.value.map((item) => item.message)).toEqual(['Visible', 'Waiting'])
+    })
+
     it('honours a different limit', () => {
       api.setMax(1)
       api.toast('First')
@@ -78,81 +106,14 @@ describe('useToast', () => {
       api.toast('Still shown')
       expect(api.visible.value).toHaveLength(1)
     })
-
-    it('does not run a queued toast down while it waits', () => {
-      // A toast counting down off screen would arrive already half-expired.
-      api.setMax(1)
-      api.toast('Visible', { duration: 1000 })
-      api.toast('Waiting', { duration: 1000 })
-
-      vi.advanceTimersByTime(1000)
-      expect(messages()).toEqual(['Waiting'])
-
-      // Its own full duration starts when it appears, not before.
-      vi.advanceTimersByTime(999)
-      expect(messages()).toEqual(['Waiting'])
-      vi.advanceTimersByTime(1)
-      expect(messages()).toEqual([])
-    })
-  })
-
-  describe('auto-dismiss', () => {
-    it('dismisses after the default duration', () => {
-      api.toast('Saved')
-      vi.advanceTimersByTime(4999)
-      expect(messages()).toEqual(['Saved'])
-      vi.advanceTimersByTime(1)
-      expect(messages()).toEqual([])
-    })
-
-    it('honours a custom duration', () => {
-      api.toast('Quick', { duration: 100 })
-      vi.advanceTimersByTime(100)
-      expect(messages()).toEqual([])
-    })
-  })
-
-  describe('rule 3 — hover pauses the hovered toast', () => {
-    it('holds the toast while paused', () => {
-      // Dismissal mid-read is the classic toast failure.
-      const id = api.toast('Read me', { duration: 1000 })
-      vi.advanceTimersByTime(600)
-
-      api.pause(id)
-      vi.advanceTimersByTime(10_000)
-      expect(messages()).toEqual(['Read me'])
-    })
-
-    it('resumes with the time that was left, not the full duration', () => {
-      const id = api.toast('Read me', { duration: 1000 })
-      vi.advanceTimersByTime(600)
-      api.pause(id)
-      api.resume(id)
-
-      vi.advanceTimersByTime(399)
-      expect(messages()).toEqual(['Read me'])
-      vi.advanceTimersByTime(1)
-      expect(messages()).toEqual([])
-    })
-
-    it('pauses only the hovered one', () => {
-      // Freezing the queue would let one hover hold everything on screen.
-      const first = api.toast('Hovered', { duration: 1000 })
-      api.toast('Not hovered', { duration: 1000 })
-
-      api.pause(first)
-      vi.advanceTimersByTime(1000)
-      expect(messages()).toEqual(['Hovered'])
-    })
   })
 
   describe('rule 4 — duration 0 never auto-dismisses', () => {
-    it('stays until dismissed', () => {
-      // For a danger toast with an undo: an action that vanishes at its own pace
-      // is worse than no action.
+    it('records the intent for the renderer to honour', () => {
+      // `Toaster` maps 0 to Infinity on ToastRoot. For a danger toast with an
+      // undo: an action that vanishes at its own pace is worse than no action.
       api.toast('Deleted', { duration: 0, action: { label: 'Undo', onClick: () => undefined } })
-      vi.advanceTimersByTime(60_000)
-      expect(messages()).toEqual(['Deleted'])
+      expect(api.visible.value[0]?.duration).toBe(0)
     })
 
     it('still dismisses on request', () => {
@@ -164,11 +125,9 @@ describe('useToast', () => {
     it('does not block the queue behind it', () => {
       api.setMax(1)
       const sticky = api.toast('Sticky', { duration: 0 })
-      api.toast('Next', { duration: 100 })
+      api.toast('Next')
 
-      vi.advanceTimersByTime(10_000)
       expect(messages()).toEqual(['Sticky'])
-
       api.dismiss(sticky)
       expect(messages()).toEqual(['Next'])
     })
@@ -176,6 +135,7 @@ describe('useToast', () => {
 
   describe('rule 5 — a duplicate inside the window is coalesced', () => {
     it('does not stack an identical message fired twice', () => {
+      // Double-fired handlers are common; stacking makes the UI look broken.
       const first = api.toast('Saved')
       const second = api.toast('Saved')
       expect(second).toBe(first)
@@ -196,23 +156,15 @@ describe('useToast', () => {
     })
   })
 
-  describe('dismissAll', () => {
-    it('clears the queue and its timers', () => {
+  describe('dismissing', () => {
+    it('clears everything on dismissAll', () => {
       api.toast('One')
       api.toast('Two')
       api.dismissAll()
       expect(api.items.value).toEqual([])
-
-      // No stray timer firing into an empty queue.
-      expect(() => {
-        vi.advanceTimersByTime(10_000)
-      }).not.toThrow()
-      expect(api.items.value).toEqual([])
     })
-  })
 
-  describe('dismissing an unknown id', () => {
-    it('is a no-op rather than an error', () => {
+    it('treats an unknown id as a no-op', () => {
       api.toast('Saved')
       expect(() => {
         api.dismiss('rk-toast-nope')

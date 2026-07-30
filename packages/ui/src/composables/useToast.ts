@@ -15,6 +15,9 @@ export interface ToastOptions {
   /**
    * Auto-dismiss delay in milliseconds. `0` never dismisses on its own.
    *
+   * The countdown itself belongs to Reka's `ToastRoot`, which also pauses it
+   * while the pointer is over that toast — this value is passed through.
+   *
    * Use `0` whenever an `action` is attached. An undo that disappears at its
    * own pace is worse than no undo — see the WCAG note in the docs.
    */
@@ -56,15 +59,6 @@ const COALESCE_WINDOW = 300
 const items = ref<ToastItem[]>([])
 const max = ref(DEFAULT_MAX)
 
-interface Timer {
-  handle: ReturnType<typeof setTimeout>
-  /** What is left to run when resumed after a pause. */
-  remaining: number
-  startedAt: number
-}
-
-const timers = new Map<string, Timer>()
-
 let sequence = 0
 
 /**
@@ -79,44 +73,6 @@ const isServer = (): boolean => typeof window === 'undefined'
 
 /** Only the first `max` are on screen; the rest wait their turn, FIFO. */
 const visible = computed(() => items.value.slice(0, max.value))
-
-function clearTimer(id: string): void {
-  const timer = timers.get(id)
-  if (timer === undefined) return
-  clearTimeout(timer.handle)
-  timers.delete(id)
-}
-
-function startTimer(id: string, duration: number): void {
-  if (isServer() || duration <= 0) return
-  clearTimer(id)
-  timers.set(id, {
-    handle: setTimeout(() => {
-      dismiss(id)
-    }, duration),
-    remaining: duration,
-    startedAt: Date.now(),
-  })
-}
-
-/**
- * Timers belong to visible toasts only.
- *
- * A queued toast must not be counting down while off screen — it would arrive
- * already half-expired, or expire without ever being seen. Called after every
- * mutation, so a dismissal promotes the next toast and starts its clock then.
- */
-function syncTimers(): void {
-  const onScreen = new Set(visible.value.map((item) => item.id))
-
-  for (const id of [...timers.keys()]) {
-    if (!onScreen.has(id)) clearTimer(id)
-  }
-
-  for (const item of visible.value) {
-    if (item.duration > 0 && !timers.has(item.id)) startTimer(item.id, item.duration)
-  }
-}
 
 function add(message: string, options: ToastOptions = {}): string {
   const now = Date.now()
@@ -142,51 +98,20 @@ function add(message: string, options: ToastOptions = {}): string {
   if (isServer()) return id
 
   items.value = [...items.value, item]
-  syncTimers()
   return id
 }
 
 function dismiss(id: string): void {
-  clearTimer(id)
   items.value = items.value.filter((item) => item.id !== id)
-  syncTimers()
 }
 
 function dismissAll(): void {
-  for (const id of [...timers.keys()]) clearTimer(id)
   items.value = []
-}
-
-/**
- * Stops the hovered toast's countdown.
- *
- * Dismissal mid-read is the classic toast failure: the user starts reading, the
- * timer runs out, and the message is gone. Only the hovered toast pauses —
- * freezing the whole queue would let one hover hold everything on screen.
- */
-function pause(id: string): void {
-  const timer = timers.get(id)
-  if (timer === undefined) return
-  clearTimeout(timer.handle)
-  timers.set(id, {
-    ...timer,
-    remaining: Math.max(0, timer.remaining - (Date.now() - timer.startedAt)),
-  })
-}
-
-/** Resumes with whatever was left, not from the beginning. */
-function resume(id: string): void {
-  const timer = timers.get(id)
-  if (timer === undefined) return
-  const item = items.value.find((candidate) => candidate.id === id)
-  if (item === undefined) return
-  startTimer(id, timer.remaining > 0 ? timer.remaining : item.duration)
 }
 
 /** Set by `Toaster`, so the limit lives with the thing that renders it. */
 function setMax(value: number): void {
   max.value = Math.max(1, value)
-  syncTimers()
 }
 
 export interface UseToastReturn {
@@ -201,16 +126,19 @@ export interface UseToastReturn {
   danger: (message: string, options?: Omit<ToastOptions, 'variant'>) => string
   dismiss: (id: string) => void
   dismissAll: () => void
-  /** Pauses the hovered toast's countdown. Used by `Toaster`. */
-  pause: (id: string) => void
-  /** Resumes with the time that was left. Used by `Toaster`. */
-  resume: (id: string) => void
   /** How many are visible at once. Set by `Toaster`. */
   setMax: (value: number) => void
 }
 
 /**
  * The toast API.
+ *
+ * This owns the **queue** — how many are visible, what waits, what coalesces.
+ * It deliberately owns no timers: `Toaster` renders each visible toast into a
+ * Reka `ToastRoot`, which runs the countdown, pauses it on hover, and handles
+ * swipe-to-dismiss. Re-implementing any of that here would be the thing hard
+ * rule 2 exists to prevent, and a queued toast still cannot count down early
+ * because it has no `ToastRoot` until it is on screen.
  *
  * Callable from anywhere, including outside a component — that is the whole
  * point of the module-level queue. Rendering happens in one `<Toaster />`
@@ -232,8 +160,6 @@ export function useToast(): UseToastReturn {
     danger: (message, options) => add(message, { ...options, variant: 'danger' }),
     dismiss,
     dismissAll,
-    pause,
-    resume,
     setMax,
   }
 }

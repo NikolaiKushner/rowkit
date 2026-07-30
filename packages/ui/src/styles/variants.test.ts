@@ -57,6 +57,13 @@ import {
   selectTriggerVariants,
 } from '../components/Select/Select.variants'
 import { skeletonVariants } from '../components/Skeleton/Skeleton.variants'
+import {
+  toastActionVariants,
+  toastCloseVariants,
+  toasterViewportVariants,
+  toastMessageVariants,
+  toastVariants,
+} from '../components/Toaster/Toaster.variants'
 import { tooltipContentVariants } from '../components/Tooltip/Tooltip.variants'
 import {
   tablePaginationEllipsisVariants,
@@ -165,6 +172,11 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Dialog footer', dialogFooterVariants],
   ['Dialog close', dialogCloseVariants],
   ['Tooltip content', tooltipContentVariants],
+  ['Toaster viewport', toasterViewportVariants],
+  ['Toast', toastVariants],
+  ['Toast message', toastMessageVariants],
+  ['Toast action', toastActionVariants],
+  ['Toast close', toastCloseVariants],
   ['DataTable sort button', dataTableSortButtonVariants],
   ['DataTable sort icon', dataTableSortIconVariants],
 ]
