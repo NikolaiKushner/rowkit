@@ -100,6 +100,11 @@ pnpm add rowkit
 Both lines are required, and that second one is the step people miss — see
 [installation](/installation) for why, and for the Nuxt path.
 
+**v0.x, and not on npm yet.** The name is reserved and publishing is the last
+phase of the plan, so that first command does not resolve today. Every component
+above is built and tested — you are looking at them running — but the API can
+still change before v1.0.
+
 ## What this is not
 
 A general-purpose UI kit. If you need forty components covering every case,

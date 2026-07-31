@@ -45,7 +45,7 @@ export default defineConfig({
     siteTitle: 'rowkit',
 
     nav: [
-      { text: 'Guide', link: '/installation' },
+      { text: 'Guide', link: '/introduction' },
       { text: 'Components', link: '/components/button' },
       { text: 'Decisions', link: '/decisions/001-typescript-pin' },
       {
@@ -64,6 +64,7 @@ export default defineConfig({
       {
         text: 'Guide',
         items: [
+          { text: 'Introduction', link: '/introduction' },
           { text: 'Installation', link: '/installation' },
           { text: 'API conventions', link: '/conventions' },
         ],

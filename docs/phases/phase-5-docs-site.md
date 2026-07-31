@@ -74,6 +74,17 @@ it was broken in the published package; the story existed but only ever got
 looked at, never asserted. Fixed with a real pass-through functional component,
 three regression tests, and a patch changeset.
 
+**The landing page has no `main` landmark, and that is VitePress's.** Doc pages
+render `<main class="main">`; the `layout: home` page renders
+`<div class="VPContent is-home">` and nothing else, so axe reports
+`landmark-one-main` plus `region` on every element of the hero and features —
+39 nodes on the site's highest-traffic page. Confirmed in the built HTML rather
+than inferred: `dist/index.html` contains no `<main>`, `dist/introduction.html`
+contains one. Not fixed, because every route to fixing it means overriding the
+theme's `Layout`, and wrapping the default layout would put the nav and sidebar
+inside `main` — a worse violation than the one it cures. Recorded for the v2
+custom-theme decision.
+
 **Two axe findings on the toast page, neither rowkit's.** `aria-hidden-focus`
 (2) is Reka's toast focus guards — already known, already scoped off for the
 Storybook run, still awaiting upstream. `color-contrast` (8) is entirely
@@ -136,6 +147,22 @@ This page does the work your Upwork profile does, for the library. Contents:
 - What rowkit is: twelve components for that hard part
 - **What rowkit is not** — pull the Non-goals section from ROADMAP.md up into the docs. "If you need forty components, use Nuxt UI or shadcn-vue" is the most trust-building sentence on the site: it proves the scope is a decision, not a limitation
 - Comparison framing, one short table: rowkit vs Nuxt UI vs shadcn-vue on _distribution model, scope, data focus_. Factual, no disparagement — the goal is helping someone route themselves correctly, and most readers routed away today come back for the table component later
+
+> **Written.** `docs/introduction.md`, flat rather than under `/guide/` to match
+> the pages already there. It carries the problem statement, the four non-goals
+> lifted from `ROADMAP.md`, and the three-way comparison.
+>
+> One correction it forced elsewhere: the landing page and the installation page
+> both opened with `pnpm add rowkit`, which **does not resolve** — the name is
+> reserved and Phase 6 is where publishing happens. A docs site whose first
+> instruction fails is worse than no docs site, so both now say so plainly.
+> Worth deciding before launch whether the site goes up before or after
+> `v0.1.0`.
+>
+> Its own comparison table shipped an `empty-table-header` violation on the
+> first pass — the top-left cell of a comparison table is the easiest place in
+> markdown to leave blank, and it is the same axe rule `DataTable` grew
+> `headerSrOnly` for.
 
 ### The installation page — the make-or-break page
 
