@@ -18,6 +18,42 @@ const roles: SelectOption<'owner' | 'admin'>[] = [
 // role is 'owner' | 'admin' | undefined
 ```
 
+<script setup>
+import { ref } from 'vue'
+
+const role = ref()
+const timezone = ref()
+
+const roles = [
+  { label: 'Owner', value: 'owner' },
+  { label: 'Admin', value: 'admin' },
+  { label: 'Member', value: 'member' },
+  { label: 'Billing', value: 'billing', disabled: true },
+]
+
+const timezones = [
+  'Europe/London', 'Europe/Berlin', 'Europe/Kyiv', 'America/New_York',
+  'America/Los_Angeles', 'Asia/Tokyo', 'Asia/Singapore', 'Australia/Sydney',
+].map((value) => ({ label: value, value }))
+</script>
+
+<DemoBox align="end">
+  <Field label="Role" class="min-w-52">
+    <Select v-model="role" :options="roles" placeholder="Choose a role" />
+  </Field>
+  <Field label="Timezone" class="min-w-52">
+    <Select v-model="timezone" :options="timezones" placeholder="Choose a timezone" searchable />
+  </Field>
+</DemoBox>
+
+The first is a plain picker; the second is `searchable`, which is worth turning
+on somewhere around twenty options and costs a keystroke below that. Both are
+wrapped in `Field`, so the label, the generated id and the disabled state come
+from one place.
+
+Open either with the keyboard: <kbd>Enter</kbd> or <kbd>↓</kbd> opens the panel,
+typing filters when searchable, <kbd>Esc</kbd> closes without committing.
+
 ## Anatomy
 
 | Part    | Purpose                                                     |
@@ -49,23 +85,27 @@ const roles: SelectOption<'owner' | 'admin'>[] = [
 
 ## Props
 
-| Prop                                | Type                   | Default          | Description                                                     |
-| ----------------------------------- | ---------------------- | ---------------- | --------------------------------------------------------------- |
-| `options`                           | `SelectOption<T>[]`    | required         | The choices                                                     |
-| `modelValue`                        | `T`                    | —                | `v-model`                                                       |
-| `searchTerm`                        | `string`               | `''`             | `v-model:search-term`. Bind it to fetch async options           |
-| `placeholder`                       | `string`               | `'Select…'`      | Shown while nothing is selected                                 |
-| `searchable`                        | `boolean`              | `false`          | Make the control typable and filter as you type                 |
-| `manualFilter`                      | `boolean`              | `false`          | Hand filtering to you — the list is already the server's answer |
-| `loading`                           | `boolean`              | `false`          | Show `loadingText` in place of the list                         |
-| `loadingText`                       | `string`               | `'Loading…'`     | Text shown while loading                                        |
-| `emptyText`                         | `string`               | `'No results'`   | Shown when nothing matches                                      |
-| `togglerLabel`                      | `string`               | `'Show options'` | Accessible name for the chevron                                 |
-| `size`                              | `'sm' \| 'md' \| 'lg'` | `'md'`           | Control height and text size                                    |
-| `disabled` / `invalid` / `required` | `boolean`              | `false`          | Also set by a surrounding `Field`                               |
-| `id`                                | `string`               | from `Field`     | Control id                                                      |
-| `name`                              | `string`               | —                | Submitted with a native form                                    |
-| `class`                             | `string`               | —                | Merged so your utility wins                                     |
+<!-- @props SelectProps -->
+
+| Prop           | Type                   | Default          | Description                                                              |
+| -------------- | ---------------------- | ---------------- | ------------------------------------------------------------------------ |
+| `options`      | `SelectOption<T>[]`    | **required**     | The available choices.                                                   |
+| `placeholder`  | `string`               | `'Select…'`      | Text shown in the trigger while nothing is selected.                     |
+| `searchable`   | `boolean`              | `false`          | Adds a search box inside the panel.                                      |
+| `togglerLabel` | `string`               | `'Show options'` | Accessible name for the open/close chevron.                              |
+| `emptyText`    | `string`               | `'No results'`   | Shown when no option matches the search term.                            |
+| `manualFilter` | `boolean`              | `false`          | Hands filtering to the consumer.                                         |
+| `loading`      | `boolean`              | `false`          | Shows a loading row in place of the list. For async options.             |
+| `loadingText`  | `string`               | `'Loading…'`     | Text shown while `loading`.                                              |
+| `size`         | `'sm' \| 'md' \| 'lg'` | `'md'`           | Control height and text size.                                            |
+| `disabled`     | `boolean`              | `false`          | Disables the control. A surrounding disabled `Field` also disables it.   |
+| `invalid`      | `boolean`              | `false`          | Marks the value invalid. A `Field` with an `error` also sets it.         |
+| `required`     | `boolean`              | `false`          | Marks the control required. A required `Field` also sets it.             |
+| `id`           | `string`               | —                | Id for the trigger. Inherited from a surrounding `Field` when omitted.   |
+| `name`         | `string`               | —                | Name submitted with a native form.                                       |
+| `class`        | `string`               | —                | Additional classes for the trigger, merged so a consumer's utility wins. |
+
+<!-- /@props -->
 
 ```ts
 interface SelectOption<TValue> {

@@ -14,10 +14,91 @@ and a chip for every filter currently applied.
   @clear="reset"
 >
   <template #controls>
-    <Select v-model="role" :options="roles" placeholder="Role" />
+    <Field label="Role" label-sr-only>
+      <Select v-model="role" :options="roles" placeholder="Role" />
+    </Field>
   </template>
 </FilterBar>
 ```
+
+A control in the `controls` slot still needs a name. A placeholder is not one —
+it disappears the moment a value is chosen, which is exactly when a screen
+reader user asks what the control is. `labelSrOnly` keeps the toolbar visually
+uncluttered without taking the name away.
+
+<script setup>
+import { computed, ref } from 'vue'
+
+const search = ref('')
+const role = ref()
+
+const roles = [
+  { label: 'Owner', value: 'owner' },
+  { label: 'Admin', value: 'admin' },
+  { label: 'Member', value: 'member' },
+]
+
+const people = [
+  { name: 'Ada Lovelace', role: 'owner' },
+  { name: 'Grace Hopper', role: 'admin' },
+  { name: 'Alan Turing', role: 'member' },
+  { name: 'Katherine Johnson', role: 'member' },
+]
+
+const applied = computed(() => [
+  ...(search.value ? [{ id: 'search', label: 'Search', value: search.value }] : []),
+  ...(role.value ? [{ id: 'role', label: 'Role', value: roles.find((r) => r.value === role.value).label }] : []),
+])
+
+const results = computed(() =>
+  people.filter(
+    (person) =>
+      person.name.toLowerCase().includes(search.value.toLowerCase()) &&
+      (!role.value || person.role === role.value)
+  )
+)
+
+function unset(id) {
+  if (id === 'search') search.value = ''
+  if (id === 'role') role.value = undefined
+}
+
+function reset() {
+  search.value = ''
+  role.value = undefined
+}
+</script>
+
+<DemoBox layout="stack">
+  <FilterBar
+    v-model:search="search"
+    :filters="applied"
+    :result-count="results.length"
+    label="Example filters"
+    searchable
+    search-placeholder="Search people"
+    @remove="unset"
+    @clear="reset"
+  >
+    <template #controls>
+      <Field label="Role" label-sr-only>
+        <Select v-model="role" :options="roles" placeholder="Role" class="min-w-40" />
+      </Field>
+    </template>
+  </FilterBar>
+  <ul class="!my-0 !pl-5 text-sm text-text-muted">
+    <li v-for="person in results" :key="person.name">{{ person.name }}</li>
+  </ul>
+</DemoBox>
+
+Type a name or pick a role. A chip appears for each applied filter, "Clear all"
+appears only once something is applied, and the result count updates in a live
+region — which is the only feedback a screen reader user gets that the filter
+did anything at all.
+
+Remove a chip with the keyboard and watch where focus lands: the next chip, or
+the bar itself when the last one goes. Focus never falls back to the top of the
+document, which is the usual outcome when the focused element is destroyed.
 
 ## Anatomy
 
@@ -58,19 +139,23 @@ not `'role-admin'`. The value changes; the identity should not.
 
 ## Props
 
-| Prop                | Type           | Default                    | Description                               |
-| ------------------- | -------------- | -------------------------- | ----------------------------------------- |
-| `filters`           | `FilterChip[]` | `[]`                       | The filters currently applied             |
-| `resultCount`       | `number`       | —                          | Matching rows. Announced when it changes  |
-| `searchable`        | `boolean`      | `true`                     | Show the search box                       |
-| `searchPlaceholder` | `string`       | `'Search…'`                | Placeholder for the search box            |
-| `searchLabel`       | `string`       | `'Search'`                 | Accessible name, visually hidden          |
-| `clearLabel`        | `string`       | `'Clear all'`              | Label for the clear-all control           |
-| `removeLabel`       | `string`       | `'Remove {filter} filter'` | `{filter}` is replaced with the chip text |
-| `label`             | `string`       | `'Filters'`                | Accessible name for the landmark          |
-| `size`              | `'sm' \| 'md'` | `'md'`                     | Control height and text size              |
-| `disabled`          | `boolean`      | `false`                    | Disables every control                    |
-| `class`             | `string`       | —                          | Merged so your utility wins               |
+<!-- @props FilterBarProps -->
+
+| Prop                | Type           | Default                    | Description                                                                                 |
+| ------------------- | -------------- | -------------------------- | ------------------------------------------------------------------------------------------- |
+| `filters`           | `FilterChip[]` | `() => []`                 | The filters currently applied, shown as chips.                                              |
+| `resultCount`       | `number`       | —                          | Number of matching rows.                                                                    |
+| `searchable`        | `boolean`      | `true`                     | Shows the search box.                                                                       |
+| `searchPlaceholder` | `string`       | `'Search…'`                | Placeholder for the search box.                                                             |
+| `searchLabel`       | `string`       | `'Search'`                 | Accessible name for the search box. Visually hidden.                                        |
+| `clearLabel`        | `string`       | `'Clear all'`              | Label for the clear-all control.                                                            |
+| `removeLabel`       | `string`       | `'Remove {filter} filter'` | Accessible name for the chip's remove control. `{filter}` is replaced with the chip's text. |
+| `label`             | `string`       | `'Filters'`                | Accessible name for the region.                                                             |
+| `size`              | `'sm' \| 'md'` | `'md'`                     | Control height and text size.                                                               |
+| `disabled`          | `boolean`      | `false`                    | Disables every control.                                                                     |
+| `class`             | `string`       | —                          | Additional classes, merged so a consumer's utility wins.                                    |
+
+<!-- /@props -->
 
 ### FilterChip
 

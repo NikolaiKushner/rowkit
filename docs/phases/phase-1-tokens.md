@@ -92,7 +92,7 @@ The scale _values_ — ramp hues, step count, spacing base, what "muted" means �
 - [x] Dark mode toggles with zero hardcoded values anywhere in the codebase
 - [x] `import { tokens } from '@rowkit/tokens'` fully typed
 - [x] `docs/installation.md` written, Troubleshooting seeded — **but after the spike, not during it.** The tarball install was verified first and the docs reconstructed later, in Phase 4, when the overlays needed an SSR section to live in. That is the wrong order and the Lessons below say why
-- [ ] `docs/foundations/tokens.md` lists every token — **not written**
+- [x] `docs/foundations/tokens.md` lists every token — written in Phase 5, rendered from `tokens` rather than transcribed, so it cannot drift
 - [x] Changeset (retro-written in Phase 0b closure if missed at the time)
 
 ## Lessons recorded

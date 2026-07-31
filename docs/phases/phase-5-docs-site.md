@@ -14,6 +14,15 @@ One framing thought before the task list: **for a library nobody has heard of, t
 
 ### VitePress, default theme, customized — not a custom theme
 
+> **Version skew, recorded.** VitePress 1.6.4 bundles its own **Vite 5**, while
+> the library builds on Vite 8. Harmless at runtime — VitePress uses its copy —
+> but the two sets of types cannot share a TypeScript project: pulling
+> `docs/.vitepress/**/*.ts` into the root `tsconfig.json` fails on
+> `http-proxy` server types. The folder has its own `tsconfig.json`, which the
+> lint project service finds, and the root project leaves it out. Same shape as
+> the Storybook 9-versus-Vite-8 finding in Phase 0b: check the heaviest
+> dependency's peer range before writing a version into a spec.
+
 The temptation is a bespoke design (you're a frontend engineer building a design system; of course you want the docs to look designed). Resist it in v1:
 
 - The default theme ships search, sidebar, prev/next, mobile nav, dark mode, and a11y for free — rebuilding those is a week of work that produces a worse version
@@ -28,7 +37,65 @@ VitePress renders Vue in markdown, so rowkit components can run live on their ow
 - Each component page gets **one live demo block** at the top: the component in its default state plus 2–3 variants, wrapped in a shared `<DemoBox>` container (bordered, padded, dark-mode-aware — build it once, ~30 lines)
 - Interactive playgrounds with editable props are **out of scope** — that's what the linked Storybook is for. Duplicating Storybook inside VitePress is the classic docs-site scope explosion
 
-**SSR trap, known in advance:** VitePress builds pages through SSR, so the Phase 4 lessons apply directly — the Toast demo needs `<ClientOnly>`, and anything reading `window` at setup will break the _docs build_, not just a runtime. Budget twenty minutes for this; it's the predictable snag of the phase. If a demo fights SSR for longer than that, ship it as a static snippet with a "open in Storybook" link and move on.
+**SSR trap, and a second one that was not predicted.** The predicted trap is
+real — the Toast demo will need `<ClientOnly>`. The unpredicted one cost more:
+Vite inlines an `@import` but does **not** run Tailwind, so the site loaded the
+token custom properties, generated no utilities at all, and rendered every demo
+unstyled with nothing in the console. `@tailwindcss/vite` in the VitePress
+`vite.plugins` is the fix, exactly as in `.storybook/main.ts`. A second silent
+one: registering components by testing for `render` skips every
+`<script setup>` SFC, which exposes `setup`/`ssrRender` instead — every export
+is PascalCase, so that is the check that works.
+
+**A third silent one, found by the demo pass.** The `@source` directives in
+`theme/tokens.css` resolve relative to that file, so `'../components'` pointed
+at `.vitepress/components` — a directory that does not exist. A non-existent
+`@source` is not an error; it is simply no CSS. It went unnoticed because
+Tailwind's automatic source detection was covering `docs/` anyway, which is the
+worst kind of bug: correct output from a wrong configuration, waiting for
+someone to narrow the detection. Paths corrected to climb out of `.vitepress/`.
+
+**Demos are verified, not eyeballed.** Every claim a demo's prose makes is
+checked in a real browser before it ships, and two did not survive: the Button
+page claimed the width does not change under `loading` (it grows by the spinner
+when there is no leading icon — 24px, measured), and the TablePagination page
+described a page-size change putting the summary out of range (it does not;
+page 3 at 50/page is a valid 101–150 of 247). Both rewritten to what the
+browser actually does. Axe over the demo blocks found a third: `EmptyState` at
+`level="3"` under the page `h1` is a `heading-order` violation.
+
+**The demos found a shipped bug, which is the argument for having them.**
+`Tooltip` inside a `TooltipProvider` rendered **nothing at all** — no bubble and
+no trigger, so the buttons were absent from the page with no error and no
+warning. The internal pass-through wrapper was Vue's `Fragment`, which
+`<component :is>` hands a slots object where it expects an array of vnodes. The
+provider arrangement is the one this page tells people to use for a toolbar, and
+it was broken in the published package; the story existed but only ever got
+looked at, never asserted. Fixed with a real pass-through functional component,
+three regression tests, and a patch changeset.
+
+**The landing page has no `main` landmark, and that is VitePress's.** Doc pages
+render `<main class="main">`; the `layout: home` page renders
+`<div class="VPContent is-home">` and nothing else, so axe reports
+`landmark-one-main` plus `region` on every element of the hero and features —
+39 nodes on the site's highest-traffic page. Confirmed in the built HTML rather
+than inferred: `dist/index.html` contains no `<main>`, `dist/introduction.html`
+contains one. Not fixed, because every route to fixing it means overriding the
+theme's `Layout`, and wrapping the default layout would put the nav and sidebar
+inside `main` — a worse violation than the one it cures. Recorded for the v2
+custom-theme decision.
+
+**Two axe findings on the toast page, neither rowkit's.** `aria-hidden-focus`
+(2) is Reka's toast focus guards — already known, already scoped off for the
+Storybook run, still awaiting upstream. `color-contrast` (8) is entirely
+VitePress's default Shiki syntax theme: `github-light` tokens against the code
+block background land at 4.15–4.37 where AA wants 4.5. Worth knowing that this
+is **not** caused by the token mapping — measured against VitePress's own
+`#f6f6f7` the same token is 4.28, so it fails either way; the mapping moved it
+by 0.07. Fixing it means choosing a different Shiki theme, which is a look
+decision for the site owner, so it is recorded here rather than changed.
+
+**Original note:** VitePress builds pages through SSR, so the Phase 4 lessons apply directly — the Toast demo needs `<ClientOnly>`, and anything reading `window` at setup will break the _docs build_, not just a runtime. Budget twenty minutes for this; it's the predictable snag of the phase. If a demo fights SSR for longer than that, ship it as a static snippet with a "open in Storybook" link and move on.
 
 ### One domain, two artifacts
 
@@ -81,6 +148,22 @@ This page does the work your Upwork profile does, for the library. Contents:
 - **What rowkit is not** — pull the Non-goals section from ROADMAP.md up into the docs. "If you need forty components, use Nuxt UI or shadcn-vue" is the most trust-building sentence on the site: it proves the scope is a decision, not a limitation
 - Comparison framing, one short table: rowkit vs Nuxt UI vs shadcn-vue on _distribution model, scope, data focus_. Factual, no disparagement — the goal is helping someone route themselves correctly, and most readers routed away today come back for the table component later
 
+> **Written.** `docs/introduction.md`, flat rather than under `/guide/` to match
+> the pages already there. It carries the problem statement, the four non-goals
+> lifted from `ROADMAP.md`, and the three-way comparison.
+>
+> One correction it forced elsewhere: the landing page and the installation page
+> both opened with `pnpm add rowkit`, which **does not resolve** — the name is
+> reserved and Phase 6 is where publishing happens. A docs site whose first
+> instruction fails is worse than no docs site, so both now say so plainly.
+> Worth deciding before launch whether the site goes up before or after
+> `v0.1.0`.
+>
+> Its own comparison table shipped an `empty-table-header` violation on the
+> first pass — the top-left cell of a comparison table is the easiest place in
+> markdown to leave blank, and it is the same axe rule `DataTable` grew
+> `headerSrOnly` for.
+
 ### The installation page — the make-or-break page
 
 This is where the Phase 1 styling-architecture spike pays off in full. Requirements:
@@ -100,6 +183,27 @@ Exists since Phase 1; this phase upgrades it to a live reference:
 - A dark-mode toggle demo on the page showing semantic tokens flipping while primitives hold
 - Copy-on-click for token names — trivial to add, disproportionately appreciated
 
+> **Written**, as `docs/foundations/tokens.md` — the page was missing entirely
+> rather than needing an upgrade, so this also closes a Phase 1 gap. Two theme
+> components do the work: `ColorScale` for the ramps and one generic `TokenGrid`
+> with a `preview` slot for spacing, radii, shadows, layers and motion, because
+> those differ only in how a value is best shown.
+>
+> The dark-mode claim is measured, not asserted: toggling the theme moves the
+> semantic swatch from `oklch(0.984 0.003 264)` to `oklch(0.13 0.036 264)` while
+> the primitive above it does not move at all. Clipboard verified to receive
+> `--color-primary-600` — the custom property, not the raw value, since that is
+> what someone pastes into a stylesheet.
+>
+> **A silent Vue trap, and a good one.** The slot originally passed the token's
+> name as `:name`. On a `<slot>` element `name` is the attribute that _chooses_
+> which slot to render, so binding it dynamically turned the outlet into a
+> dynamic one looking for a slot called `background` — which does not exist.
+> Every preview cell rendered empty, in SSR and on the client, with no error
+> anywhere. The prop is `token` now. Same family as the `Fragment` bug on
+> `Tooltip`: Vue has a handful of names that are structural rather than data,
+> and passing data through one fails by rendering nothing.
+
 ### Patterns — the section that sells seniority
 
 Three pages, each the same shape: the finished result live at the top, then the complete code, then 3–5 short notes on _why_ it's wired that way (why page resets on filter change, why the empty state switches to `no-results`, why the skeleton delays 150ms).
@@ -114,6 +218,36 @@ Each of the twelve existing pages gets, in one sweep:
 
 - The live `<DemoBox>` block at top
 - A props table **generated from source, not hand-written** — small build script parsing the exported prop types/JSDoc into markdown (or `vue-component-meta` if it cooperates within an hour; script otherwise). Hand-written props tables are stale by the second release, and the JSDoc-on-every-prop rule from Phase 0 was building exactly this payoff
+
+  > **Done, with the script.** `packages/ui/scripts/generate-props.mjs`, run by
+  > `pnpm docs:props`, filling `<!-- @props Name -->` blocks. No new dependency:
+  > `typescript`, `vue/compiler-sfc` and `prettier` were all here already.
+  >
+  > Three things it does that a naive version does not. It resolves types
+  > through the **type checker** rather than reading the syntax, because
+  > `NonNullable<BadgeVariants['variant']>` is what the source says and
+  > `'neutral' | 'primary' | …` is what a reader needs — and it expands aliases
+  > for the same reason, since `TooltipPlacement` names a union without
+  > describing it. It **parses** the SFC for `withDefaults` rather than
+  > pattern-matching it, after a regular expression reported no defaults at all
+  > for `DataTable` and `Select` — `defineProps<DataTableProps<TRow>>()` closes
+  > the match at the first `>`, so the failure hit exactly the components whose
+  > defaults are hardest to guess. And it emits **Prettier-formatted** output,
+  > because Prettier aligns markdown tables and otherwise the two rewrite each
+  > other forever.
+  >
+  > It also documents `false` for an optional boolean with no explicit default,
+  > since Vue casts a missing Boolean prop rather than leaving it `undefined` —
+  > printing `—` would describe a state the component cannot be in.
+  >
+  > `src/props-docs.test.ts` is what makes "generated" true rather than
+  > aspirational: it regenerates every page and fails on any difference. Proved
+  > by editing one JSDoc line and watching it fail. One of its assertions exists
+  > because the first block regular expression matched from the first opening
+  > marker to the first closing one, which on `field.md` swallowed `InputProps`
+  > entirely — and every other assertion still passed, because a table that no
+  > longer exists cannot drift.
+
 - Verify the "when not to use" section survived — it's the most-read section on every page
 - Prev/next links follow the sidebar order
 
@@ -122,6 +256,35 @@ Each of the twelve existing pages gets, in one sweep:
 Generated, not written: a script walks the exported components and emits every component's props/events/slots with their JSDoc as plain structured text. Ships **in the npm package** (so `node_modules/rowkit/AGENTS.md` is on disk for any coding agent) and renders as a docs page.
 
 Wire the generation into the build so it regenerates on release. This is a genuinely differentiating feature this year — AI-assisted consumers get correct usage on the first try — and it's also the closing paragraph of your launch post.
+
+> **Done.** `pnpm docs:agents` writes `packages/ui/AGENTS.md` (in `files`, so it
+> publishes — verified with `npm pack --dry-run`: 19.3 kB on disk at
+> `node_modules/rowkit/AGENTS.md`) and `docs/agents.md` for the site.
+>
+> It covers more than props: `defineModel`, `defineEmits` and `defineSlots` are
+> parsed too, so `v-model:sort`, `@row:click` and `#cell:<key>` are all in there
+> with their JSDoc. Two details worth keeping. `DataTable`'s per-column slot
+> lives in a mapped type intersected with the literal one, and reading only the
+> literal half silently drops the single most useful thing about rendering a
+> cell — so the `Record` half is read as well and `${string}` is rewritten to
+> `<key>`, which is what someone actually types. And slot props declared as a
+> local alias are **inlined**: `CellSlotProps` names nothing an agent can
+> resolve, `{ row: TRow; column: DataTableColumn<TRow>; … }` names everything.
+>
+> The extraction now lives in `scripts/component-api.mjs`, shared with the props
+> tables, so the two cannot describe the same component differently. The props
+> generator was rewritten onto it and reproduced its output byte for byte.
+>
+> **Not wired into `build`.** The spec asks for that, and it would defeat the
+> drift test: CI runs build before test, so the generator would regenerate the
+> file and the test would then compare it against itself and always pass. The
+> file is committed, `files` publishes it, and `src/agents-doc.test.ts` fails
+> when it goes stale — which is the guarantee the build wiring was after.
+>
+> The preamble — the two required CSS imports, `<ClientOnly>` for `Toaster`, who
+> owns state — is hand-written on purpose. None of it is visible in a type, and
+> the missing `rowkit/styles` import is the failure most likely to cost a
+> consumer an afternoon.
 
 ---
 
@@ -151,17 +314,17 @@ Session 5.1 ends with a deployed site. That ordering is deliberate — see above
 
 ## Phase Definition of Done
 
-- [ ] `rowkit.dev` live, HTTPS, custom domain
-- [ ] Landing page with a working live DataTable demo
+- [ ] `rowkit.dev` live, HTTPS, custom domain — **needs the Vercel project and DNS; everything up to the deploy is ready**
+- [x] Landing page with a working live DataTable demo — sorting and selection verified interactive in a browser, zero hydration warnings
 - [ ] Installation verified by executing both paths in fresh projects outside the monorepo
-- [ ] All twelve component pages: live demo, generated props table, "when not to use" intact
+- [x] All twelve component pages: live demo, generated props table, "when not to use" intact — thirteen tables (twelve components plus `Input`) generated from the source, with a drift test standing behind them
 - [ ] Three pattern pages live
-- [ ] Tokens page renders from the tokens package, not hand-maintained
-- [ ] AGENTS.md generated from source, shipped in the package, rendered in docs
+- [x] Tokens page renders from the tokens package, not hand-maintained — 5 colour ramps, 7 scales, 147 copy targets, all read from `tokens` at render time
+- [x] AGENTS.md generated from source, shipped in the package, rendered in docs — 13 sections, 19.3 kB, confirmed present in `npm pack --dry-run`
 - [ ] Storybook deployed on its subdomain, linked from docs nav
 - [ ] Docs build clean — zero SSR errors, zero dead internal links (`vitepress build` fails on dead links by default; leave that on)
-- [ ] Site works on mobile (VitePress default handles this; verify the demo blocks don't overflow)
-- [ ] Dark mode toggle works and rowkit demos follow it
+- [x] Site works on mobile — measured at 375px across all ten pages with a demo: **zero horizontal page overflow everywhere**, and the one wide demo (`TablePagination`, 19px over) scrolls inside its own box, which is the intended behaviour
+- [x] Dark mode toggle works and rowkit demos follow it — the demo container flips `oklch(1 0 0)` → `oklch(0.21 0.033 264)` off the semantic token, with no per-demo styling involved
 
 ---
 
@@ -172,6 +335,11 @@ Session 5.1 ends with a deployed site. That ordering is deliberate — see above
 **Writing docs from memory.** Every installation page that rots started as "I know how it works, I'll just write it." The fresh-project verification is non-negotiable and takes 30 minutes.
 
 **Demo maximalism.** One demo block per component page. The urge to show every prop combination live belongs in Storybook, which is deployed and linked precisely so the docs don't have to do its job.
+
+> One deliberate exception: `tooltip.md` carries a second block in the
+> disabled-trigger section, showing the broken and working versions side by
+> side. It is the most-asked question about the component, and a trap is easier
+> to believe when you can hover both.
 
 **Treating the landing page as an afterthought.** It's the highest-traffic page by an order of magnitude. One hour, the structure above, done — but actually spend the hour.
 

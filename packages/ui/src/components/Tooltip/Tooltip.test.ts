@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
-import { nextTick } from 'vue'
+import { TooltipProvider } from 'reka-ui'
+import { defineComponent, nextTick } from 'vue'
 import { describe, expect, it } from 'vitest'
 import Tooltip from './Tooltip.vue'
 
@@ -122,6 +123,51 @@ describe('Tooltip', () => {
         if (!token.includes('animate-')) continue
         expect(token, 'tooltip motion is ambient and must be gated').toContain('motion-safe:')
       }
+    })
+  })
+
+  describe('an ancestor provider', () => {
+    /**
+     * The provider is the whole reason `skipDelayDuration` is reachable, and it
+     * is what the docs tell you to mount around a toolbar — so the tooltip has
+     * to survive being inside one.
+     *
+     * It did not. The wrapper was `Fragment`, which `<component :is>` hands a
+     * slots object rather than a vnode array, so the entire component rendered
+     * nothing: no bubble, and no trigger either. Nothing errored, nothing
+     * warned, the buttons were simply absent from the page.
+     */
+    async function setupWithProvider() {
+      const Host = defineComponent({
+        components: { Tooltip, TooltipProvider },
+        template: `
+          <TooltipProvider :delay-duration="0" :skip-delay-duration="500">
+            <Tooltip content="${content}"><button>Archive</button></Tooltip>
+          </TooltipProvider>
+        `,
+      })
+      const el = mount(Host, { attachTo: document.body })
+      await nextTick()
+      return el
+    }
+
+    it('still renders the trigger', async () => {
+      await setupWithProvider()
+      expect(triggerEl()).not.toBeNull()
+      expect(triggerEl()?.textContent).toBe('Archive')
+    })
+
+    it('still opens', async () => {
+      await setupWithProvider()
+      await focusTrigger()
+      expect(description()?.textContent).toContain(content)
+    })
+
+    it('does not mount a second provider over the top of it', async () => {
+      // Shadowing the app's provider would silently drop `skipDelayDuration`,
+      // which is the one behaviour a provider exists to supply.
+      const el = await setupWithProvider()
+      expect(el.findAllComponents({ name: 'TooltipProvider' })).toHaveLength(1)
     })
   })
 

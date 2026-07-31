@@ -9,6 +9,34 @@ not move the furniture.
 <Button variant="primary" :loading="saving" @click="save">Save changes</Button>
 ```
 
+<script setup>
+import { ref } from 'vue'
+
+const saving = ref(false)
+
+function save() {
+  saving.value = true
+  setTimeout(() => (saving.value = false), 1400)
+}
+</script>
+
+<DemoBox>
+  <Button variant="primary" :loading="saving" @click="save">Save changes</Button>
+  <Button variant="secondary">Cancel</Button>
+  <Button variant="ghost">Details</Button>
+  <Button variant="danger">Delete</Button>
+  <Button variant="secondary" disabled>Unavailable</Button>
+</DemoBox>
+
+Press **Save changes**. The button stays focused and stays clickable: loading
+sets `aria-busy` and makes the handler a no-op rather than setting `disabled`,
+so a keyboard user is not thrown back to the top of the document by their own
+action.
+
+The spinner occupies the leading slot. Give the button a leading icon and the
+width does not change at all when it starts — without one, as here, the button
+grows by the width of the spinner.
+
 ## Anatomy
 
 | Part          | Purpose                                                      |
@@ -41,18 +69,22 @@ not move the furniture.
 
 ## Props
 
-| Prop           | Type                                              | Default     | Description                                             |
-| -------------- | ------------------------------------------------- | ----------- | ------------------------------------------------------- |
-| `variant`      | `'primary' \| 'secondary' \| 'ghost' \| 'danger'` | `'primary'` | Visual weight and intent                                |
-| `size`         | `'sm' \| 'md' \| 'lg'`                            | `'md'`      | Control height and text size                            |
-| `block`        | `boolean`                                         | `false`     | Fill the container width                                |
-| `loading`      | `boolean`                                         | `false`     | Show a spinner and block activation                     |
-| `disabled`     | `boolean`                                         | `false`     | Disable the button                                      |
-| `type`         | `'button' \| 'submit' \| 'reset'`                 | `'button'`  | Native button type                                      |
-| `loadingLabel` | `string`                                          | —           | Announced while loading; the visible label is unchanged |
-| `class`        | `string`                                          | —           | Merged so your utility wins                             |
-| `as`           | `string \| Component`                             | `'button'`  | Element to render                                       |
-| `asChild`      | `boolean`                                         | `false`     | Merge props onto the child instead of wrapping          |
+<!-- @props ButtonProps -->
+
+| Prop           | Type                                              | Default     | Description                                                                                                               |
+| -------------- | ------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `variant`      | `'primary' \| 'danger' \| 'secondary' \| 'ghost'` | `'primary'` | Visual weight and intent.                                                                                                 |
+| `size`         | `'sm' \| 'md' \| 'lg'`                            | `'md'`      | Control height and text size.                                                                                             |
+| `block`        | `boolean`                                         | `false`     | Stretches the button to fill its container.                                                                               |
+| `loading`      | `boolean`                                         | `false`     | Swaps the leading slot for a spinner and blocks activation.                                                               |
+| `disabled`     | `boolean`                                         | `false`     | Disables the button.                                                                                                      |
+| `type`         | `'button' \| 'submit' \| 'reset'`                 | `'button'`  | Native button type. Defaults to `button`, not `submit` — an unlabelled submit inside a form is the more damaging default. |
+| `loadingLabel` | `string`                                          | —           | Announced in place of the visible label while `loading` is set. Leave unset to keep the label unchanged.                  |
+| `class`        | `string`                                          | —           | Additional classes, merged so a consumer's utility wins.                                                                  |
+| `as`           | `string \| Component`                             | `'button'`  | Element or component to render as.                                                                                        |
+| `asChild`      | `boolean`                                         | `false`     | Merge props onto the single child element instead of rendering a wrapper.                                                 |
+
+<!-- /@props -->
 
 ### Slots
 

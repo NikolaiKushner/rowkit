@@ -9,6 +9,32 @@ numbers. Built on Reka UI's `Pagination` primitive.
 <TablePagination v-model:page="page" v-model:page-size="pageSize" :total="247" />
 ```
 
+<script setup>
+import { ref } from 'vue'
+
+const page = ref(1)
+const pageSize = ref(10)
+</script>
+
+<DemoBox layout="stack">
+  <TablePagination
+    v-model:page="page"
+    v-model:page-size="pageSize"
+    :total="247"
+    label="Example pagination"
+  />
+  <p class="!my-0 text-sm text-text-muted">
+    page {{ page }} · {{ pageSize }} per page
+  </p>
+</DemoBox>
+
+Go to page 3 — rows 21–30 — then switch to 50 per page. You stay on page 3 and
+the summary reads 101–150: a completely different set of rows, and deliberately
+so. The component reports both changes and lets the application decide what
+follows, because the right answer differs between "reset to page 1" and "keep
+the user near the row they were reading", and a component cannot know which one
+you meant.
+
 ## Anatomy
 
 | Part          | Purpose                                                        |
@@ -37,21 +63,25 @@ numbers. Built on Reka UI's `Pagination` primitive.
 
 ## Props
 
-| Prop              | Type           | Default             | Description                                    |
-| ----------------- | -------------- | ------------------- | ---------------------------------------------- |
-| `total`           | `number`       | —                   | Required. Total rows across all pages          |
-| `pageSizeOptions` | `number[]`     | `[10, 25, 50, 100]` | Choices in the rows-per-page control           |
-| `siblingCount`    | `number`       | `1`                 | Page numbers shown either side of the current  |
-| `showEdges`       | `boolean`      | `true`              | Always show first and last page, with ellipses |
-| `hidePageSize`    | `boolean`      | `false`             | Hide the rows-per-page control                 |
-| `hideSummary`     | `boolean`      | `false`             | Hide the range summary                         |
-| `pageSizeLabel`   | `string`       | `'Rows per page'`   | Label for the rows-per-page control            |
-| `label`           | `string`       | `'Pagination'`      | Accessible name for the navigation landmark    |
-| `previousLabel`   | `string`       | `'Previous page'`   | Accessible name for the previous control       |
-| `nextLabel`       | `string`       | `'Next page'`       | Accessible name for the next control           |
-| `size`            | `'sm' \| 'md'` | `'md'`              | Control height and text size                   |
-| `disabled`        | `boolean`      | `false`             | Disables every control                         |
-| `class`           | `string`       | —                   | Merged so your utility wins                    |
+<!-- @props TablePaginationProps -->
+
+| Prop              | Type           | Default                   | Description                                                    |
+| ----------------- | -------------- | ------------------------- | -------------------------------------------------------------- |
+| `total`           | `number`       | **required**              | Total number of rows across all pages.                         |
+| `pageSizeOptions` | `number[]`     | `() => [10, 25, 50, 100]` | Choices offered in the rows-per-page control.                  |
+| `siblingCount`    | `number`       | `1`                       | How many page numbers to show on each side of the current one. |
+| `showEdges`       | `boolean`      | `true`                    | Always show the first and last page, with ellipses between.    |
+| `hidePageSize`    | `boolean`      | `false`                   | Hides the rows-per-page control.                               |
+| `hideSummary`     | `boolean`      | `false`                   | Hides the "1–10 of 247" summary.                               |
+| `pageSizeLabel`   | `string`       | `'Rows per page'`         | Label for the rows-per-page control.                           |
+| `label`           | `string`       | `'Pagination'`            | Accessible name for the navigation region.                     |
+| `previousLabel`   | `string`       | `'Previous page'`         | Accessible name for the previous-page control.                 |
+| `nextLabel`       | `string`       | `'Next page'`             | Accessible name for the next-page control.                     |
+| `size`            | `'sm' \| 'md'` | `'md'`                    | Control height and text size.                                  |
+| `disabled`        | `boolean`      | `false`                   | Disables every control.                                        |
+| `class`           | `string`       | —                         | Additional classes, merged so a consumer's utility wins.       |
+
+<!-- /@props -->
 
 ### v-model
 

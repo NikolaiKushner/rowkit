@@ -12,6 +12,30 @@ make `Input` — and `Select` — correct without the consumer doing the work.
 </Field>
 ```
 
+<script setup>
+import { computed, ref } from 'vue'
+
+const email = ref('ada@')
+const error = computed(() => (/^[^@\s]+@[^@\s.]+\.\S+$/.test(email.value) ? undefined : 'Enter a valid email address.'))
+</script>
+
+<DemoBox layout="stack">
+  <Field label="Work email" hint="Used for billing receipts." :error="error" required>
+    <Input v-model="email" type="email" placeholder="ada@example.com" />
+  </Field>
+  <Field label="Team" hint="Everyone here inherits this team's permissions." disabled>
+    <Input model-value="Platform" />
+  </Field>
+</DemoBox>
+
+Type a valid address and the error goes; the hint stays throughout. Both are
+referenced by `aria-describedby` at once, so fixing a mistake never costs you
+the guidance that would have prevented it — which is what happens when a field
+swaps the hint out for the error.
+
+The second field is disabled at the `Field`, not the `Input`. The state flows
+down to whatever control is inside.
+
 ## Anatomy
 
 | Part    | Purpose                                                                     |
@@ -44,34 +68,43 @@ make `Input` — and `Select` — correct without the consumer doing the work.
 
 ### Field
 
-| Prop          | Type                   | Default   | Description                                                |
-| ------------- | ---------------------- | --------- | ---------------------------------------------------------- |
-| `label`       | `string`               | —         | Visible label                                              |
-| `hint`        | `string`               | —         | Help text below the control                                |
-| `error`       | `string`               | —         | Validation message. Its presence _is_ the error state      |
-| `required`    | `boolean`              | `false`   | Marks the control required and shows the indicator         |
-| `disabled`    | `boolean`              | `false`   | Disables the control inside                                |
-| `size`        | `'sm' \| 'md' \| 'lg'` | `'md'`    | Sizes label, hint and error together                       |
-| `id`          | `string`               | generated | Supply one only if something outside needs to reference it |
-| `labelSrOnly` | `boolean`              | `false`   | Hide the label visually, keep it for screen readers        |
-| `class`       | `string`               | —         | Merged so your utility wins                                |
+<!-- @props FieldProps -->
+
+| Prop          | Type                   | Default | Description                                                                                                                                 |
+| ------------- | ---------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `label`       | `string`               | —       | Visible label. Always render one — a placeholder is not a label.                                                                            |
+| `hint`        | `string`               | —       | Help text shown below the control while it is valid.                                                                                        |
+| `error`       | `string`               | —       | Validation message. Its presence is what puts the field into the error state; there is no separate `invalid` flag to keep in sync.          |
+| `required`    | `boolean`              | `false` | Marks the control required and shows the required indicator.                                                                                |
+| `disabled`    | `boolean`              | `false` | Disables the control inside.                                                                                                                |
+| `size`        | `'sm' \| 'md' \| 'lg'` | `'md'`  | Sizes the label, hint and error together with the control.                                                                                  |
+| `id`          | `string`               | —       | Id for the control. Generated when omitted — supply one only when something outside the field needs to reference it.                        |
+| `labelSrOnly` | `boolean`              | `false` | Hides the label visually while leaving it available to screen readers. For a search box in a toolbar whose purpose is obvious from context. |
+| `class`       | `string`               | —       | Additional classes, merged so a consumer's utility wins.                                                                                    |
+
+<!-- /@props -->
 
 Slots: `default` (the control), `hint`, `error`.
 
 ### Input
 
-| Prop          | Type                                                                                  | Default      | Description                                          |
-| ------------- | ------------------------------------------------------------------------------------- | ------------ | ---------------------------------------------------- |
-| `modelValue`  | `string \| number`                                                                    | —            | `v-model`                                            |
-| `size`        | `'sm' \| 'md' \| 'lg'`                                                                | `'md'`       | Control height and text size                         |
-| `type`        | `'text' \| 'email' \| 'password' \| 'search' \| 'tel' \| 'url' \| 'number' \| 'date'` | `'text'`     | Native input type                                    |
-| `placeholder` | `string`                                                                              | —            | An example value, never a label                      |
-| `disabled`    | `boolean`                                                                             | `false`      | Disable. A disabled `Field` also disables it         |
-| `invalid`     | `boolean`                                                                             | `false`      | Mark invalid. A `Field` with an `error` also sets it |
-| `required`    | `boolean`                                                                             | `false`      | Mark required. A required `Field` also sets it       |
-| `readonly`    | `boolean`                                                                             | `false`      | Read-only but focusable and selectable               |
-| `id`          | `string`                                                                              | from `Field` | Input id                                             |
-| `class`       | `string`                                                                              | —            | Merged so your utility wins                          |
+<!-- @props InputProps -->
+
+| Prop          | Type                                                                                  | Default  | Description                                                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `size`        | `'sm' \| 'md' \| 'lg'`                                                                | `'md'`   | Control height and text size.                                                                                                 |
+| `type`        | `'number' \| 'text' \| 'email' \| 'password' \| 'search' \| 'tel' \| 'url' \| 'date'` | `'text'` | Native input type. Deliberately excludes `checkbox`, `radio` and `file`, which need different markup and a different control. |
+| `placeholder` | `string`                                                                              | —        | Short example of the expected value. Never a substitute for a label.                                                          |
+| `disabled`    | `boolean`                                                                             | `false`  | Disables the input. A surrounding disabled `Field` also disables it.                                                          |
+| `invalid`     | `boolean`                                                                             | `false`  | Marks the value invalid. A `Field` with an `error` also sets it.                                                              |
+| `required`    | `boolean`                                                                             | `false`  | Marks the input required. A required `Field` also sets it.                                                                    |
+| `readonly`    | `boolean`                                                                             | `false`  | Makes the value read-only while keeping it focusable and selectable.                                                          |
+| `id`          | `string`                                                                              | —        | Id for the input. Inherited from a surrounding `Field` when omitted.                                                          |
+| `class`       | `string`                                                                              | —        | Additional classes, merged so a consumer's utility wins.                                                                      |
+
+<!-- /@props -->
+
+`modelValue` is the `v-model`, typed `string | number`.
 
 Slots: `leading`, `trailing` — rendered inside the control's border.
 
