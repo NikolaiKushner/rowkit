@@ -1,3 +1,22 @@
+<script lang="ts">
+import type { FunctionalComponent } from 'vue'
+
+/**
+ * Renders its children and nothing else, for the case where a provider is
+ * already mounted above us.
+ *
+ * This was `Fragment`, which does not work here and fails silently in the worst
+ * possible way. `<component :is>` compiles its children to a **slots object**,
+ * and `Fragment` expects an **array of vnodes** — so it rendered nothing at all,
+ * taking the trigger with it. Every `<Tooltip>` inside a `TooltipProvider`
+ * disappeared from the page: no error, no warning, no element.
+ *
+ * Declared in a plain `<script>` block so there is one component identity for
+ * the whole module rather than a fresh one per instance.
+ */
+const PassThrough: FunctionalComponent = (_props, { slots }) => slots.default?.()
+</script>
+
 <script setup lang="ts">
 import {
   injectTooltipProviderContext,
@@ -7,7 +26,7 @@ import {
   TooltipRoot,
   TooltipTrigger,
 } from 'reka-ui'
-import { computed, Fragment } from 'vue'
+import { computed } from 'vue'
 import { tooltipContentVariants } from './Tooltip.variants'
 import type { TooltipProps } from './types'
 
@@ -32,9 +51,9 @@ const props = withDefaults(defineProps<TooltipProps>(), {
  */
 const ancestorProvider = injectTooltipProviderContext(null)
 
-const wrapper = computed(() => (ancestorProvider === null ? TooltipProvider : Fragment))
+const wrapper = computed(() => (ancestorProvider === null ? TooltipProvider : PassThrough))
 
-/** A `Fragment` takes no props; binding the delay to one would warn. */
+/** `PassThrough` takes no props; binding the delay to it would warn. */
 const wrapperProps = computed(() =>
   ancestorProvider === null ? { delayDuration: props.delay } : {}
 )

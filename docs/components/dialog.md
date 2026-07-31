@@ -16,6 +16,54 @@ shape, the token styling, and the opinions.
 </Dialog>
 ```
 
+<script setup>
+import { ref } from 'vue'
+
+const confirmOpen = ref(false)
+const termsOpen = ref(false)
+const deleted = ref(false)
+
+function remove() {
+  confirmOpen.value = false
+  deleted.value = true
+}
+</script>
+
+<DemoBox>
+  <Button variant="danger" @click="confirmOpen = true">Delete project</Button>
+  <Button variant="secondary" @click="termsOpen = true">Read the terms</Button>
+  <span v-if="deleted" class="text-sm text-text-muted">Deleted — and focus is back on the button that opened it.</span>
+
+  <Dialog
+    v-model:open="confirmOpen"
+    title="Delete Ada's project"
+    description="This cannot be undone."
+  >
+    Everything in the project goes with it: 12 tables, 3 saved filters, and every
+    invite link you have shared.
+    <template #footer>
+      <Button variant="ghost" @click="confirmOpen = false">Cancel</Button>
+      <Button variant="danger" @click="remove">Delete</Button>
+    </template>
+  </Dialog>
+
+  <Dialog v-model:open="termsOpen" title="Terms of service" size="lg">
+    <p v-for="n in 20" :key="n" class="!mt-0">
+      Clause {{ n }}. Nothing here is a real term. It is here so the body has
+      more content than the viewport, which is the only way to see that the body
+      scrolls while the header, the close button and the footer stay put.
+    </p>
+  </Dialog>
+</DemoBox>
+
+Open either one and press <kbd>Tab</kbd> a few times: focus cycles inside the
+dialog and does not reach the page behind it. <kbd>Esc</kbd> closes, clicking the
+scrim closes, and focus returns to the button you opened it from — which is the
+part that is easy to lose and very obvious to a keyboard user when it is missing.
+
+The second dialog is long on purpose. The **body is the only scrolling region**,
+so the title and the actions stay reachable no matter how much content there is.
+
 ## Anatomy
 
 | Part    | Purpose                                                         |

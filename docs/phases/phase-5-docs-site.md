@@ -64,6 +64,26 @@ page 3 at 50/page is a valid 101–150 of 247). Both rewritten to what the
 browser actually does. Axe over the demo blocks found a third: `EmptyState` at
 `level="3"` under the page `h1` is a `heading-order` violation.
 
+**The demos found a shipped bug, which is the argument for having them.**
+`Tooltip` inside a `TooltipProvider` rendered **nothing at all** — no bubble and
+no trigger, so the buttons were absent from the page with no error and no
+warning. The internal pass-through wrapper was Vue's `Fragment`, which
+`<component :is>` hands a slots object where it expects an array of vnodes. The
+provider arrangement is the one this page tells people to use for a toolbar, and
+it was broken in the published package; the story existed but only ever got
+looked at, never asserted. Fixed with a real pass-through functional component,
+three regression tests, and a patch changeset.
+
+**Two axe findings on the toast page, neither rowkit's.** `aria-hidden-focus`
+(2) is Reka's toast focus guards — already known, already scoped off for the
+Storybook run, still awaiting upstream. `color-contrast` (8) is entirely
+VitePress's default Shiki syntax theme: `github-light` tokens against the code
+block background land at 4.15–4.37 where AA wants 4.5. Worth knowing that this
+is **not** caused by the token mapping — measured against VitePress's own
+`#f6f6f7` the same token is 4.28, so it fails either way; the mapping moved it
+by 0.07. Fixing it means choosing a different Shiki theme, which is a look
+decision for the site owner, so it is recorded here rather than changed.
+
 **Original note:** VitePress builds pages through SSR, so the Phase 4 lessons apply directly — the Toast demo needs `<ClientOnly>`, and anything reading `window` at setup will break the _docs build_, not just a runtime. Budget twenty minutes for this; it's the predictable snag of the phase. If a demo fights SSR for longer than that, ship it as a static snippet with a "open in Storybook" link and move on.
 
 ### One domain, two artifacts
@@ -190,7 +210,7 @@ Session 5.1 ends with a deployed site. That ordering is deliberate — see above
 - [ ] `rowkit.dev` live, HTTPS, custom domain — **needs the Vercel project and DNS; everything up to the deploy is ready**
 - [x] Landing page with a working live DataTable demo — sorting and selection verified interactive in a browser, zero hydration warnings
 - [ ] Installation verified by executing both paths in fresh projects outside the monorepo
-- [ ] All twelve component pages: live demo, generated props table, "when not to use" intact — **nine have the demo** (the three overlays still need `<ClientOnly>` treatment); props tables are still hand-written
+- [ ] All twelve component pages: live demo, generated props table, "when not to use" intact — **all twelve have the demo**; props tables are still hand-written
 - [ ] Three pattern pages live
 - [ ] Tokens page renders from the tokens package, not hand-maintained
 - [ ] AGENTS.md generated from source, shipped in the package, rendered in docs
@@ -208,6 +228,11 @@ Session 5.1 ends with a deployed site. That ordering is deliberate — see above
 **Writing docs from memory.** Every installation page that rots started as "I know how it works, I'll just write it." The fresh-project verification is non-negotiable and takes 30 minutes.
 
 **Demo maximalism.** One demo block per component page. The urge to show every prop combination live belongs in Storybook, which is deployed and linked precisely so the docs don't have to do its job.
+
+> One deliberate exception: `tooltip.md` carries a second block in the
+> disabled-trigger section, showing the broken and working versions side by
+> side. It is the most-asked question about the component, and a trap is easier
+> to believe when you can hover both.
 
 **Treating the landing page as an afterthought.** It's the highest-traffic page by an order of magnitude. One hour, the structure above, done — but actually spend the hour.
 

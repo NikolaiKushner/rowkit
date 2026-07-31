@@ -12,6 +12,28 @@ A label for a control, on hover and on focus. Built on Reka UI's `Tooltip`.
 </Tooltip>
 ```
 
+<DemoBox>
+  <TooltipProvider :delay-duration="300" :skip-delay-duration="500">
+    <Tooltip content="Archive project">
+      <Button variant="ghost">Archive</Button>
+    </Tooltip>
+    <Tooltip content="Duplicate project" placement="bottom">
+      <Button variant="ghost">Duplicate</Button>
+    </Tooltip>
+    <Tooltip content="Export as CSV" placement="right">
+      <Button variant="ghost">Export</Button>
+    </Tooltip>
+  </TooltipProvider>
+</DemoBox>
+
+Hover the first button, then sweep across the other two. The first waits out the
+300ms delay; the rest open immediately, because they share a `TooltipProvider`
+and its `skipDelayDuration`. Without one, every button in a toolbar re-pays the
+full delay and the row feels broken.
+
+Tab to them instead and the tooltips open on focus, with no delay at all — a
+keyboard user has already committed to the control by the time they reach it.
+
 ## Props
 
 | Prop        | Type                                     | Default | Description                         |
@@ -75,6 +97,20 @@ browser behaviour, not something rowkit can work around.
   <Button aria-disabled="true" @click="showUpgrade">Export</Button>
 </Tooltip>
 ```
+
+<DemoBox>
+  <Tooltip content="Upgrade to export">
+    <Button disabled>Export (disabled)</Button>
+  </Tooltip>
+  <Tooltip content="Upgrade your plan to export">
+    <Button aria-disabled="true">Export (aria-disabled)</Button>
+  </Tooltip>
+</DemoBox>
+
+Hover both. Only the second one ever says anything — and it is the same tooltip,
+on the same component, with the same props. This is the one place the page
+carries a second demo block, because the trap is easier to believe when the
+broken version is sitting next to the working one.
 
 `aria-disabled` keeps the control in the tab order and announces it as
 unavailable, while leaving it able to fire events. Handle the click as a no-op,

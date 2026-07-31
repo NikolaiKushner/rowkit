@@ -21,6 +21,41 @@ danger('Could not save', {
 <Toaster />
 ```
 
+<script setup>
+import { useToast } from 'rowkit'
+
+const { success, warning, danger, dismissAll } = useToast()
+
+function retry() {
+  success('Saved')
+}
+</script>
+
+<DemoBox>
+  <Button variant="secondary" @click="success('Project archived')">success</Button>
+  <Button variant="secondary" @click="warning('Two seats left on this plan')">warning</Button>
+  <Button
+    variant="secondary"
+    @click="danger('Could not save', { duration: 0, action: { label: 'Retry', onClick: retry } })"
+  >danger, with an action</Button>
+  <Button variant="secondary" @click="success('Project archived')">fire a duplicate</Button>
+  <Button variant="ghost" @click="dismissAll()">dismiss all</Button>
+  <ClientOnly>
+    <Toaster />
+  </ClientOnly>
+</DemoBox>
+
+Press **success** twice quickly: you get one toast, not two. Duplicates fired
+inside the coalescing window collapse, because a retry loop that fires the same
+message forty times should not produce forty toasts.
+
+The **danger** one has `duration: 0` and never dismisses itself. Anything
+carrying an action has to wait for the user — a toast that takes its own retry
+button away after four seconds is worse than no toast.
+
+Hover any toast and its timer pauses; move away and it resumes. That is Reka's
+`ToastRoot`, not rowkit — the queue here owns no timers at all.
+
 ## The three pieces
 
 | Piece        | Role                                                      |
