@@ -12,6 +12,30 @@ make `Input` — and `Select` — correct without the consumer doing the work.
 </Field>
 ```
 
+<script setup>
+import { computed, ref } from 'vue'
+
+const email = ref('ada@')
+const error = computed(() => (/^[^@\s]+@[^@\s.]+\.\S+$/.test(email.value) ? undefined : 'Enter a valid email address.'))
+</script>
+
+<DemoBox layout="stack">
+  <Field label="Work email" hint="Used for billing receipts." :error="error" required>
+    <Input v-model="email" type="email" placeholder="ada@example.com" />
+  </Field>
+  <Field label="Team" hint="Everyone here inherits this team's permissions." disabled>
+    <Input model-value="Platform" />
+  </Field>
+</DemoBox>
+
+Type a valid address and the error goes; the hint stays throughout. Both are
+referenced by `aria-describedby` at once, so fixing a mistake never costs you
+the guidance that would have prevented it — which is what happens when a field
+swaps the hint out for the error.
+
+The second field is disabled at the `Field`, not the `Input`. The state flows
+down to whatever control is inside.
+
 ## Anatomy
 
 | Part    | Purpose                                                                     |

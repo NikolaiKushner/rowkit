@@ -18,6 +18,42 @@ const roles: SelectOption<'owner' | 'admin'>[] = [
 // role is 'owner' | 'admin' | undefined
 ```
 
+<script setup>
+import { ref } from 'vue'
+
+const role = ref()
+const timezone = ref()
+
+const roles = [
+  { label: 'Owner', value: 'owner' },
+  { label: 'Admin', value: 'admin' },
+  { label: 'Member', value: 'member' },
+  { label: 'Billing', value: 'billing', disabled: true },
+]
+
+const timezones = [
+  'Europe/London', 'Europe/Berlin', 'Europe/Kyiv', 'America/New_York',
+  'America/Los_Angeles', 'Asia/Tokyo', 'Asia/Singapore', 'Australia/Sydney',
+].map((value) => ({ label: value, value }))
+</script>
+
+<DemoBox align="end">
+  <Field label="Role" class="min-w-52">
+    <Select v-model="role" :options="roles" placeholder="Choose a role" />
+  </Field>
+  <Field label="Timezone" class="min-w-52">
+    <Select v-model="timezone" :options="timezones" placeholder="Choose a timezone" searchable />
+  </Field>
+</DemoBox>
+
+The first is a plain picker; the second is `searchable`, which is worth turning
+on somewhere around twenty options and costs a keystroke below that. Both are
+wrapped in `Field`, so the label, the generated id and the disabled state come
+from one place.
+
+Open either with the keyboard: <kbd>Enter</kbd> or <kbd>↓</kbd> opens the panel,
+typing filters when searchable, <kbd>Esc</kbd> closes without committing.
+
 ## Anatomy
 
 | Part    | Purpose                                                     |

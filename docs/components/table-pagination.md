@@ -9,6 +9,32 @@ numbers. Built on Reka UI's `Pagination` primitive.
 <TablePagination v-model:page="page" v-model:page-size="pageSize" :total="247" />
 ```
 
+<script setup>
+import { ref } from 'vue'
+
+const page = ref(1)
+const pageSize = ref(10)
+</script>
+
+<DemoBox layout="stack">
+  <TablePagination
+    v-model:page="page"
+    v-model:page-size="pageSize"
+    :total="247"
+    label="Example pagination"
+  />
+  <p class="!my-0 text-sm text-text-muted">
+    page {{ page }} · {{ pageSize }} per page
+  </p>
+</DemoBox>
+
+Go to page 3 — rows 21–30 — then switch to 50 per page. You stay on page 3 and
+the summary reads 101–150: a completely different set of rows, and deliberately
+so. The component reports both changes and lets the application decide what
+follows, because the right answer differs between "reset to page 1" and "keep
+the user near the row they were reading", and a component cannot know which one
+you meant.
+
 ## Anatomy
 
 | Part          | Purpose                                                        |

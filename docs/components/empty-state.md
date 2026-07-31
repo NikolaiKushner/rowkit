@@ -13,6 +13,54 @@ and a way forward — the last of which is the part usually missing.
 </EmptyState>
 ```
 
+<script setup>
+import { ref } from 'vue'
+
+const reason = ref('no-data')
+
+const copy = {
+  'no-data': { title: 'No projects yet', description: 'Projects group your work and control who can see it.' },
+  'no-results': { title: 'No projects match these filters' },
+  error: { title: "Couldn't load projects" },
+}
+</script>
+
+<DemoBox layout="stack">
+  <div class="flex flex-wrap gap-2">
+    <Button
+      v-for="value in ['no-data', 'no-results', 'error']"
+      :key="value"
+      size="sm"
+      :variant="reason === value ? 'primary' : 'secondary'"
+      @click="reason = value"
+    >{{ value }}</Button>
+  </div>
+  <EmptyState
+    :key="reason"
+    :reason="reason"
+    :title="copy[reason].title"
+    :description="copy[reason].description"
+    :announce="reason !== 'no-data'"
+    :level="2"
+  >
+    <template #actions>
+      <Button v-if="reason === 'no-data'">Create a project</Button>
+      <Button v-else-if="reason === 'no-results'" variant="secondary">Clear filters</Button>
+      <Button v-else variant="secondary">Try again</Button>
+    </template>
+  </EmptyState>
+</DemoBox>
+
+Switch between the three. They share a layout and mean completely different
+things — the action changes with the reason, which is the entire point of the
+prop. Only `no-data` supplies its own description here; the other two are the
+component's.
+
+The demo passes `:level="2"` because this page's own heading is the `h1` above
+it. Getting that wrong is not theoretical — axe caught this exact block at
+`level="3"`, which skips a level and breaks heading navigation for anyone
+moving through the page by structure.
+
 ## Anatomy
 
 | Part        | Purpose                                                         |

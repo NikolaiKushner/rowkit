@@ -12,10 +12,16 @@
 @import 'tailwindcss';
 @import '../../../packages/ui/src/styles/index.css';
 
-/* Tailwind skips node_modules; the demos render from source in this repo. */
+/*
+ * Tailwind skips node_modules; the demos render from source in this repo.
+ * Paths are relative to this file, so the markdown ones climb out of
+ * `.vitepress/` — `../components` would be `.vitepress/components`, which does
+ * not exist, and a non-existent source is not an error, it is just no CSS.
+ */
 @source '../../../packages/ui/src';
-@source '../components';
-@source '../*.md';
+@source './components';
+@source '../../components';
+@source '../../*.md';
 
 :root {
   --vp-c-brand-1: var(--color-primary-700);
@@ -44,21 +50,4 @@
   --vp-c-brand-2: var(--color-primary-400);
   --vp-c-brand-3: var(--color-primary-500);
   --vp-c-brand-soft: var(--color-primary-950);
-}
-
-/*
- * The container every live demo sits in. One place, so a demo cannot invent
- * its own padding or forget dark mode.
- */
-.rk-demo {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1.5rem;
-  margin: 1rem 0;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  /* Wide demos scroll inside the box rather than widening the page. */
-  overflow-x: auto;
 }

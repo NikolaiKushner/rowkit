@@ -9,6 +9,34 @@ not move the furniture.
 <Button variant="primary" :loading="saving" @click="save">Save changes</Button>
 ```
 
+<script setup>
+import { ref } from 'vue'
+
+const saving = ref(false)
+
+function save() {
+  saving.value = true
+  setTimeout(() => (saving.value = false), 1400)
+}
+</script>
+
+<DemoBox>
+  <Button variant="primary" :loading="saving" @click="save">Save changes</Button>
+  <Button variant="secondary">Cancel</Button>
+  <Button variant="ghost">Details</Button>
+  <Button variant="danger">Delete</Button>
+  <Button variant="secondary" disabled>Unavailable</Button>
+</DemoBox>
+
+Press **Save changes**. The button stays focused and stays clickable: loading
+sets `aria-busy` and makes the handler a no-op rather than setting `disabled`,
+so a keyboard user is not thrown back to the top of the document by their own
+action.
+
+The spinner occupies the leading slot. Give the button a leading icon and the
+width does not change at all when it starts — without one, as here, the button
+grows by the width of the spinner.
+
 ## Anatomy
 
 | Part          | Purpose                                                      |

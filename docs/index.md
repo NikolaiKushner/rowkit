@@ -60,7 +60,7 @@ const rows = useClientSort(people, sort, columns)
 
 Sort a column. Select some rows. This is the real component, not a screenshot.
 
-<div class="rk-demo">
+<DemoBox layout="stack">
   <DataTable
     :rows="rows"
     :columns="columns"
@@ -79,7 +79,7 @@ Sort a column. Select some rows. This is the real component, not a screenshot.
     {{ selected.length }} selected ·
     {{ sort ? `sorted by ${sort.key}, ${sort.direction}` : 'unsorted' }}
   </p>
-</div>
+</DemoBox>
 
 The table reports the sort and renders what it is handed — it never reorders its
 own rows. That keeps a server-paged table honest, and

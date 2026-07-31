@@ -1,6 +1,7 @@
 import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import * as rowkit from 'rowkit'
+import DemoBox from './components/DemoBox.vue'
 import './tokens.css'
 
 /**
@@ -22,5 +23,7 @@ export default {
         app.component(name, value as never)
       }
     }
+
+    app.component('DemoBox', DemoBox)
   },
 } satisfies Theme

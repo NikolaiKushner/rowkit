@@ -47,6 +47,23 @@ one: registering components by testing for `render` skips every
 `<script setup>` SFC, which exposes `setup`/`ssrRender` instead — every export
 is PascalCase, so that is the check that works.
 
+**A third silent one, found by the demo pass.** The `@source` directives in
+`theme/tokens.css` resolve relative to that file, so `'../components'` pointed
+at `.vitepress/components` — a directory that does not exist. A non-existent
+`@source` is not an error; it is simply no CSS. It went unnoticed because
+Tailwind's automatic source detection was covering `docs/` anyway, which is the
+worst kind of bug: correct output from a wrong configuration, waiting for
+someone to narrow the detection. Paths corrected to climb out of `.vitepress/`.
+
+**Demos are verified, not eyeballed.** Every claim a demo's prose makes is
+checked in a real browser before it ships, and two did not survive: the Button
+page claimed the width does not change under `loading` (it grows by the spinner
+when there is no leading icon — 24px, measured), and the TablePagination page
+described a page-size change putting the summary out of range (it does not;
+page 3 at 50/page is a valid 101–150 of 247). Both rewritten to what the
+browser actually does. Axe over the demo blocks found a third: `EmptyState` at
+`level="3"` under the page `h1` is a `heading-order` violation.
+
 **Original note:** VitePress builds pages through SSR, so the Phase 4 lessons apply directly — the Toast demo needs `<ClientOnly>`, and anything reading `window` at setup will break the _docs build_, not just a runtime. Budget twenty minutes for this; it's the predictable snag of the phase. If a demo fights SSR for longer than that, ship it as a static snippet with a "open in Storybook" link and move on.
 
 ### One domain, two artifacts
@@ -173,14 +190,14 @@ Session 5.1 ends with a deployed site. That ordering is deliberate — see above
 - [ ] `rowkit.dev` live, HTTPS, custom domain — **needs the Vercel project and DNS; everything up to the deploy is ready**
 - [x] Landing page with a working live DataTable demo — sorting and selection verified interactive in a browser, zero hydration warnings
 - [ ] Installation verified by executing both paths in fresh projects outside the monorepo
-- [ ] All twelve component pages: live demo, generated props table, "when not to use" intact
+- [ ] All twelve component pages: live demo, generated props table, "when not to use" intact — **nine have the demo** (the three overlays still need `<ClientOnly>` treatment); props tables are still hand-written
 - [ ] Three pattern pages live
 - [ ] Tokens page renders from the tokens package, not hand-maintained
 - [ ] AGENTS.md generated from source, shipped in the package, rendered in docs
 - [ ] Storybook deployed on its subdomain, linked from docs nav
 - [ ] Docs build clean — zero SSR errors, zero dead internal links (`vitepress build` fails on dead links by default; leave that on)
-- [ ] Site works on mobile (VitePress default handles this; verify the demo blocks don't overflow)
-- [ ] Dark mode toggle works and rowkit demos follow it
+- [x] Site works on mobile — measured at 375px across all ten pages with a demo: **zero horizontal page overflow everywhere**, and the one wide demo (`TablePagination`, 19px over) scrolls inside its own box, which is the intended behaviour
+- [x] Dark mode toggle works and rowkit demos follow it — the demo container flips `oklch(1 0 0)` → `oklch(0.21 0.033 264)` off the semantic token, with no per-demo styling involved
 
 ---
 

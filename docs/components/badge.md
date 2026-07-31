@@ -9,6 +9,19 @@ where the same handful of values repeat down the page.
 <Badge variant="success" dot>Active</Badge>
 ```
 
+<DemoBox>
+  <Badge variant="success" dot>Active</Badge>
+  <Badge variant="warning" dot>Invited</Badge>
+  <Badge variant="danger" dot>Suspended</Badge>
+  <Badge variant="neutral">Archived</Badge>
+  <Badge variant="primary" appearance="solid">Beta</Badge>
+  <Badge variant="neutral" appearance="outline" size="sm">v0.4</Badge>
+</DemoBox>
+
+The first three are the shape a status column takes. Note that they stay
+readable with the colour removed — the word carries the meaning, and the dot is
+there to give the eye something to lock onto down a repeating column.
+
 ## Anatomy
 
 | Part      | Purpose                                                                      |

@@ -10,6 +10,23 @@ into the layout that is arriving.
 <Skeleton :lines="3" />
 ```
 
+<DemoBox layout="stack">
+  <div class="flex items-center gap-4">
+    <Skeleton variant="circle" />
+    <div class="flex-1">
+      <Skeleton :lines="2" />
+    </div>
+  </div>
+  <Skeleton variant="rect" class="h-24" />
+</DemoBox>
+
+An avatar, two lines of prose and a thumbnail — assembled from the three
+primitives rather than configured through a prop. The last line of the stack is
+shortened because real paragraphs do not end flush with the margin.
+
+The pulse is behind `motion-safe:`. Turn on "Reduce motion" in your OS and
+reload: the shapes stay, the animation goes, and nothing else changes.
+
 ## Anatomy
 
 | Part      | Purpose                                                           |
