@@ -38,6 +38,12 @@ paragraph becomes the table cell, so lead with the summary and put the reasoning
 in the paragraphs after it — those stay in the source for anyone reading the
 type, and stay out of a table cell that cannot hold them.
 
+The same comment feeds `AGENTS.md` (`pnpm docs:agents`), which ships inside the
+npm package so a coding agent working in a consumer's project can read the API
+of the exact version installed. That one takes models, events and slots as well,
+so `defineModel`, `defineEmits` and `defineSlots` members want a JSDoc comment
+for the same reason props do.
+
 ### Optional props and `exactOptionalPropertyTypes`
 
 TypeScript is strict, and `exactOptionalPropertyTypes` is on. Two consequences

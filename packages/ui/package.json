@@ -1,7 +1,7 @@
 {
   "name": "rowkit",
   "version": "0.0.0",
-  "description": "Vue 3 components for data-dense SaaS interfaces — tables, filters, and the states around them.",
+  "description": "Vue 3 components for data-dense SaaS interfaces \u2014 tables, filters, and the states around them.",
   "license": "MIT",
   "author": "Nikolai Kushner",
   "homepage": "https://rowkit.dev",
@@ -22,7 +22,8 @@
   "type": "module",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "AGENTS.md"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",

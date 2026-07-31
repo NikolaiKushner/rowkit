@@ -67,6 +67,7 @@ export default defineConfig({
           { text: 'Introduction', link: '/introduction' },
           { text: 'Installation', link: '/installation' },
           { text: 'API conventions', link: '/conventions' },
+          { text: 'For coding agents', link: '/agents' },
         ],
       },
       {

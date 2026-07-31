@@ -257,6 +257,35 @@ Generated, not written: a script walks the exported components and emits every c
 
 Wire the generation into the build so it regenerates on release. This is a genuinely differentiating feature this year — AI-assisted consumers get correct usage on the first try — and it's also the closing paragraph of your launch post.
 
+> **Done.** `pnpm docs:agents` writes `packages/ui/AGENTS.md` (in `files`, so it
+> publishes — verified with `npm pack --dry-run`: 19.3 kB on disk at
+> `node_modules/rowkit/AGENTS.md`) and `docs/agents.md` for the site.
+>
+> It covers more than props: `defineModel`, `defineEmits` and `defineSlots` are
+> parsed too, so `v-model:sort`, `@row:click` and `#cell:<key>` are all in there
+> with their JSDoc. Two details worth keeping. `DataTable`'s per-column slot
+> lives in a mapped type intersected with the literal one, and reading only the
+> literal half silently drops the single most useful thing about rendering a
+> cell — so the `Record` half is read as well and `${string}` is rewritten to
+> `<key>`, which is what someone actually types. And slot props declared as a
+> local alias are **inlined**: `CellSlotProps` names nothing an agent can
+> resolve, `{ row: TRow; column: DataTableColumn<TRow>; … }` names everything.
+>
+> The extraction now lives in `scripts/component-api.mjs`, shared with the props
+> tables, so the two cannot describe the same component differently. The props
+> generator was rewritten onto it and reproduced its output byte for byte.
+>
+> **Not wired into `build`.** The spec asks for that, and it would defeat the
+> drift test: CI runs build before test, so the generator would regenerate the
+> file and the test would then compare it against itself and always pass. The
+> file is committed, `files` publishes it, and `src/agents-doc.test.ts` fails
+> when it goes stale — which is the guarantee the build wiring was after.
+>
+> The preamble — the two required CSS imports, `<ClientOnly>` for `Toaster`, who
+> owns state — is hand-written on purpose. None of it is visible in a type, and
+> the missing `rowkit/styles` import is the failure most likely to cost a
+> consumer an afternoon.
+
 ---
 
 ## Deployment
@@ -291,7 +320,7 @@ Session 5.1 ends with a deployed site. That ordering is deliberate — see above
 - [x] All twelve component pages: live demo, generated props table, "when not to use" intact — thirteen tables (twelve components plus `Input`) generated from the source, with a drift test standing behind them
 - [ ] Three pattern pages live
 - [x] Tokens page renders from the tokens package, not hand-maintained — 5 colour ramps, 7 scales, 147 copy targets, all read from `tokens` at render time
-- [ ] AGENTS.md generated from source, shipped in the package, rendered in docs
+- [x] AGENTS.md generated from source, shipped in the package, rendered in docs — 13 sections, 19.3 kB, confirmed present in `npm pack --dry-run`
 - [ ] Storybook deployed on its subdomain, linked from docs nav
 - [ ] Docs build clean — zero SSR errors, zero dead internal links (`vitepress build` fails on dead links by default; leave that on)
 - [x] Site works on mobile — measured at 375px across all ten pages with a demo: **zero horizontal page overflow everywhere**, and the one wide demo (`TablePagination`, 19px over) scrolls inside its own box, which is the intended behaviour
