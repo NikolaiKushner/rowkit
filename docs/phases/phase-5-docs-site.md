@@ -183,6 +183,27 @@ Exists since Phase 1; this phase upgrades it to a live reference:
 - A dark-mode toggle demo on the page showing semantic tokens flipping while primitives hold
 - Copy-on-click for token names — trivial to add, disproportionately appreciated
 
+> **Written**, as `docs/foundations/tokens.md` — the page was missing entirely
+> rather than needing an upgrade, so this also closes a Phase 1 gap. Two theme
+> components do the work: `ColorScale` for the ramps and one generic `TokenGrid`
+> with a `preview` slot for spacing, radii, shadows, layers and motion, because
+> those differ only in how a value is best shown.
+>
+> The dark-mode claim is measured, not asserted: toggling the theme moves the
+> semantic swatch from `oklch(0.984 0.003 264)` to `oklch(0.13 0.036 264)` while
+> the primitive above it does not move at all. Clipboard verified to receive
+> `--color-primary-600` — the custom property, not the raw value, since that is
+> what someone pastes into a stylesheet.
+>
+> **A silent Vue trap, and a good one.** The slot originally passed the token's
+> name as `:name`. On a `<slot>` element `name` is the attribute that _chooses_
+> which slot to render, so binding it dynamically turned the outlet into a
+> dynamic one looking for a slot called `background` — which does not exist.
+> Every preview cell rendered empty, in SSR and on the client, with no error
+> anywhere. The prop is `token` now. Same family as the `Fragment` bug on
+> `Tooltip`: Vue has a handful of names that are structural rather than data,
+> and passing data through one fails by rendering nothing.
+
 ### Patterns — the section that sells seniority
 
 Three pages, each the same shape: the finished result live at the top, then the complete code, then 3–5 short notes on _why_ it's wired that way (why page resets on filter change, why the empty state switches to `no-results`, why the skeleton delays 150ms).
@@ -269,7 +290,7 @@ Session 5.1 ends with a deployed site. That ordering is deliberate — see above
 - [ ] Installation verified by executing both paths in fresh projects outside the monorepo
 - [x] All twelve component pages: live demo, generated props table, "when not to use" intact — thirteen tables (twelve components plus `Input`) generated from the source, with a drift test standing behind them
 - [ ] Three pattern pages live
-- [ ] Tokens page renders from the tokens package, not hand-maintained
+- [x] Tokens page renders from the tokens package, not hand-maintained — 5 colour ramps, 7 scales, 147 copy targets, all read from `tokens` at render time
 - [ ] AGENTS.md generated from source, shipped in the package, rendered in docs
 - [ ] Storybook deployed on its subdomain, linked from docs nav
 - [ ] Docs build clean — zero SSR errors, zero dead internal links (`vitepress build` fails on dead links by default; leave that on)

@@ -71,7 +71,10 @@ export default defineConfig({
       },
       {
         text: 'Foundations',
-        items: [{ text: 'Button', link: '/components/button' }],
+        items: [
+          { text: 'Tokens', link: '/foundations/tokens' },
+          { text: 'Button', link: '/components/button' },
+        ],
       },
       {
         text: 'Forms',

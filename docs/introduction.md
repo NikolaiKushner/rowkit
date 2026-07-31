@@ -109,5 +109,7 @@ phase of the plan. Until then, the source and the full roadmap are on
   is the step people miss
 - [API conventions](/conventions) — the rules every component follows, decided
   once
+- [Tokens](/foundations/tokens) — every colour, space and layer, rendered live
+  from the package
 - [DataTable](/components/data-table) — the centrepiece, and the fastest way to
   see whether this library is for you
