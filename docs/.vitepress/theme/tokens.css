@@ -1,0 +1,64 @@
+/*
+ * The docs site brands itself from rowkit's own tokens.
+ *
+ * VitePress's default theme is entirely CSS-variable driven, so mapping its
+ * brand slots onto `@rowkit/tokens` means the site is a consumer of the package
+ * it documents. If a token changes, the site changes — there is no second
+ * palette to keep in sync, and no screenshot to go stale.
+ *
+ * Tailwind and rowkit's theme are imported here too, because the live demos on
+ * component pages are real rowkit components and need real rowkit utilities.
+ */
+@import 'tailwindcss';
+@import '../../../packages/ui/src/styles/index.css';
+
+/* Tailwind skips node_modules; the demos render from source in this repo. */
+@source '../../../packages/ui/src';
+@source '../components';
+@source '../*.md';
+
+:root {
+  --vp-c-brand-1: var(--color-primary-700);
+  --vp-c-brand-2: var(--color-primary-600);
+  --vp-c-brand-3: var(--color-primary-500);
+  --vp-c-brand-soft: var(--color-primary-100);
+
+  --vp-c-bg: var(--color-background);
+  --vp-c-bg-alt: var(--color-surface-subtle);
+  --vp-c-bg-soft: var(--color-surface-subtle);
+
+  --vp-c-text-1: var(--color-text);
+  --vp-c-text-2: var(--color-text-muted);
+  --vp-c-text-3: var(--color-text-subtle);
+
+  --vp-c-divider: var(--color-border);
+  --vp-c-gutter: var(--color-border);
+
+  --vp-button-brand-bg: var(--color-primary-solid);
+  --vp-button-brand-hover-bg: var(--color-primary-solid-hover);
+  --vp-button-brand-text: var(--color-primary-on-solid);
+}
+
+.dark {
+  --vp-c-brand-1: var(--color-primary-300);
+  --vp-c-brand-2: var(--color-primary-400);
+  --vp-c-brand-3: var(--color-primary-500);
+  --vp-c-brand-soft: var(--color-primary-950);
+}
+
+/*
+ * The container every live demo sits in. One place, so a demo cannot invent
+ * its own padding or forget dark mode.
+ */
+.rk-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  /* Wide demos scroll inside the box rather than widening the page. */
+  overflow-x: auto;
+}

@@ -14,6 +14,15 @@ One framing thought before the task list: **for a library nobody has heard of, t
 
 ### VitePress, default theme, customized — not a custom theme
 
+> **Version skew, recorded.** VitePress 1.6.4 bundles its own **Vite 5**, while
+> the library builds on Vite 8. Harmless at runtime — VitePress uses its copy —
+> but the two sets of types cannot share a TypeScript project: pulling
+> `docs/.vitepress/**/*.ts` into the root `tsconfig.json` fails on
+> `http-proxy` server types. The folder has its own `tsconfig.json`, which the
+> lint project service finds, and the root project leaves it out. Same shape as
+> the Storybook 9-versus-Vite-8 finding in Phase 0b: check the heaviest
+> dependency's peer range before writing a version into a spec.
+
 The temptation is a bespoke design (you're a frontend engineer building a design system; of course you want the docs to look designed). Resist it in v1:
 
 - The default theme ships search, sidebar, prev/next, mobile nav, dark mode, and a11y for free — rebuilding those is a week of work that produces a worse version
@@ -28,7 +37,17 @@ VitePress renders Vue in markdown, so rowkit components can run live on their ow
 - Each component page gets **one live demo block** at the top: the component in its default state plus 2–3 variants, wrapped in a shared `<DemoBox>` container (bordered, padded, dark-mode-aware — build it once, ~30 lines)
 - Interactive playgrounds with editable props are **out of scope** — that's what the linked Storybook is for. Duplicating Storybook inside VitePress is the classic docs-site scope explosion
 
-**SSR trap, known in advance:** VitePress builds pages through SSR, so the Phase 4 lessons apply directly — the Toast demo needs `<ClientOnly>`, and anything reading `window` at setup will break the _docs build_, not just a runtime. Budget twenty minutes for this; it's the predictable snag of the phase. If a demo fights SSR for longer than that, ship it as a static snippet with a "open in Storybook" link and move on.
+**SSR trap, and a second one that was not predicted.** The predicted trap is
+real — the Toast demo will need `<ClientOnly>`. The unpredicted one cost more:
+Vite inlines an `@import` but does **not** run Tailwind, so the site loaded the
+token custom properties, generated no utilities at all, and rendered every demo
+unstyled with nothing in the console. `@tailwindcss/vite` in the VitePress
+`vite.plugins` is the fix, exactly as in `.storybook/main.ts`. A second silent
+one: registering components by testing for `render` skips every
+`<script setup>` SFC, which exposes `setup`/`ssrRender` instead — every export
+is PascalCase, so that is the check that works.
+
+**Original note:** VitePress builds pages through SSR, so the Phase 4 lessons apply directly — the Toast demo needs `<ClientOnly>`, and anything reading `window` at setup will break the _docs build_, not just a runtime. Budget twenty minutes for this; it's the predictable snag of the phase. If a demo fights SSR for longer than that, ship it as a static snippet with a "open in Storybook" link and move on.
 
 ### One domain, two artifacts
 
@@ -151,8 +170,8 @@ Session 5.1 ends with a deployed site. That ordering is deliberate — see above
 
 ## Phase Definition of Done
 
-- [ ] `rowkit.dev` live, HTTPS, custom domain
-- [ ] Landing page with a working live DataTable demo
+- [ ] `rowkit.dev` live, HTTPS, custom domain — **needs the Vercel project and DNS; everything up to the deploy is ready**
+- [x] Landing page with a working live DataTable demo — sorting and selection verified interactive in a browser, zero hydration warnings
 - [ ] Installation verified by executing both paths in fresh projects outside the monorepo
 - [ ] All twelve component pages: live demo, generated props table, "when not to use" intact
 - [ ] Three pattern pages live
