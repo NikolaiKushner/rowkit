@@ -89,13 +89,17 @@ in a provide/inject tree. Rendering stays in one place so stacking is coherent.
 
 ## `<Toaster />`
 
-| Prop         | Type                                                               | Default          | Description                     |
-| ------------ | ------------------------------------------------------------------ | ---------------- | ------------------------------- |
-| `position`   | `'top-right' \| 'top-center' \| 'bottom-right' \| 'bottom-center'` | `'bottom-right'` | Which edge the stack grows from |
-| `max`        | `number`                                                           | `3`              | Visible at once; the rest wait  |
-| `label`      | `string`                                                           | `'Notification'` | Announced before each toast     |
-| `closeLabel` | `string`                                                           | `'Dismiss'`      | Name for each close button      |
-| `class`      | `string`                                                           | —                | Merged onto the viewport        |
+<!-- @props ToasterProps -->
+
+| Prop         | Type                                                               | Default          | Description                                                                                                 |
+| ------------ | ------------------------------------------------------------------ | ---------------- | ----------------------------------------------------------------------------------------------------------- |
+| `position`   | `'top-right' \| 'top-center' \| 'bottom-right' \| 'bottom-center'` | `'bottom-right'` | Which corner or edge the stack grows from.                                                                  |
+| `max`        | `number`                                                           | `3`              | How many toasts are on screen at once. The rest wait, FIFO.                                                 |
+| `label`      | `string`                                                           | `'Notification'` | Announced by a screen reader before each toast, to associate the interruption with the notification region. |
+| `closeLabel` | `string`                                                           | `'Dismiss'`      | Accessible name for each toast's close button.                                                              |
+| `class`      | `string`                                                           | —                | Additional classes for the viewport, merged so a consumer's utility wins.                                   |
+
+<!-- /@props -->
 
 ## When to use
 

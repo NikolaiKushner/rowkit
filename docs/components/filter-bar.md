@@ -139,19 +139,23 @@ not `'role-admin'`. The value changes; the identity should not.
 
 ## Props
 
-| Prop                | Type           | Default                    | Description                               |
-| ------------------- | -------------- | -------------------------- | ----------------------------------------- |
-| `filters`           | `FilterChip[]` | `[]`                       | The filters currently applied             |
-| `resultCount`       | `number`       | —                          | Matching rows. Announced when it changes  |
-| `searchable`        | `boolean`      | `true`                     | Show the search box                       |
-| `searchPlaceholder` | `string`       | `'Search…'`                | Placeholder for the search box            |
-| `searchLabel`       | `string`       | `'Search'`                 | Accessible name, visually hidden          |
-| `clearLabel`        | `string`       | `'Clear all'`              | Label for the clear-all control           |
-| `removeLabel`       | `string`       | `'Remove {filter} filter'` | `{filter}` is replaced with the chip text |
-| `label`             | `string`       | `'Filters'`                | Accessible name for the landmark          |
-| `size`              | `'sm' \| 'md'` | `'md'`                     | Control height and text size              |
-| `disabled`          | `boolean`      | `false`                    | Disables every control                    |
-| `class`             | `string`       | —                          | Merged so your utility wins               |
+<!-- @props FilterBarProps -->
+
+| Prop                | Type           | Default                    | Description                                                                                 |
+| ------------------- | -------------- | -------------------------- | ------------------------------------------------------------------------------------------- |
+| `filters`           | `FilterChip[]` | `() => []`                 | The filters currently applied, shown as chips.                                              |
+| `resultCount`       | `number`       | —                          | Number of matching rows.                                                                    |
+| `searchable`        | `boolean`      | `true`                     | Shows the search box.                                                                       |
+| `searchPlaceholder` | `string`       | `'Search…'`                | Placeholder for the search box.                                                             |
+| `searchLabel`       | `string`       | `'Search'`                 | Accessible name for the search box. Visually hidden.                                        |
+| `clearLabel`        | `string`       | `'Clear all'`              | Label for the clear-all control.                                                            |
+| `removeLabel`       | `string`       | `'Remove {filter} filter'` | Accessible name for the chip's remove control. `{filter}` is replaced with the chip's text. |
+| `label`             | `string`       | `'Filters'`                | Accessible name for the region.                                                             |
+| `size`              | `'sm' \| 'md'` | `'md'`                     | Control height and text size.                                                               |
+| `disabled`          | `boolean`      | `false`                    | Disables every control.                                                                     |
+| `class`             | `string`       | —                          | Additional classes, merged so a consumer's utility wins.                                    |
+
+<!-- /@props -->
 
 ### FilterChip
 

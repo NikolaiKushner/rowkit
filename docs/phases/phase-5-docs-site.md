@@ -170,6 +170,36 @@ Each of the twelve existing pages gets, in one sweep:
 
 - The live `<DemoBox>` block at top
 - A props table **generated from source, not hand-written** — small build script parsing the exported prop types/JSDoc into markdown (or `vue-component-meta` if it cooperates within an hour; script otherwise). Hand-written props tables are stale by the second release, and the JSDoc-on-every-prop rule from Phase 0 was building exactly this payoff
+
+  > **Done, with the script.** `packages/ui/scripts/generate-props.mjs`, run by
+  > `pnpm docs:props`, filling `<!-- @props Name -->` blocks. No new dependency:
+  > `typescript`, `vue/compiler-sfc` and `prettier` were all here already.
+  >
+  > Three things it does that a naive version does not. It resolves types
+  > through the **type checker** rather than reading the syntax, because
+  > `NonNullable<BadgeVariants['variant']>` is what the source says and
+  > `'neutral' | 'primary' | …` is what a reader needs — and it expands aliases
+  > for the same reason, since `TooltipPlacement` names a union without
+  > describing it. It **parses** the SFC for `withDefaults` rather than
+  > pattern-matching it, after a regular expression reported no defaults at all
+  > for `DataTable` and `Select` — `defineProps<DataTableProps<TRow>>()` closes
+  > the match at the first `>`, so the failure hit exactly the components whose
+  > defaults are hardest to guess. And it emits **Prettier-formatted** output,
+  > because Prettier aligns markdown tables and otherwise the two rewrite each
+  > other forever.
+  >
+  > It also documents `false` for an optional boolean with no explicit default,
+  > since Vue casts a missing Boolean prop rather than leaving it `undefined` —
+  > printing `—` would describe a state the component cannot be in.
+  >
+  > `src/props-docs.test.ts` is what makes "generated" true rather than
+  > aspirational: it regenerates every page and fails on any difference. Proved
+  > by editing one JSDoc line and watching it fail. One of its assertions exists
+  > because the first block regular expression matched from the first opening
+  > marker to the first closing one, which on `field.md` swallowed `InputProps`
+  > entirely — and every other assertion still passed, because a table that no
+  > longer exists cannot drift.
+
 - Verify the "when not to use" section survived — it's the most-read section on every page
 - Prev/next links follow the sidebar order
 
@@ -210,7 +240,7 @@ Session 5.1 ends with a deployed site. That ordering is deliberate — see above
 - [ ] `rowkit.dev` live, HTTPS, custom domain — **needs the Vercel project and DNS; everything up to the deploy is ready**
 - [x] Landing page with a working live DataTable demo — sorting and selection verified interactive in a browser, zero hydration warnings
 - [ ] Installation verified by executing both paths in fresh projects outside the monorepo
-- [ ] All twelve component pages: live demo, generated props table, "when not to use" intact — **all twelve have the demo**; props tables are still hand-written
+- [x] All twelve component pages: live demo, generated props table, "when not to use" intact — thirteen tables (twelve components plus `Input`) generated from the source, with a drift test standing behind them
 - [ ] Three pattern pages live
 - [ ] Tokens page renders from the tokens package, not hand-maintained
 - [ ] AGENTS.md generated from source, shipped in the package, rendered in docs

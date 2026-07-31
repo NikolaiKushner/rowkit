@@ -61,15 +61,19 @@ reload: the shapes stay, the animation goes, and nothing else changes.
 
 ## Props
 
-| Prop       | Type                           | Default  | Description                                                       |
-| ---------- | ------------------------------ | -------- | ----------------------------------------------------------------- |
-| `variant`  | `'text' \| 'circle' \| 'rect'` | `'text'` | Geometry preset                                                   |
-| `lines`    | `number`                       | `1`      | Stacked bars. Only meaningful for `text`                          |
-| `animated` | `boolean`                      | `true`   | Pulse. Suppressed for reduced-motion users regardless             |
-| `label`    | `string`                       | —        | Announces this element as a busy region. Omit for decorative bars |
-| `class`    | `string`                       | —        | Merged so your utility wins over the component's                  |
-| `as`       | `string \| Component`          | `'div'`  | Element to render                                                 |
-| `asChild`  | `boolean`                      | `false`  | Merge props onto the child instead of wrapping                    |
+<!-- @props SkeletonProps -->
+
+| Prop       | Type                           | Default  | Description                                                                                                |
+| ---------- | ------------------------------ | -------- | ---------------------------------------------------------------------------------------------------------- |
+| `variant`  | `'text' \| 'circle' \| 'rect'` | `'text'` | Geometry preset.                                                                                           |
+| `lines`    | `number`                       | `1`      | Number of stacked bars. Only meaningful for `text`.                                                        |
+| `animated` | `boolean`                      | `true`   | Whether the placeholder pulses. Suppressed automatically for anyone with `prefers-reduced-motion`.         |
+| `label`    | `string`                       | —        | Announces this placeholder to assistive technology as a busy region.                                       |
+| `class`    | `string`                       | —        | Additional classes, merged with the variant classes so a consumer's utility wins over the component's own. |
+| `as`       | `string \| Component`          | `'div'`  | Element or component to render as.                                                                         |
+| `asChild`  | `boolean`                      | `false`  | Merge props onto the single child element instead of rendering a wrapper.                                  |
+
+<!-- /@props -->
 
 Sizing beyond the presets goes through `class` — `<Skeleton class="h-24 w-1/3" />`.
 The variant defaults are merged away rather than fought with, so there is no

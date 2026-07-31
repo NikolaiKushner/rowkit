@@ -31,6 +31,13 @@ consumer's utility wins over the component's own without a specificity fight.
 A comment that restates the prop name is worse than none — say why it exists or
 when to reach for it.
 
+The props table on every component page is **generated from this comment**, not
+written by hand: `pnpm docs:props` fills in the `<!-- @props … -->` blocks, and
+`src/props-docs.test.ts` fails if the committed pages have drifted. The first
+paragraph becomes the table cell, so lead with the summary and put the reasoning
+in the paragraphs after it — those stay in the source for anyone reading the
+type, and stay out of a table cell that cannot hold them.
+
 ### Optional props and `exactOptionalPropertyTypes`
 
 TypeScript is strict, and `exactOptionalPropertyTypes` is on. Two consequences

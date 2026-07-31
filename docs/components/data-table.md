@@ -111,25 +111,28 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 
 ## Props
 
-| Prop               | Type                      | Default             | Description                           |
-| ------------------ | ------------------------- | ------------------- | ------------------------------------- |
-| `rows`             | `TRow[]`                  | —                   | Required                              |
-| `columns`          | `DataTableColumn<TRow>[]` | —                   | Required, in display order            |
-| `caption`          | `string`                  | —                   | Required. The table's accessible name |
-| `captionVisible`   | `boolean`                 | `false`             | Show the caption                      |
-| `loading`          | `boolean`                 | `false`             | Swap the body for placeholder rows    |
-| `loadingRows`      | `number`                  | `5`                 | How many placeholders                 |
-| `loadingLabel`     | `string`                  | `'Loading'`         | Announced while loading               |
-| `emptyTitle`       | `string`                  | `'Nothing to show'` | Title for the built-in empty state    |
-| `emptyDescription` | `string`                  | —                   | Description for the empty state       |
-| `sortMode`         | `'manual' \| 'client'`    | `'manual'`          | Who reorders the rows                 |
-| `selectable`       | `'single' \| 'multiple'`  | —                   | Adds a selection column               |
-| `rowLabel`         | `(row, index) => string`  | —                   | Accessible name for a row's control   |
-| `selectionLabel`   | `string`                  | `'Select'`          | Name for the selection column         |
-| `selectAllLabel`   | `string`                  | `'Select all rows'` | Name for the select-all control       |
-| `size`             | `'sm' \| 'md'`            | `'md'`              | Row height and text size              |
-| `hoverable`        | `boolean`                 | `false`             | Highlight rows on hover               |
-| `class`            | `string`                  | —                   | Merged onto the scroll container      |
+<!-- @props DataTableProps -->
+
+| Prop               | Type                                   | Default             | Description                                                                       |
+| ------------------ | -------------------------------------- | ------------------- | --------------------------------------------------------------------------------- |
+| `rows`             | `TRow[]`                               | **required**        | The rows to render.                                                               |
+| `columns`          | `DataTableColumn<TRow>[]`              | **required**        | Column definitions, in display order.                                             |
+| `caption`          | `string`                               | **required**        | Accessible name for the table.                                                    |
+| `captionVisible`   | `boolean`                              | `false`             | Shows the caption. It is available to assistive technology either way.            |
+| `loading`          | `boolean`                              | `false`             | Swaps the body for placeholder rows.                                              |
+| `loadingRows`      | `number`                               | `5`                 | How many placeholder rows to show while loading.                                  |
+| `loadingLabel`     | `string`                               | `'Loading'`         | Announced while loading.                                                          |
+| `emptyTitle`       | `string`                               | `'Nothing to show'` | Title for the built-in empty state.                                               |
+| `emptyDescription` | `string`                               | —                   | Description for the built-in empty state.                                         |
+| `selectable`       | `'single' \| 'multiple'`               | —                   | Adds a selection column.                                                          |
+| `rowLabel`         | `(row: TRow, index: number) => string` | —                   | Accessible name for each row's selection control.                                 |
+| `selectionLabel`   | `string`                               | `'Select'`          | Accessible name for the selection column.                                         |
+| `selectAllLabel`   | `string`                               | `'Select all rows'` | Accessible name for the select-all control.                                       |
+| `size`             | `'sm' \| 'md'`                         | `'md'`              | Row height and text size.                                                         |
+| `hoverable`        | `boolean`                              | `false`             | Highlights rows on hover. Only turn this on when a row does something.            |
+| `class`            | `string`                               | —                   | Additional classes for the scroll container, merged so a consumer's utility wins. |
+
+<!-- /@props -->
 
 ### v-model
 

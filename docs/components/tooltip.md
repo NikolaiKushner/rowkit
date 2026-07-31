@@ -36,12 +36,16 @@ keyboard user has already committed to the control by the time they reach it.
 
 ## Props
 
-| Prop        | Type                                     | Default | Description                         |
-| ----------- | ---------------------------------------- | ------- | ----------------------------------- |
-| `content`   | `string`                                 | —       | Required. The label. String only    |
-| `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'top'` | Preferred side. Flips on collision  |
-| `delay`     | `number`                                 | `300`   | Milliseconds before opening         |
-| `disabled`  | `boolean`                                | `false` | Off, without unwrapping the trigger |
+<!-- @props TooltipProps -->
+
+| Prop        | Type                                     | Default      | Description                                                                                      |
+| ----------- | ---------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------ |
+| `content`   | `string`                                 | **required** | The label. A plain string, and **only** a string — there is no slot for rich content, by design. |
+| `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'top'`      | Preferred side. Flips automatically on collision.                                                |
+| `delay`     | `number`                                 | `300`        | Delay before opening, in milliseconds.                                                           |
+| `disabled`  | `boolean`                                | `false`      | Turns the tooltip off without unwrapping the trigger.                                            |
+
+<!-- /@props -->
 
 ### Slots
 

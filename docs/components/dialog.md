@@ -77,14 +77,18 @@ so the title and the actions stay reachable no matter how much content there is.
 
 ## Props
 
-| Prop           | Type                   | Default          | Description                                   |
-| -------------- | ---------------------- | ---------------- | --------------------------------------------- |
-| `title`        | `string`               | —                | Required. The accessible name                 |
-| `description`  | `string`               | —                | Wired to `aria-describedby`                   |
-| `size`         | `'sm' \| 'md' \| 'lg'` | `'md'`           | Width preset. Height follows content          |
-| `preventClose` | `boolean`              | `false`          | Blocks Escape and the scrim, never the button |
-| `closeLabel`   | `string`               | `'Close dialog'` | Accessible name for the close button          |
-| `class`        | `string`               | —                | Merged onto the surface                       |
+<!-- @props DialogProps -->
+
+| Prop           | Type                   | Default          | Description                                                                               |
+| -------------- | ---------------------- | ---------------- | ----------------------------------------------------------------------------------------- |
+| `title`        | `string`               | **required**     | Accessible name, rendered as the heading.                                                 |
+| `description`  | `string`               | —                | Supporting text under the title, wired to `aria-describedby`.                             |
+| `size`         | `'sm' \| 'md' \| 'lg'` | `'md'`           | Width preset. Height is content-driven, capped to the viewport.                           |
+| `preventClose` | `boolean`              | `false`          | Blocks Escape and clicking the scrim, for a flow where dismissing by accident loses work. |
+| `closeLabel`   | `string`               | `'Close dialog'` | Accessible name for the close button.                                                     |
+| `class`        | `string`               | —                | Additional classes for the dialog surface, merged so a consumer's utility wins.           |
+
+<!-- /@props -->
 
 ### v-model
 

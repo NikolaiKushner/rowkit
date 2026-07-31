@@ -119,17 +119,21 @@ to someone who has fifty projects and a bad filter is worse than saying nothing.
 
 ## Props
 
-| Prop          | Type                                   | Default     | Description                                               |
-| ------------- | -------------------------------------- | ----------- | --------------------------------------------------------- |
-| `title`       | `string`                               | —           | Required. What is empty, in a few words                   |
-| `description` | `string`                               | —           | One sentence on what to do next. Defaulted by `reason`    |
-| `reason`      | `'no-data' \| 'no-results' \| 'error'` | `'no-data'` | Why the view is empty. Drives tone and default copy       |
-| `size`        | `'sm' \| 'md' \| 'lg'`                 | `'md'`      | Scales every part together. `sm` fits inside a table body |
-| `level`       | `1 \| 2 \| 3 \| 4 \| 5 \| 6`           | `2`         | Heading level for the title                               |
-| `announce`    | `boolean`                              | `false`     | Announces the state when it replaces existing content     |
-| `class`       | `string`                               | —           | Merged so your utility wins over the component's          |
-| `as`          | `string \| Component`                  | `'div'`     | Element to render                                         |
-| `asChild`     | `boolean`                              | `false`     | Merge props onto the child instead of wrapping            |
+<!-- @props EmptyStateProps -->
+
+| Prop          | Type                                   | Default      | Description                                                                                                                              |
+| ------------- | -------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`       | `string`                               | **required** | What is empty, in a few words.                                                                                                           |
+| `description` | `string`                               | —            | One sentence on what to do next. This is the part that turns a dead end into a starting point, and the part most empty states leave out. |
+| `reason`      | `'no-data' \| 'no-results' \| 'error'` | `'no-data'`  | Why the view is empty.                                                                                                                   |
+| `size`        | `'sm' \| 'md' \| 'lg'`                 | `'md'`       | Scales every part together. `sm` fits inside a table body.                                                                               |
+| `level`       | `1 \| 2 \| 3 \| 4 \| 5 \| 6`           | `2`          | Heading level for the title.                                                                                                             |
+| `announce`    | `boolean`                              | `false`      | Announces the empty state when it appears.                                                                                               |
+| `class`       | `string`                               | —            | Additional classes, merged so a consumer's utility wins.                                                                                 |
+| `as`          | `string \| Component`                  | `'div'`      | Element or component to render as.                                                                                                       |
+| `asChild`     | `boolean`                              | `false`      | Merge props onto the single child element instead of rendering a wrapper.                                                                |
+
+<!-- /@props -->
 
 ### Slots
 

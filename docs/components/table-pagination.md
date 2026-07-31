@@ -63,21 +63,25 @@ you meant.
 
 ## Props
 
-| Prop              | Type           | Default             | Description                                    |
-| ----------------- | -------------- | ------------------- | ---------------------------------------------- |
-| `total`           | `number`       | —                   | Required. Total rows across all pages          |
-| `pageSizeOptions` | `number[]`     | `[10, 25, 50, 100]` | Choices in the rows-per-page control           |
-| `siblingCount`    | `number`       | `1`                 | Page numbers shown either side of the current  |
-| `showEdges`       | `boolean`      | `true`              | Always show first and last page, with ellipses |
-| `hidePageSize`    | `boolean`      | `false`             | Hide the rows-per-page control                 |
-| `hideSummary`     | `boolean`      | `false`             | Hide the range summary                         |
-| `pageSizeLabel`   | `string`       | `'Rows per page'`   | Label for the rows-per-page control            |
-| `label`           | `string`       | `'Pagination'`      | Accessible name for the navigation landmark    |
-| `previousLabel`   | `string`       | `'Previous page'`   | Accessible name for the previous control       |
-| `nextLabel`       | `string`       | `'Next page'`       | Accessible name for the next control           |
-| `size`            | `'sm' \| 'md'` | `'md'`              | Control height and text size                   |
-| `disabled`        | `boolean`      | `false`             | Disables every control                         |
-| `class`           | `string`       | —                   | Merged so your utility wins                    |
+<!-- @props TablePaginationProps -->
+
+| Prop              | Type           | Default                   | Description                                                    |
+| ----------------- | -------------- | ------------------------- | -------------------------------------------------------------- |
+| `total`           | `number`       | **required**              | Total number of rows across all pages.                         |
+| `pageSizeOptions` | `number[]`     | `() => [10, 25, 50, 100]` | Choices offered in the rows-per-page control.                  |
+| `siblingCount`    | `number`       | `1`                       | How many page numbers to show on each side of the current one. |
+| `showEdges`       | `boolean`      | `true`                    | Always show the first and last page, with ellipses between.    |
+| `hidePageSize`    | `boolean`      | `false`                   | Hides the rows-per-page control.                               |
+| `hideSummary`     | `boolean`      | `false`                   | Hides the "1–10 of 247" summary.                               |
+| `pageSizeLabel`   | `string`       | `'Rows per page'`         | Label for the rows-per-page control.                           |
+| `label`           | `string`       | `'Pagination'`            | Accessible name for the navigation region.                     |
+| `previousLabel`   | `string`       | `'Previous page'`         | Accessible name for the previous-page control.                 |
+| `nextLabel`       | `string`       | `'Next page'`             | Accessible name for the next-page control.                     |
+| `size`            | `'sm' \| 'md'` | `'md'`                    | Control height and text size.                                  |
+| `disabled`        | `boolean`      | `false`                   | Disables every control.                                        |
+| `class`           | `string`       | —                         | Additional classes, merged so a consumer's utility wins.       |
+
+<!-- /@props -->
 
 ### v-model
 

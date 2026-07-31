@@ -53,15 +53,19 @@ there to give the eye something to lock onto down a repeating column.
 
 ## Props
 
-| Prop         | Type                                                           | Default     | Description                                                           |
-| ------------ | -------------------------------------------------------------- | ----------- | --------------------------------------------------------------------- |
-| `variant`    | `'neutral' \| 'primary' \| 'success' \| 'warning' \| 'danger'` | `'neutral'` | Status family. `neutral` means "no particular status", not "unstyled" |
-| `appearance` | `'subtle' \| 'solid' \| 'outline'`                             | `'subtle'`  | Visual weight                                                         |
-| `size`       | `'sm' \| 'md'`                                                 | `'md'`      | `sm` is for dense table rows                                          |
-| `dot`        | `boolean`                                                      | `false`     | Leading dot inheriting the text colour                                |
-| `class`      | `string`                                                       | —           | Merged so your utility wins over the component's                      |
-| `as`         | `string \| Component`                                          | `'span'`    | Element to render                                                     |
-| `asChild`    | `boolean`                                                      | `false`     | Merge props onto the child instead of wrapping                        |
+<!-- @props BadgeProps -->
+
+| Prop         | Type                                                           | Default     | Description                                                                                                |
+| ------------ | -------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------- |
+| `variant`    | `'neutral' \| 'primary' \| 'success' \| 'warning' \| 'danger'` | `'neutral'` | Status family. `neutral` is the "no particular status" default rather than an absence of styling.          |
+| `appearance` | `'subtle' \| 'solid' \| 'outline'`                             | `'subtle'`  | How much visual weight the badge carries.                                                                  |
+| `size`       | `'sm' \| 'md'`                                                 | `'md'`      | Badge size. `sm` is intended for dense table rows.                                                         |
+| `dot`        | `boolean`                                                      | `false`     | Shows a filled dot before the label, inheriting the text colour.                                           |
+| `class`      | `string`                                                       | —           | Additional classes, merged with the variant classes so a consumer's utility wins over the component's own. |
+| `as`         | `string \| Component`                                          | `'span'`    | Element or component to render as.                                                                         |
+| `asChild`    | `boolean`                                                      | `false`     | Merge props onto the single child element instead of rendering a wrapper.                                  |
+
+<!-- /@props -->
 
 ### Slots
 
