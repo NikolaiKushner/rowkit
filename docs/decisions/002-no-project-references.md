@@ -1,4 +1,4 @@
-# 002 — No `tsc` project references between packages
+# No `tsc` project references between packages
 
 **Status:** accepted
 **Decided:** Phase 0a. Migrated here from `plan.md` prose in Phase 0b.

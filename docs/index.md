@@ -36,17 +36,26 @@ import { ref } from 'vue'
 import { useClientSort } from 'rowkit'
 
 const columns = [
-  { key: 'name', header: 'Name', sortable: true },
+  { key: 'name', header: 'Name', sortable: true, sticky: true },
+  { key: 'email', header: 'Email', sortable: true },
   { key: 'role', header: 'Role', sortable: true },
+  { key: 'team', header: 'Team', sortable: true },
   { key: 'status', header: 'Status' },
+  { key: 'lastActive', header: 'Last active', sortable: true },
   { key: 'seats', header: 'Seats', sortable: true, align: 'end' },
 ]
 
 const people = [
-  { id: 1, name: 'Ada Lovelace', role: 'Owner', status: 'active', seats: 3 },
-  { id: 2, name: 'Grace Hopper', role: 'Admin', status: 'active', seats: 12 },
-  { id: 3, name: 'Alan Turing', role: 'Member', status: 'invited', seats: 1 },
-  { id: 4, name: 'Katherine Johnson', role: 'Member', status: 'suspended', seats: 0 },
+  { id: 1, name: 'Ada Lovelace', email: 'ada@example.com', role: 'Owner', team: 'Platform', status: 'active', lastActive: '2 minutes ago', seats: 3 },
+  { id: 2, name: 'Grace Hopper', email: 'grace@example.com', role: 'Admin', team: 'Platform', status: 'active', lastActive: '1 hour ago', seats: 12 },
+  { id: 3, name: 'Alan Turing', email: 'alan@example.com', role: 'Member', team: 'Research', status: 'invited', lastActive: 'never', seats: 1 },
+  { id: 4, name: 'Katherine Johnson', email: 'katherine@example.com', role: 'Member', team: 'Research', status: 'suspended', lastActive: '3 weeks ago', seats: 0 },
+  { id: 5, name: 'Barbara Liskov', email: 'barbara@example.com', role: 'Admin', team: 'Research', status: 'active', lastActive: '20 minutes ago', seats: 7 },
+  { id: 6, name: 'Margaret Hamilton', email: 'margaret@example.com', role: 'Owner', team: 'Flight', status: 'active', lastActive: 'yesterday', seats: 24 },
+  { id: 7, name: 'Radia Perlman', email: 'radia@example.com', role: 'Member', team: 'Networking', status: 'active', lastActive: '4 days ago', seats: 2 },
+  { id: 8, name: 'Shafi Goldwasser', email: 'shafi@example.com', role: 'Member', team: 'Research', status: 'invited', lastActive: 'never', seats: 1 },
+  { id: 9, name: 'Frances Allen', email: 'frances@example.com', role: 'Admin', team: 'Compilers', status: 'active', lastActive: '6 hours ago', seats: 9 },
+  { id: 10, name: 'Jean Bartik', email: 'jean@example.com', role: 'Member', team: 'Flight', status: 'suspended', lastActive: '2 months ago', seats: 0 },
 ]
 
 const tone = { active: 'success', invited: 'warning', suspended: 'danger' }

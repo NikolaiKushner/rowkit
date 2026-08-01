@@ -1,4 +1,4 @@
-# 003 — Cell slot typing: the fallback, and why
+# Cell slot typing: the fallback, and why
 
 **Status:** accepted
 **Decided:** Phase 3, session 3.3. Investigated rather than assumed.

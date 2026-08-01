@@ -9,6 +9,7 @@ import {
   dataTableCellVariants,
   dataTableCheckboxVariants,
   dataTableHeaderCellVariants,
+  dataTableHeaderRowVariants,
   dataTablePinnedShadow,
   dataTableRadioVariants,
   dataTableRowVariants,
@@ -318,7 +319,7 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
       </caption>
 
       <thead>
-        <tr>
+        <tr :class="dataTableHeaderRowVariants()">
           <th
             v-if="props.selectable !== undefined"
             scope="col"

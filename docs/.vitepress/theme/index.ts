@@ -1,3 +1,4 @@
+import { inject as injectAnalytics } from '@vercel/analytics'
 import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import * as rowkit from 'rowkit'
@@ -29,5 +30,17 @@ export default {
     app.component('DemoBox', DemoBox)
     app.component('ColorScale', ColorScale)
     app.component('TokenGrid', TokenGrid)
+
+    /*
+     * Vercel Analytics, guarded because `enhanceApp` runs during the static
+     * build as well as in the browser. `inject()` writes a `<script>` into
+     * `document.head`, so calling it server-side fails the docs build rather
+     * than the page — the same shape as the SSR traps the overlay demos hit.
+     *
+     * Cookieless and without personal data, so it needs no consent banner.
+     */
+    if (typeof window !== 'undefined') {
+      injectAnalytics()
+    }
   },
 } satisfies Theme

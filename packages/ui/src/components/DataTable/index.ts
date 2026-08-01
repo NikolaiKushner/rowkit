@@ -18,6 +18,7 @@ export {
   dataTableCaptionVariants,
   dataTableCellVariants,
   dataTableHeaderCellVariants,
+  dataTableHeaderRowVariants,
   dataTableCheckboxVariants,
   dataTableRadioVariants,
   dataTableRowVariants,

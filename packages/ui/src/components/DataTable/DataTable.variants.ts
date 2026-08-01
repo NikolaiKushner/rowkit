@@ -31,9 +31,17 @@ export const dataTableCaptionVariants = cva('px-3 py-2 text-left text-text-muted
 })
 
 /**
- * Header cells outrank body cells in the stacking order so a sticky header
- * paints over a pinned column as the body scrolls under it.
+ * The header row is one layer, and its own stacking context.
  *
+ * `z-sticky` sits on the row rather than on each cell so the header as a whole
+ * paints over the body — including over a pinned column, which is positioned and
+ * would otherwise rise above static header cells. Inside that context the cells
+ * only have to be ordered against each other, which takes a plain offset rather
+ * than another step on the token scale.
+ */
+export const dataTableHeaderRowVariants = cva('relative z-sticky')
+
+/**
  * Body cells need no z-index of their own: a `sticky` cell is positioned, and a
  * positioned element already paints above its static siblings.
  */
@@ -51,12 +59,21 @@ export const dataTableHeaderCellVariants = cva(
         end: 'text-end',
       },
       sticky: {
-        true: 'sticky top-0 z-sticky',
+        true: 'sticky top-0',
         false: '',
       },
       /** Pinned to the start edge, with a shadow once there is anything hidden behind it. */
       pinned: {
-        true: 'sticky left-0 z-sticky',
+        /**
+         * `z-1` orders this cell against the other header cells, inside the
+         * stacking context the header row establishes — not against the page.
+         *
+         * Without it every header cell sat on the same layer, so the later ones
+         * in the DOM painted over the pinned one: scrolling right slid `Email`
+         * straight across `Name` while the pinned body cells below stayed put,
+         * and the column lost its own heading.
+         */
+        true: 'sticky left-0 z-1',
         false: '',
       },
     },

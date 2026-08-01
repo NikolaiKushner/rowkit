@@ -1,4 +1,4 @@
-# 004 — DataTable is not virtualized in v1
+# DataTable is not virtualized in v1
 
 **Status:** accepted
 **Decided:** Phase 3. Measured, not estimated.

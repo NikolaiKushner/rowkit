@@ -36,7 +36,7 @@ const alignment = { start: 'items-start', center: 'items-center', end: 'items-en
 
 <template>
   <div
-    class="my-6 flex gap-4 overflow-x-auto rounded-lg border border-border bg-surface p-6"
+    class="rk-demo my-6 flex gap-4 overflow-x-auto rounded-lg border border-border bg-surface p-6"
     :class="layout === 'stack' ? 'flex-col' : ['flex-wrap', alignment[align]]"
   >
     <slot />

@@ -23,6 +23,114 @@
 @source '../../components';
 @source '../../*.md';
 
+/*
+ * A table inside a demo is a table, not a block.
+ *
+ * VitePress sets `.vp-doc table { display: block; overflow-x: auto }` so a long
+ * markdown table scrolls instead of stretching the page. A block-level table
+ * generates an anonymous inner table box that is shrink-to-fit, so `width: 100%`
+ * sizes the *block* and leaves the cells at their content width — the table
+ * measures full width in JavaScript while rendering with several hundred pixels
+ * of empty space to its right.
+ *
+ * `DataTable` brings its own scroll container, so it neither needs nor wants
+ * VitePress's treatment.
+ */
+/*
+ * Controls inside a demo keep the styling their component gave them.
+ *
+ * VitePress's default theme ships an **unlayered** reset:
+ *
+ *   button, input, optgroup, select, textarea { border: 0; padding: 0; … }
+ *   button { background-color: transparent; background-image: none }
+ *
+ * Tailwind v4 puts every utility in `@layer utilities`, and unlayered CSS beats
+ * layered CSS whatever the order or the specificity. So `bg-primary-solid`,
+ * `px-4` and `border` lost on every button and input in a demo, while `h-9` and
+ * `rounded-md` — properties the reset does not name — came through. The result
+ * was a live demo of an invisible button.
+ *
+ * `all: revert-layer` from an unlayered rule rolls every property back to the
+ * layered value underneath — the component's own utility where it set one, and
+ * Tailwind's preflight default where it did not.
+ *
+ * `all`, rather than a list of properties, because a list has to guess which
+ * property each utility writes and gets it wrong. Reverting `padding` restores
+ * the *physical* longhands, while `px-4` writes `padding-inline`; the unlayered
+ * shorthand then beat the layered logical property and the controls came back
+ * with correct backgrounds, correct borders and no padding at all.
+ *
+ * The blunt alternative, `@import 'tailwindcss' important`, makes every utility
+ * important and collides with Tailwind's own `container` utility — a class
+ * VitePress uses for its layout — and for important declarations layer order is
+ * reversed, so a layered `!important` beats an unlayered one and the collision
+ * is unwinnable.
+ */
+.rk-demo :is(button, input, optgroup, select, textarea) {
+  all: revert-layer;
+}
+
+.rk-demo table {
+  display: table;
+  margin: 0;
+  overflow: visible;
+}
+
+/*
+ * The markdown below the hero shares the hero's lines.
+ *
+ * Two differences to reconcile. The hero and the feature cards cap at 1152px
+ * while the markdown container caps at 1280px, and the markdown container adds
+ * its own padding, which `box-sizing: border-box` then subtracts from that cap.
+ *
+ * `content-box` makes the cap describe the content rather than the box, so the
+ * padding stays — it is the only gutter on a narrow screen — while the content
+ * edges line up with the cards above at every width.
+ */
+/*
+ * The gutter is re-declared rather than inherited so the cap can subtract it:
+ * under `content-box` the max-width no longer accounts for padding, so without
+ * the `min()` the box grows past a narrow viewport by exactly twice the gutter.
+ */
+.VPHome .vp-doc.container {
+  --rk-gutter: 24px;
+
+  box-sizing: content-box;
+  max-width: min(1152px, 100% - 2 * var(--rk-gutter));
+  padding-inline: var(--rk-gutter);
+}
+
+@media (min-width: 640px) {
+  .VPHome .vp-doc.container {
+    --rk-gutter: 48px;
+  }
+}
+
+@media (min-width: 960px) {
+  .VPHome .vp-doc.container {
+    --rk-gutter: 64px;
+  }
+}
+
+/*
+ * VitePress's chrome outranks anything inside a demo.
+ *
+ * Its navbar sits at z-index 20; rowkit's `--z-index-sticky` is 100, because
+ * that scale is designed for an application where rowkit *is* the chrome. In the
+ * docs it is the guest, so a `DataTable` with a sticky header scrolled its
+ * header straight over the site nav and the search box.
+ *
+ * The same applies to any app embedding rowkit under a fixed header: its header
+ * has to sit above `--z-index-sticky`, and this is the one-line version of that.
+ */
+:root {
+  --vp-z-index-local-nav: 1010;
+  --vp-z-index-nav: 1020;
+  --vp-z-index-layout-top: 1030;
+  --vp-z-index-backdrop: 1040;
+  --vp-z-index-sidebar: 1050;
+}
+
 :root {
   --vp-c-brand-1: var(--color-primary-700);
   --vp-c-brand-2: var(--color-primary-600);

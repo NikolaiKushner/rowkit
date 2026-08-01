@@ -47,6 +47,8 @@ export default defineConfig({
     nav: [
       { text: 'Guide', link: '/introduction' },
       { text: 'Components', link: '/components/button' },
+      { text: 'Patterns', link: '/patterns/data-table-page' },
+      { text: 'Storybook', link: 'https://storybook.rowkit.dev' },
       { text: 'Decisions', link: '/decisions/001-typescript-pin' },
       {
         text: 'v0.x',
@@ -101,6 +103,21 @@ export default defineConfig({
           { text: 'Dialog', link: '/components/dialog' },
           { text: 'Toast', link: '/components/toast' },
           { text: 'Tooltip', link: '/components/tooltip' },
+        ],
+      },
+      {
+        text: 'Patterns',
+        items: [
+          { text: 'A data table page', link: '/patterns/data-table-page' },
+          { text: 'Forms', link: '/patterns/forms' },
+          { text: 'Loading states', link: '/patterns/loading-states' },
+        ],
+      },
+      {
+        text: 'Project',
+        items: [
+          { text: 'Roadmap', link: '/roadmap' },
+          { text: 'Contributing', link: '/contributing' },
         ],
       },
       {

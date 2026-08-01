@@ -234,6 +234,35 @@ describe('DataTable', () => {
       expect(el.find('tbody td').classes()).toContain('left-0')
     })
 
+    it('keeps a pinned header cell above the header cells that follow it', () => {
+      /*
+       * The header row establishes one stacking context; inside it the pinned
+       * cell has to outrank its siblings. Without that they all sat on the same
+       * layer, so the later ones in the DOM painted over the pinned one and
+       * scrolling right slid `Email` straight across `Name` — while the pinned
+       * body cells below stayed put, leaving the column without its heading.
+       *
+       * jsdom has no layout, so this asserts the structure that produces the
+       * paint order rather than the paint order itself.
+       */
+      const el = setup({
+        columns: [
+          { key: 'name', header: 'Name', sticky: true },
+          { key: 'role', header: 'Role' },
+        ],
+      })
+
+      expect(el.find('thead tr').classes()).toContain('z-sticky')
+
+      const [pinned, plain] = el.findAll('thead th').slice(-2)
+      expect(pinned?.classes()).toContain('z-1')
+      expect(plain?.classes()).not.toContain('z-1')
+
+      // The layer belongs to the row now; a cell carrying it too would create a
+      // second stacking context and put the cells back on equal footing.
+      expect(pinned?.classes()).not.toContain('z-sticky')
+    })
+
     it('gives a pinned body cell an opaque background so rows do not show through', () => {
       // Inherited from the row rather than hardcoded, so selected and hover
       // states are not painted over by the pinned column.

@@ -1,4 +1,4 @@
-# 001 — TypeScript pinned to 6.x, not 7
+# TypeScript pinned to 6.x, not 7
 
 **Status:** accepted
 **Decided:** Phase 0a. Migrated here from `plan.md` prose in Phase 0b.
