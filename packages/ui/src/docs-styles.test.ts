@@ -39,14 +39,21 @@ describe('docs stylesheet', () => {
     expect(css).not.toMatch(/^@import 'tailwindcss' important/m)
   })
 
-  it("keeps VitePress's chrome above a sticky table header", async () => {
+  it("keeps a demo's sticky header below VitePress's chrome", async () => {
     /*
-     * VitePress's navbar sits at z-index 20 and `--z-index-sticky` is 100,
-     * because that scale assumes rowkit *is* the chrome. In the docs it is the
-     * guest, so a DataTable's sticky header scrolled over the site nav.
+     * `--z-index-sticky` is 100 because rowkit's scale assumes rowkit is the
+     * page's chrome; here it is the guest, and a sticky table header at 100
+     * scrolled over the navbar, which sits at 30.
+     *
+     * Lower the header inside demos rather than raising VitePress's variables.
+     * Raising them looked right and broke the site title on every page with a
+     * sidebar: VitePress mixes those variables with hardcoded z-index values, so
+     * scaling the variables flipped relationships elsewhere and the sidebar's
+     * `.curtain` painted over the title.
      */
     const css = await readFile(join(repoRoot, 'docs/.vitepress/theme/tokens.css'), 'utf8')
-    expect(css).toMatch(/--vp-z-index-nav:\s*\d{4}/)
+    expect(css).toMatch(/\.rk-demo thead tr\s*\{[^}]*z-index:\s*1/)
+    expect(css, "do not rewrite the host theme's stacking scale").not.toMatch(/--vp-z-index-\w+:/)
   })
 
   it('aligns home markdown with the hero', async () => {
