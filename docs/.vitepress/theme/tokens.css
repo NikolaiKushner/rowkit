@@ -112,6 +112,25 @@
   }
 }
 
+/*
+ * VitePress's chrome outranks anything inside a demo.
+ *
+ * Its navbar sits at z-index 20; rowkit's `--z-index-sticky` is 100, because
+ * that scale is designed for an application where rowkit *is* the chrome. In the
+ * docs it is the guest, so a `DataTable` with a sticky header scrolled its
+ * header straight over the site nav and the search box.
+ *
+ * The same applies to any app embedding rowkit under a fixed header: its header
+ * has to sit above `--z-index-sticky`, and this is the one-line version of that.
+ */
+:root {
+  --vp-z-index-local-nav: 1010;
+  --vp-z-index-nav: 1020;
+  --vp-z-index-layout-top: 1030;
+  --vp-z-index-backdrop: 1040;
+  --vp-z-index-sidebar: 1050;
+}
+
 :root {
   --vp-c-brand-1: var(--color-primary-700);
   --vp-c-brand-2: var(--color-primary-600);

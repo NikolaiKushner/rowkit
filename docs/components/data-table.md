@@ -72,6 +72,13 @@ the data lands — the header and the column widths are already correct.
 Sort a column and switch to `loading`: the sort survives, because the table
 never owned it.
 
+::: warning Under a fixed header of your own
+`--z-index-sticky` is `100`, because rowkit's scale assumes rowkit is the page's
+chrome. A sticky table header will therefore paint over any application header
+below that layer — raise yours above it. This site does exactly that for
+VitePress's navbar.
+:::
+
 ## Anatomy
 
 | Part      | Purpose                                                       |

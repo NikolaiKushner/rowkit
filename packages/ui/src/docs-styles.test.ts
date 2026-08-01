@@ -39,6 +39,16 @@ describe('docs stylesheet', () => {
     expect(css).not.toMatch(/^@import 'tailwindcss' important/m)
   })
 
+  it("keeps VitePress's chrome above a sticky table header", async () => {
+    /*
+     * VitePress's navbar sits at z-index 20 and `--z-index-sticky` is 100,
+     * because that scale assumes rowkit *is* the chrome. In the docs it is the
+     * guest, so a DataTable's sticky header scrolled over the site nav.
+     */
+    const css = await readFile(join(repoRoot, 'docs/.vitepress/theme/tokens.css'), 'utf8')
+    expect(css).toMatch(/--vp-z-index-nav:\s*\d{4}/)
+  })
+
   it('aligns home markdown with the hero', async () => {
     const css = await readFile(join(repoRoot, 'docs/.vitepress/theme/tokens.css'), 'utf8')
     expect(css).toMatch(/\.VPHome \.vp-doc\.container\s*\{[^}]*box-sizing: content-box/)
