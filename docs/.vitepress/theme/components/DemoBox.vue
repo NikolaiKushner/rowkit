@@ -26,6 +26,14 @@ withDefaults(
      * heights; `end` is for a form row where the labels sit above.
      */
     align?: 'start' | 'center' | 'end'
+    /**
+     * Breaks the demo out of the prose column to the full page width.
+     *
+     * For the landing table only. Body text stays in its measure — a paragraph
+     * spanning 1400px is unreadable — but a ten-column table given 1152px of a
+     * 1440px window is demonstrating the container, not the component.
+     */
+    full?: boolean
   }>(),
   { layout: 'row', align: 'center' }
 )
@@ -37,7 +45,10 @@ const alignment = { start: 'items-start', center: 'items-center', end: 'items-en
 <template>
   <div
     class="my-6 flex gap-4 overflow-x-auto rounded-lg border border-border bg-surface p-6"
-    :class="layout === 'stack' ? 'flex-col' : ['flex-wrap', alignment[align]]"
+    :class="[
+      layout === 'stack' ? 'flex-col' : ['flex-wrap', alignment[align]],
+      full ? 'rk-demo-full' : '',
+    ]"
   >
     <slot />
   </div>

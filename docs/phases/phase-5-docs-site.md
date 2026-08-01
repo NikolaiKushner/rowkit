@@ -85,6 +85,26 @@ theme's `Layout`, and wrapping the default layout would put the nav and sidebar
 inside `main` — a worse violation than the one it cures. Recorded for the v2
 custom-theme decision.
 
+**The fourth silent one, and it shipped.** Every `<button>` and `<input>` in
+every demo rendered with no background, no padding and no border — while
+`h-9` and `rounded-md` came through normally, which is what made it look like a
+half-working stylesheet rather than a cascade problem. VitePress's default theme
+ships an **unlayered** reset (`button, input, … { border: 0; padding: 0 }`,
+`button { background-color: transparent }`), and unlayered CSS beats anything in
+`@layer utilities` regardless of order or specificity. Tailwind v4 layers every
+utility, so the reset won on exactly the properties it names.
+
+Fixed with `@import 'tailwindcss' important;` in the docs theme — site only,
+never the library. The alternative, re-layering VitePress's own stylesheet,
+means forking the theme.
+
+Worth being blunt about why it got through: the verification pass checked a
+`Badge` (a `<span>`) and the demo container (a `<div>`), neither of which
+VitePress resets, and read `aria-busy`, focus and width off the button without
+ever reading its `background-color`. Axe was clean because dark text on a white
+background passes contrast perfectly well. `src/docs-styles.test.ts` now pins
+the import.
+
 **Two axe findings on the toast page, neither rowkit's.** `aria-hidden-focus`
 (2) is Reka's toast focus guards — already known, already scoped off for the
 Storybook run, still awaiting upstream. `color-contrast` (8) is entirely
