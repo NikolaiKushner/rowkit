@@ -330,6 +330,16 @@ Wire the generation into the build so it regenerates on release. This is a genui
 - **Vercel, two projects** from the monorepo: `docs/` (VitePress) and Storybook (`storybook build` output). Both build on push to `main`
 - `rowkit.dev` → docs project; `storybook.rowkit.dev` as the Storybook domain (subdomains are free with the domain you own)
 - VitePress on Vercel is zero-config (`docs:build`, output `docs/.vitepress/dist`); the only monorepo wrinkle is setting the project root — five minutes
+
+> **Analytics.** `@vercel/analytics` is injected from `enhanceApp`, behind a
+> `typeof window` guard because that hook runs during the static build too and
+> `inject()` writes into `document.head`. It is a root devDependency, not a
+> `docs` one — `docs/` is not a workspace package here, so `--filter docs` has
+> nothing to filter. Locally the injected script 404s on
+> `/_vercel/insights/script.js`, which only exists on Vercel's edge; that one
+> console error in a local verification run is expected. Nothing is added to the
+> Storybook project, where the only interesting metric is in the deploy logs.
+
 - Add a `robots.txt` and let VitePress emit the sitemap (`sitemap: { hostname: 'https://rowkit.dev' }`) — the docs ranking for "vue data table typed columns" queries is a real acquisition channel, and it costs one config line
 - PR preview deployments come free with Vercel — every docs PR gets a preview URL, which is exactly how docs changes should be reviewed
 
