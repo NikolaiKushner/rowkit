@@ -69,7 +69,7 @@ const rows = useClientSort(people, sort, columns)
 
 Sort a column. Select some rows. This is the real component, not a screenshot.
 
-<DemoBox layout="stack" full>
+<DemoBox layout="stack">
   <DataTable
     :rows="rows"
     :columns="columns"

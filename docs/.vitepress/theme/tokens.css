@@ -9,25 +9,7 @@
  * Tailwind and rowkit's theme are imported here too, because the live demos on
  * component pages are real rowkit components and need real rowkit utilities.
  */
-/*
- * `important` is not decoration here, and it applies to this site only — never
- * to the library.
- *
- * VitePress's default theme ships an **unlayered** reset:
- *
- *   button, input, optgroup, select, textarea { border: 0; padding: 0; … }
- *   button { background-color: transparent; background-image: none }
- *
- * Tailwind v4 puts every utility in `@layer utilities`, and unlayered CSS beats
- * layered CSS no matter the order or the specificity. So `bg-primary-solid`,
- * `px-4` and `border` lost to that reset on every `<button>` and `<input>` in a
- * demo, while `h-9` and `rounded-md` — properties the reset does not mention —
- * came through. The result was a live demo of an invisible button.
- *
- * `important` raises the utilities above the unlayered reset. The alternative,
- * re-layering VitePress's own stylesheet, means forking the theme.
- */
-@import 'tailwindcss' important;
+@import 'tailwindcss';
 @import '../../../packages/ui/src/styles/index.css';
 
 /*
@@ -42,19 +24,91 @@
 @source '../../*.md';
 
 /*
- * A demo that breaks out of the prose column to the full page width.
+ * A table inside a demo is a table, not a block.
  *
- * Negative inline margins rather than `width: 100vw`, because `100vw` includes
- * the scrollbar and any layout built on it overflows the page by exactly the
- * scrollbar's width on every platform that reserves space for one.
+ * VitePress sets `.vp-doc table { display: block; overflow-x: auto }` so a long
+ * markdown table scrolls instead of stretching the page. A block-level table
+ * generates an anonymous inner table box that is shrink-to-fit, so `width: 100%`
+ * sizes the *block* and leaves the cells at their content width — the table
+ * measures full width in JavaScript while rendering with several hundred pixels
+ * of empty space to its right.
  *
- * `max(0px, …)` is what makes it safe on a phone: once the viewport is narrower
- * than the container plus its gutters the expansion clamps to zero, and the box
- * behaves like any other.
+ * `DataTable` brings its own scroll container, so it neither needs nor wants
+ * VitePress's treatment.
  */
-.rk-demo-full {
-  --rk-gutter: 1.5rem;
-  margin-inline: calc(-1 * max(0px, (100vw - 2 * var(--rk-gutter) - 100%) / 2));
+/*
+ * Controls inside a demo keep the styling their component gave them.
+ *
+ * VitePress's default theme ships an **unlayered** reset:
+ *
+ *   button, input, optgroup, select, textarea { border: 0; padding: 0; … }
+ *   button { background-color: transparent; background-image: none }
+ *
+ * Tailwind v4 puts every utility in `@layer utilities`, and unlayered CSS beats
+ * layered CSS whatever the order or the specificity. So `bg-primary-solid`,
+ * `px-4` and `border` lost on every button and input in a demo, while `h-9` and
+ * `rounded-md` — properties the reset does not name — came through. The result
+ * was a live demo of an invisible button.
+ *
+ * `revert-layer` from an unlayered rule rolls each property back to the layered
+ * value underneath, which is the component's own utility where it set one and
+ * Tailwind's preflight default where it did not.
+ *
+ * The blunt alternative, `@import 'tailwindcss' important`, makes every utility
+ * important and collides with Tailwind's own `container` utility — a class
+ * VitePress uses for its layout — and for important declarations layer order is
+ * reversed, so a layered `!important` beats an unlayered one and the collision
+ * is unwinnable.
+ */
+.rk-demo :is(button, input, optgroup, select, textarea) {
+  border: revert-layer;
+  padding: revert-layer;
+  background-color: revert-layer;
+  background-image: revert-layer;
+  line-height: revert-layer;
+  color: revert-layer;
+}
+
+.rk-demo table {
+  display: table;
+  margin: 0;
+  overflow: visible;
+}
+
+/*
+ * The markdown below the hero shares the hero's lines.
+ *
+ * Two differences to reconcile. The hero and the feature cards cap at 1152px
+ * while the markdown container caps at 1280px, and the markdown container adds
+ * its own padding, which `box-sizing: border-box` then subtracts from that cap.
+ *
+ * `content-box` makes the cap describe the content rather than the box, so the
+ * padding stays — it is the only gutter on a narrow screen — while the content
+ * edges line up with the cards above at every width.
+ */
+/*
+ * The gutter is re-declared rather than inherited so the cap can subtract it:
+ * under `content-box` the max-width no longer accounts for padding, so without
+ * the `min()` the box grows past a narrow viewport by exactly twice the gutter.
+ */
+.VPHome .vp-doc.container {
+  --rk-gutter: 24px;
+
+  box-sizing: content-box;
+  max-width: min(1152px, 100% - 2 * var(--rk-gutter));
+  padding-inline: var(--rk-gutter);
+}
+
+@media (min-width: 640px) {
+  .VPHome .vp-doc.container {
+    --rk-gutter: 48px;
+  }
+}
+
+@media (min-width: 960px) {
+  .VPHome .vp-doc.container {
+    --rk-gutter: 64px;
+  }
 }
 
 :root {
