@@ -94,16 +94,33 @@ ships an **unlayered** reset (`button, input, … { border: 0; padding: 0 }`,
 `@layer utilities` regardless of order or specificity. Tailwind v4 layers every
 utility, so the reset won on exactly the properties it names.
 
-Fixed with `@import 'tailwindcss' important;` in the docs theme — site only,
-never the library. The alternative, re-layering VitePress's own stylesheet,
-means forking the theme.
+The first fix — `@import 'tailwindcss' important;` — worked and was wrong. It
+makes **every** utility important, including Tailwind's own `container` utility,
+which is the class VitePress uses for its layout; that silently inflated the hero
+and the feature cards. And it could not be corrected from outside, because for
+important declarations the cascade **reverses layer order**, so a layered
+`!important` beats an unlayered one.
+
+The fix that stands is scoped to demo boxes: `revert-layer` on the properties
+VitePress resets, which rolls each one back to the layered value underneath —
+the component's own utility where it set one, preflight's default where it did
+not.
 
 Worth being blunt about why it got through: the verification pass checked a
 `Badge` (a `<span>`) and the demo container (a `<div>`), neither of which
 VitePress resets, and read `aria-busy`, focus and width off the button without
 ever reading its `background-color`. Axe was clean because dark text on a white
-background passes contrast perfectly well. `src/docs-styles.test.ts` now pins
-the import.
+background passes contrast perfectly well. `src/docs-styles.test.ts` now pins the
+`revert-layer` rule _and_ asserts that `important` mode has not come back.
+
+**A second table bug behind the first.** With the controls fixed, the tables
+still stopped short of their container. VitePress sets `.vp-doc table
+{ display: block }` so long markdown tables scroll; a block-level table's inner
+grid is shrink-to-fit, so `width: 100%` sizes the block and leaves the cells at
+content width — 619px of dead space beside a table that reports full width to
+`getBoundingClientRect`. That is exactly how it survived a measurement pass.
+`.rk-demo table { display: table }` fixes it, and the lesson is to measure the
+cells rather than the table box.
 
 **Two axe findings on the toast page, neither rowkit's.** `aria-hidden-focus`
 (2) is Reka's toast focus guards — already known, already scoped off for the
@@ -334,15 +351,15 @@ Session 5.1 ends with a deployed site. That ordering is deliberate — see above
 
 ## Phase Definition of Done
 
-- [ ] `rowkit.dev` live, HTTPS, custom domain — **needs the Vercel project and DNS; everything up to the deploy is ready**
+- [x] `rowkit.dev` live, HTTPS, custom domain — deployed; the apex currently 308s to `www`, which disagrees with the sitemap's declared hostname and is worth settling
 - [x] Landing page with a working live DataTable demo — sorting and selection verified interactive in a browser, zero hydration warnings
 - [ ] Installation verified by executing both paths in fresh projects outside the monorepo
 - [x] All twelve component pages: live demo, generated props table, "when not to use" intact — thirteen tables (twelve components plus `Input`) generated from the source, with a drift test standing behind them
-- [ ] Three pattern pages live
+- [x] Three pattern pages live — data-table-page, forms, loading-states, each with a live demo, the real code, and the notes on why it is wired that way
 - [x] Tokens page renders from the tokens package, not hand-maintained — 5 colour ramps, 7 scales, 147 copy targets, all read from `tokens` at render time
 - [x] AGENTS.md generated from source, shipped in the package, rendered in docs — 13 sections, 19.3 kB, confirmed present in `npm pack --dry-run`
-- [ ] Storybook deployed on its subdomain, linked from docs nav
-- [ ] Docs build clean — zero SSR errors, zero dead internal links (`vitepress build` fails on dead links by default; leave that on)
+- [x] Storybook deployed on its subdomain, linked from docs nav — `storybook.rowkit.dev`, in the top nav
+- [x] Docs build clean — zero SSR errors, zero dead internal links, and a `robots.txt` pointing at the sitemap
 - [x] Site works on mobile — measured at 375px across all ten pages with a demo: **zero horizontal page overflow everywhere**, and the one wide demo (`TablePagination`, 19px over) scrolls inside its own box, which is the intended behaviour
 - [x] Dark mode toggle works and rowkit demos follow it — the demo container flips `oklch(1 0 0)` → `oklch(0.21 0.033 264)` off the semantic token, with no per-demo styling involved
 
