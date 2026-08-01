@@ -50,9 +50,15 @@
  * `rounded-md` — properties the reset does not name — came through. The result
  * was a live demo of an invisible button.
  *
- * `revert-layer` from an unlayered rule rolls each property back to the layered
- * value underneath, which is the component's own utility where it set one and
+ * `all: revert-layer` from an unlayered rule rolls every property back to the
+ * layered value underneath — the component's own utility where it set one, and
  * Tailwind's preflight default where it did not.
+ *
+ * `all`, rather than a list of properties, because a list has to guess which
+ * property each utility writes and gets it wrong. Reverting `padding` restores
+ * the *physical* longhands, while `px-4` writes `padding-inline`; the unlayered
+ * shorthand then beat the layered logical property and the controls came back
+ * with correct backgrounds, correct borders and no padding at all.
  *
  * The blunt alternative, `@import 'tailwindcss' important`, makes every utility
  * important and collides with Tailwind's own `container` utility — a class
@@ -61,12 +67,7 @@
  * is unwinnable.
  */
 .rk-demo :is(button, input, optgroup, select, textarea) {
-  border: revert-layer;
-  padding: revert-layer;
-  background-color: revert-layer;
-  background-image: revert-layer;
-  line-height: revert-layer;
-  color: revert-layer;
+  all: revert-layer;
 }
 
 .rk-demo table {

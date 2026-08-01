@@ -22,7 +22,7 @@ describe('docs stylesheet', () => {
     expect(
       css,
       'without this every button and input in a demo loses its background, padding and border'
-    ).toMatch(/\.rk-demo :is\(button, input[^)]*\)\s*\{[^}]*revert-layer/)
+    ).toMatch(/\.rk-demo :is\(button, input[^)]*\)\s*\{\s*all: revert-layer/)
   })
 
   it('does not reach for `important` mode', async () => {
