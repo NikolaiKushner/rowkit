@@ -113,22 +113,23 @@
 }
 
 /*
- * VitePress's chrome outranks anything inside a demo.
+ * A demo's sticky table header stays inside the demo.
  *
- * Its navbar sits at z-index 20; rowkit's `--z-index-sticky` is 100, because
- * that scale is designed for an application where rowkit *is* the chrome. In the
- * docs it is the guest, so a `DataTable` with a sticky header scrolled its
- * header straight over the site nav and the search box.
+ * `--z-index-sticky` is 100 because rowkit's scale assumes rowkit is the page's
+ * chrome; here it is the guest, and a sticky header at 100 scrolled straight
+ * over VitePress's navbar, which sits at 30.
  *
- * The same applies to any app embedding rowkit under a fixed header: its header
- * has to sit above `--z-index-sticky`, and this is the one-line version of that.
+ * Lowering the header inside demos, rather than raising VitePress's variables.
+ * Raising them looked right and broke the site title: VitePress mixes those
+ * variables with hardcoded z-index values, so multiplying the variables flipped
+ * relationships elsewhere and the sidebar's `.curtain` painted over the title on
+ * every page with a sidebar.
+ *
+ * Inside a table the header only ever has to beat its own body, and `1` does
+ * that — body cells are unpositioned or `z-index: auto`.
  */
-:root {
-  --vp-z-index-local-nav: 1010;
-  --vp-z-index-nav: 1020;
-  --vp-z-index-layout-top: 1030;
-  --vp-z-index-backdrop: 1040;
-  --vp-z-index-sidebar: 1050;
+.rk-demo thead tr {
+  z-index: 1;
 }
 
 :root {
