@@ -40,33 +40,7 @@ These are not preferences. Violating them means the work gets redone.
 
 ---
 
-## Repository structure
-
-```
-rowkit/
-├── packages/
-│   ├── tokens/                    # @rowkit/tokens — standalone
-│   │   └── src/
-│   │       ├── color.ts
-│   │       ├── spacing.ts
-│   │       ├── typography.ts
-│   │       └── index.ts
-│   └── ui/                        # rowkit — the component library
-│       ├── src/
-│       │   ├── components/
-│       │   ├── composables/
-│       │   ├── utils/cn.ts
-│       │   ├── styles/index.css   # Tailwind v4 @theme block
-│       │   └── index.ts           # public barrel export
-│       ├── vite.config.ts
-│       └── package.json
-├── docs/                          # VitePress site
-├── playground/                    # Nuxt app for manual testing
-├── .storybook/
-└── .changeset/
-```
-
-### Component file structure
+## Component file structure
 
 Every component follows this shape, no exceptions:
 
@@ -92,21 +66,6 @@ A component is not finished until all seven are true:
 5. Stories cover every variant and every state
 6. Interaction test for the primary behavior
 7. Docs page written, including a **"when not to use"** section
-
----
-
-## Commands
-
-```bash
-pnpm dev          # playground app
-pnpm storybook    # component workshop
-pnpm test         # vitest (unit + component)
-pnpm test:a11y    # accessibility checks
-pnpm build        # vue-tsc -b && vite build
-pnpm docs:dev     # VitePress dev server
-pnpm lint         # eslint
-pnpm typecheck    # vue-tsc --noEmit
-```
 
 ---
 

@@ -99,9 +99,8 @@ it is designed to sit beside a general-purpose kit rather than replace it.
 **v0.x.** The API is stabilising toward v1.0, every component has reached the
 project's definition of done, and breaking changes are still possible until v1.
 
-Nothing is on npm yet — the package name is reserved and publishing is the last
-phase of the plan. Until then, the source and the full roadmap are on
-[GitHub](https://github.com/NikolaiKushner/rowkit).
+`v0.1.0` is on npm, published from CI with provenance attestation. The source
+and the full roadmap are on [GitHub](https://github.com/NikolaiKushner/rowkit).
 
 ## Where to go next
 
