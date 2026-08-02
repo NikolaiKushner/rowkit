@@ -39,6 +39,13 @@ jobs:
       - run: pnpm build
       - run: pnpm lint
       - run: pnpm typecheck
+
+      # Story tests run in a real browser, so the binary has to be present.
+      # Without this the storybook project fails to launch and `pnpm test`
+      # reports every unit test green alongside one unhandled error.
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
       - run: pnpm test
       - run: pnpm size
 
@@ -55,5 +62,9 @@ jobs:
           # "Version Packages" PR. Merging that PR triggers the run that
           # actually publishes, so a release is always a deliberate merge.
           publish: pnpm changeset publish
+          # One GitHub Release per published package, with the changelog as its
+          # body — so the repository's Releases tab shows what shipped without
+          # anyone writing it out by hand.
+          createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
