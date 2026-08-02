@@ -1,3 +1,5 @@
+import { version as pkgVersion } from '../package.json' with { type: 'json' }
+
 export * from './components/Badge'
 export * from './components/Button'
 export * from './components/DataTable'
@@ -26,6 +28,9 @@ export type {
 /**
  * The `rowkit` version this build was produced from.
  *
- * Kept in sync with `package.json` by `index.test.ts`.
+ * Read from `package.json` rather than written out. A literal here went stale
+ * the moment Changesets bumped the manifest — it edits `package.json` and
+ * nothing was updating the constant, so the first release broke its own test.
+ * Rollup tree-shakes the JSON down to this one string, so nothing else ships.
  */
-export const version = '0.0.0'
+export const version: string = pkgVersion
