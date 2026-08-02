@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or usage help
+    url: https://github.com/NikolaiKushner/rowkit/discussions
+    about: How do I do X? Is this the right component? Discussions, not issues.
+  - name: Documentation
+    url: https://rowkit.dev
+    about: Component pages, patterns, and the installation guide.
+  - name: Storybook
+    url: https://storybook.rowkit.dev
+    about: Every variant and state of every component, live.

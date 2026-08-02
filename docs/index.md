@@ -109,10 +109,9 @@ pnpm add rowkit
 Both lines are required, and that second one is the step people miss — see
 [installation](/installation) for why, and for the Nuxt path.
 
-**v0.x, and not on npm yet.** The name is reserved and publishing is the last
-phase of the plan, so that first command does not resolve today. Every component
-above is built and tested — you are looking at them running — but the API can
-still change before v1.0.
+**v0.1.0 is on npm.** Every component above is built, tested and published — you
+are looking at them running. The API is stabilising toward v1.0, so breaking
+changes are still possible until then.
 
 ## What this is not
 

@@ -1,0 +1,41 @@
+name: Feature request
+description: A change to an existing component, or a case rowkit handles badly.
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The most useful requests describe **the problem, not the component**.
+        "The filter bar cannot express a range" is far more actionable than "add a
+        date picker" — and often has an answer that needs no new component.
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: I have read [Considered, not planned](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md#considered-not-planned) and this is not on that list.
+          required: true
+        - label: I understand rowkit is twelve components by design, and that a new component is unlikely to be accepted.
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to build, and where does rowkit get in the way?
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: What you are doing instead
+      description: The workaround, however ugly. It usually shows what the real API should be.
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API, if you have one
+      description: A prop, an event, a slot. See [API conventions](https://rowkit.dev/conventions) for the shapes rowkit already uses.
+      render: vue

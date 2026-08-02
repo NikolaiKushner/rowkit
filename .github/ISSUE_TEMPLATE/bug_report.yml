@@ -1,0 +1,63 @@
+name: Bug report
+description: Something renders wrong, behaves wrong, or fails to build.
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: rowkit's failures are usually **silent** — a Tailwind class
+        that matches no utility, a token in the wrong namespace, a slot prop with
+        a reserved name. No error, no warning, wrong pixels. "It renders but looks
+        wrong" is a perfectly good bug report, and a screenshot beats a paragraph.
+
+  - type: input
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: A StackBlitz, a minimal repo, or the smallest component that shows it. This is the field that decides whether the bug gets fixed this week or next month.
+      placeholder: https://stackblitz.com/edit/...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and what happened instead
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: rowkit version
+      description: '`npm ls rowkit`, or the `version` export.'
+      placeholder: 0.1.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Vue + Vite
+        - Nuxt
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: styling
+    attributes:
+      label: Your stylesheet
+      description: Paste the file containing your Tailwind imports. Missing `@import 'rowkit/styles'` is the single most common cause of "everything is unstyled", so this is worth checking before anything else.
+      render: css
+      placeholder: |
+        @import 'tailwindcss';
+        @import 'rowkit/styles';
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else
+      description: Screenshots, console output, the versions of Vue and Tailwind.

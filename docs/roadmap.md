@@ -51,8 +51,8 @@ real-world use: an API is not proven by its author.
 
 ## Where the project is
 
-The library is built, tested and documented. It is **not on npm yet** — the name
-is reserved and publishing is the final phase of the plan. Until then the source
+The library is built, tested, documented, and **published**: `rowkit@0.1.0` and
+`@rowkit/tokens@0.1.0` are on npm, released from CI with provenance. The source
 is on [GitHub](https://github.com/NikolaiKushner/rowkit) and this site runs the
 real components.
 

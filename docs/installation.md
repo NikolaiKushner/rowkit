@@ -1,13 +1,5 @@
 # Installation
 
-::: warning Not published yet
-The name is reserved on npm and publishing is the last phase of the plan, so
-`pnpm add rowkit` does not resolve today. Everything below is the setup it will
-need — and is what the playground and this site already do against the
-workspace. Watch [the roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md)
-for `v0.1.0`.
-:::
-
 ```bash
 pnpm add rowkit
 ```
