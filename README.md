@@ -10,6 +10,14 @@ Twelve components, built on [Reka UI](https://reka-ui.com), typed against your r
 
 **[Documentation](https://rowkit.dev)** · **[Storybook](https://storybook.rowkit.dev)** · **[Roadmap](./ROADMAP.md)**
 
+<!--
+  Absolute URL on purpose. npm does not resolve relative image paths against the
+  repository, so a relative one renders here and shows nothing on the package
+  page — which is the surface this image exists for.
+-->
+
+![A rowkit DataTable being filtered, sorted and paged](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/rowkit-demo.gif)
+
 ## Why another component library
 
 General-purpose kits handle the easy eighty per cent extremely well — buttons, inputs, cards. Then you build a users admin page, and none of it helped with the part that actually took the week: a sortable table that stays fast at ten thousand rows with column keys typed against your row, a filter bar that makes applied state obvious, and loading, empty and no-results states that agree with each other.
