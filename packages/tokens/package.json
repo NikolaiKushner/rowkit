@@ -1,6 +1,6 @@
 {
   "name": "@rowkit/tokens",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Design tokens for rowkit — consumable without importing components.",
   "license": "MIT",
   "author": "Nikolai Kushner",
