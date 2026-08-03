@@ -28,7 +28,7 @@
     "docs:props": "node packages/ui/scripts/generate-props.mjs",
     "docs:agents": "node packages/ui/scripts/generate-agents.mjs",
     "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
+    "docs:build": "pnpm build && vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
   "lint-staged": {

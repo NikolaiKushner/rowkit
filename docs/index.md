@@ -109,7 +109,7 @@ pnpm add rowkit
 Both lines are required, and that second one is the step people miss — see
 [installation](/installation) for why, and for the Nuxt path.
 
-**v0.1.0 is on npm.** Every component above is built, tested and published — you
+**<NpmVersion /> is on npm.** Every component above is built, tested and published — you
 are looking at them running. The API is stabilising toward v1.0, so breaking
 changes are still possible until then.
 
