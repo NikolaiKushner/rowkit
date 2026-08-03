@@ -83,6 +83,39 @@ describe('rowkit tokens compile to Tailwind utilities', () => {
   })
 })
 
+describe('the radius scale resolves', () => {
+  /*
+   * Every radius is `calc(var(--radius) * f)`. Tailwind emits only the theme
+   * variables its generated utilities reference, and no utility is generated
+   * from a bare `--radius` — so if it lived inside `@theme` it could be dropped
+   * from the output while every `rounded-*` rule still looked perfectly correct.
+   *
+   * A `calc()` over an undefined variable is not a CSS error. `border-radius`
+   * computes to nothing and every corner in the library goes square, silently.
+   * That is why `--radius` is declared in its own `:root` block, and why this
+   * asserts on the compiled stylesheet rather than on the token object.
+   */
+  it('declares --radius, so the calc() has something to multiply', async () => {
+    const css = await build('rounded-md')
+    expect(css, '--radius vanished — every rounded-* utility now computes to 0').toMatch(
+      /--radius:\s*0\.625rem/
+    )
+  })
+
+  it.each([
+    ['rounded-xs', 0.4],
+    ['rounded-sm', 0.6],
+    ['rounded-md', 0.8],
+    ['rounded-xl', 1.4],
+  ])('%s multiplies --radius by %d', async (utility, factor) => {
+    expect(await build(utility)).toContain(`calc(var(--radius) * ${factor})`)
+  })
+
+  it('leaves rounded-lg as the base, unmultiplied', async () => {
+    expect(await build('rounded-lg')).toMatch(/--radius-lg:\s*var\(--radius\)/)
+  })
+})
+
 describe('shadows', () => {
   it.each(['shadow-xs', 'shadow-md', 'shadow-scroll-x'])('%s is generated', async (utility) => {
     expect(await build(utility)).toContain(`.${utility} {`)

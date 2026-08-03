@@ -31,7 +31,7 @@ import {
   warning,
 } from './color'
 import { duration, easing } from './motion'
-import { radius } from './radius'
+import { radius, radiusBase } from './radius'
 import { shadow } from './shadow'
 import { spacing, spacingBase } from './spacing'
 import { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
@@ -53,7 +53,7 @@ export type { ColorRef, ColorStep, SemanticColorName } from './color'
 export { duration, easing } from './motion'
 export type { DurationName, EasingName } from './motion'
 
-export { radius } from './radius'
+export { radius, radiusBase } from './radius'
 export type { RadiusName } from './radius'
 
 export { shadow } from './shadow'
@@ -101,6 +101,7 @@ export const tokens = {
     lineHeight,
   },
   radius,
+  radiusBase,
   shadow,
   zIndex,
   motion: {
