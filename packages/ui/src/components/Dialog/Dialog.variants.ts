@@ -11,7 +11,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * guard turns that into a declared fallback: everyone gets the 50% scrim, and
  * the blur is the enhancement on top.
  *
- * 50%, not the 80% shadcn pairs with its blur. Blur plus 80% black is very
+ * 50%, not the 80% the reference design pairs with its blur. Blur plus 80% black is very
  * nearly opaque, and the reason to blur rather than simply darken is that the
  * page behind should still read as context.
  */

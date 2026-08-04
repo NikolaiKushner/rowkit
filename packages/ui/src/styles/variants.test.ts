@@ -210,7 +210,7 @@ describe('component classes compile to real utilities', () => {
 
 describe('the focus ring has something to draw', () => {
   /*
-   * shadcn's recipe is two halves: the border turns the ring colour, and a 3px
+   * The reference design's recipe is two halves: the border turns the ring colour, and a 3px
    * ring at 50% opacity appears outside it. The ring is translucent and cannot
    * carry 3:1 on its own — the solid border is what satisfies WCAG 1.4.11.
    *

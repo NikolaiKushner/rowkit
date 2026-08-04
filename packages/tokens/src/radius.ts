@@ -1,7 +1,7 @@
 /**
  * Corner radii, derived from one variable.
  *
- * Every step is a multiple of `--radius`, following the shadcn/ui scale. One
+ * Every step is a multiple of `--radius`, following the reference scale. One
  * declaration retunes every corner in the library:
  *
  * ```css
@@ -13,18 +13,16 @@
  * real `rem` values so a TypeScript consumer gets a number it can use, and
  * {@link radiusCss}, which keeps the `calc()` so a consumer's override of
  * `--radius` still cascades through the whole scale.
- *
- * Design language based on shadcn/ui by shadcn, adapted for Vue.
  */
 
-/** The single length the scale multiplies. shadcn/ui's default. */
+/** The single length the scale multiplies. */
 export const radiusBase = '0.625rem'
 
 /**
  * Multiples of `--radius`.
  *
- * `sm`/`md`/`lg`/`xl` are shadcn's published factors. `xs` is rowkit's, and
- * lands on 4px — the radius shadcn hardcodes on its Checkbox, which is the
+ * `sm`/`md`/`lg`/`xl` are the reference design's published factors. `xs` is rowkit's, and
+ * lands on 4px — the radius the reference design hardcodes on its Checkbox, which is the
  * control this step exists for.
  */
 export const radiusFactor = {

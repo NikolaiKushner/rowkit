@@ -8,7 +8,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  */
 export const inputVariants = cva(
   [
-    // `bg-transparent` is shadcn's: the field takes the colour of whatever it
+    // `bg-transparent` is the reference design's: the field takes the colour of whatever it
     // sits on, so a form inside a card does not show a second white rectangle.
     'w-full border bg-transparent text-foreground shadow-xs',
     'transition-all duration-fast ease-standard',
@@ -24,7 +24,7 @@ export const inputVariants = cva(
         lg: 'h-10 rounded-md px-3 text-sm',
       },
       invalid: {
-        // shadcn's invalid treatment: the border goes destructive and the focus
+        // The reference design's invalid treatment: the border goes destructive and the focus
         // ring is tinted to match, so the state survives being focused.
         //
         // Colour is not the only signal — the error text below the control

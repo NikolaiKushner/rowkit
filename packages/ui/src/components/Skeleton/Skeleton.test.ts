@@ -9,7 +9,7 @@ describe('Skeleton', () => {
     expect(el.classes()).toContain('rounded-md')
   })
 
-  // shadcn's Skeleton is one `rounded-md` shape. The presets keep their
+  // The reference design's Skeleton is one `rounded-md` shape. The presets keep their
   // geometry, but no longer their own corner radii.
   it.each([
     ['text', 'rounded-md'],

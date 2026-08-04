@@ -47,7 +47,7 @@ export const dataTableHeaderRowVariants = cva('relative z-sticky border-b border
  *
  * `bg-card`, not `bg-muted`, and `text-foreground` rather than muted.
  *
- * shadcn's header is transparent with a hairline beneath it — the column labels
+ * The reference design's header is transparent with a hairline beneath it — the column labels
  * are full-strength foreground, not a recessed grey band with quiet text. The
  * fill stays opaque here only because the header can be sticky, and a
  * transparent sticky header lets the rows scroll through it.
@@ -129,7 +129,7 @@ export const dataTableSortIconVariants = cva(
   }
 )
 
-// `border-border`, not `border-border-subtle`: shadcn's row separator is its
+// `border-border`, not `border-border-subtle`: the reference design's row separator is its
 // standard hairline, and the fainter one disappeared entirely once the header
 // stopped being a grey band to anchor the grid.
 export const dataTableCellVariants = cva('border-t border-border align-middle text-foreground', {
@@ -169,7 +169,7 @@ export const dataTableRowVariants = cva('bg-card transition-colors duration-fast
      * not.
      */
     interactive: {
-      // `/50` is shadcn's: the hover tint is half-strength so it reads as a
+      // `/50` is the reference design's: the hover tint is half-strength so it reads as a
       // pointer follow rather than as selection, which is the full tint.
       true: 'hover:bg-accent/50',
       false: '',
@@ -183,7 +183,7 @@ export const dataTableRowVariants = cva('bg-card transition-colors duration-fast
   defaultVariants: { interactive: false, selected: false },
 })
 
-// Matches the body cell: same hairline, same padding. shadcn drops the right
+// Matches the body cell: same hairline, same padding. The reference design drops the right
 // padding on a checkbox cell so the control sits tight against its column.
 export const dataTableSelectCellVariants = cva('w-px border-t border-border pr-0 align-middle', {
   variants: {
@@ -196,7 +196,7 @@ export const dataTableSelectCellVariants = cva('w-px border-t border-border pr-0
 })
 
 /*
- * `rounded-xs` is shadcn's `rounded-[4px]` — the radius scale now lands exactly
+ * `rounded-xs` is the reference `rounded-[4px]` — the radius scale now lands exactly
  * there, which is the whole reason `xs` exists at 0.4 × `--radius`.
  */
 export const dataTableCheckboxVariants = cva(

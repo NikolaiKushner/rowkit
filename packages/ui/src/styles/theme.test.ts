@@ -90,7 +90,7 @@ describe('rowkit tokens compile to Tailwind utilities', () => {
 
 describe('the focus ring compiles', () => {
   /*
-   * shadcn writes the width as `ring-[3px]`, an arbitrary value. Tailwind v4
+   * the reference design writes the width as `ring-[3px]`, an arbitrary value. Tailwind v4
    * takes a bare number on `ring-*`, so `ring-3` is the same 3px through the
    * scale instead of around it — but only if v4 really does generate it, and a
    * utility that generates nothing is this project's recurring failure.

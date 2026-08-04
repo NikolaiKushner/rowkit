@@ -13,8 +13,8 @@ export const skeletonVariants = cva('block shrink-0 bg-skeleton', {
   variants: {
     /** Geometry preset. */
     variant: {
-      // shadcn's Skeleton is a single `rounded-md` shape. rowkit keeps the
-      // geometry presets, but the corner is shadcn's at every one of them.
+      // The reference design's Skeleton is a single `rounded-md` shape. rowkit keeps the
+      // geometry presets, but the corner is the reference design's at every one of them.
       /** A line of text. Height tracks the `sm`/`base` line box. */
       text: 'h-4 w-full rounded-md',
       /** Avatars and icon buttons. */

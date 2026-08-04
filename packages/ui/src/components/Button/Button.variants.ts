@@ -8,7 +8,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  *
  * ## The focus ring
  *
- * shadcn's recipe, and the single most recognisable detail in the language:
+ * The reference design's recipe, and the single most recognisable detail in the language:
  * the border turns the ring colour *and* a 3px ring at 50% opacity appears
  * outside it. Both halves are load-bearing. The ring alone is translucent and
  * would not carry 3:1 against the page; the solid border is what satisfies WCAG
@@ -39,9 +39,9 @@ export const buttonVariants = cva(
         danger:
           'border-danger-solid bg-danger-solid text-danger-on-solid hover:border-danger-solid-hover hover:bg-danger-solid-hover',
       },
-      // shadcn's heights and padding, and `rounded-md` at every size — its
+      // The reference design's heights and padding, and `rounded-md` at every size — its
       // buttons do not change shape as they grow, only scale. `lg` keeps
-      // `text-sm`: shadcn has no larger type on a larger button, and bumping to
+      // `text-sm`: the reference design has no larger type on a larger button, and bumping to
       // `text-base` was rowkit's own invention.
       size: {
         sm: 'h-8 rounded-md px-3 text-sm',

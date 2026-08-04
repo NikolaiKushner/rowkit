@@ -9,11 +9,9 @@
  * page behind from competing for the eye. Anything heavier reads as an effect
  * and makes the content behind unrecognisable, which defeats the reason a
  * modal shows its context at all.
- *
- * Design language based on shadcn/ui by shadcn, adapted for Vue.
  */
 export const blur = {
-  /** The dialog scrim. shadcn's `backdrop-blur-xs`. */
+  /** The dialog scrim. The reference `backdrop-blur-xs`. */
   overlay: '4px',
 } as const
 

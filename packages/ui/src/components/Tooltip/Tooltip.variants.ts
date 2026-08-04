@@ -8,13 +8,13 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * `max-w-xs` is a hard limit rather than a suggestion. A tooltip that wraps to
  * four lines is documentation, and documentation belongs in the page.
  *
- * The fill is `primary-solid`, not `neutral-solid`. shadcn's tooltip is
+ * The fill is `primary-solid`, not `neutral-solid`. The reference design's tooltip is
  * `bg-primary` — near-black in light mode and near-white in dark — while its
  * `secondary`, which `neutral-solid` now carries, is the quiet near-white chip.
  * Left on `neutral-solid` the tooltip would render as pale grey on a pale page.
  */
 export const tooltipContentVariants = cva([
-  // shadcn's geometry exactly: `rounded-md px-3 py-1.5 text-xs`, and no shadow.
+  // The reference design's geometry exactly: `rounded-md px-3 py-1.5 text-xs`, and no shadow.
   // A near-black bubble does not need one, and the drop shadow was reading as a
   // second edge against a light page.
   'z-tooltip max-w-xs rounded-md px-3 py-1.5',
