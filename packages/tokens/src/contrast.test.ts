@@ -105,7 +105,17 @@ describe('solid fills are distinguishable from the page behind them', () => {
   // A button whose label is legible but whose body blends into the page is
   // still broken. This is what ruled out mirroring light mode's 600 fill in
   // dark mode, where it only reached 3.6:1 against the background.
-  const families = ['neutral', 'primary', 'success', 'warning', 'danger'] as const
+  //
+  // `neutral` is deliberately absent. It now carries shadcn's `--secondary` —
+  // a near-white fill on a white page, 1.09:1 — and shadcn is right that this
+  // needs no fill contrast, because nothing interactive uses it: Tooltip moved
+  // to `primary-solid`, leaving Badge, which is static text. WCAG 1.4.11 governs
+  // the boundary of a *user interface component*; a badge is not one, and the
+  // contrast that carries its meaning is its label, asserted above.
+  //
+  // If a future component uses `neutral-solid` as an interactive fill, this
+  // exclusion stops being true — put it back and retune the token.
+  const families = ['primary', 'success', 'warning', 'danger'] as const
 
   it.each([
     ['light', semanticColorLight],

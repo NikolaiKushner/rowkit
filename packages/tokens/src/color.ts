@@ -172,6 +172,28 @@ export const gray = {
 } as const
 
 /**
+ * shadcn's destructive red, clamped into sRGB. Keyed by lightness, like `gray`.
+ *
+ * shadcn publishes `oklch(0.577 0.245 27.325)`, and that chroma **does not fit
+ * in sRGB** — 0.235 is the maximum at this lightness and hue. The difference is
+ * invisible; what it buys is a colour that renders identically on an sRGB
+ * monitor and a P3 laptop, instead of one each browser gamut-maps by its own
+ * rules. rowkit clamps every chromatic primitive for this reason, and
+ * `color.test.ts` enforces it.
+ *
+ * One red serves both themes. shadcn's dark `--destructive` is a lighter
+ * `oklch(0.704 …)`, which carries its white label at **2.86:1** — the single
+ * worst failure in shadcn's default set. Reusing the light value gives 4.90:1
+ * on the label in both themes and still clears 4.04:1 against the dark page.
+ */
+export const red = {
+  /** Destructive fill. shadcn's lightness, chroma clamped. */
+  577: 'oklch(0.577 0.235 27.325)',
+  /** Destructive hover — darkens in both themes, so the white label improves. */
+  520: 'oklch(0.52 0.212 27.325)',
+} as const
+
+/**
  * White at a fraction of opacity, for dark-mode borders.
  *
  * shadcn's dark borders are white at 10% and inputs at 15%, not a solid grey.
@@ -194,6 +216,7 @@ export const colorPrimitives = {
   white: 'oklch(1 0 0)',
   black: 'oklch(0 0 0)',
   ...prefixKeys('gray', gray),
+  ...prefixKeys('red', red),
   ...prefixKeys('white-alpha', whiteAlpha),
   ...prefix('neutral', neutral),
   ...prefix('primary', primary),
@@ -335,19 +358,23 @@ export const semanticColorLight = {
   // `neutral` completes the status family so a component's variant matrix has
   // no special case: a neutral Badge reads the same token names as a danger
   // one. It is the default state — "no status" — not an absence of styling.
-  'neutral-solid': ref('neutral-700'),
-  'neutral-solid-hover': ref('neutral-800'),
-  'neutral-on-solid': ref('white'),
-  'neutral-subtle': ref('neutral-100'),
-  'neutral-on-subtle': ref('neutral-700'),
-  'neutral-border': ref('neutral-200'),
+  // shadcn `--secondary`: the quiet chip, a near-white fill with dark text.
+  'neutral-solid': ref('gray-970'),
+  'neutral-solid-hover': ref('gray-922'),
+  'neutral-on-solid': ref('gray-205'),
+  'neutral-subtle': ref('gray-970'),
+  'neutral-on-subtle': ref('gray-205'),
+  'neutral-border': ref('gray-922'),
 
-  'primary-solid': ref('primary-600'),
-  'primary-solid-hover': ref('primary-700'),
-  'primary-on-solid': ref('white'),
-  'primary-subtle': ref('primary-50'),
-  'primary-on-subtle': ref('primary-700'),
-  'primary-border': ref('primary-200'),
+  // shadcn `--primary`: near-black in light mode, and it inverts under `.dark`.
+  // There is no brand hue in this design language — the default action is the
+  // darkest thing on the page, not the bluest.
+  'primary-solid': ref('gray-205'),
+  'primary-solid-hover': ref('gray-269'),
+  'primary-on-solid': ref('gray-985'),
+  'primary-subtle': ref('gray-970'),
+  'primary-on-subtle': ref('gray-205'),
+  'primary-border': ref('gray-922'),
 
   'success-solid': ref('success-600'),
   'success-solid-hover': ref('success-700'),
@@ -371,8 +398,8 @@ export const semanticColorLight = {
   'warning-on-subtle': ref('warning-700'),
   'warning-border': ref('warning-200'),
 
-  'danger-solid': ref('danger-600'),
-  'danger-solid-hover': ref('danger-700'),
+  'danger-solid': ref('red-577'),
+  'danger-solid-hover': ref('red-520'),
   'danger-on-solid': ref('white'),
   'danger-subtle': ref('danger-50'),
   'danger-on-subtle': ref('danger-700'),
@@ -419,19 +446,22 @@ export const semanticColorDark = {
 
   shadow: ref('black'),
 
-  'neutral-solid': ref('neutral-400'),
-  'neutral-solid-hover': ref('neutral-300'),
-  'neutral-on-solid': ref('neutral-950'),
-  'neutral-subtle': ref('neutral-800'),
-  'neutral-on-subtle': ref('neutral-200'),
-  'neutral-border': ref('neutral-700'),
+  'neutral-solid': ref('gray-269'),
+  'neutral-solid-hover': ref('gray-371'),
+  'neutral-on-solid': ref('gray-985'),
+  'neutral-subtle': ref('gray-269'),
+  'neutral-on-subtle': ref('gray-985'),
+  'neutral-border': ref('gray-371'),
 
-  'primary-solid': ref('primary-400'),
-  'primary-solid-hover': ref('primary-300'),
-  'primary-on-solid': ref('neutral-950'),
-  'primary-subtle': ref('primary-950'),
-  'primary-on-subtle': ref('primary-300'),
-  'primary-border': ref('primary-800'),
+  // The inversion. A primary button in dark mode is near-white with near-black
+  // text, not a brighter version of a colour. Keeping this is most of what
+  // makes a dark shadcn interface recognisable.
+  'primary-solid': ref('gray-922'),
+  'primary-solid-hover': ref('gray-985'),
+  'primary-on-solid': ref('gray-205'),
+  'primary-subtle': ref('gray-269'),
+  'primary-on-subtle': ref('gray-985'),
+  'primary-border': ref('gray-371'),
 
   'success-solid': ref('success-400'),
   'success-solid-hover': ref('success-300'),
@@ -447,9 +477,10 @@ export const semanticColorDark = {
   'warning-on-subtle': ref('warning-300'),
   'warning-border': ref('warning-800'),
 
-  'danger-solid': ref('danger-400'),
-  'danger-solid-hover': ref('danger-300'),
-  'danger-on-solid': ref('neutral-950'),
+  // The same red as light mode, with a white label. See `red`.
+  'danger-solid': ref('red-577'),
+  'danger-solid-hover': ref('red-520'),
+  'danger-on-solid': ref('white'),
   'danger-subtle': ref('danger-950'),
   'danger-on-subtle': ref('danger-300'),
   'danger-border': ref('danger-800'),
