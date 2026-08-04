@@ -106,6 +106,85 @@ export const danger = {
 } as const
 
 /**
+ * Zero-chroma greys, the shadcn/ui neutral.
+ *
+ * Named by lightness rather than by a 50…950 position: the step *is* its OKLCH
+ * lightness × 1000, so `gray-922` is `oklch(0.922 0 0)` and the table above can
+ * be checked against ui.shadcn.com by reading it. A ramp position would have
+ * been a lie here — shadcn's greys are not evenly spaced and do not fill a
+ * ramp, and two of the steps below exist only because a shadcn value failed
+ * contrast and had to be darkened.
+ *
+ * Pure neutral is the point. rowkit's own `neutral` ramp carries a trace of
+ * blue (hue 264); the shadcn look is the absence of that.
+ *
+ * Design language based on shadcn/ui by shadcn, adapted for Vue.
+ */
+export const gray = {
+  /** shadcn `--primary-foreground`, `--foreground` (dark). */
+  985: 'oklch(0.985 0 0)',
+  /** shadcn `--secondary`, `--muted`, `--accent`. */
+  970: 'oklch(0.97 0 0)',
+  /** shadcn `--border`. Decorative hairline — deliberately below 3:1. */
+  922: 'oklch(0.922 0 0)',
+  /** Emphasised hairline. rowkit's; shadcn has no "strong border". */
+  870: 'oklch(0.87 0 0)',
+  /** shadcn `--muted-foreground` (dark), where it clears AA at 7.63:1. */
+  708: 'oklch(0.708 0 0)',
+  /**
+   * rowkit's correction to shadcn `--ring` and `--input` in light mode.
+   *
+   * shadcn puts them at 0.708 and 0.922, which measure 2.59:1 and 1.26:1
+   * against a white page — a focus ring and a control boundary that both fail
+   * WCAG 1.4.11.
+   *
+   * Not the mathematical minimum. Solving in floating point gave 0.669 and a
+   * tidy 3.00:1; the browser paints `#959595` and axe measured **2.995:1**,
+   * because a colour is quantised to eight bits per channel before anyone sees
+   * it. Anything solved exactly onto a threshold lands on whichever side the
+   * rounding chooses. 0.635 is 3.45:1 against the page and 3.17:1 against
+   * `surface-subtle`, which clears the bar on both sides of the rounding.
+   */
+  635: 'oklch(0.635 0 0)',
+  /** shadcn `--ring` (dark), 4.18:1 against the dark page. */
+  556: 'oklch(0.556 0 0)',
+  /**
+   * rowkit's correction to shadcn `--muted-foreground` in light mode.
+   *
+   * shadcn's 0.556 is 4.73:1 on white but only 4.34:1 on `--muted`, the
+   * recessed surface a table header sits on — and a table header is the single
+   * most common use this token has.
+   *
+   * 0.547 was the first attempt and shipped 4.51:1 in floating point; axe,
+   * reading the painted `#717171`, called it 4.47:1 and failed twenty-four
+   * stories. See {@link gray[635]} — same lesson, same cause. 0.535 measures
+   * 4.75:1 on `--muted` and 5.17:1 on the page.
+   */
+  535: 'oklch(0.535 0 0)',
+  /** Pressed row in dark mode. */
+  371: 'oklch(0.371 0 0)',
+  /** shadcn `--secondary`, `--muted`, `--accent` (dark). */
+  269: 'oklch(0.269 0 0)',
+  /** shadcn `--primary` (light), `--card` and `--popover` (dark). */
+  205: 'oklch(0.205 0 0)',
+  /** shadcn `--foreground` (light), `--background` (dark). */
+  145: 'oklch(0.145 0 0)',
+} as const
+
+/**
+ * White at a fraction of opacity, for dark-mode borders.
+ *
+ * shadcn's dark borders are white at 10% and inputs at 15%, not a solid grey.
+ * That is why they read as soft against every surface instead of drawing a hard
+ * line on the darkest ones — a solid grey tuned for `--background` is too
+ * bright on `--card`. Keep the alpha; it is doing work no ramp step can.
+ */
+export const whiteAlpha = {
+  10: 'oklch(1 0 0 / 10%)',
+  15: 'oklch(1 0 0 / 15%)',
+} as const
+
+/**
  * Every primitive colour, keyed by the CSS custom property it becomes.
  *
  * These are the only place a literal colour value appears in rowkit. Everything
@@ -114,6 +193,8 @@ export const danger = {
 export const colorPrimitives = {
   white: 'oklch(1 0 0)',
   black: 'oklch(0 0 0)',
+  ...prefixKeys('gray', gray),
+  ...prefixKeys('white-alpha', whiteAlpha),
   ...prefix('neutral', neutral),
   ...prefix('primary', primary),
   ...prefix('success', success),
@@ -130,6 +211,21 @@ function prefix<N extends string>(
   return out
 }
 
+/**
+ * The same, for a scale that is not an eleven-step ramp.
+ *
+ * `gray` and `whiteAlpha` are keyed by lightness and by opacity, so they cannot
+ * go through {@link prefix}, which walks {@link colorSteps}.
+ */
+function prefixKeys<N extends string, S extends Record<string | number, string>>(
+  name: N,
+  scale: S
+): { [K in keyof S & (string | number) as `${N}-${K}`]: string } {
+  const out: Record<string, string> = {}
+  for (const [key, value] of Object.entries(scale)) out[`${name}-${key}`] = value
+  return out as { [K in keyof S & (string | number) as `${N}-${K}`]: string }
+}
+
 /** A reference to a primitive colour, as a CSS `var()` expression. */
 export type ColorRef = `var(--color-${string})`
 
@@ -143,20 +239,31 @@ const ref = (token: keyof typeof colorPrimitives): ColorRef => `var(--color-${to
  * hunting down hex codes. `semantic.test.ts` enforces this.
  */
 export const semanticColorLight = {
-  /** Page background, behind all surfaces. */
-  background: ref('neutral-50'),
-  /** Cards, panels, table bodies — the plane content sits on. */
+  /** Page background, behind all surfaces. shadcn `--background`. */
+  background: ref('white'),
+  /** Cards, panels, table bodies — the plane content sits on. shadcn `--card`. */
   surface: ref('white'),
-  /** Table headers, toolbars: a surface that recedes slightly. */
-  'surface-subtle': ref('neutral-100'),
-  /** Row hover. */
-  'surface-hover': ref('neutral-100'),
-  /** Row press / active. */
-  'surface-active': ref('neutral-200'),
-  /** Selected table row. */
-  'surface-selected': ref('primary-50'),
+  /**
+   * Table headers, toolbars: a surface that recedes slightly. shadcn `--muted`.
+   *
+   * Identical to `surface-hover`: shadcn gives `--muted` and `--accent` the same
+   * value, and the distinction survives here because the two are separate
+   * override points, not because they differ out of the box.
+   */
+  'surface-subtle': ref('gray-970'),
+  /** Row hover. shadcn `--accent`. */
+  'surface-hover': ref('gray-970'),
+  /** Row press / active. One step past hover; shadcn has no press token. */
+  'surface-active': ref('gray-922'),
+  /**
+   * Selected table row. shadcn's `data-[state=selected]` is `bg-muted`.
+   *
+   * No longer tinted with the brand: shadcn's neutral is zero-chroma
+   * throughout, and a blue selected row was the loudest thing on the page.
+   */
+  'surface-selected': ref('gray-970'),
   /** Disabled control background. */
-  'surface-disabled': ref('neutral-100'),
+  'surface-disabled': ref('gray-970'),
   /**
    * Loading placeholder fill.
    *
@@ -168,24 +275,23 @@ export const semanticColorLight = {
    * standing in for content that has not arrived, so there is nothing for a
    * reader to perceive and WCAG 1.4.11 does not apply.
    */
-  skeleton: ref('neutral-200'),
+  skeleton: ref('gray-970'),
 
-  /** Primary body and heading text. */
-  text: ref('neutral-900'),
+  /** Primary body and heading text. shadcn `--foreground`. */
+  text: ref('gray-145'),
   /**
-   * Secondary text, column labels, help text.
+   * Secondary text, column labels, help text. shadcn `--muted-foreground`.
    *
-   * `neutral-600`, not `500`. A table header is muted text on `surface-subtle`,
-   * and at `500` that pairing reached only 4.41:1 — passing on white, failing
-   * WCAG 1.4.3 on the recessed surface this token is most often used against.
-   * `600` clears it at 6.90:1 and is still 2.3× lighter than `text`, so the
-   * hierarchy survives.
+   * `gray-535`, not shadcn's 0.556. The same trap the old `neutral-500` fell
+   * into: a table header is muted text on `surface-subtle`, and shadcn's value
+   * reaches 4.73:1 on white but only 4.34:1 on the recessed surface this token
+   * is most often used against. Nine thousandths of lightness buy the pass.
    */
-  'text-muted': ref('neutral-600'),
+  'text-muted': ref('gray-535'),
   /** Placeholders and de-emphasised metadata. */
-  'text-subtle': ref('neutral-400'),
+  'text-subtle': ref('gray-635'),
   /** Text on a disabled control. */
-  'text-disabled': ref('neutral-400'),
+  'text-disabled': ref('gray-708'),
 
   /**
    * Decorative hairline: row separators, card outlines.
@@ -193,11 +299,11 @@ export const semanticColorLight = {
    * Deliberately below 3:1 against the surface. Do not use it for the boundary
    * of an interactive control — see {@link semanticColorLight['border-control']}.
    */
-  border: ref('neutral-200'),
+  border: ref('gray-922'),
   /** Emphasised decorative border: dividers that need to read as structure. */
-  'border-strong': ref('neutral-300'),
+  'border-strong': ref('gray-870'),
   /** Barely-there separation inside a dense group. */
-  'border-subtle': ref('neutral-100'),
+  'border-subtle': ref('gray-970'),
   /**
    * Boundary of an interactive control — text inputs, checkboxes, outlined
    * buttons.
@@ -205,14 +311,26 @@ export const semanticColorLight = {
    * WCAG 1.4.11 requires 3:1 against the adjacent surface for the visual
    * boundary of a UI component. `border` manages only 1.24:1 and
    * `border-strong` 1.49:1, so neither is legal here; this token is the
-   * lightest neutral that clears the bar (4.83:1 on `surface`).
+   * lightest neutral that clears the bar.
+   *
+   * shadcn's `--input` is 0.922 — the same value as its `--border` — which
+   * measures 1.26:1 and is not a legal control boundary. `gray-635` clears 3:1
+   * against the page, a card and a toolbar alike, and it applies only to
+   * controls: `border` keeps shadcn's value exactly, so the hairlines between
+   * table rows and around cards are pixel-identical to shadcn.
    */
-  'border-control': ref('neutral-500'),
-  /** Focus ring. Never remove the ring — recolour it. */
-  'focus-ring': ref('primary-600'),
+  'border-control': ref('gray-635'),
+  /**
+   * Focus ring. Never remove the ring — recolour it. shadcn `--ring`.
+   *
+   * Neutral now, not brand blue: shadcn's ring is grey, and the whole look is
+   * the absence of chroma. shadcn's own 0.708 is 2.59:1 against the page and
+   * fails 1.4.11, so this is the darkened step.
+   */
+  'focus-ring': ref('gray-635'),
 
   /** Base colour shadows are mixed from. */
-  shadow: ref('neutral-950'),
+  shadow: ref('black'),
 
   // `neutral` completes the status family so a component's variant matrix has
   // no special case: a neutral Badge reads the same token names as a danger
@@ -271,29 +389,33 @@ export const semanticColorLight = {
  * both label and background.
  */
 export const semanticColorDark = {
-  background: ref('neutral-950'),
-  surface: ref('neutral-900'),
-  'surface-subtle': ref('neutral-800'),
-  'surface-hover': ref('neutral-800'),
-  'surface-active': ref('neutral-700'),
-  'surface-selected': ref('primary-950'),
-  'surface-disabled': ref('neutral-800'),
-  // Lifts off `surface` (neutral-900) rather than receding. On a dark page a
-  // placeholder darker than its card reads as a hole in the layout.
-  skeleton: ref('neutral-800'),
+  background: ref('gray-145'),
+  surface: ref('gray-205'),
+  'surface-subtle': ref('gray-269'),
+  'surface-hover': ref('gray-269'),
+  'surface-active': ref('gray-371'),
+  'surface-selected': ref('gray-269'),
+  'surface-disabled': ref('gray-269'),
+  // Lifts off `surface` rather than receding. On a dark page a placeholder
+  // darker than its card reads as a hole in the layout.
+  skeleton: ref('gray-269'),
 
-  text: ref('neutral-50'),
-  'text-muted': ref('neutral-400'),
-  'text-subtle': ref('neutral-500'),
-  'text-disabled': ref('neutral-600'),
+  text: ref('gray-985'),
+  // shadcn's own value, kept: 7.63:1 on the page and 5.83:1 on `--muted`, so
+  // dark mode needs none of the correction light mode did.
+  'text-muted': ref('gray-708'),
+  'text-subtle': ref('gray-556'),
+  'text-disabled': ref('gray-556'),
 
-  border: ref('neutral-800'),
-  'border-strong': ref('neutral-700'),
-  'border-subtle': ref('neutral-900'),
-  // neutral-500 is again the lightest step clearing 3:1, here against
-  // `surface` (neutral-900) at 3.67:1.
-  'border-control': ref('neutral-500'),
-  'focus-ring': ref('primary-400'),
+  // White at alpha, not a solid grey — see `whiteAlpha`. A grey tuned against
+  // `background` draws too hard a line once the same border sits on `surface`.
+  border: ref('white-alpha-10'),
+  'border-strong': ref('white-alpha-15'),
+  'border-subtle': ref('white-alpha-10'),
+  // shadcn's `--input`, unchanged: composited over the page it measures
+  // 3.82:1, and 3.54:1 over a card, so both clear 1.4.11 without help.
+  'border-control': ref('white-alpha-15'),
+  'focus-ring': ref('gray-556'),
 
   shadow: ref('black'),
 

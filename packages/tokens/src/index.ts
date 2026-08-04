@@ -23,12 +23,14 @@ import { version as pkgVersion } from '../package.json' with { type: 'json' }
 import {
   colorPrimitives,
   danger,
+  gray,
   neutral,
   primary,
   semanticColorDark,
   semanticColorLight,
   success,
   warning,
+  whiteAlpha,
 } from './color'
 import { duration, easing } from './motion'
 import { radius, radiusBase } from './radius'
@@ -41,12 +43,14 @@ export {
   colorPrimitives,
   colorSteps,
   danger,
+  gray,
   neutral,
   primary,
   semanticColorDark,
   semanticColorLight,
   success,
   warning,
+  whiteAlpha,
 } from './color'
 export type { ColorRef, ColorStep, SemanticColorName } from './color'
 
@@ -78,6 +82,8 @@ export { buildThemeCss } from './css'
  */
 export const tokens = {
   color: {
+    gray,
+    whiteAlpha,
     neutral,
     primary,
     success,

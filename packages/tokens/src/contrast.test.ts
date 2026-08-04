@@ -56,6 +56,12 @@ const pairings: readonly Pairing[] = [
   ['focus ring against a surface', 'focus-ring', 'surface', AA_NON_TEXT],
   ['control border against a surface', 'border-control', 'surface', AA_NON_TEXT],
   ['control border against the page', 'border-control', 'background', AA_NON_TEXT],
+  // Controls live in toolbars and table headers too, which are `surface-subtle`
+  // rather than `surface` — the darkest plane either token normally sits on,
+  // and the one neither was checked against until the palette changed under
+  // them.
+  ['focus ring against a recessed surface', 'focus-ring', 'surface-subtle', AA_NON_TEXT],
+  ['control border against a recessed surface', 'border-control', 'surface-subtle', AA_NON_TEXT],
 ]
 
 describe.each([
@@ -65,6 +71,33 @@ describe.each([
   it.each(pairings)('%s meets %s on %s at >= %d:1', (_label, fg, bg, min) => {
     const ratio = semanticContrast(theme[fg], theme[bg])
     expect(ratio, `got ${ratio.toFixed(2)}:1`).toBeGreaterThanOrEqual(min)
+  })
+})
+
+describe('translucent tokens are measured as they render', () => {
+  /*
+   * Dark mode's borders are white at 10% and 15% alpha. Measuring the source
+   * colour instead of the composite would score them as pure white — around
+   * 15:1 against the page — and every threshold above would pass for a border
+   * nobody can see. The pass/fail assertions cannot catch that on their own,
+   * because the wrong answer is comfortably over the bar too.
+   *
+   * So the composite is pinned by value. If `semanticContrast` ever stops
+   * compositing, these fail; a ratio near 15 is the signature of that bug.
+   */
+  it('composites the 15% control border over the surface behind it', () => {
+    expect(
+      semanticContrast(semanticColorDark['border-control'], semanticColorDark.surface)
+    ).toBeCloseTo(3.54, 1)
+    expect(
+      semanticContrast(semanticColorDark['border-control'], semanticColorDark.background)
+    ).toBeCloseTo(3.82, 1)
+  })
+
+  it('composites the 10% hairline, which is decorative and stays under 3:1', () => {
+    const ratio = semanticContrast(semanticColorDark.border, semanticColorDark.surface)
+    expect(ratio).toBeLessThan(AA_NON_TEXT)
+    expect(ratio).toBeGreaterThan(1.5)
   })
 })
 

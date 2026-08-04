@@ -12,13 +12,33 @@ import { colorPrimitives } from '../src/color'
 /** Linear-light sRGB, unclamped so out-of-gamut colours stay detectable. */
 export type LinearRgb = readonly [number, number, number]
 
-const OKLCH = /^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)$/
+const OKLCH = /^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.]+)%\s*)?\)$/
 
-/** Parses an `oklch(L C H)` string. Throws on anything else, by design. */
-export function parseOklch(value: string): { l: number; c: number; h: number } {
+/**
+ * Parses an `oklch(L C H)` string, or `oklch(L C H / P%)`.
+ *
+ * Alpha exists for the dark-mode borders, which are white at 10% and 15% rather
+ * than a solid grey. `alpha` is 1 when the value carries no slash, so callers
+ * that predate it keep working.
+ */
+export function parseOklch(value: string): { l: number; c: number; h: number; alpha: number } {
   const match = OKLCH.exec(value)
   if (!match) throw new Error(`not a plain oklch() value: ${value}`)
-  return { l: Number(match[1]), c: Number(match[2]), h: Number(match[3]) }
+  return {
+    l: Number(match[1]),
+    c: Number(match[2]),
+    h: Number(match[3]),
+    alpha: match[4] === undefined ? 1 : Number(match[4]) / 100,
+  }
+}
+
+/** Composites a translucent colour over an opaque one, in linear light. */
+export function over(source: LinearRgb, backdrop: LinearRgb, alpha: number): LinearRgb {
+  return [
+    source[0] * alpha + backdrop[0] * (1 - alpha),
+    source[1] * alpha + backdrop[1] * (1 - alpha),
+    source[2] * alpha + backdrop[2] * (1 - alpha),
+  ]
 }
 
 /** Converts OKLCH to linear-light sRGB. */
@@ -61,16 +81,31 @@ export function contrastRatio(a: LinearRgb, b: LinearRgb): number {
  * of the primitive it points at.
  */
 export function resolveColorRef(cssVar: string): LinearRgb {
+  const { rgb } = resolveColorRefWithAlpha(cssVar)
+  return rgb
+}
+
+/** The same, keeping the alpha channel so a translucent token can be composited. */
+export function resolveColorRefWithAlpha(cssVar: string): { rgb: LinearRgb; alpha: number } {
   const match = /^var\(--color-([a-z0-9-]+)\)$/.exec(cssVar)
   if (!match) throw new Error(`not a primitive colour reference: ${cssVar}`)
   const name = match[1] as keyof typeof colorPrimitives
   const literal = colorPrimitives[name]
   if (literal === undefined) throw new Error(`unknown primitive: --color-${String(name)}`)
-  const { l, c, h } = parseOklch(literal)
-  return oklchToLinearRgb(l, c, h)
+  const { l, c, h, alpha } = parseOklch(literal)
+  return { rgb: oklchToLinearRgb(l, c, h), alpha }
 }
 
-/** Contrast between two semantic tokens, each given as a `var()` reference. */
+/**
+ * Contrast between two semantic tokens, each given as a `var()` reference.
+ *
+ * A translucent foreground is composited over the background first. Without
+ * that, dark mode's `border-control` — white at 15% — would be measured as pure
+ * white and score 15:1 against the page, which is not a colour anyone sees.
+ * The background is assumed opaque, which every surface token is.
+ */
 export function semanticContrast(foreground: string, background: string): number {
-  return contrastRatio(resolveColorRef(foreground), resolveColorRef(background))
+  const bg = resolveColorRef(background)
+  const { rgb, alpha } = resolveColorRefWithAlpha(foreground)
+  return contrastRatio(alpha === 1 ? rgb : over(rgb, bg, alpha), bg)
 }
