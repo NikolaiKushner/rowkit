@@ -1,8 +1,10 @@
 ---
-'rowkit': major
+'rowkit': minor
 ---
 
 **Breaking:** `TablePagination` is now `Pagination`.
+
+Marked `minor`, not `major`, on purpose: this is a 0.x line, and changesets turns a `major` there straight into `1.0.0`. Version 1.0 is meant to follow the API surviving contact with real applications, not a rename.
 
 The old name claimed a coupling that never existed — the component pages a list, and a list can be cards or a feed as easily as rows. With `hidePageSize` and `hideSummary` it was already a standalone pager; the name was the only thing suggesting otherwise.
 
