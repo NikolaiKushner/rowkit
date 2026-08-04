@@ -13,17 +13,17 @@ import Field from '../Field/Field.vue'
 import Select from '../Select/Select.vue'
 import type { SelectOption } from '../Select/types'
 import {
-  tablePaginationEllipsisVariants,
-  tablePaginationItemVariants,
-  tablePaginationSummaryVariants,
-  tablePaginationVariants,
-} from './TablePagination.variants'
+  paginationEllipsisVariants,
+  paginationItemVariants,
+  paginationSummaryVariants,
+  paginationVariants,
+} from './Pagination.variants'
 
-import type { TablePaginationProps } from './types'
+import type { PaginationProps } from './types'
 
-defineOptions({ name: 'RkTablePagination' })
+defineOptions({ name: 'RkPagination' })
 
-const props = withDefaults(defineProps<TablePaginationProps>(), {
+const props = withDefaults(defineProps<PaginationProps>(), {
   pageSizeOptions: () => [10, 25, 50, 100],
   siblingCount: 1,
   showEdges: true,
@@ -78,9 +78,9 @@ const isDisabled = computed(() => props.disabled || props.total === 0)
 </script>
 
 <template>
-  <div :class="cn(tablePaginationVariants({ size: props.size }), props.class)">
+  <div :class="cn(paginationVariants({ size: props.size }), props.class)">
     <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <p v-if="!props.hideSummary" :class="tablePaginationSummaryVariants({ size: props.size })">
+      <p v-if="!props.hideSummary" :class="paginationSummaryVariants({ size: props.size })">
         <slot name="summary" :from="from" :to="to" :total="props.total">
           <!-- Reads "0 of 0" when empty rather than the nonsensical "1–0 of 0". -->
           <template v-if="props.total === 0">0 of 0</template>
@@ -112,7 +112,7 @@ const isDisabled = computed(() => props.disabled || props.total === 0)
     >
       <PaginationPrev
         :aria-label="props.previousLabel"
-        :class="tablePaginationItemVariants({ size: props.size })"
+        :class="paginationItemVariants({ size: props.size })"
       >
         <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path
@@ -131,7 +131,7 @@ const isDisabled = computed(() => props.disabled || props.total === 0)
             v-if="item.type === 'page'"
             :value="item.value"
             :aria-current="item.value === page ? 'page' : undefined"
-            :class="tablePaginationItemVariants({ size: props.size, active: item.value === page })"
+            :class="paginationItemVariants({ size: props.size, active: item.value === page })"
           >
             {{ item.value }}
           </PaginationListItem>
@@ -143,7 +143,7 @@ const isDisabled = computed(() => props.disabled || props.total === 0)
           <PaginationEllipsis
             v-else
             aria-hidden="true"
-            :class="tablePaginationEllipsisVariants({ size: props.size })"
+            :class="paginationEllipsisVariants({ size: props.size })"
           >
             …
           </PaginationEllipsis>
@@ -152,7 +152,7 @@ const isDisabled = computed(() => props.disabled || props.total === 0)
 
       <PaginationNext
         :aria-label="props.nextLabel"
-        :class="tablePaginationItemVariants({ size: props.size })"
+        :class="paginationItemVariants({ size: props.size })"
       >
         <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path

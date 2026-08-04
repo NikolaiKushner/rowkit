@@ -269,6 +269,35 @@ handling.
 - `#leading` — Content rendered before the input, inside the control's border.
 - `#trailing` — Content rendered after the input — a unit, a clear button, a spinner.
 
+### Pagination
+
+`import { Pagination } from 'rowkit'`
+
+**Props**
+
+- `total: number` _(required)_. Total number of rows across all pages.
+- `pageSizeOptions: number[]` — default `() => [10, 25, 50, 100]`. Choices offered in the rows-per-page control.
+- `siblingCount: number` — default `1`. How many page numbers to show on each side of the current one.
+- `showEdges: boolean` — default `true`. Always show the first and last page, with ellipses between.
+- `hidePageSize: boolean` — default `false`. Hides the rows-per-page control.
+- `hideSummary: boolean` — default `false`. Hides the "1–10 of 247" summary.
+- `pageSizeLabel: string` — default `'Rows per page'`. Label for the rows-per-page control.
+- `label: string` — default `'Pagination'`. Accessible name for the navigation region.
+- `previousLabel: string` — default `'Previous page'`. Accessible name for the previous-page control.
+- `nextLabel: string` — default `'Next page'`. Accessible name for the next-page control.
+- `size: 'sm' | 'md'` — default `'md'`. Control height and text size.
+- `disabled: boolean` — default `false`. Disables every control.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**v-model**
+
+- `v-model:page` — `number`. The current page, 1-based.
+- `v-model:pageSize` — `number`. Rows per page.
+
+**Slots**
+
+- `#summary` `(props: { from: number; to: number; total: number })` — Replaces the range summary.
+
 ### Select
 
 `import { Select } from 'rowkit'`
@@ -315,35 +344,6 @@ handling.
 - `class: string`. Additional classes, merged with the variant classes so a consumer's utility wins over the component's own.
 - `as: string | Component` — default `'div'`. Element or component to render as.
 - `asChild: boolean` — default `false`. Merge props onto the single child element instead of rendering a wrapper.
-
-### TablePagination
-
-`import { TablePagination } from 'rowkit'`
-
-**Props**
-
-- `total: number` _(required)_. Total number of rows across all pages.
-- `pageSizeOptions: number[]` — default `() => [10, 25, 50, 100]`. Choices offered in the rows-per-page control.
-- `siblingCount: number` — default `1`. How many page numbers to show on each side of the current one.
-- `showEdges: boolean` — default `true`. Always show the first and last page, with ellipses between.
-- `hidePageSize: boolean` — default `false`. Hides the rows-per-page control.
-- `hideSummary: boolean` — default `false`. Hides the "1–10 of 247" summary.
-- `pageSizeLabel: string` — default `'Rows per page'`. Label for the rows-per-page control.
-- `label: string` — default `'Pagination'`. Accessible name for the navigation region.
-- `previousLabel: string` — default `'Previous page'`. Accessible name for the previous-page control.
-- `nextLabel: string` — default `'Next page'`. Accessible name for the next-page control.
-- `size: 'sm' | 'md'` — default `'md'`. Control height and text size.
-- `disabled: boolean` — default `false`. Disables every control.
-- `class: string`. Additional classes, merged so a consumer's utility wins.
-
-**v-model**
-
-- `v-model:page` — `number`. The current page, 1-based.
-- `v-model:pageSize` — `number`. Rows per page.
-
-**Slots**
-
-- `#summary` `(props: { from: number; to: number; total: number })` — Replaces the range summary.
 
 ### Toaster
 

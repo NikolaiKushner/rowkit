@@ -30,13 +30,13 @@ Nothing is Locked before v1.0, because that is what v1.0 means.
 
 **Data**
 
-| Component                                       | Stage     |
-| ----------------------------------------------- | --------- |
-| [DataTable](/components/data-table)             | 🟢 Stable |
-| [TablePagination](/components/table-pagination) | 🟢 Stable |
-| [FilterBar](/components/filter-bar)             | 🟢 Stable |
-| [EmptyState](/components/empty-state)           | 🟢 Stable |
-| [Skeleton](/components/skeleton)                | 🟢 Stable |
+| Component                             | Stage     |
+| ------------------------------------- | --------- |
+| [DataTable](/components/data-table)   | 🟢 Stable |
+| [Pagination](/components/pagination)  | 🟢 Stable |
+| [FilterBar](/components/filter-bar)   | 🟢 Stable |
+| [EmptyState](/components/empty-state) | 🟢 Stable |
+| [Skeleton](/components/skeleton)      | 🟢 Stable |
 
 **Overlays**
 

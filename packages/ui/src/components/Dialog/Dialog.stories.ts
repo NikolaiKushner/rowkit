@@ -205,6 +205,49 @@ export const Accessibility: Story = {
   },
 }
 
+/**
+ * The focus ring of the last field is not clipped by the scrolling body.
+ *
+ * The body is `overflow-y-auto`, which makes it a clipping boundary, and the
+ * ring is drawn 3px outside the control's border box. With no vertical padding
+ * the bottom of that ring was sliced off: the field looked focused on three
+ * sides and cut on the fourth, and nothing about the markup was wrong.
+ */
+export const FocusRingIsNotClipped: Story = {
+  render: () => ({
+    components: { Dialog, Button, Field, Input },
+    setup: () => ({ open: ref(true), name: ref('Platform') }),
+    template: `
+      <Dialog v-model:open="open" title="Project settings" size="sm">
+        <Field label="Project name"><Input v-model="name" /></Field>
+        <template #footer><Button>Save</Button></template>
+      </Dialog>
+    `,
+  }),
+  play: async () => {
+    const body = within(document.body)
+    const dialog = await body.findByRole('dialog')
+
+    const input = dialog.querySelector('input')
+    if (!input) throw new Error('no input rendered')
+    input.focus()
+
+    // The scrolling region is the element that clips. Walk up from the field.
+    let region: HTMLElement | null = input.parentElement
+    while (region && getComputedStyle(region).overflowY !== 'auto') region = region.parentElement
+    if (!region) throw new Error('no scrolling body found')
+
+    const RING = 3
+    const field = input.getBoundingClientRect()
+    const clip = region.getBoundingClientRect()
+
+    // Measured, not inferred from the class list: a padding utility that failed
+    // to compile would leave the classes correct and the ring still cut.
+    await expect(field.bottom + RING).toBeLessThanOrEqual(clip.bottom)
+    await expect(field.top - RING).toBeGreaterThanOrEqual(clip.top)
+  },
+}
+
 /** Escape closes, and focus returns to the trigger that opened it. */
 export const EscapeRestoresFocus: Story = {
   play: async ({ canvasElement }) => {

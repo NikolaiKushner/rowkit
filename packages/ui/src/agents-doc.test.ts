@@ -34,7 +34,7 @@ describe('generated AGENTS.md', () => {
       'Input',
       'Select',
       'Skeleton',
-      'TablePagination',
+      'Pagination',
       'Toaster',
       'Tooltip',
     ]) {

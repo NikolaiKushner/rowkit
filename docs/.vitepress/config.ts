@@ -91,7 +91,7 @@ export default defineConfig({
         text: 'Data',
         items: [
           { text: 'DataTable', link: '/components/data-table' },
-          { text: 'TablePagination', link: '/components/table-pagination' },
+          { text: 'Pagination', link: '/components/pagination' },
           { text: 'FilterBar', link: '/components/filter-bar' },
           { text: 'EmptyState', link: '/components/empty-state' },
           { text: 'Skeleton', link: '/components/skeleton' },

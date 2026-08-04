@@ -205,7 +205,7 @@ render, because live regions announce changes rather than initial content.
 
 There is no roving tabstop across the chips. Each remove control is a button in
 document order, so <kbd>Tab</kbd> reaches every one of them — the same reasoning
-as `TablePagination`'s page numbers.
+as `Pagination`'s page numbers.
 
 ## Accessibility
 

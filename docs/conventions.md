@@ -141,7 +141,7 @@ system. `unknown` with a narrowing predicate is almost always the answer — see
 These recur often enough to be conventions rather than per-component decisions.
 
 **Decorative by default, announced on request.** Anything that repeats
-information already present is `aria-hidden`: `Badge`'s dot, `TablePagination`'s
+information already present is `aria-hidden`: `Badge`'s dot, `Pagination`'s
 ellipsis, `DataTable`'s sort icon. `Skeleton` is `aria-hidden` unconditionally
 and has no say in the matter — a loading table renders dozens of them.
 

@@ -4,7 +4,21 @@ export const selectTriggerVariants = cva(
   [
     'flex w-full items-center justify-between gap-2 border bg-transparent text-left text-foreground shadow-xs',
     'cursor-pointer transition-colors duration-fast ease-standard',
-    'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
+    /*
+     * `has-[:focus-visible]`, not `focus-visible`.
+     *
+     * These classes sit on the anchor, which is a wrapper. The element that
+     * actually takes focus is the input inside it — Reka needs a real
+     * `ComboboxInput` to be the focusable combobox, and the anchor is never
+     * focused itself. A plain `focus-visible:` here therefore matched nothing,
+     * ever: the Select had no visible focus indicator at all, while its class
+     * list read exactly like every other control's.
+     *
+     * The input carries `outline-none`, so this is the only indicator; it has
+     * to be on the box the user sees, which is the anchor.
+     */
+    'outline-none has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3',
+    'has-[:focus-visible]:ring-ring/50',
     'disabled:cursor-not-allowed disabled:opacity-50',
   ],
   {

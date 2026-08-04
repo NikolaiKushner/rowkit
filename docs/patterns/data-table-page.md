@@ -125,7 +125,7 @@ watch([search, role, status, sort, pageSize], () => {
       </EmptyState>
     </template>
   </DataTable>
-  <TablePagination v-model:page="page" v-model:page-size="pageSize" :total="filtered.length" label="Users pagination" />
+  <Pagination v-model:page="page" v-model:page-size="pageSize" :total="filtered.length" label="Users pagination" />
 </DemoBox>
 
 Search for a name, narrow by role, sort a column, page through. Then filter down
@@ -137,7 +137,7 @@ that you have no users.
 ```vue
 <script setup lang="ts">
 import {
-  Badge, Button, DataTable, EmptyState, FilterBar, Field, Select, TablePagination,
+  Badge, Button, DataTable, EmptyState, FilterBar, Field, Select, Pagination,
   compareSortable,
   type DataTableColumn, type DataTableSort, type FilterChip,
 } from 'rowkit'
@@ -203,7 +203,7 @@ The template is the demo above, verbatim.
 
 ## Why it is wired this way
 
-**The page resets the page number, not the components.** `TablePagination` never
+**The page resets the page number, not the components.** `Pagination` never
 moves the page on its own — not when the page size changes, not when the filters
 narrow. That watcher is four lines and it belongs to you, because the right
 answer differs: a filter change should land on page 1, while a page-size change

@@ -45,7 +45,7 @@ export const dialogContentVariants = cva(
 )
 
 /** Header, body and footer are separate rows so only the body scrolls. */
-export const dialogHeaderVariants = cva('flex shrink-0 flex-col gap-1 p-6 pb-4')
+export const dialogHeaderVariants = cva('flex shrink-0 flex-col gap-1 p-4 pb-3')
 
 export const dialogTitleVariants = cva('text-lg leading-none font-semibold text-foreground')
 
@@ -56,14 +56,33 @@ export const dialogDescriptionVariants = cva('text-sm text-muted-foreground')
  * its own footer actions off-screen, which is where "where did the Save button
  * go" comes from.
  */
-export const dialogBodyVariants = cva('min-h-0 flex-1 overflow-y-auto px-6 text-sm text-foreground')
+/*
+ * `pt-1 pb-3`, not bare padding-inline alone.
+ *
+ * `overflow-y-auto` makes this a clipping boundary, and the focus ring is drawn
+ * 3px *outside* the control's border box. With no vertical padding the last
+ * field in a form sat flush against that boundary, so the bottom of its ring was
+ * sliced off — the control looked focused on three sides and cut on the fourth.
+ *
+ * `pt-1` is the 4px a ring needs at the top edge; the header's own `pb-3`
+ * supplies the visual gap above. `pb-3` does both jobs at the bottom, since the
+ * footer's border wants clearance from the last field anyway.
+ */
+export const dialogBodyVariants = cva(
+  'min-h-0 flex-1 overflow-y-auto px-4 pt-1 pb-3 text-sm text-foreground'
+)
 
+/*
+ * The border makes the actions a separate plane from the content they act on,
+ * which matters most when the body scrolls: without it, content scrolling under
+ * the footer simply runs out rather than passing behind an edge.
+ */
 export const dialogFooterVariants = cva(
-  'flex shrink-0 flex-wrap items-center justify-end gap-3 p-6 pt-4'
+  'flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-border p-4'
 )
 
 export const dialogCloseVariants = cva([
-  'absolute right-4 top-4 inline-flex size-8 shrink-0 cursor-pointer',
+  'absolute right-3 top-3 inline-flex size-8 shrink-0 cursor-pointer',
   'items-center justify-center rounded-xs text-muted-foreground opacity-70 hover:opacity-100',
   'transition-colors duration-fast ease-standard',
   'hover:bg-accent hover:text-foreground',

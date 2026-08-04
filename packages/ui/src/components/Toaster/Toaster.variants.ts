@@ -24,7 +24,7 @@ export const toasterViewportVariants = cva(
 
 export const toastVariants = cva(
   [
-    'pointer-events-auto flex items-start gap-3 rounded-lg border p-4 text-sm shadow-lg',
+    'pointer-events-auto flex items-start gap-3 rounded-lg border p-3 text-sm shadow-lg',
     'motion-safe:data-[state=open]:animate-toast-in',
     'motion-safe:data-[state=closed]:animate-toast-out',
     // Reka drives the swipe with a transform custom property.

@@ -1,13 +1,13 @@
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import { describe, expect, it } from 'vitest'
-import TablePagination from './TablePagination.vue'
+import Pagination from './Pagination.vue'
 
 function setup(props: Record<string, unknown> = {}) {
-  return mount(TablePagination, { props: { total: 247, ...props } })
+  return mount(Pagination, { props: { total: 247, ...props } })
 }
 
-describe('TablePagination', () => {
+describe('Pagination', () => {
   describe('summary', () => {
     it('reports the first page range', () => {
       expect(setup().find('p').text()).toBe('1–10 of 247')
@@ -32,7 +32,7 @@ describe('TablePagination', () => {
     })
 
     it('can be replaced through the slot', () => {
-      const el = mount(TablePagination, {
+      const el = mount(Pagination, {
         props: { total: 247, page: 2 },
         slots: {
           summary: `<template #summary="{ from, to, total }">{{ from }}/{{ to }}/{{ total }}</template>`,
@@ -117,9 +117,14 @@ describe('TablePagination', () => {
       expect(current[0]?.text()).toBe('3')
     })
 
-    it('styles the current page as filled, not merely bold', () => {
+    it('outlines the current page, and does so with a border that clears 3:1', () => {
+      // The outline is the only visual carrier of "you are here", so it uses
+      // the control-boundary token rather than the decorative hairline, which
+      // is deliberately below 3:1. `aria-current` above carries the same state
+      // to assistive tech; this covers the sighted keyboard user.
       const current = setup({ page: 3 }).find('[aria-current="page"]')
-      expect(current.classes()).toContain('bg-primary-solid')
+      expect(current.classes()).toContain('border-input')
+      expect(current.classes()).not.toContain('border-transparent')
     })
 
     it('names the previous and next controls', () => {

@@ -6,7 +6,7 @@ import {
   EmptyState,
   FilterBar,
   Select,
-  TablePagination,
+  Pagination,
   compareSortable,
   type DataTableColumn,
   type DataTableSort,
@@ -190,7 +190,7 @@ function clearFilters() {
 /**
  * Resetting the page is the application's job, not the component's.
  *
- * `TablePagination` deliberately never moves the page itself — so narrowing the
+ * `Pagination` deliberately never moves the page itself — so narrowing the
  * results, re-sorting, or changing the page size all reset it here. Without
  * this the user lands on page 9 of a two-page result and sees nothing.
  */
@@ -304,7 +304,7 @@ const selectedCount = computed(() => selected.value.length)
       </template>
     </DataTable>
 
-    <TablePagination
+    <Pagination
       v-model:page="page"
       v-model:page-size="pageSize"
       :total="filtered.length"

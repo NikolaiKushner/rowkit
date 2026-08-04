@@ -7,9 +7,9 @@ import { cva, type VariantProps } from 'class-variance-authority'
 export const emptyStateVariants = cva('flex flex-col items-center justify-center text-center', {
   variants: {
     size: {
-      sm: 'gap-2 px-4 py-6',
-      md: 'gap-3 px-6 py-10',
-      lg: 'gap-4 px-6 py-16',
+      sm: 'gap-2 px-3 py-4',
+      md: 'gap-3 px-4 py-8',
+      lg: 'gap-4 px-4 py-12',
     },
   },
   defaultVariants: { size: 'md' },

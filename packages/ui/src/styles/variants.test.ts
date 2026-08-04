@@ -67,11 +67,11 @@ import {
 } from '../components/Toaster/Toaster.variants'
 import { tooltipContentVariants } from '../components/Tooltip/Tooltip.variants'
 import {
-  tablePaginationEllipsisVariants,
-  tablePaginationItemVariants,
-  tablePaginationSummaryVariants,
-  tablePaginationVariants,
-} from '../components/TablePagination/TablePagination.variants'
+  paginationEllipsisVariants,
+  paginationItemVariants,
+  paginationSummaryVariants,
+  paginationVariants,
+} from '../components/Pagination/Pagination.variants'
 
 /**
  * Every class a component can emit has to produce CSS.
@@ -145,10 +145,10 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['EmptyState title', emptyStateTitleVariants],
   ['EmptyState description', emptyStateDescriptionVariants],
   ['EmptyState actions', emptyStateActionsVariants],
-  ['TablePagination', tablePaginationVariants],
-  ['TablePagination item', tablePaginationItemVariants],
-  ['TablePagination ellipsis', tablePaginationEllipsisVariants],
-  ['TablePagination summary', tablePaginationSummaryVariants],
+  ['Pagination', paginationVariants],
+  ['Pagination item', paginationItemVariants],
+  ['Pagination ellipsis', paginationEllipsisVariants],
+  ['Pagination summary', paginationSummaryVariants],
   ['FilterBar', filterBarVariants],
   ['FilterBar controls', filterBarControlsVariants],
   ['FilterBar chips', filterBarChipsVariants],
