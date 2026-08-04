@@ -98,7 +98,7 @@ async function loadStylesheet(id: string, base: string) {
 
 /** Escapes a class name into the selector Tailwind emits for it. */
 function toSelector(className: string): string {
-  return `.${className.replace(/[:.[\]()/%!#,'"+*~>^$=]/g, (char) => `\\${char}`)}`
+  return `.${className.replace(/[:.[\]()/%!#,'"+*~>^$=&]/g, (char) => `\\${char}`)}`
 }
 
 /** Every combination of a cva config's variant options. */

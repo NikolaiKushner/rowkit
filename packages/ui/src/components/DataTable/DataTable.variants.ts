@@ -10,15 +10,27 @@ export const dataTableWrapperVariants = cva([
   'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
 ])
 
-export const dataTableVariants = cva('w-full border-collapse text-left', {
-  variants: {
-    size: {
-      sm: 'text-xs',
-      md: 'text-sm',
+export const dataTableVariants = cva(
+  [
+    'w-full border-collapse text-left',
+    /*
+     * The header draws the rule beneath it as an inset shadow, and every body
+     * cell draws its own `border-t`. At the first row those are two separate
+     * paints landing on the same boundary, which reads as a heavier line under
+     * the header than between any other pair of rows. Drop the first row's.
+     */
+    '[&>tbody>tr:first-child>*]:border-t-0',
+  ],
+  {
+    variants: {
+      size: {
+        sm: 'text-xs',
+        md: 'text-sm',
+      },
     },
-  },
-  defaultVariants: { size: 'md' },
-})
+    defaultVariants: { size: 'md' },
+  }
+)
 
 export const dataTableCaptionVariants = cva('px-3 py-2 text-left text-muted-foreground', {
   variants: {
@@ -136,7 +148,7 @@ export const dataTableCellVariants = cva('border-t border-border align-middle te
   variants: {
     size: {
       sm: 'h-8 px-2',
-      md: 'h-10 p-2',
+      md: 'h-10 px-2 py-1',
     },
     align: {
       start: 'text-start',
@@ -189,7 +201,7 @@ export const dataTableSelectCellVariants = cva('w-px border-t border-border pr-0
   variants: {
     size: {
       sm: 'h-8 px-2',
-      md: 'h-10 p-2',
+      md: 'h-10 px-2 py-1',
     },
     /**
      * The header composes this on top of the header-cell variant, and inherits

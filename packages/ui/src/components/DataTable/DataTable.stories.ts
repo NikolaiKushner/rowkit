@@ -640,15 +640,30 @@ export const TenThousandRows: Story = {
  * placeholder rows are shorter, the table grows at the moment of load and every
  * row below jumps — the layout shift a skeleton exists to prevent, delivered by
  * the skeleton itself.
+ *
+ * The case that used to break it is the flagship one: a row with an action
+ * button. A `size="sm"` button is 32px, and at the old `p-2` that lifted the row
+ * to 48px while the placeholder stayed at the 40px minimum — a measured 9px jump
+ * per row, on the very table this library exists to render.
+ *
+ * The fix is not a taller placeholder, which would only invert the problem for
+ * tables without actions. It is `py-1`: with 4px of vertical padding a 32px
+ * control fits inside the 40px row minimum, so text, a badge, a button and a
+ * skeleton all produce exactly the same row height. This story renders the
+ * button so a regression is caught rather than reasoned about.
  */
 export const LoadingRowsMatchLoadedRows: Story = {
   render: () => ({
-    components: { DataTable },
-    setup: () => ({ rows, columns }),
+    components: { DataTable, Button },
+    setup: () => ({ users, withActions: [...columns, { id: 'actions', header: 'Actions' }] }),
     template: `
       <div class="flex flex-col gap-6">
-        <DataTable :rows="rows" :columns="columns" caption="Loaded" />
-        <DataTable :rows="rows" :columns="columns" caption="Loading" loading :loading-rows="3" />
+        <DataTable :rows="users" :columns="withActions" caption="Loaded">
+          <template #[\`cell:actions\`]>
+            <Button variant="ghost" size="sm">Edit</Button>
+          </template>
+        </DataTable>
+        <DataTable :rows="users" :columns="withActions" caption="Loading" loading :loading-rows="3" />
       </div>
     `,
   }),
