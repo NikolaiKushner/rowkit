@@ -24,6 +24,17 @@ export const shadow = {
   xl: '0 20px 25px -5px color-mix(in oklab, var(--color-shadow) 12%, transparent), 0 8px 10px -6px color-mix(in oklab, var(--color-shadow) 12%, transparent)',
   /** Horizontal-scroll affordance on a sticky table column. */
   'scroll-x': '8px 0 8px -8px color-mix(in oklab, var(--color-shadow) 15%, transparent)',
+  /**
+   * The rule under a sticky table header, drawn as a shadow rather than a
+   * border.
+   *
+   * Under `border-collapse` a border belongs to the table's grid, not to any
+   * cell, so a `position: sticky` header leaves its border behind and scrolls
+   * away from it — the rows then slide under a header with nothing between
+   * them, which is the one thing a sticky header exists to prevent. A shadow
+   * belongs to the element and travels with it.
+   */
+  'sticky-header': 'inset 0 -1px 0 var(--color-border)',
 } as const
 
 /** Names of every shadow token. */

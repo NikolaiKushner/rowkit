@@ -268,6 +268,35 @@ export const StickyHeader: Story = {
       </div>
     `,
   }),
+  /*
+   * The rule under a sticky header is the one a border cannot draw. Under
+   * `border-collapse` a border belongs to the table's grid rather than to the
+   * header, so the header scrolls away from its own line and the rows slide
+   * under it with nothing between — exactly what a sticky header exists to
+   * prevent. It is an inset shadow instead, which belongs to the element.
+   */
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const header = canvas.getAllByRole('columnheader')[0]
+    if (!header) throw new Error('no header cell')
+
+    const region = header.closest<HTMLElement>('[class*="overflow"]')
+    if (!region) throw new Error('no scroll container')
+
+    region.scrollTop = 200
+    await new Promise((r) => requestAnimationFrame(() => r(null)))
+
+    // Measured while scrolled: the header has to still be painting its rule,
+    // and still be covering the rows passing beneath it.
+    await expect(getComputedStyle(header).boxShadow).not.toBe('none')
+    await expect(getComputedStyle(header).backgroundColor).not.toBe('rgba(0, 0, 0, 0)')
+    // Still pinned to the top of the scroll region. The tolerance is the
+    // container's own 1px border: sticky resolves against the padding box,
+    // while `getBoundingClientRect` on the container includes the border.
+    const offset = header.getBoundingClientRect().top - region.getBoundingClientRect().top
+    await expect(offset).toBeGreaterThanOrEqual(0)
+    await expect(offset).toBeLessThanOrEqual(2)
+  },
 }
 
 const sortableColumns: DataTableColumn<User>[] = [
@@ -601,5 +630,40 @@ export const TenThousandRows: Story = {
     // Every row is really in the DOM — there is no virtualization, deliberately.
     // Timings are measured out-of-band with Playwright; see decision 004.
     await expect(canvas.getAllByRole('row')).toHaveLength(10_001)
+  },
+}
+
+/**
+ * A loading row is exactly as tall as the row it stands in for.
+ *
+ * The point of a skeleton is that nothing moves when the data arrives. If the
+ * placeholder rows are shorter, the table grows at the moment of load and every
+ * row below jumps — the layout shift a skeleton exists to prevent, delivered by
+ * the skeleton itself.
+ */
+export const LoadingRowsMatchLoadedRows: Story = {
+  render: () => ({
+    components: { DataTable },
+    setup: () => ({ rows, columns }),
+    template: `
+      <div class="flex flex-col gap-6">
+        <DataTable :rows="rows" :columns="columns" caption="Loaded" />
+        <DataTable :rows="rows" :columns="columns" caption="Loading" loading :loading-rows="3" />
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const [loaded, loading] = canvasElement.querySelectorAll('table')
+    if (!loaded || !loading) throw new Error('expected two tables')
+
+    const loadedRow = loaded.querySelector('tbody tr')
+    const loadingRow = loading.querySelector('tbody tr')
+    if (!loadedRow || !loadingRow) throw new Error('expected a row in each')
+
+    // Measured, not compared by class list: the two paths build their cells
+    // from different variants, so identical classes would prove nothing.
+    const a = loadedRow.getBoundingClientRect().height
+    const b = loadingRow.getBoundingClientRect().height
+    await expect(Math.abs(a - b)).toBeLessThanOrEqual(1)
   },
 }

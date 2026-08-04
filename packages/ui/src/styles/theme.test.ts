@@ -150,6 +150,17 @@ describe('the radius scale resolves', () => {
 })
 
 describe('shadows', () => {
+  it('draws the sticky header rule as an inset shadow that keeps its token', async () => {
+    // A border cannot do this job: under `border-collapse` it belongs to the
+    // table grid, so a sticky header scrolls away from its own rule. The value
+    // has to survive Tailwind's shadow-colour handling with the var() intact,
+    // or the line renders in the wrong colour under `.dark`.
+    const css = await build('shadow-sticky-header')
+    expect(css, 'shadow-sticky-header generated no rule').toContain('.shadow-sticky-header {')
+    expect(css).toContain('inset')
+    expect(css).toContain('var(--color-border)')
+  })
+
   it.each(['shadow-xs', 'shadow-md', 'shadow-scroll-x'])('%s is generated', async (utility) => {
     expect(await build(utility)).toContain(`.${utility} {`)
   })

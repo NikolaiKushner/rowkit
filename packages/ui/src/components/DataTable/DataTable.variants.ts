@@ -39,7 +39,7 @@ export const dataTableCaptionVariants = cva('px-3 py-2 text-left text-muted-fore
  * only have to be ordered against each other, which takes a plain offset rather
  * than another step on the token scale.
  */
-export const dataTableHeaderRowVariants = cva('relative z-sticky border-b border-border')
+export const dataTableHeaderRowVariants = cva('relative z-sticky')
 
 /**
  * Body cells need no z-index of their own: a `sticky` cell is positioned, and a
@@ -53,7 +53,7 @@ export const dataTableHeaderRowVariants = cva('relative z-sticky border-b border
  * transparent sticky header lets the rows scroll through it.
  */
 export const dataTableHeaderCellVariants = cva(
-  'bg-card align-middle font-medium whitespace-nowrap text-foreground',
+  'shadow-sticky-header bg-card align-middle font-medium whitespace-nowrap text-foreground',
   {
     variants: {
       size: {
@@ -191,8 +191,17 @@ export const dataTableSelectCellVariants = cva('w-px border-t border-border pr-0
       sm: 'h-8 px-2',
       md: 'h-10 p-2',
     },
+    /**
+     * The header composes this on top of the header-cell variant, and inherits
+     * a `border-t` meant for body rows — which painted a short rule above the
+     * checkbox column only, floating above the table with nothing to its right.
+     */
+    header: {
+      true: 'border-t-0',
+      false: '',
+    },
   },
-  defaultVariants: { size: 'md' },
+  defaultVariants: { size: 'md', header: false },
 })
 
 /*
