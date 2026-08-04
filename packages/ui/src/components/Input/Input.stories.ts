@@ -130,7 +130,7 @@ export const TypingUpdatesTheModel: Story = {
         <Field label="Company name" label-sr-only>
           <Input v-model="value" placeholder="Type here" />
         </Field>
-        <p class="mt-2 text-sm text-text-muted">Model: <span data-testid="echo">{{ value }}</span></p>
+        <p class="mt-2 text-sm text-muted-foreground">Model: <span data-testid="echo">{{ value }}</span></p>
       </div>
     `,
   }),

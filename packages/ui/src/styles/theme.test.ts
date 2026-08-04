@@ -54,12 +54,12 @@ async function build(...candidates: string[]): Promise<string> {
 const utilities: readonly (readonly [string, string])[] = [
   ['bg-primary-600', '--color-primary-600'],
   ['bg-neutral-50', '--color-neutral-50'],
-  ['bg-surface', '--color-surface'],
-  ['bg-surface-hover', '--color-surface-hover'],
-  ['text-text-muted', '--color-text-muted'],
+  ['bg-card', '--color-card'],
+  ['bg-accent', '--color-accent'],
+  ['text-muted-foreground', '--color-muted-foreground'],
   ['text-danger-on-solid', '--color-danger-on-solid'],
-  ['border-border-control', '--color-border-control'],
-  ['ring-focus-ring', '--color-focus-ring'],
+  ['border-input', '--color-input'],
+  ['ring-ring', '--color-ring'],
   // The dialog scrim. Without a utility behind it the overlay renders fully
   // transparent — the dialog still opens, and nothing looks wrong until you
   // notice the page behind is not dimmed.
@@ -104,15 +104,15 @@ describe('the focus ring compiles', () => {
   })
 
   it('tints the ring from the focus-ring token', async () => {
-    const css = await build('ring-focus-ring/50')
-    expect(css).toContain('var(--color-focus-ring)')
+    const css = await build('ring-ring/50')
+    expect(css).toContain('var(--color-ring)')
   })
 
   it('recolours the border to match, which is the half that carries 1.4.11', async () => {
     // The ring is 50% opaque and cannot be relied on for contrast; the solid
     // border is the indicator. If this utility stops resolving, focus still
     // *looks* present in a screenshot and no longer meets the criterion.
-    expect(await build('border-focus-ring')).toContain('var(--color-focus-ring)')
+    expect(await build('border-ring')).toContain('var(--color-ring)')
   })
 })
 
@@ -176,7 +176,7 @@ describe('shadows', () => {
 
 describe('dark mode', () => {
   it('is driven by the .dark class, not the OS setting', async () => {
-    const css = await build('dark:bg-surface')
+    const css = await build('dark:bg-card')
     expect(css).toContain('.dark')
     // Tailwind's stock `dark` variant is prefers-color-scheme. The token
     // stylesheet redefines it so an app can offer an explicit theme switch.
@@ -184,9 +184,9 @@ describe('dark mode', () => {
   })
 
   it('repoints semantic colours without redefining primitives', async () => {
-    const css = await build('bg-surface')
+    const css = await build('bg-card')
     const darkBlock = css.slice(css.indexOf('.dark'))
-    expect(darkBlock).toContain('--color-surface:')
+    expect(darkBlock).toContain('--color-card:')
     expect(darkBlock).not.toContain('--color-neutral-900:')
   })
 })

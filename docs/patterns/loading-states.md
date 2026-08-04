@@ -62,7 +62,7 @@ onUnmounted(() => {
   <DataTable :rows="rows" :columns="columns" caption="Team members" :loading="showSkeleton" :loading-rows="3" loading-label="Loading team members">
     <template #[`cell:status`]="{ row }"><Badge :variant="tone[row.status]" size="sm" dot>{{ row.status }}</Badge></template>
   </DataTable>
-  <p class="!my-0 text-sm text-text-muted">{{ pending ? (showSkeleton ? 'loading — placeholder shown' : 'loading — under the delay, nothing shown') : 'idle' }}</p>
+  <p class="!my-0 text-sm text-muted-foreground">{{ pending ? (showSkeleton ? 'loading — placeholder shown' : 'loading — under the delay, nothing shown') : 'idle' }}</p>
 </DemoBox>
 
 Press **Fast response** and watch nothing happen: the request finishes before the

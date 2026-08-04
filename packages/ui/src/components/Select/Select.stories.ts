@@ -209,7 +209,7 @@ export const SelectingAnOption: Story = {
     template: `
       <div class="w-80">
         <Select v-bind="args" v-model="value" />
-        <p class="mt-2 text-sm text-text-muted">Value: <span data-testid="echo">{{ value ?? 'none' }}</span></p>
+        <p class="mt-2 text-sm text-muted-foreground">Value: <span data-testid="echo">{{ value ?? 'none' }}</span></p>
       </div>
     `,
   }),

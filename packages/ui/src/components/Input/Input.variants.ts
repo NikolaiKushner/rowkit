@@ -8,24 +8,29 @@ import { cva, type VariantProps } from 'class-variance-authority'
  */
 export const inputVariants = cva(
   [
-    'w-full border bg-surface text-text',
-    'transition-colors duration-fast ease-standard',
-    'placeholder:text-text-subtle',
-    'outline-none focus-visible:border-focus-ring focus-visible:ring-3 focus-visible:ring-focus-ring/50',
-    'disabled:cursor-not-allowed disabled:bg-surface-disabled disabled:text-text-disabled',
+    // `bg-transparent` is shadcn's: the field takes the colour of whatever it
+    // sits on, so a form inside a card does not show a second white rectangle.
+    'w-full border bg-transparent text-foreground shadow-xs',
+    'transition-all duration-fast ease-standard',
+    'placeholder:text-muted-foreground',
+    'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
+    'disabled:cursor-not-allowed disabled:opacity-50',
   ],
   {
     variants: {
       size: {
-        sm: 'h-8 rounded-sm px-2 text-sm',
-        md: 'h-9 rounded-md px-3 text-sm',
-        lg: 'h-10 rounded-md px-3 text-base',
+        sm: 'h-8 rounded-md px-2 text-sm',
+        md: 'h-9 rounded-md px-3 py-1 text-sm',
+        lg: 'h-10 rounded-md px-3 text-sm',
       },
       invalid: {
-        // Colour is not the only signal: the error text below the control
+        // shadcn's invalid treatment: the border goes destructive and the focus
+        // ring is tinted to match, so the state survives being focused.
+        //
+        // Colour is not the only signal — the error text below the control
         // carries the message, and aria-invalid carries it to assistive tech.
-        true: 'border-danger-solid focus-visible:outline-danger-solid',
-        false: 'border-border-control',
+        true: 'border-danger-solid ring-3 ring-danger-solid/20 focus-visible:border-danger-solid focus-visible:ring-danger-solid/20',
+        false: 'border-input',
       },
     },
     defaultVariants: { size: 'md', invalid: false },

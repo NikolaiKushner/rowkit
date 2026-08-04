@@ -117,3 +117,5 @@ pnpm docs:dev     # documentation site
 ## License
 
 MIT © Nikolai Kushner
+
+Design language based on [shadcn/ui](https://ui.shadcn.com) by shadcn, adapted for Vue. shadcn/ui is MIT licensed; rowkit adopts its token values and class recipes, not its code.

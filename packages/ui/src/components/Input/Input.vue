@@ -46,7 +46,7 @@ const describedBy = computed(() => field?.describedBy.value)
   <div class="relative flex items-center">
     <span
       v-if="$slots.leading"
-      class="pointer-events-none absolute left-3 flex items-center text-text-muted"
+      class="pointer-events-none absolute left-3 flex items-center text-muted-foreground"
     >
       <slot name="leading" />
     </span>
@@ -72,7 +72,7 @@ const describedBy = computed(() => field?.describedBy.value)
       "
     />
 
-    <span v-if="$slots.trailing" class="absolute right-3 flex items-center text-text-muted">
+    <span v-if="$slots.trailing" class="absolute right-3 flex items-center text-muted-foreground">
       <slot name="trailing" />
     </span>
   </div>

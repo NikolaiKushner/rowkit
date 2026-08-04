@@ -19,17 +19,17 @@ const AA_TEXT = 4.5
 const AA_NON_TEXT = 3
 
 const pairings: readonly Pairing[] = [
-  ['body text on the page', 'text', 'background', AA_TEXT],
-  ['body text on a surface', 'text', 'surface', AA_TEXT],
-  ['body text on a recessed surface', 'text', 'surface-subtle', AA_TEXT],
-  ['body text on a hovered row', 'text', 'surface-hover', AA_TEXT],
-  ['body text on an active row', 'text', 'surface-active', AA_TEXT],
-  ['body text on a selected row', 'text', 'surface-selected', AA_TEXT],
-  ['muted text on the page', 'text-muted', 'background', AA_TEXT],
-  ['muted text on a surface', 'text-muted', 'surface', AA_TEXT],
+  ['body text on the page', 'foreground', 'background', AA_TEXT],
+  ['body text on a surface', 'foreground', 'card', AA_TEXT],
+  ['body text on a recessed surface', 'foreground', 'muted', AA_TEXT],
+  ['body text on a hovered row', 'foreground', 'accent', AA_TEXT],
+  ['body text on an active row', 'foreground', 'surface-active', AA_TEXT],
+  ['body text on a selected row', 'foreground', 'surface-selected', AA_TEXT],
+  ['muted text on the page', 'muted-foreground', 'background', AA_TEXT],
+  ['muted text on a surface', 'muted-foreground', 'card', AA_TEXT],
   // A table header is muted text on a recessed surface, which is the one
   // muted pairing this list originally missed.
-  ['muted text on a recessed surface', 'text-muted', 'surface-subtle', AA_TEXT],
+  ['muted text on a recessed surface', 'muted-foreground', 'muted', AA_TEXT],
 
   ['label on a neutral button', 'neutral-on-solid', 'neutral-solid', AA_TEXT],
   ['label on a primary button', 'primary-on-solid', 'primary-solid', AA_TEXT],
@@ -52,16 +52,16 @@ const pairings: readonly Pairing[] = [
   ['text in a warning badge', 'warning-on-subtle', 'warning-subtle', AA_TEXT],
   ['text in a danger badge', 'danger-on-subtle', 'danger-subtle', AA_TEXT],
 
-  ['focus ring against the page', 'focus-ring', 'background', AA_NON_TEXT],
-  ['focus ring against a surface', 'focus-ring', 'surface', AA_NON_TEXT],
-  ['control border against a surface', 'border-control', 'surface', AA_NON_TEXT],
-  ['control border against the page', 'border-control', 'background', AA_NON_TEXT],
+  ['focus ring against the page', 'ring', 'background', AA_NON_TEXT],
+  ['focus ring against a surface', 'ring', 'card', AA_NON_TEXT],
+  ['control border against a surface', 'input', 'card', AA_NON_TEXT],
+  ['control border against the page', 'input', 'background', AA_NON_TEXT],
   // Controls live in toolbars and table headers too, which are `surface-subtle`
   // rather than `surface` — the darkest plane either token normally sits on,
   // and the one neither was checked against until the palette changed under
   // them.
-  ['focus ring against a recessed surface', 'focus-ring', 'surface-subtle', AA_NON_TEXT],
-  ['control border against a recessed surface', 'border-control', 'surface-subtle', AA_NON_TEXT],
+  ['focus ring against a recessed surface', 'ring', 'muted', AA_NON_TEXT],
+  ['control border against a recessed surface', 'input', 'muted', AA_NON_TEXT],
 ]
 
 describe.each([
@@ -86,16 +86,15 @@ describe('translucent tokens are measured as they render', () => {
    * compositing, these fail; a ratio near 15 is the signature of that bug.
    */
   it('composites the 15% control border over the surface behind it', () => {
-    expect(
-      semanticContrast(semanticColorDark['border-control'], semanticColorDark.surface)
-    ).toBeCloseTo(3.54, 1)
-    expect(
-      semanticContrast(semanticColorDark['border-control'], semanticColorDark.background)
-    ).toBeCloseTo(3.82, 1)
+    expect(semanticContrast(semanticColorDark.input, semanticColorDark.card)).toBeCloseTo(3.54, 1)
+    expect(semanticContrast(semanticColorDark.input, semanticColorDark.background)).toBeCloseTo(
+      3.82,
+      1
+    )
   })
 
   it('composites the 10% hairline, which is decorative and stays under 3:1', () => {
-    const ratio = semanticContrast(semanticColorDark.border, semanticColorDark.surface)
+    const ratio = semanticContrast(semanticColorDark.border, semanticColorDark.card)
     expect(ratio).toBeLessThan(AA_NON_TEXT)
     expect(ratio).toBeGreaterThan(1.5)
   })

@@ -32,7 +32,7 @@ function remove() {
 <DemoBox>
   <Button variant="danger" @click="confirmOpen = true">Delete project</Button>
   <Button variant="secondary" @click="termsOpen = true">Read the terms</Button>
-  <span v-if="deleted" class="text-sm text-text-muted">Deleted — and focus is back on the button that opened it.</span>
+  <span v-if="deleted" class="text-sm text-muted-foreground">Deleted — and focus is back on the button that opened it.</span>
 
   <Dialog
     v-model:open="confirmOpen"

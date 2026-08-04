@@ -58,14 +58,16 @@ function toastOverDialog() {
   <div class="flex flex-col gap-8">
     <header>
       <h1 class="text-2xl font-semibold">Overlays</h1>
-      <p class="mt-1 text-sm text-text-muted">
+      <p class="mt-1 text-sm text-muted-foreground">
         Dialog, Toast and Tooltip together — the stacking order only fails when they overlap.
       </p>
     </header>
 
     <section class="flex flex-col gap-3">
-      <h2 class="text-sm font-medium uppercase tracking-wide text-text-muted">The stacking test</h2>
-      <p class="max-w-2xl text-sm text-text-muted">
+      <h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+        The stacking test
+      </h2>
+      <p class="max-w-2xl text-sm text-muted-foreground">
         Open the dialog, then fire a toast from inside it. The toast must sit
         <strong>above</strong> the dialog — a confirmation you cannot read is worse than none. The
         select inside the dialog must open above it too.
@@ -80,8 +82,8 @@ function toastOverDialog() {
     </section>
 
     <section class="flex flex-col gap-3">
-      <h2 class="text-sm font-medium uppercase tracking-wide text-text-muted">Tooltips</h2>
-      <p class="max-w-2xl text-sm text-text-muted">
+      <h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Tooltips</h2>
+      <p class="max-w-2xl text-sm text-muted-foreground">
         Tab through these — every one opens on focus, not hover alone. The last is
         <code>aria-disabled</code> rather than <code>disabled</code>, which is why its tooltip works
         at all.
@@ -103,7 +105,7 @@ function toastOverDialog() {
     </section>
 
     <section class="flex flex-col gap-3">
-      <h2 class="text-sm font-medium uppercase tracking-wide text-text-muted">Toast tones</h2>
+      <h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Toast tones</h2>
       <div class="flex flex-wrap items-center gap-2">
         <Button variant="secondary" size="sm" @click="success('Project archived')">
           Success

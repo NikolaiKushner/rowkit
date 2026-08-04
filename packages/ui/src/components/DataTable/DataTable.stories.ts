@@ -312,7 +312,7 @@ export const ManualSorting: Story = {
     setup: () => ({ users, columns: sortableColumns, sort: ref(undefined) }),
     template: `
       <div class="flex w-full max-w-3xl flex-col gap-3">
-        <p class="text-sm text-text-muted">
+        <p class="text-sm text-muted-foreground">
           Emitted sort: <code>{{ sort ? sort.id + ' ' + sort.direction : 'none' }}</code>
           — the rows below never move.
         </p>
@@ -426,7 +426,7 @@ function selectable(mode: 'single' | 'multiple') {
     setup: () => ({ users, columns, mode, selected: ref<(string | number)[]>([]) }),
     template: `
       <div class="flex w-full max-w-3xl flex-col gap-3">
-        <p class="text-sm text-text-muted">Selected: {{ selected.length }}</p>
+        <p class="text-sm text-muted-foreground">Selected: {{ selected.length }}</p>
         <DataTable
           :rows="users"
           :columns="columns"

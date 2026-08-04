@@ -35,7 +35,7 @@ document.documentElement.classList.toggle('dark', isDark)
 ```
 
 Only semantic tokens change under `.dark`; the colour primitives stay fixed. A
-component never knows which theme is active — it reads `--color-surface` and the
+component never knows which theme is active — it reads `--color-card` and the
 answer differs.
 
 ## Nuxt

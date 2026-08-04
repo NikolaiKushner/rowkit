@@ -24,15 +24,15 @@ export const tablePaginationItemVariants = cva(
   [
     'inline-flex shrink-0 items-center justify-center rounded-md border font-medium',
     'cursor-pointer transition-colors duration-fast ease-standard',
-    'outline-none focus-visible:border-focus-ring focus-visible:ring-3 focus-visible:ring-focus-ring/50',
+    'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
     'disabled:pointer-events-none disabled:border-transparent',
     'disabled:bg-transparent disabled:text-text-disabled',
   ],
   {
     variants: {
       size: {
-        sm: 'h-7 min-w-7 px-1.5 text-xs',
-        md: 'h-8 min-w-8 px-2 text-sm',
+        sm: 'h-8 min-w-8 px-2 text-xs',
+        md: 'h-9 min-w-9 px-2 text-sm',
       },
       /**
        * The current page. Filled rather than merely bolder — in a row of
@@ -40,7 +40,7 @@ export const tablePaginationItemVariants = cva(
        */
       active: {
         true: 'border-primary-solid bg-primary-solid text-primary-on-solid',
-        false: 'border-transparent bg-transparent text-text hover:bg-surface-hover',
+        false: 'border-transparent bg-transparent text-foreground hover:bg-accent',
       },
     },
     defaultVariants: { size: 'md', active: false },
@@ -60,7 +60,7 @@ export const tablePaginationEllipsisVariants = cva(
   }
 )
 
-export const tablePaginationSummaryVariants = cva('text-text-muted tabular-nums', {
+export const tablePaginationSummaryVariants = cva('text-muted-foreground tabular-nums', {
   variants: {
     size: {
       sm: 'text-xs',

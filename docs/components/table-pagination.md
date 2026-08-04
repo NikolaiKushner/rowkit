@@ -23,7 +23,7 @@ const pageSize = ref(10)
     :total="247"
     label="Example pagination"
   />
-  <p class="!my-0 text-sm text-text-muted">
+  <p class="!my-0 text-sm text-muted-foreground">
     page {{ page }} · {{ pageSize }} per page
   </p>
 </DemoBox>

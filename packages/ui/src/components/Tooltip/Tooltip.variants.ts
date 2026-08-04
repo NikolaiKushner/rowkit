@@ -14,8 +14,11 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * Left on `neutral-solid` the tooltip would render as pale grey on a pale page.
  */
 export const tooltipContentVariants = cva([
-  'z-tooltip max-w-xs rounded-sm px-2 py-1',
-  'bg-primary-solid text-xs text-primary-on-solid shadow-md',
+  // shadcn's geometry exactly: `rounded-md px-3 py-1.5 text-xs`, and no shadow.
+  // A near-black bubble does not need one, and the drop shadow was reading as a
+  // second edge against a light page.
+  'z-tooltip max-w-xs rounded-md px-3 py-1.5',
+  'bg-primary-solid text-xs text-balance text-primary-on-solid',
   'motion-safe:data-[state=delayed-open]:animate-tooltip-in',
   'motion-safe:data-[state=instant-open]:animate-tooltip-in',
   'motion-safe:data-[state=closed]:animate-tooltip-out',

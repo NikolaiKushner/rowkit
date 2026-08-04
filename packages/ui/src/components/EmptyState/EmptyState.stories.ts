@@ -51,7 +51,7 @@ const meta: Meta<EmptyStateArgs> = {
     components: { EmptyState },
     setup: () => ({ args }),
     template: `
-      <div class="w-full max-w-lg rounded-lg border border-border bg-surface">
+      <div class="w-full max-w-lg rounded-lg border border-border bg-card">
         <EmptyState v-bind="args" />
       </div>
     `,
@@ -73,7 +73,7 @@ export const Reasons: Story = {
     components: { EmptyState, Button },
     template: `
       <div class="flex w-full max-w-lg flex-col gap-4">
-        <div class="rounded-lg border border-border bg-surface">
+        <div class="rounded-lg border border-border bg-card">
           <EmptyState
             reason="no-data"
             title="No projects yet"
@@ -82,12 +82,12 @@ export const Reasons: Story = {
             <template #actions><Button size="sm">Create a project</Button></template>
           </EmptyState>
         </div>
-        <div class="rounded-lg border border-border bg-surface">
+        <div class="rounded-lg border border-border bg-card">
           <EmptyState announce reason="no-results" title="No projects match those filters">
             <template #actions><Button variant="ghost" size="sm">Clear filters</Button></template>
           </EmptyState>
         </div>
-        <div class="rounded-lg border border-border bg-surface">
+        <div class="rounded-lg border border-border bg-card">
           <EmptyState announce reason="error" title="Could not load projects">
             <template #actions><Button variant="ghost" size="sm">Try again</Button></template>
           </EmptyState>
@@ -108,7 +108,7 @@ export const DefaultCopy: Story = {
     components: { EmptyState },
     setup: () => ({ args }),
     template: `
-      <div class="w-full max-w-lg rounded-lg border border-border bg-surface">
+      <div class="w-full max-w-lg rounded-lg border border-border bg-card">
         <EmptyState v-bind="args" />
       </div>
     `,
@@ -126,7 +126,7 @@ export const TitleOnly: Story = {
   render: () => ({
     components: { EmptyState },
     template: `
-      <div class="w-full max-w-lg rounded-lg border border-border bg-surface">
+      <div class="w-full max-w-lg rounded-lg border border-border bg-card">
         <EmptyState title="No projects yet" />
       </div>
     `,
@@ -138,7 +138,7 @@ export const WithIcon: Story = {
     components: { EmptyState },
     setup: () => ({ args, boxIcon }),
     template: `
-      <div class="w-full max-w-lg rounded-lg border border-border bg-surface">
+      <div class="w-full max-w-lg rounded-lg border border-border bg-card">
         <EmptyState v-bind="args">
           <template #icon><span v-html="boxIcon" /></template>
         </EmptyState>
@@ -156,7 +156,7 @@ export const FirstRun: Story = {
     components: { EmptyState, Button },
     setup: () => ({ boxIcon }),
     template: `
-      <div class="w-full max-w-lg rounded-lg border border-border bg-surface">
+      <div class="w-full max-w-lg rounded-lg border border-border bg-card">
         <EmptyState
           title="No projects yet"
           description="Projects group your work and control who can see it."
@@ -183,7 +183,7 @@ export const NoResults: Story = {
   render: () => ({
     components: { EmptyState, Button },
     template: `
-      <div class="w-full max-w-lg rounded-lg border border-border bg-surface">
+      <div class="w-full max-w-lg rounded-lg border border-border bg-card">
         <EmptyState
           announce
           title="No users match those filters"
@@ -206,9 +206,9 @@ export const InATable: Story = {
       <table class="w-full max-w-lg border-collapse rounded-lg text-sm">
         <thead>
           <tr class="border-b border-border text-left">
-            <th class="p-2 font-medium text-text-muted">User</th>
-            <th class="p-2 font-medium text-text-muted">Role</th>
-            <th class="p-2 font-medium text-text-muted">Status</th>
+            <th class="p-2 font-medium text-muted-foreground">User</th>
+            <th class="p-2 font-medium text-muted-foreground">Role</th>
+            <th class="p-2 font-medium text-muted-foreground">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -238,7 +238,7 @@ export const Sizes: Story = {
     setup: () => ({ sizes }),
     template: `
       <div class="flex w-full max-w-lg flex-col gap-4">
-        <div v-for="size in sizes" :key="size" class="rounded-lg border border-border bg-surface">
+        <div v-for="size in sizes" :key="size" class="rounded-lg border border-border bg-card">
           <EmptyState :size="size" :title="size" description="Every part scales together." />
         </div>
       </div>
@@ -256,12 +256,12 @@ export const AgainstLoading: Story = {
     components: { EmptyState, Skeleton },
     template: `
       <div class="flex w-full max-w-lg flex-col gap-4">
-        <div class="rounded-lg border border-border bg-surface p-4">
+        <div class="rounded-lg border border-border bg-card p-4">
           <div role="status" aria-busy="true" aria-label="Loading projects" class="flex flex-col gap-3">
             <Skeleton v-for="row in 3" :key="row" />
           </div>
         </div>
-        <div class="rounded-lg border border-border bg-surface">
+        <div class="rounded-lg border border-border bg-card">
           <EmptyState title="No projects yet" description="Projects group your work." />
         </div>
       </div>

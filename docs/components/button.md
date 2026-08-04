@@ -121,5 +121,5 @@ pointer and the keyboard path.
 - Rendered as something other than `<button>` — a link, say — `disabled`
   becomes `aria-disabled`, because `<a>` has no `disabled` attribute and
   setting one does nothing.
-- Focus is a 2px ring offset by 2px, using `--color-focus-ring`. Never remove
+- Focus is a 2px ring offset by 2px, using `--color-ring`. Never remove
   it; recolour it if you must.

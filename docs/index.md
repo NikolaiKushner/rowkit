@@ -84,7 +84,7 @@ Sort a column. Select some rows. This is the real component, not a screenshot.
       <Badge :variant="tone[row.status]" size="sm" dot>{{ row.status }}</Badge>
     </template>
   </DataTable>
-  <p class="!my-0 text-sm text-text-muted">
+  <p class="!my-0 text-sm text-muted-foreground">
     {{ selected.length }} selected ·
     {{ sort ? `sorted by ${sort.key}, ${sort.direction}` : 'unsorted' }}
   </p>

@@ -147,14 +147,14 @@ export const DisabledTriggerPattern: Story = {
           <Tooltip content="Never appears">
             <Button disabled>Truly disabled</Button>
           </Tooltip>
-          <span class="text-xs text-text-muted">✗ no events, no tooltip</span>
+          <span class="text-xs text-muted-foreground">✗ no events, no tooltip</span>
         </div>
 
         <div class="flex flex-col items-center gap-2">
           <Tooltip content="Upgrade your plan to export">
             <Button aria-disabled="true" variant="secondary">Export</Button>
           </Tooltip>
-          <span class="text-xs text-text-muted">✓ aria-disabled, tooltip works</span>
+          <span class="text-xs text-muted-foreground">✓ aria-disabled, tooltip works</span>
         </div>
       </div>
     `,

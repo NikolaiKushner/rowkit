@@ -5,9 +5,9 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * pushing the page sideways, which is what makes a sticky column meaningful.
  */
 export const dataTableWrapperVariants = cva([
-  'relative w-full overflow-auto rounded-md border border-border bg-surface',
+  'relative w-full overflow-auto rounded-md border border-border bg-card',
   // Focusable when it actually scrolls, so the ring has to be visible.
-  'outline-none focus-visible:border-focus-ring focus-visible:ring-3 focus-visible:ring-focus-ring/50',
+  'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
 ])
 
 export const dataTableVariants = cva('w-full border-collapse text-left', {
@@ -20,7 +20,7 @@ export const dataTableVariants = cva('w-full border-collapse text-left', {
   defaultVariants: { size: 'md' },
 })
 
-export const dataTableCaptionVariants = cva('px-3 py-2 text-left text-text-muted', {
+export const dataTableCaptionVariants = cva('px-3 py-2 text-left text-muted-foreground', {
   variants: {
     size: {
       sm: 'text-xs',
@@ -45,7 +45,7 @@ export const dataTableHeaderRowVariants = cva('relative z-sticky border-b border
  * Body cells need no z-index of their own: a `sticky` cell is positioned, and a
  * positioned element already paints above its static siblings.
  *
- * `bg-surface`, not `bg-surface-subtle`, and `text-text` rather than muted.
+ * `bg-card`, not `bg-muted`, and `text-foreground` rather than muted.
  *
  * shadcn's header is transparent with a hairline beneath it — the column labels
  * are full-strength foreground, not a recessed grey band with quiet text. The
@@ -53,7 +53,7 @@ export const dataTableHeaderRowVariants = cva('relative z-sticky border-b border
  * transparent sticky header lets the rows scroll through it.
  */
 export const dataTableHeaderCellVariants = cva(
-  'bg-surface align-middle font-medium whitespace-nowrap text-text',
+  'bg-card align-middle font-medium whitespace-nowrap text-foreground',
   {
     variants: {
       size: {
@@ -97,8 +97,8 @@ export const dataTableSortButtonVariants = cva(
   [
     'group inline-flex w-full cursor-pointer items-center gap-1',
     'rounded-xs font-medium text-inherit',
-    'transition-colors duration-fast ease-standard hover:text-text',
-    'outline-none focus-visible:ring-3 focus-visible:ring-focus-ring',
+    'transition-colors duration-fast ease-standard hover:text-foreground',
+    'outline-none focus-visible:ring-3 focus-visible:ring-ring',
   ],
   {
     variants: {
@@ -132,7 +132,7 @@ export const dataTableSortIconVariants = cva(
 // `border-border`, not `border-border-subtle`: shadcn's row separator is its
 // standard hairline, and the fainter one disappeared entirely once the header
 // stopped being a grey band to anchor the grid.
-export const dataTableCellVariants = cva('border-t border-border align-middle text-text', {
+export const dataTableCellVariants = cva('border-t border-border align-middle text-foreground', {
   variants: {
     size: {
       sm: 'h-8 px-2',
@@ -157,34 +157,31 @@ export const dataTableCellVariants = cva('border-t border-border align-middle te
  * The row owns the background, not the cell.
  *
  * A pinned cell has to be opaque or the rows underneath show through it while
- * scrolling, but hardcoding `bg-surface` there would paint over the selected
+ * scrolling, but hardcoding `bg-card` there would paint over the selected
  * and hover states. `bg-inherit` on the cell and a real colour on the row keeps
  * one source of truth.
  */
-export const dataTableRowVariants = cva(
-  'bg-surface transition-colors duration-fast ease-standard',
-  {
-    variants: {
-      /**
-       * Row hover is off unless the row does something. A highlight that follows
-       * the pointer across static data suggests the row is clickable when it is
-       * not.
-       */
-      interactive: {
-        // `/50` is shadcn's: the hover tint is half-strength so it reads as a
-        // pointer follow rather than as selection, which is the full tint.
-        true: 'hover:bg-surface-hover/50',
-        false: '',
-      },
-      /** Selected wins over hover — losing the highlight on hover hides the state. */
-      selected: {
-        true: 'bg-surface-selected hover:bg-surface-selected',
-        false: '',
-      },
+export const dataTableRowVariants = cva('bg-card transition-colors duration-fast ease-standard', {
+  variants: {
+    /**
+     * Row hover is off unless the row does something. A highlight that follows
+     * the pointer across static data suggests the row is clickable when it is
+     * not.
+     */
+    interactive: {
+      // `/50` is shadcn's: the hover tint is half-strength so it reads as a
+      // pointer follow rather than as selection, which is the full tint.
+      true: 'hover:bg-accent/50',
+      false: '',
     },
-    defaultVariants: { interactive: false, selected: false },
-  }
-)
+    /** Selected wins over hover — losing the highlight on hover hides the state. */
+    selected: {
+      true: 'bg-surface-selected hover:bg-surface-selected',
+      false: '',
+    },
+  },
+  defaultVariants: { interactive: false, selected: false },
+})
 
 // Matches the body cell: same hairline, same padding. shadcn drops the right
 // padding on a checkbox cell so the control sits tight against its column.
@@ -205,9 +202,9 @@ export const dataTableSelectCellVariants = cva('w-px border-t border-border pr-0
 export const dataTableCheckboxVariants = cva(
   [
     'flex shrink-0 cursor-pointer items-center justify-center rounded-xs border shadow-xs',
-    'border-border-control bg-surface text-primary-on-solid',
+    'border-input bg-card text-primary-on-solid',
     'transition-all duration-fast ease-standard',
-    'outline-none focus-visible:border-focus-ring focus-visible:ring-3 focus-visible:ring-focus-ring/50',
+    'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
     'data-[state=checked]:border-primary-solid data-[state=checked]:bg-primary-solid',
     'data-[state=indeterminate]:border-primary-solid data-[state=indeterminate]:bg-primary-solid',
     'disabled:cursor-not-allowed disabled:opacity-50',
@@ -226,7 +223,7 @@ export const dataTableCheckboxVariants = cva(
 export const dataTableRadioVariants = cva(
   [
     'cursor-pointer accent-primary-solid',
-    'outline-none focus-visible:ring-3 focus-visible:ring-focus-ring',
+    'outline-none focus-visible:ring-3 focus-visible:ring-ring',
   ],
   {
     variants: {

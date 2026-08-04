@@ -86,7 +86,7 @@ function reset() {
       </Field>
     </template>
   </FilterBar>
-  <ul class="!my-0 !pl-5 text-sm text-text-muted">
+  <ul class="!my-0 !pl-5 text-sm text-muted-foreground">
     <li v-for="person in results" :key="person.name">{{ person.name }}</li>
   </ul>
 </DemoBox>

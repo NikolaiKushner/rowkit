@@ -89,13 +89,13 @@ function reset() {
   <div class="mx-auto flex max-w-xl flex-col gap-6">
     <header>
       <h1 class="text-2xl font-semibold">Invite a teammate</h1>
-      <p class="mt-1 text-sm text-text-muted">
+      <p class="mt-1 text-sm text-muted-foreground">
         Built entirely from rowkit components, running inside Nuxt.
       </p>
     </header>
 
     <form
-      class="flex flex-col gap-5 rounded-lg border border-border bg-surface p-6 shadow-sm"
+      class="flex flex-col gap-5 rounded-lg border border-border bg-card p-6 shadow-sm"
       novalidate
       @submit.prevent="onSubmit"
     >
@@ -148,14 +148,14 @@ function reset() {
         <Badge variant="success" dot>Invited</Badge>
         <span class="text-sm font-medium text-success-on-subtle">Invitation sent</span>
       </div>
-      <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm text-text">
-        <dt class="text-text-muted">Email</dt>
+      <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm text-foreground">
+        <dt class="text-muted-foreground">Email</dt>
         <dd>{{ form.email }}</dd>
-        <dt class="text-text-muted">Name</dt>
+        <dt class="text-muted-foreground">Name</dt>
         <dd>{{ form.name || '—' }}</dd>
-        <dt class="text-text-muted">Role</dt>
+        <dt class="text-muted-foreground">Role</dt>
         <dd>{{ roleLabel }}</dd>
-        <dt class="text-text-muted">Team</dt>
+        <dt class="text-muted-foreground">Team</dt>
         <dd>{{ teams.find((team) => team.value === form.team)?.label ?? '—' }}</dd>
       </dl>
     </section>

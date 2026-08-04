@@ -11,7 +11,7 @@ export const fieldVariants = cva('flex flex-col', {
   defaultVariants: { size: 'md' },
 })
 
-export const fieldLabelVariants = cva('font-medium text-text', {
+export const fieldLabelVariants = cva('font-medium text-foreground', {
   variants: {
     size: {
       sm: 'text-xs',
@@ -19,29 +19,29 @@ export const fieldLabelVariants = cva('font-medium text-text', {
       lg: 'text-sm',
     },
     disabled: {
-      true: 'text-text-disabled',
+      true: 'opacity-50',
       false: '',
     },
   },
   defaultVariants: { size: 'md', disabled: false },
 })
 
-export const fieldHintVariants = cva('text-text-muted', {
+export const fieldHintVariants = cva('text-muted-foreground', {
   variants: {
     size: {
       sm: 'text-xs',
-      md: 'text-xs',
+      md: 'text-sm',
       lg: 'text-sm',
     },
   },
   defaultVariants: { size: 'md' },
 })
 
-export const fieldErrorVariants = cva('font-medium text-danger-on-subtle', {
+export const fieldErrorVariants = cva('font-medium text-danger-solid', {
   variants: {
     size: {
       sm: 'text-xs',
-      md: 'text-xs',
+      md: 'text-sm',
       lg: 'text-sm',
     },
   },

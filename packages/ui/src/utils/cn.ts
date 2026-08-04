@@ -16,7 +16,7 @@ import { extendTailwindMerge } from 'tailwind-merge'
  * able to override the component's.
  *
  * Colour and spacing utilities need no help: `tailwind-merge` groups
- * `bg-*`/`text-*`/`border-*` by shape, so `bg-surface` and `bg-primary-600`
+ * `bg-*`/`text-*`/`border-*` by shape, so `bg-card` and `bg-primary-600`
  * already collide correctly.
  *
  * The scale names are read from the token package rather than listed here, so a

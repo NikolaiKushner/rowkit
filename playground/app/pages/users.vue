@@ -216,7 +216,7 @@ const selectedCount = computed(() => selected.value.length)
     <header class="flex flex-wrap items-end justify-between gap-4">
       <div>
         <h1 class="text-2xl font-semibold">Users</h1>
-        <p class="mt-1 text-sm text-text-muted">
+        <p class="mt-1 text-sm text-muted-foreground">
           Filterable, sortable and paginated — every piece is a rowkit component.
         </p>
       </div>
@@ -276,7 +276,7 @@ const selectedCount = computed(() => selected.value.length)
       </template>
 
       <template #[`cell:lastActive`]="{ row }">
-        <span class="tabular-nums text-text-muted">
+        <span class="tabular-nums text-muted-foreground">
           {{ dateFormat.format((row as User).lastActive) }}
         </span>
       </template>

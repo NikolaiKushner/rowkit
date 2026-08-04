@@ -49,15 +49,15 @@ export const Variants: Story = {
     template: `
       <div class="flex w-80 flex-col gap-4">
         <div class="flex flex-col gap-2">
-          <span class="text-xs font-medium uppercase tracking-wide text-text-muted">text</span>
+          <span class="text-xs font-medium uppercase tracking-wide text-muted-foreground">text</span>
           <Skeleton variant="text" />
         </div>
         <div class="flex flex-col gap-2">
-          <span class="text-xs font-medium uppercase tracking-wide text-text-muted">circle</span>
+          <span class="text-xs font-medium uppercase tracking-wide text-muted-foreground">circle</span>
           <Skeleton variant="circle" />
         </div>
         <div class="flex flex-col gap-2">
-          <span class="text-xs font-medium uppercase tracking-wide text-text-muted">rect</span>
+          <span class="text-xs font-medium uppercase tracking-wide text-muted-foreground">rect</span>
           <Skeleton variant="rect" class="h-24" />
         </div>
       </div>
@@ -87,7 +87,7 @@ export const CardPlaceholder: Story = {
   render: () => ({
     components: { Skeleton },
     template: `
-      <div class="flex w-96 gap-4 rounded-lg border border-border bg-surface p-4">
+      <div class="flex w-96 gap-4 rounded-lg border border-border bg-card p-4">
         <Skeleton variant="circle" />
         <div class="flex flex-1 flex-col gap-2">
           <Skeleton class="w-1/3" />
@@ -110,8 +110,8 @@ export const TablePlaceholder: Story = {
         <table class="w-full border-collapse text-sm">
           <thead>
             <tr class="border-b border-border text-left">
-              <th class="p-2 font-medium text-text-muted">User</th>
-              <th class="p-2 font-medium text-text-muted">Role</th>
+              <th class="p-2 font-medium text-muted-foreground">User</th>
+              <th class="p-2 font-medium text-muted-foreground">Role</th>
             </tr>
           </thead>
           <tbody>

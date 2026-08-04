@@ -26,7 +26,7 @@ export const dialogContentVariants = cva(
   [
     'fixed left-1/2 top-1/2 z-modal -translate-x-1/2 -translate-y-1/2',
     'flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col',
-    'rounded-lg border border-border bg-surface shadow-xl',
+    'rounded-lg border border-border bg-card shadow-lg',
     'focus-visible:outline-none',
     'motion-safe:data-[state=open]:animate-dialog-in',
     'motion-safe:data-[state=closed]:animate-dialog-out',
@@ -47,16 +47,16 @@ export const dialogContentVariants = cva(
 /** Header, body and footer are separate rows so only the body scrolls. */
 export const dialogHeaderVariants = cva('flex shrink-0 flex-col gap-1 p-6 pb-4')
 
-export const dialogTitleVariants = cva('text-lg font-semibold text-text')
+export const dialogTitleVariants = cva('text-lg leading-none font-semibold text-foreground')
 
-export const dialogDescriptionVariants = cva('text-sm text-text-muted')
+export const dialogDescriptionVariants = cva('text-sm text-muted-foreground')
 
 /**
  * The body is the only scrolling region. A dialog that scrolls as a whole hides
  * its own footer actions off-screen, which is where "where did the Save button
  * go" comes from.
  */
-export const dialogBodyVariants = cva('min-h-0 flex-1 overflow-y-auto px-6 text-sm text-text')
+export const dialogBodyVariants = cva('min-h-0 flex-1 overflow-y-auto px-6 text-sm text-foreground')
 
 export const dialogFooterVariants = cva(
   'flex shrink-0 flex-wrap items-center justify-end gap-3 p-6 pt-4'
@@ -64,10 +64,10 @@ export const dialogFooterVariants = cva(
 
 export const dialogCloseVariants = cva([
   'absolute right-4 top-4 inline-flex size-8 shrink-0 cursor-pointer',
-  'items-center justify-center rounded-sm text-text-muted',
+  'items-center justify-center rounded-xs text-muted-foreground opacity-70 hover:opacity-100',
   'transition-colors duration-fast ease-standard',
-  'hover:bg-surface-hover hover:text-text',
-  'outline-none focus-visible:ring-3 focus-visible:ring-focus-ring',
+  'hover:bg-accent hover:text-foreground',
+  'outline-none focus-visible:ring-3 focus-visible:ring-ring',
 ])
 
 export type DialogVariants = VariantProps<typeof dialogContentVariants>

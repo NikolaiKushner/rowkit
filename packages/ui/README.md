@@ -95,3 +95,5 @@ That is the whole library. If you need forty components covering every case, [Nu
 ## License
 
 MIT © Nikolai Kushner
+
+Design language based on [shadcn/ui](https://ui.shadcn.com) by shadcn, adapted for Vue. shadcn/ui is MIT licensed; rowkit adopts its token values and class recipes, not its code.

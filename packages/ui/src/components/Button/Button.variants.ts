@@ -23,7 +23,7 @@ export const buttonVariants = cva(
   [
     'inline-flex shrink-0 items-center justify-center gap-2 border font-medium whitespace-nowrap',
     'cursor-pointer transition-all duration-fast ease-standard',
-    'outline-none focus-visible:border-focus-ring focus-visible:ring-3 focus-visible:ring-focus-ring/50',
+    'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
     'disabled:pointer-events-none disabled:opacity-50',
     // A button mid-request should not look clickable, but it must stay
     // focusable so a screen reader user is not thrown out of the form.
@@ -34,9 +34,8 @@ export const buttonVariants = cva(
       variant: {
         primary:
           'border-primary-solid bg-primary-solid text-primary-on-solid hover:border-primary-solid-hover hover:bg-primary-solid-hover',
-        secondary:
-          'border-border-control bg-surface text-text hover:bg-surface-hover active:bg-surface-active',
-        ghost: 'border-transparent bg-transparent text-text hover:bg-surface-hover',
+        secondary: 'border-input bg-card text-foreground hover:bg-accent active:bg-surface-active',
+        ghost: 'border-transparent bg-transparent text-foreground hover:bg-accent',
         danger:
           'border-danger-solid bg-danger-solid text-danger-on-solid hover:border-danger-solid-hover hover:bg-danger-solid-hover',
       },

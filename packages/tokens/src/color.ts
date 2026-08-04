@@ -194,6 +194,51 @@ export const red = {
 } as const
 
 /**
+ * Success and warning, at shadcn's weight. Keyed by lightness, like `gray`.
+ *
+ * shadcn has no equivalent to copy, so the rule is consistency rather than
+ * fidelity: the solid step sits at the same lightness band as `red-577` and
+ * carries a white label, so a success, a warning and a destructive button are
+ * the same perceptual weight and only differ in hue.
+ *
+ * That is a real change for warning, which used to be bright amber with dark
+ * text. Bright amber is the loudest thing on a shadcn page — the language is
+ * built on restraint, and one saturated chip undoes it. Chroma is clamped to
+ * the sRGB boundary at every step, as everywhere else.
+ */
+export const green = {
+  /** Badge fill, light. */
+  950: 'oklch(0.95 0.05 152)',
+  /** Badge border, light. */
+  880: 'oklch(0.88 0.05 152)',
+  /** Badge text, dark. */
+  850: 'oklch(0.85 0.12 152)',
+  /** Solid fill, both themes. White label at 4.56:1. */
+  550: 'oklch(0.55 0.144 152)',
+  /** Solid hover — darkens, so the white label improves. */
+  520: 'oklch(0.52 0.136 152)',
+  /** Badge text, light. */
+  400: 'oklch(0.4 0.105 152)',
+  /** Badge border, dark. */
+  350: 'oklch(0.35 0.092 152)',
+  /** Badge fill, dark. */
+  260: 'oklch(0.26 0.068 152)',
+} as const
+
+/** Warning, mirroring {@link green} step for step. */
+export const amber = {
+  950: 'oklch(0.95 0.04 75)',
+  880: 'oklch(0.88 0.05 75)',
+  850: 'oklch(0.85 0.12 75)',
+  /** Solid fill, both themes. White label at 4.96:1. */
+  550: 'oklch(0.55 0.116 75)',
+  520: 'oklch(0.52 0.109 75)',
+  400: 'oklch(0.4 0.084 75)',
+  350: 'oklch(0.35 0.074 75)',
+  260: 'oklch(0.26 0.055 75)',
+} as const
+
+/**
  * White at a fraction of opacity, for dark-mode borders.
  *
  * shadcn's dark borders are white at 10% and inputs at 15%, not a solid grey.
@@ -217,6 +262,8 @@ export const colorPrimitives = {
   black: 'oklch(0 0 0)',
   ...prefixKeys('gray', gray),
   ...prefixKeys('red', red),
+  ...prefixKeys('green', green),
+  ...prefixKeys('amber', amber),
   ...prefixKeys('white-alpha', whiteAlpha),
   ...prefix('neutral', neutral),
   ...prefix('primary', primary),
@@ -265,7 +312,7 @@ export const semanticColorLight = {
   /** Page background, behind all surfaces. shadcn `--background`. */
   background: ref('white'),
   /** Cards, panels, table bodies — the plane content sits on. shadcn `--card`. */
-  surface: ref('white'),
+  card: ref('white'),
   /**
    * Table headers, toolbars: a surface that recedes slightly. shadcn `--muted`.
    *
@@ -273,9 +320,9 @@ export const semanticColorLight = {
    * value, and the distinction survives here because the two are separate
    * override points, not because they differ out of the box.
    */
-  'surface-subtle': ref('gray-970'),
+  muted: ref('gray-970'),
   /** Row hover. shadcn `--accent`. */
-  'surface-hover': ref('gray-970'),
+  accent: ref('gray-970'),
   /** Row press / active. One step past hover; shadcn has no press token. */
   'surface-active': ref('gray-922'),
   /**
@@ -301,7 +348,7 @@ export const semanticColorLight = {
   skeleton: ref('gray-970'),
 
   /** Primary body and heading text. shadcn `--foreground`. */
-  text: ref('gray-145'),
+  foreground: ref('gray-145'),
   /**
    * Secondary text, column labels, help text. shadcn `--muted-foreground`.
    *
@@ -310,7 +357,7 @@ export const semanticColorLight = {
    * reaches 4.73:1 on white but only 4.34:1 on the recessed surface this token
    * is most often used against. Nine thousandths of lightness buy the pass.
    */
-  'text-muted': ref('gray-535'),
+  'muted-foreground': ref('gray-535'),
   /** Placeholders and de-emphasised metadata. */
   'text-subtle': ref('gray-635'),
   /** Text on a disabled control. */
@@ -320,7 +367,7 @@ export const semanticColorLight = {
    * Decorative hairline: row separators, card outlines.
    *
    * Deliberately below 3:1 against the surface. Do not use it for the boundary
-   * of an interactive control — see {@link semanticColorLight['border-control']}.
+   * of an interactive control — see {@link semanticColorLight['input']}.
    */
   border: ref('gray-922'),
   /** Emphasised decorative border: dividers that need to read as structure. */
@@ -342,7 +389,7 @@ export const semanticColorLight = {
    * controls: `border` keeps shadcn's value exactly, so the hairlines between
    * table rows and around cards are pixel-identical to shadcn.
    */
-  'border-control': ref('gray-635'),
+  input: ref('gray-635'),
   /**
    * Focus ring. Never remove the ring — recolour it. shadcn `--ring`.
    *
@@ -350,7 +397,7 @@ export const semanticColorLight = {
    * the absence of chroma. shadcn's own 0.708 is 2.59:1 against the page and
    * fails 1.4.11, so this is the darkened step.
    */
-  'focus-ring': ref('gray-635'),
+  ring: ref('gray-635'),
 
   /** Base colour shadows are mixed from. */
   shadow: ref('black'),
@@ -376,12 +423,12 @@ export const semanticColorLight = {
   'primary-on-subtle': ref('gray-205'),
   'primary-border': ref('gray-922'),
 
-  'success-solid': ref('success-600'),
-  'success-solid-hover': ref('success-700'),
+  'success-solid': ref('green-550'),
+  'success-solid-hover': ref('green-520'),
   'success-on-solid': ref('white'),
-  'success-subtle': ref('success-50'),
-  'success-on-subtle': ref('success-700'),
-  'success-border': ref('success-200'),
+  'success-subtle': ref('green-950'),
+  'success-on-subtle': ref('green-400'),
+  'success-border': ref('green-880'),
 
   // Amber is squeezed from both sides in light mode. It cannot carry white text
   // at any usable weight (white on warning-600 is 3.78:1), and a bright amber
@@ -391,12 +438,12 @@ export const semanticColorLight = {
   //
   // Hover therefore brightens rather than darkens — warning-700 would drop dark
   // text to 3.27:1.
-  'warning-solid': ref('warning-600'),
-  'warning-solid-hover': ref('warning-500'),
-  'warning-on-solid': ref('neutral-900'),
-  'warning-subtle': ref('warning-50'),
-  'warning-on-subtle': ref('warning-700'),
-  'warning-border': ref('warning-200'),
+  'warning-solid': ref('amber-550'),
+  'warning-solid-hover': ref('amber-520'),
+  'warning-on-solid': ref('white'),
+  'warning-subtle': ref('amber-950'),
+  'warning-on-subtle': ref('amber-400'),
+  'warning-border': ref('amber-880'),
 
   'danger-solid': ref('red-577'),
   'danger-solid-hover': ref('red-520'),
@@ -417,9 +464,9 @@ export const semanticColorLight = {
  */
 export const semanticColorDark = {
   background: ref('gray-145'),
-  surface: ref('gray-205'),
-  'surface-subtle': ref('gray-269'),
-  'surface-hover': ref('gray-269'),
+  card: ref('gray-205'),
+  muted: ref('gray-269'),
+  accent: ref('gray-269'),
   'surface-active': ref('gray-371'),
   'surface-selected': ref('gray-269'),
   'surface-disabled': ref('gray-269'),
@@ -427,10 +474,10 @@ export const semanticColorDark = {
   // darker than its card reads as a hole in the layout.
   skeleton: ref('gray-269'),
 
-  text: ref('gray-985'),
+  foreground: ref('gray-985'),
   // shadcn's own value, kept: 7.63:1 on the page and 5.83:1 on `--muted`, so
   // dark mode needs none of the correction light mode did.
-  'text-muted': ref('gray-708'),
+  'muted-foreground': ref('gray-708'),
   'text-subtle': ref('gray-556'),
   'text-disabled': ref('gray-556'),
 
@@ -441,8 +488,8 @@ export const semanticColorDark = {
   'border-subtle': ref('white-alpha-10'),
   // shadcn's `--input`, unchanged: composited over the page it measures
   // 3.82:1, and 3.54:1 over a card, so both clear 1.4.11 without help.
-  'border-control': ref('white-alpha-15'),
-  'focus-ring': ref('gray-556'),
+  input: ref('white-alpha-15'),
+  ring: ref('gray-556'),
 
   shadow: ref('black'),
 
@@ -463,19 +510,19 @@ export const semanticColorDark = {
   'primary-on-subtle': ref('gray-985'),
   'primary-border': ref('gray-371'),
 
-  'success-solid': ref('success-400'),
-  'success-solid-hover': ref('success-300'),
-  'success-on-solid': ref('neutral-950'),
-  'success-subtle': ref('success-950'),
-  'success-on-subtle': ref('success-300'),
-  'success-border': ref('success-800'),
+  'success-solid': ref('green-550'),
+  'success-solid-hover': ref('green-520'),
+  'success-on-solid': ref('white'),
+  'success-subtle': ref('green-260'),
+  'success-on-subtle': ref('green-850'),
+  'success-border': ref('green-350'),
 
-  'warning-solid': ref('warning-400'),
-  'warning-solid-hover': ref('warning-300'),
-  'warning-on-solid': ref('neutral-950'),
-  'warning-subtle': ref('warning-950'),
-  'warning-on-subtle': ref('warning-300'),
-  'warning-border': ref('warning-800'),
+  'warning-solid': ref('amber-550'),
+  'warning-solid-hover': ref('amber-520'),
+  'warning-on-solid': ref('white'),
+  'warning-subtle': ref('amber-260'),
+  'warning-on-subtle': ref('amber-850'),
+  'warning-border': ref('amber-350'),
 
   // The same red as light mode, with a white label. See `red`.
   'danger-solid': ref('red-577'),

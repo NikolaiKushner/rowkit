@@ -15,28 +15,28 @@ function toggleTheme() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-background text-text">
-    <header class="border-b border-border bg-surface">
+  <div class="min-h-screen bg-background text-foreground">
+    <header class="border-b border-border bg-card">
       <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
         <nav class="flex items-center gap-1" aria-label="Playground">
           <NuxtLink
             to="/"
-            class="rounded-sm px-3 py-1.5 text-sm font-medium text-text-muted hover:bg-surface-hover hover:text-text"
-            active-class="bg-surface-subtle text-text"
+            class="rounded-sm px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+            active-class="bg-muted text-foreground"
           >
             Invite form
           </NuxtLink>
           <NuxtLink
             to="/users"
-            class="rounded-sm px-3 py-1.5 text-sm font-medium text-text-muted hover:bg-surface-hover hover:text-text"
-            active-class="bg-surface-subtle text-text"
+            class="rounded-sm px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+            active-class="bg-muted text-foreground"
           >
             Users admin
           </NuxtLink>
           <NuxtLink
             to="/overlays"
-            class="rounded-sm px-3 py-1.5 text-sm font-medium text-text-muted hover:bg-surface-hover hover:text-text"
-            active-class="bg-surface-subtle text-text"
+            class="rounded-sm px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+            active-class="bg-muted text-foreground"
           >
             Overlays
           </NuxtLink>

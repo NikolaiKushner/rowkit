@@ -144,7 +144,7 @@ export const QueueOverflow: Story = {
         >
           Fire five at once
         </Button>
-        <p class="mt-2 text-sm text-text-muted">
+        <p class="mt-2 text-sm text-muted-foreground">
           Three show; dismiss one and the next appears.
         </p>
         <Toaster :max="3" />

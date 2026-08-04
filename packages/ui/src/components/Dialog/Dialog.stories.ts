@@ -174,7 +174,7 @@ export const CustomHeader: Story = {
               <span class="text-xs font-medium uppercase tracking-wide text-primary-on-subtle">
                 Billing
               </span>
-              <h2 class="text-lg font-semibold text-text">Upgrade plan</h2>
+              <h2 class="text-lg font-semibold text-foreground">Upgrade plan</h2>
             </div>
           </template>
           The accessible name is still "Upgrade plan", from the prop.
@@ -306,7 +306,7 @@ export const ScrollLock: Story = {
     template: `
       <div>
         <Button @click="open = true">Open over a long page</Button>
-        <p v-for="line in lines" :key="line" class="text-sm text-text-muted">
+        <p v-for="line in lines" :key="line" class="text-sm text-muted-foreground">
           Page line {{ line }} — the page must not shift sideways when the dialog opens.
         </p>
         <Dialog v-model:open="open" title="Scroll lock check">

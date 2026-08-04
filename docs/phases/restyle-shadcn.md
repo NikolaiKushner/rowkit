@@ -20,23 +20,24 @@ shadcn's theme model and rowkit's current token model are **structurally differe
 - This changes `@rowkit/tokens`' public surface → it's the reason this is 0.2.0, not 0.1.x.
 - Existing rowkit semantic names map as follows:
 
-| rowkit 0.1 token         | becomes (shadcn convention)                                                                                                                            |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--color-background`     | `--background` (the page)                                                                                                                              |
-| `--color-surface`        | `--card` — rowkit's `surface` is the raised surface, not the page                                                                                      |
-| `--color-surface-subtle` | `--muted` (table headers, toolbars)                                                                                                                    |
-| `--color-surface-hover`  | `--accent` — shadcn has no hover token; `accent` is what its rows and items hover to                                                                   |
-| `--color-skeleton`       | `--accent` (shadcn's Skeleton is `bg-accent`)                                                                                                          |
-| `--color-border`         | `--border`                                                                                                                                             |
-| `--color-border-control` | `--input` — **this** is rowkit's form-control boundary, not `border-strong`                                                                            |
-| `--color-border-strong`  | no shadcn equivalent; audit each usage and collapse into `--border`                                                                                    |
-| `--color-focus-ring`     | `--ring`                                                                                                                                               |
-| `--color-text`           | `--foreground`                                                                                                                                         |
-| `--color-text-muted`     | `--muted-foreground`                                                                                                                                   |
-| `--color-text-subtle`    | `--muted-foreground` (shadcn has one muted level; collapse)                                                                                            |
-| `--color-primary-*`      | `--primary` (+ `--primary-foreground`)                                                                                                                 |
-| `--color-danger-*`       | `--destructive` (shadcn's naming; keep `danger` as a documented alias in the Badge/Toast variant API — **do not rename component props**, only tokens) |
-| success / warning tones  | **not in shadcn's default set** — add per shadcn's own "Adding New Tokens" recipe (below), styled to match                                             |
+| rowkit 0.1 token         | rowkit 0.2 token           | note                                                     |
+| ------------------------ | -------------------------- | -------------------------------------------------------- |
+| `--color-background`     | `--color-background`       | unchanged — already shadcn's name                        |
+| `--color-surface`        | `--color-card`             | rowkit's `surface` is the raised plane, not the page     |
+| `--color-surface-subtle` | `--color-muted`            | table headers, toolbars                                  |
+| `--color-surface-hover`  | `--color-accent`           | shadcn has no hover token; `accent` is what its rows use |
+| `--color-text`           | `--color-foreground`       |                                                          |
+| `--color-text-muted`     | `--color-muted-foreground` |                                                          |
+| `--color-border-control` | `--color-input`            | the form-control boundary — **not** `border-strong`      |
+| `--color-focus-ring`     | `--color-ring`             |                                                          |
+| `--color-border`         | `--color-border`           | unchanged                                                |
+
+**Renamed, and no further.** The tokens above map one-to-one onto shadcn's, so anyone who has themed shadcn already knows how to theme rowkit — which was the whole strategic point of Part 0.
+
+The rest keep rowkit's names on purpose:
+
+- `surface-active`, `surface-selected`, `surface-disabled`, `skeleton`, `text-subtle`, `text-disabled`, `border-strong`, `border-subtle` have **no shadcn equivalent**. Collapsing them into `--muted-foreground` as this document once proposed would delete real states — a pressed row and a selected row would become the same token, and a disabled label the same as a placeholder.
+- The status families (`primary-solid`, `danger-subtle`, `warning-on-solid`, …) stay. shadcn's flat `--primary` / `--destructive` carries no `solid`/`subtle`/`outline` axis, and Badge and Button expose exactly that axis as a prop. Renaming them would mean redesigning those APIs, which Part 0 forbids two lines further down.
 
 **Component prop APIs do not change.** `variant="danger"` stays `danger`. This is a restyle, not an API break.
 
@@ -207,7 +208,7 @@ The `:root`/`.dark` variables are raw values; expose them to Tailwind utilities 
   ```
 
 - **Correction: header cells are `text-foreground`, not `text-muted-foreground`** as this document previously said, and they carry **no background fill** — shadcn's header is transparent with a hairline under it, not a recessed grey band. Both were wrong here and both are visible in any screenshot of the component.
-- rowkit's header must still be opaque, because it can be sticky; it takes `bg-surface` (the table's own plane) rather than transparency, which is the smallest change that keeps sticky working.
+- rowkit's header must still be opaque, because it can be sticky; it takes `bg-card` (the table's own plane) rather than transparency, which is the smallest change that keeps sticky working.
 - Padding tightens: `px-2` on heads and `p-2` on cells, against rowkit's `px-3`. shadcn's table is denser than rowkit's was.
 - Sticky header background: `bg-background` (opaque — the existing scroll-shadow affordance stays, restyled subtle).
 - Selection checkboxes: shadcn Checkbox recipe (`size-4 rounded-[4px] border shadow-xs`, checked `bg-primary text-primary-foreground border-primary`).
@@ -284,9 +285,21 @@ Work on branch `feat/shadcn-restyle`. One PR per group, standard DoD applies min
 | R3      | Field/Input, Select                                                                                                                                                                       | Same + a11y suite still green (focus recipe changed — re-verify visible focus in both modes)                                                                   |
 | R4      | Table family: DataTable, TablePagination, EmptyState, FilterBar                                                                                                                           | Users-admin playground page reads as a shadcn dashboard                                                                                                        |
 | R5      | Overlays: Dialog, Toast, Tooltip                                                                                                                                                          | Stacking scene re-verified; reduced-motion stories pass                                                                                                        |
-| R6      | Sweep: docs site theme vars remapped to new tokens; new screenshots; changeset; bundle budget check                                                                                       | Chromatic diff reviewed — every change intentional                                                                                                             |
+| R6      | Sweep: docs site theme vars remapped to new tokens; new screenshots; changeset; bundle budget check                                                                                       | Storybook reviewed by eye in both themes; no visual-regression service — see below                                                                             |
 
-**Visual regression:** Chromatic is **not set up in this repo** — there is no account, token, or workflow, so an R6 gate reading "Chromatic diff reviewed" would pass by never running. Either wire it up as its own task before R1 (it is a real setup job, not a checkbox), or run the comparison with what exists: Storybook builds on every PR, and the a11y suite already drives Playwright, so a screenshot pass over the story list is a day's work against a third-party service and an ongoing cost. Decide before R1, and if the answer is "no Chromatic", strike the gate rather than leaving it aspirational.
+**Visual regression: decided against.** Chromatic was wired up and then removed. It is a paid third-party service with an ongoing cost, and its first act on this repository would have been to demand a diff review across every story at once — the restyle rewrote nearly all of them, so the first build carries no signal and the value only begins afterwards.
+
+The gate is struck rather than left aspirational, because a checklist item nobody can run is worse than an absent one: it reads as covered.
+
+**What this costs, stated plainly.** Nothing checks that a visual change was intended. The suite still catches a great deal — `theme.test.ts` proves every utility resolves to a token, `variants.test.ts` proves every class compiles, `contrast.test.ts` proves every colour pairing meets AA, and the axe scan proves each story renders without a violation in both themes. None of that notices a button that is forty pixels too wide.
+
+**If it comes back**, three things have to be true or it is worse than nothing:
+
+- `fetch-depth: 0` on checkout. Chromatic finds its baseline by walking git history; under the default shallow clone there is no ancestor, so every commit becomes a new baseline and **every visual change passes silently**.
+- `exitZeroOnChanges: true`. A visual diff is a review decision, not a test failure.
+- **TurboSnap off.** It picks which stories to re-shoot from the Vite module graph, and a design-token change is precisely the case where "this story's files did not change" is both true and completely wrong.
+
+The cheap substitute, if one is wanted later: the a11y suite already drives Playwright, so a screenshot pass over the story list is a local afternoon rather than a subscription.
 
 **Verification protocol (the "double-check" requested):**
 

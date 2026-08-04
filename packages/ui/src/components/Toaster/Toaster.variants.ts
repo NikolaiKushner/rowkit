@@ -24,7 +24,7 @@ export const toasterViewportVariants = cva(
 
 export const toastVariants = cva(
   [
-    'pointer-events-auto flex items-start gap-3 rounded-md border p-4 shadow-lg',
+    'pointer-events-auto flex items-start gap-3 rounded-lg border p-4 text-sm shadow-lg',
     'motion-safe:data-[state=open]:animate-toast-in',
     'motion-safe:data-[state=closed]:animate-toast-out',
     // Reka drives the swipe with a transform custom property.
@@ -34,7 +34,7 @@ export const toastVariants = cva(
   {
     variants: {
       variant: {
-        neutral: 'border-border bg-surface text-text',
+        neutral: 'border-border bg-card text-foreground',
         success: 'border-success-border bg-success-subtle text-success-on-subtle',
         warning: 'border-warning-border bg-warning-subtle text-warning-on-subtle',
         danger: 'border-danger-border bg-danger-subtle text-danger-on-subtle',
@@ -49,13 +49,13 @@ export const toastMessageVariants = cva('min-w-0 flex-1 text-sm')
 export const toastActionVariants = cva([
   'shrink-0 cursor-pointer rounded-sm text-sm font-medium underline underline-offset-2',
   'transition-opacity duration-fast ease-standard hover:opacity-80',
-  'outline-none focus-visible:ring-3 focus-visible:ring-focus-ring',
+  'outline-none focus-visible:ring-3 focus-visible:ring-ring',
 ])
 
 export const toastCloseVariants = cva([
   'inline-flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-xs',
   'opacity-60 transition-opacity duration-fast ease-standard hover:opacity-100',
-  'outline-none focus-visible:ring-3 focus-visible:ring-focus-ring',
+  'outline-none focus-visible:ring-3 focus-visible:ring-ring',
 ])
 
 export type ToasterVariants = VariantProps<typeof toasterViewportVariants>

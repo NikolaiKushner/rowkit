@@ -22,9 +22,11 @@
 import { version as pkgVersion } from '../package.json' with { type: 'json' }
 import { blur } from './blur'
 import {
+  amber,
   colorPrimitives,
   danger,
   gray,
+  green,
   neutral,
   primary,
   red,
@@ -42,10 +44,12 @@ import { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './t
 import { zIndex } from './z-index'
 
 export {
+  amber,
   colorPrimitives,
   colorSteps,
   danger,
   gray,
+  green,
   neutral,
   primary,
   red,
@@ -89,6 +93,8 @@ export { buildThemeCss } from './css'
 export const tokens = {
   color: {
     gray,
+    green,
+    amber,
     whiteAlpha,
     neutral,
     primary,

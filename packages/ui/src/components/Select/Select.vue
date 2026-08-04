@@ -206,7 +206,7 @@ watch(inputValue, (value) => {
         "
       />
       <ComboboxTrigger
-        class="flex shrink-0 cursor-pointer items-center text-text-muted"
+        class="flex shrink-0 cursor-pointer items-center text-muted-foreground"
         :aria-label="props.togglerLabel"
       >
         <svg
@@ -230,12 +230,12 @@ watch(inputValue, (value) => {
     <ComboboxPortal>
       <ComboboxContent position="popper" :side-offset="4" :class="selectContentVariants()">
         <ComboboxViewport class="max-h-64 overflow-y-auto p-1">
-          <div v-if="props.loading" class="px-2 py-1.5 text-sm text-text-muted" role="status">
+          <div v-if="props.loading" class="px-2 py-1.5 text-sm text-muted-foreground" role="status">
             {{ props.loadingText }}
           </div>
 
           <template v-else>
-            <ComboboxEmpty class="px-2 py-1.5 text-sm text-text-muted">
+            <ComboboxEmpty class="px-2 py-1.5 text-sm text-muted-foreground">
               <slot name="empty">{{ props.emptyText }}</slot>
             </ComboboxEmpty>
 

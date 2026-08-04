@@ -28,8 +28,8 @@ tokens.color.primary[600] // 'oklch(0.546 0.209 259)'
 ## Two layers, and why it matters
 
 **Primitives** are the raw ramps: `--color-primary-600` is one specific blue and
-means nothing on its own. **Semantic** tokens name a role — `--color-surface`,
-`--color-text-muted`, `--color-border` — and point at a primitive through
+means nothing on its own. **Semantic** tokens name a role — `--color-card`,
+`--color-muted-foreground`, `--color-border` — and point at a primitive through
 `var()`.
 
 Components only ever reference the semantic layer. That is what makes dark mode
@@ -93,7 +93,7 @@ than one table.
 <TokenGrid :tokens="tokens.radius" prefix="--radius">
   <template #preview="{ value }">
     <span
-      class="inline-block size-10 border border-border bg-surface-subtle align-middle"
+      class="inline-block size-10 border border-border bg-muted align-middle"
       :style="{ borderRadius: value }"
     ></span>
   </template>
@@ -111,7 +111,7 @@ headroom left to darken — so the raised surface colour does that work.
 <TokenGrid :tokens="tokens.shadow" prefix="--shadow">
   <template #preview="{ value }">
     <span
-      class="inline-block size-10 rounded-sm bg-surface align-middle"
+      class="inline-block size-10 rounded-sm bg-card align-middle"
       :style="{ boxShadow: value }"
     ></span>
   </template>
@@ -148,18 +148,18 @@ absent entirely for anyone who has asked for reduced motion.
 ## Using them
 
 Through Tailwind, which is the normal path — every token is a theme value, so
-`bg-surface`, `text-text-muted`, `p-4`, `rounded-md` and `shadow-lg` all resolve
+`bg-card`, `text-muted-foreground`, `p-4`, `rounded-md` and `shadow-lg` all resolve
 to the tokens above:
 
 ```vue
-<div class="rounded-md bg-surface p-4 shadow-sm">…</div>
+<div class="rounded-md bg-card p-4 shadow-sm">…</div>
 ```
 
 Or directly, as CSS custom properties, for anything Tailwind does not cover:
 
 ```css
 .my-thing {
-  background: var(--color-surface-subtle);
+  background: var(--color-muted);
   border-radius: var(--radius-md);
 }
 ```
