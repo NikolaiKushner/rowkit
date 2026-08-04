@@ -22,9 +22,9 @@ export const tablePaginationVariants = cva(
  */
 export const tablePaginationItemVariants = cva(
   [
-    'inline-flex shrink-0 items-center justify-center rounded-sm border font-medium',
+    'inline-flex shrink-0 items-center justify-center rounded-md border font-medium',
     'cursor-pointer transition-colors duration-fast ease-standard',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+    'outline-none focus-visible:border-focus-ring focus-visible:ring-3 focus-visible:ring-focus-ring/50',
     'disabled:pointer-events-none disabled:border-transparent',
     'disabled:bg-transparent disabled:text-text-disabled',
   ],

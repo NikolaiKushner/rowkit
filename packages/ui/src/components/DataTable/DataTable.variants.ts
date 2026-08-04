@@ -7,7 +7,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 export const dataTableWrapperVariants = cva([
   'relative w-full overflow-auto rounded-md border border-border bg-surface',
   // Focusable when it actually scrolls, so the ring has to be visible.
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+  'outline-none focus-visible:border-focus-ring focus-visible:ring-3 focus-visible:ring-focus-ring/50',
 ])
 
 export const dataTableVariants = cva('w-full border-collapse text-left', {
@@ -39,19 +39,26 @@ export const dataTableCaptionVariants = cva('px-3 py-2 text-left text-text-muted
  * only have to be ordered against each other, which takes a plain offset rather
  * than another step on the token scale.
  */
-export const dataTableHeaderRowVariants = cva('relative z-sticky')
+export const dataTableHeaderRowVariants = cva('relative z-sticky border-b border-border')
 
 /**
  * Body cells need no z-index of their own: a `sticky` cell is positioned, and a
  * positioned element already paints above its static siblings.
+ *
+ * `bg-surface`, not `bg-surface-subtle`, and `text-text` rather than muted.
+ *
+ * shadcn's header is transparent with a hairline beneath it — the column labels
+ * are full-strength foreground, not a recessed grey band with quiet text. The
+ * fill stays opaque here only because the header can be sticky, and a
+ * transparent sticky header lets the rows scroll through it.
  */
 export const dataTableHeaderCellVariants = cva(
-  'bg-surface-subtle font-medium whitespace-nowrap text-text-muted',
+  'bg-surface align-middle font-medium whitespace-nowrap text-text',
   {
     variants: {
       size: {
         sm: 'h-8 px-2',
-        md: 'h-10 px-3',
+        md: 'h-10 px-2',
       },
       align: {
         start: 'text-start',
@@ -91,7 +98,7 @@ export const dataTableSortButtonVariants = cva(
     'group inline-flex w-full cursor-pointer items-center gap-1',
     'rounded-xs font-medium text-inherit',
     'transition-colors duration-fast ease-standard hover:text-text',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+    'outline-none focus-visible:ring-3 focus-visible:ring-focus-ring',
   ],
   {
     variants: {
@@ -122,11 +129,14 @@ export const dataTableSortIconVariants = cva(
   }
 )
 
-export const dataTableCellVariants = cva('border-t border-border-subtle text-text', {
+// `border-border`, not `border-border-subtle`: shadcn's row separator is its
+// standard hairline, and the fainter one disappeared entirely once the header
+// stopped being a grey band to anchor the grid.
+export const dataTableCellVariants = cva('border-t border-border align-middle text-text', {
   variants: {
     size: {
       sm: 'h-8 px-2',
-      md: 'h-10 px-3',
+      md: 'h-10 p-2',
     },
     align: {
       start: 'text-start',
@@ -161,7 +171,9 @@ export const dataTableRowVariants = cva(
        * not.
        */
       interactive: {
-        true: 'hover:bg-surface-hover',
+        // `/50` is shadcn's: the hover tint is half-strength so it reads as a
+        // pointer follow rather than as selection, which is the full tint.
+        true: 'hover:bg-surface-hover/50',
         false: '',
       },
       /** Selected wins over hover — losing the highlight on hover hides the state. */
@@ -174,25 +186,31 @@ export const dataTableRowVariants = cva(
   }
 )
 
-export const dataTableSelectCellVariants = cva('w-px border-t border-border-subtle', {
+// Matches the body cell: same hairline, same padding. shadcn drops the right
+// padding on a checkbox cell so the control sits tight against its column.
+export const dataTableSelectCellVariants = cva('w-px border-t border-border pr-0 align-middle', {
   variants: {
     size: {
       sm: 'h-8 px-2',
-      md: 'h-10 px-3',
+      md: 'h-10 p-2',
     },
   },
   defaultVariants: { size: 'md' },
 })
 
+/*
+ * `rounded-xs` is shadcn's `rounded-[4px]` — the radius scale now lands exactly
+ * there, which is the whole reason `xs` exists at 0.4 × `--radius`.
+ */
 export const dataTableCheckboxVariants = cva(
   [
-    'flex shrink-0 cursor-pointer items-center justify-center rounded-xs border',
+    'flex shrink-0 cursor-pointer items-center justify-center rounded-xs border shadow-xs',
     'border-border-control bg-surface text-primary-on-solid',
-    'transition-colors duration-fast ease-standard',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+    'transition-all duration-fast ease-standard',
+    'outline-none focus-visible:border-focus-ring focus-visible:ring-3 focus-visible:ring-focus-ring/50',
     'data-[state=checked]:border-primary-solid data-[state=checked]:bg-primary-solid',
     'data-[state=indeterminate]:border-primary-solid data-[state=indeterminate]:bg-primary-solid',
-    'disabled:cursor-not-allowed disabled:border-border disabled:bg-surface-disabled',
+    'disabled:cursor-not-allowed disabled:opacity-50',
   ],
   {
     variants: {
@@ -208,7 +226,7 @@ export const dataTableCheckboxVariants = cva(
 export const dataTableRadioVariants = cva(
   [
     'cursor-pointer accent-primary-solid',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+    'outline-none focus-visible:ring-3 focus-visible:ring-focus-ring',
   ],
   {
     variants: {

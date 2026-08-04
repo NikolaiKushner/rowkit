@@ -67,7 +67,7 @@ export const dialogCloseVariants = cva([
   'items-center justify-center rounded-sm text-text-muted',
   'transition-colors duration-fast ease-standard',
   'hover:bg-surface-hover hover:text-text',
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+  'outline-none focus-visible:ring-3 focus-visible:ring-focus-ring',
 ])
 
 export type DialogVariants = VariantProps<typeof dialogContentVariants>

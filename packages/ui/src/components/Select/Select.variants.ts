@@ -5,7 +5,7 @@ export const selectTriggerVariants = cva(
     'flex w-full items-center justify-between gap-2 border bg-surface text-left text-text',
     'cursor-pointer transition-colors duration-fast ease-standard',
     'hover:bg-surface-hover',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+    'outline-none focus-visible:border-focus-ring focus-visible:ring-3 focus-visible:ring-focus-ring/50',
     'disabled:cursor-not-allowed disabled:bg-surface-disabled disabled:text-text-disabled',
     'disabled:hover:bg-surface-disabled',
   ],

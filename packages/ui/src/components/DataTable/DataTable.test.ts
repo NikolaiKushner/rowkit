@@ -295,9 +295,9 @@ describe('DataTable', () => {
   })
 
   it('does not highlight rows on hover unless they do something', () => {
-    expect(setup().find('tbody tr').classes()).not.toContain('hover:bg-surface-hover')
+    expect(setup().find('tbody tr').classes()).not.toContain('hover:bg-surface-hover/50')
     expect(setup({ hoverable: true }).find('tbody tr').classes()).toContain(
-      'hover:bg-surface-hover'
+      'hover:bg-surface-hover/50'
     )
   })
 
@@ -503,7 +503,7 @@ describe('DataTable', () => {
     })
 
     it('shows a hover affordance once rows respond to a click', () => {
-      expect(clickable().find('tbody tr').classes()).toContain('hover:bg-surface-hover')
+      expect(clickable().find('tbody tr').classes()).toContain('hover:bg-surface-hover/50')
     })
   })
 

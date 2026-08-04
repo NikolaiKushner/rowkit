@@ -197,7 +197,18 @@ The `:root`/`.dark` variables are raw values; expose them to Tailwind utilities 
 
 ### DataTable / Table
 
-- shadcn's Table: rows `border-b`, `hover:bg-muted/50`, selected rows `data-[state=selected]:bg-muted`; cells `p-2 align-middle text-sm`; header cells `h-10 px-2 text-left font-medium text-muted-foreground`.
+- shadcn's Table, from `registry/new-york-v4/ui/table.tsx` verbatim:
+
+  ```
+  row:   border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted
+  head:  h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground
+  cell:  p-2 align-middle whitespace-nowrap
+  table: w-full caption-bottom text-sm     header: [&_tr]:border-b
+  ```
+
+- **Correction: header cells are `text-foreground`, not `text-muted-foreground`** as this document previously said, and they carry **no background fill** — shadcn's header is transparent with a hairline under it, not a recessed grey band. Both were wrong here and both are visible in any screenshot of the component.
+- rowkit's header must still be opaque, because it can be sticky; it takes `bg-surface` (the table's own plane) rather than transparency, which is the smallest change that keeps sticky working.
+- Padding tightens: `px-2` on heads and `p-2` on cells, against rowkit's `px-3`. shadcn's table is denser than rowkit's was.
 - Sticky header background: `bg-background` (opaque — the existing scroll-shadow affordance stays, restyled subtle).
 - Selection checkboxes: shadcn Checkbox recipe (`size-4 rounded-[4px] border shadow-xs`, checked `bg-primary text-primary-foreground border-primary`).
 - Sort buttons inside `th`: ghost-button treatment, `text-muted-foreground`, arrow icon `size-4`.

@@ -49,13 +49,13 @@ export const toastMessageVariants = cva('min-w-0 flex-1 text-sm')
 export const toastActionVariants = cva([
   'shrink-0 cursor-pointer rounded-sm text-sm font-medium underline underline-offset-2',
   'transition-opacity duration-fast ease-standard hover:opacity-80',
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+  'outline-none focus-visible:ring-3 focus-visible:ring-focus-ring',
 ])
 
 export const toastCloseVariants = cva([
   'inline-flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-xs',
   'opacity-60 transition-opacity duration-fast ease-standard hover:opacity-100',
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+  'outline-none focus-visible:ring-3 focus-visible:ring-focus-ring',
 ])
 
 export type ToasterVariants = VariantProps<typeof toasterViewportVariants>

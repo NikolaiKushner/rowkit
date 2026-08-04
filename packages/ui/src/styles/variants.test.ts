@@ -207,3 +207,31 @@ describe('component classes compile to real utilities', () => {
     expect(total).toBeGreaterThan(60)
   })
 })
+
+describe('the focus ring has something to draw', () => {
+  /*
+   * shadcn's recipe is two halves: the border turns the ring colour, and a 3px
+   * ring at 50% opacity appears outside it. The ring is translucent and cannot
+   * carry 3:1 on its own — the solid border is what satisfies WCAG 1.4.11.
+   *
+   * On an element with no border, `focus-visible:border-focus-ring` sets a
+   * colour on a zero-width border and paints nothing. Focus then shows as a
+   * faint translucent halo and the criterion is missed, while a screenshot
+   * still shows "a focus ring". Borderless elements take a solid ring instead.
+   */
+  const TRANSLUCENT = 'focus-visible:ring-focus-ring/50'
+  const RECOLOURS_BORDER = 'focus-visible:border-focus-ring'
+
+  it.each(components)('%s', (_name, variant) => {
+    const classes = classesOf(variant)
+    if (!classes.includes(TRANSLUCENT)) return
+
+    expect(classes, 'a 50% ring is only legal alongside the border half of the recipe').toContain(
+      RECOLOURS_BORDER
+    )
+    expect(
+      classes.some((c) => c === 'border' || /^border-[xytrbles]$/.test(c)),
+      'recolours a border it does not have — use a solid ring instead'
+    ).toBe(true)
+  })
+})

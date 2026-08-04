@@ -11,7 +11,7 @@ export const inputVariants = cva(
     'w-full border bg-surface text-text',
     'transition-colors duration-fast ease-standard',
     'placeholder:text-text-subtle',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+    'outline-none focus-visible:border-focus-ring focus-visible:ring-3 focus-visible:ring-focus-ring/50',
     'disabled:cursor-not-allowed disabled:bg-surface-disabled disabled:text-text-disabled',
   ],
   {
