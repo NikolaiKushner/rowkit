@@ -2,17 +2,29 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
  * Disabled styling is expressed with the `disabled:` variant rather than a
- * separate branch, because `.disabled\:bg-surface-disabled:disabled` carries a
+ * separate branch, because `.disabled\:opacity-50:disabled` carries a
  * pseudo-class and therefore outranks the plain `bg-primary-solid` from the
  * variant — no ordering discipline required at the call site.
+ *
+ * ## The focus ring
+ *
+ * shadcn's recipe, and the single most recognisable detail in the language:
+ * the border turns the ring colour *and* a 3px ring at 50% opacity appears
+ * outside it. Both halves are load-bearing. The ring alone is translucent and
+ * would not carry 3:1 against the page; the solid border is what satisfies WCAG
+ * 1.4.11, and the ring is the glow that makes it read as focus rather than as a
+ * hover state.
+ *
+ * That is why this replaced `outline-2 outline-offset-2` rather than joining
+ * it: two indicators competing on the same element is noise, and the outline
+ * was the one carrying no brand information.
  */
 export const buttonVariants = cva(
   [
-    'inline-flex shrink-0 items-center justify-center gap-2 border font-medium',
-    'cursor-pointer transition-colors duration-fast ease-standard',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
-    'disabled:pointer-events-none disabled:border-transparent',
-    'disabled:bg-surface-disabled disabled:text-text-disabled',
+    'inline-flex shrink-0 items-center justify-center gap-2 border font-medium whitespace-nowrap',
+    'cursor-pointer transition-all duration-fast ease-standard',
+    'outline-none focus-visible:border-focus-ring focus-visible:ring-3 focus-visible:ring-focus-ring/50',
+    'disabled:pointer-events-none disabled:opacity-50',
     // A button mid-request should not look clickable, but it must stay
     // focusable so a screen reader user is not thrown out of the form.
     'aria-busy:pointer-events-none',
@@ -28,10 +40,14 @@ export const buttonVariants = cva(
         danger:
           'border-danger-solid bg-danger-solid text-danger-on-solid hover:border-danger-solid-hover hover:bg-danger-solid-hover',
       },
+      // shadcn's heights and padding, and `rounded-md` at every size — its
+      // buttons do not change shape as they grow, only scale. `lg` keeps
+      // `text-sm`: shadcn has no larger type on a larger button, and bumping to
+      // `text-base` was rowkit's own invention.
       size: {
-        sm: 'h-8 rounded-sm px-3 text-sm',
-        md: 'h-9 rounded-md px-4 text-sm',
-        lg: 'h-10 rounded-md px-5 text-base',
+        sm: 'h-8 rounded-md px-3 text-sm',
+        md: 'h-9 rounded-md px-4 py-2 text-sm',
+        lg: 'h-10 rounded-md px-6 text-sm',
       },
       /** Stretches the button to fill its container. */
       block: {

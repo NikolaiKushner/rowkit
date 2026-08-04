@@ -88,6 +88,34 @@ describe('rowkit tokens compile to Tailwind utilities', () => {
   })
 })
 
+describe('the focus ring compiles', () => {
+  /*
+   * shadcn writes the width as `ring-[3px]`, an arbitrary value. Tailwind v4
+   * takes a bare number on `ring-*`, so `ring-3` is the same 3px through the
+   * scale instead of around it — but only if v4 really does generate it, and a
+   * utility that generates nothing is this project's recurring failure.
+   */
+  it('generates a 3px ring from the scale, not an arbitrary value', async () => {
+    const css = await build('ring-3')
+    expect(css, 'ring-3 produced no rule — the arbitrary `ring-[3px]` would be needed').toContain(
+      '.ring-3 {'
+    )
+    expect(css).toContain('3px')
+  })
+
+  it('tints the ring from the focus-ring token', async () => {
+    const css = await build('ring-focus-ring/50')
+    expect(css).toContain('var(--color-focus-ring)')
+  })
+
+  it('recolours the border to match, which is the half that carries 1.4.11', async () => {
+    // The ring is 50% opaque and cannot be relied on for contrast; the solid
+    // border is the indicator. If this utility stops resolving, focus still
+    // *looks* present in a screenshot and no longer meets the criterion.
+    expect(await build('border-focus-ring')).toContain('var(--color-focus-ring)')
+  })
+})
+
 describe('the radius scale resolves', () => {
   /*
    * Every radius is `calc(var(--radius) * f)`. Tailwind emits only the theme

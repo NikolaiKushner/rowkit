@@ -6,13 +6,15 @@ describe('Skeleton', () => {
   it('renders a text bar by default', () => {
     const el = mount(Skeleton)
     expect(el.classes()).toContain('bg-skeleton')
-    expect(el.classes()).toContain('rounded-xs')
+    expect(el.classes()).toContain('rounded-md')
   })
 
+  // shadcn's Skeleton is one `rounded-md` shape. The presets keep their
+  // geometry, but no longer their own corner radii.
   it.each([
-    ['text', 'rounded-xs'],
+    ['text', 'rounded-md'],
     ['circle', 'rounded-full'],
-    ['rect', 'rounded-sm'],
+    ['rect', 'rounded-md'],
   ] as const)('%s uses the %s radius token', (variant, expected) => {
     expect(mount(Skeleton, { props: { variant } }).classes()).toContain(expected)
   })
