@@ -1,3 +1,4 @@
+import { blur } from './blur'
 import { colorPrimitives, semanticColorDark, semanticColorLight } from './color'
 import { duration, easing } from './motion'
 import { radiusBase, radiusCss } from './radius'
@@ -48,6 +49,9 @@ export function buildThemeCss(): string {
     '',
     section('radii — multiples of --radius, declared in :root below'),
     ...entries(radiusCss, (k) => `--radius-${k}`),
+    '',
+    section('blur'),
+    ...entries(blur, (k) => `--blur-${k}`),
     '',
     section('shadows'),
     ...entries(shadow, (k) => `--shadow-${k}`),

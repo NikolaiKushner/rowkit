@@ -3,9 +3,21 @@ import { cva, type VariantProps } from 'class-variance-authority'
 /**
  * The scrim. `z-overlay` sits below `z-modal` so the surface paints over its own
  * backdrop — asserted in the token package's stacking test.
+ *
+ * The blur is guarded by `supports-[backdrop-filter]`. `backdrop-filter` is
+ * missing or switched off in more places than its support table suggests —
+ * older WebKit, some Linux GPU configurations, forced-colors mode — and an
+ * unguarded blur degrades to a plain scrim on those machines silently. The
+ * guard turns that into a declared fallback: everyone gets the 50% scrim, and
+ * the blur is the enhancement on top.
+ *
+ * 50%, not the 80% shadcn pairs with its blur. Blur plus 80% black is very
+ * nearly opaque, and the reason to blur rather than simply darken is that the
+ * page behind should still read as context.
  */
 export const dialogOverlayVariants = cva([
-  'fixed inset-0 z-overlay bg-neutral-950/50',
+  'fixed inset-0 z-overlay bg-shadow/50',
+  'supports-[backdrop-filter]:backdrop-blur-overlay',
   'motion-safe:data-[state=open]:animate-overlay-in',
   'motion-safe:data-[state=closed]:animate-overlay-out',
 ])

@@ -217,8 +217,36 @@ The `:root`/`.dark` variables are raw values; expose them to Tailwind utilities 
 
 ### Dialog
 
-- Overlay: `bg-black/50`. Panel: `bg-background rounded-lg border p-6 shadow-lg sm:max-w-lg gap-4`, title `text-lg font-semibold`, description `text-sm text-muted-foreground`. Close button top-right: ghost, `size-4` icon, `opacity-70 hover:opacity-100`.
+- Panel: `bg-background rounded-lg border p-6 shadow-lg sm:max-w-lg gap-4`, title `text-lg font-semibold`, description `text-sm text-muted-foreground`. Close button top-right: ghost, `size-4` icon, `opacity-70 hover:opacity-100`.
 - Enter/leave: fade + slight zoom (`zoom-in-95` feel) — map to rowkit motion tokens; durations stay token-driven.
+
+**Overlay — the scrim is blurred.** Two recipes exist upstream and they are not the same:
+
+| shadcn source                                       | overlay                                                 |
+| --------------------------------------------------- | ------------------------------------------------------- |
+| `registry/new-york-v4/ui/dialog.tsx` (the default)  | `bg-black/50`, **no blur**                              |
+| `registry/styles/style-*.css` (maia, lyra, vega, …) | `bg-black/80 supports-backdrop-filter:backdrop-blur-xs` |
+
+rowkit takes the blurred one, at the default's 50% scrim rather than 80%: blur plus 80% black is nearly opaque, and the point of blurring is that the page behind stays legible as context.
+
+- The blur **must** be behind `supports-[backdrop-filter]:`. `backdrop-filter` is unsupported or disabled in enough places (older WebKit, some Linux/GPU configurations, forced-colors mode) that an unguarded blur silently degrades to a plain scrim on some machines and not others. The guard makes that a declared fallback instead of an accident.
+- The blur radius is a token. There is no blur scale in `@rowkit/tokens` yet — add one; hard rule 1 has no exception for filters.
+- `bg-black/50` is not literal black in rowkit: the scrim already references the shadow primitive. Keep it a token reference.
+
+### Dialog — keyboard, in full
+
+Reka UI supplies this behaviour; the work is asserting it, because a focus trap that quietly stops trapping is invisible until someone tabs into the page behind an open modal and starts operating it.
+
+Every one of these gets an interaction test:
+
+- **Tab cycles inside the dialog and never leaves it.** From the last focusable element, Tab returns to the first.
+- **Shift+Tab cycles backwards**, and from the first element wraps to the last.
+- **Focus enters the dialog on open** — asserted today by `Accessibility`.
+- **Focus returns to the trigger on close** — asserted today by `EscapeRestoresFocus`.
+- **Escape closes**, unless `preventClose`, in which case the close button still works and the dialog is not a trap — asserted today by `PreventCloseIsNotATrap`.
+- **Background content is inert**: elements behind the scrim are not reachable by Tab.
+
+The first, second and last of these are missing and are the reason this section exists.
 
 ### Toast
 

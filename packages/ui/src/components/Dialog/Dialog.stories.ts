@@ -222,6 +222,59 @@ export const EscapeRestoresFocus: Story = {
   },
 }
 
+/**
+ * Tab cycles inside the dialog and cannot reach the page behind it.
+ *
+ * A focus trap that stops trapping is invisible: the dialog still looks modal,
+ * and a keyboard user simply tabs out into content the scrim says is
+ * unavailable, then operates it. Nothing about the rendered output changes when
+ * this breaks, which is why it is asserted rather than assumed.
+ */
+export const TabIsTrapped: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const trigger = canvas.getByRole('button', { name: 'Open dialog' })
+    await userEvent.click(trigger)
+
+    const body = within(document.body)
+    const dialog = await body.findByRole('dialog')
+
+    // Tab far enough to have escaped several times over if it could.
+    for (let i = 0; i < 12; i++) {
+      await userEvent.tab()
+      await expect(dialog.contains(document.activeElement)).toBe(true)
+    }
+
+    // Backwards too — a trap that only holds in one direction is still broken.
+    for (let i = 0; i < 12; i++) {
+      await userEvent.tab({ shift: true })
+      await expect(dialog.contains(document.activeElement)).toBe(true)
+    }
+
+    // The trigger sits behind the scrim, so it must never take focus while open.
+    await expect(trigger).not.toHaveFocus()
+  },
+}
+
+/** Tab visits every control in the dialog, then wraps to the first. */
+export const TabCyclesThroughControls: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: 'Open dialog' }))
+
+    const body = within(document.body)
+    const dialog = await body.findByRole('dialog')
+
+    const focusable = [...dialog.querySelectorAll<HTMLElement>('button, [href], input, select')]
+    await expect(focusable.length).toBeGreaterThan(1)
+
+    // Walking one full lap must return focus to where the lap started.
+    const start = document.activeElement
+    for (let i = 0; i < focusable.length; i++) await userEvent.tab()
+    await expect(document.activeElement).toBe(start)
+  },
+}
+
 /** With `preventClose`, Escape does nothing and the close button still works. */
 export const PreventCloseIsNotATrap: Story = {
   args: { preventClose: true },

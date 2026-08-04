@@ -60,6 +60,10 @@ const utilities: readonly (readonly [string, string])[] = [
   ['text-danger-on-solid', '--color-danger-on-solid'],
   ['border-border-control', '--color-border-control'],
   ['ring-focus-ring', '--color-focus-ring'],
+  // The dialog scrim. Without a utility behind it the overlay renders fully
+  // transparent — the dialog still opens, and nothing looks wrong until you
+  // notice the page behind is not dimmed.
+  ['bg-shadow', '--color-shadow'],
   ['p-4', '--spacing-4'],
   ['gap-2', '--spacing-2'],
   ['text-sm', '--text-sm'],
@@ -68,6 +72,7 @@ const utilities: readonly (readonly [string, string])[] = [
   ['tracking-wide', '--tracking-wide'],
   ['leading-snug', '--leading-snug'],
   ['rounded-md', '--radius-md'],
+  ['backdrop-blur-overlay', '--blur-overlay'],
   ['z-modal', '--z-index-modal'],
   ['duration-fast', '--transition-duration-fast'],
   ['ease-standard', '--ease-standard'],

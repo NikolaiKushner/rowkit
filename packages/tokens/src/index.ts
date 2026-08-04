@@ -20,6 +20,7 @@
  */
 
 import { version as pkgVersion } from '../package.json' with { type: 'json' }
+import { blur } from './blur'
 import {
   colorPrimitives,
   danger,
@@ -55,6 +56,9 @@ export {
   whiteAlpha,
 } from './color'
 export type { ColorRef, ColorStep, SemanticColorName } from './color'
+
+export { blur } from './blur'
+export type { BlurName } from './blur'
 
 export { duration, easing } from './motion'
 export type { DurationName, EasingName } from './motion'
@@ -111,6 +115,7 @@ export const tokens = {
   },
   radius,
   radiusBase,
+  blur,
   shadow,
   zIndex,
   motion: {
