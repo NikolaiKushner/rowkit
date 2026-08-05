@@ -95,7 +95,8 @@ handling.
 **Props**
 
 - `variant: 'primary' | 'danger' | 'secondary' | 'ghost'` — default `'primary'`. Visual weight and intent.
-- `size: 'sm' | 'md' | 'lg'` — default `'md'`. Control height and text size.
+- `size: 'sm' | 'md' | 'xs' | 'lg'` — default `'md'`. Control height and text size.
+- `icon: boolean` — default `false`. Renders the button square, for a label that is only an icon.
 - `block: boolean` — default `false`. Stretches the button to fill its container.
 - `loading: boolean` — default `false`. Swaps the leading slot for a spinner and blocks activation.
 - `disabled: boolean` — default `false`. Disables the button.

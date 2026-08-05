@@ -25,6 +25,20 @@ describe('docs stylesheet', () => {
     ).toMatch(/\.rk-demo :is\(button, input[^)]*\)\s*\{\s*all: revert-layer/)
   })
 
+  it("stops VitePress drawing a grid over a demo's table", async () => {
+    /*
+     * `.vp-doc th, .vp-doc td { border: 1px solid …; padding: 8px 16px }` is
+     * unlayered, so it beat every layered utility the component set: vertical
+     * rules between the columns, the wrong padding, a grey header band and
+     * muted header text — four departures at once, none of them visible in the
+     * class list, and only on the docs site.
+     */
+    const css = await readFile(join(repoRoot, 'docs/.vitepress/theme/tokens.css'), 'utf8')
+    expect(css, 'without this every DataTable demo renders as a bordered grid').toMatch(
+      /\.rk-demo :is\(th, td\)\s*\{\s*all: revert-layer/
+    )
+  })
+
   it('does not reach for `important` mode', async () => {
     /*
      * The blunt fix for the same problem, and it backfires: every utility

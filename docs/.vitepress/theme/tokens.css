@@ -77,6 +77,26 @@
 }
 
 /*
+ * Table cells, for the same reason as the controls above.
+ *
+ * VitePress styles markdown tables as a grid, unlayered:
+ *
+ *   .vp-doc th, .vp-doc td { border: 1px solid …; padding: 8px 16px }
+ *   .vp-doc th { background: var(--vp-c-bg-soft); color: var(--vp-c-text-2) }
+ *
+ * Every one of those beat the component's layered utilities at once, so a
+ * DataTable demo rendered with vertical rules between every column, the wrong
+ * padding, a grey header band and muted header text — four separate departures
+ * from the real component, none of them visible in its class list.
+ *
+ * `th` and `td` only. Reverting the row would take the hover and selected
+ * backgrounds with it, and those are layered utilities the component wants.
+ */
+.rk-demo :is(th, td) {
+  all: revert-layer;
+}
+
+/*
  * The markdown below the hero shares the hero's lines.
  *
  * Two differences to reconcile. The hero and the feature cards cap at 1152px

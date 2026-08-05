@@ -74,7 +74,8 @@ grows by the width of the spinner.
 | Prop           | Type                                              | Default     | Description                                                                                                               |
 | -------------- | ------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `variant`      | `'primary' \| 'danger' \| 'secondary' \| 'ghost'` | `'primary'` | Visual weight and intent.                                                                                                 |
-| `size`         | `'sm' \| 'md' \| 'lg'`                            | `'md'`      | Control height and text size.                                                                                             |
+| `size`         | `'sm' \| 'md' \| 'xs' \| 'lg'`                    | `'md'`      | Control height and text size.                                                                                             |
+| `icon`         | `boolean`                                         | `false`     | Renders the button square, for a label that is only an icon.                                                              |
 | `block`        | `boolean`                                         | `false`     | Stretches the button to fill its container.                                                                               |
 | `loading`      | `boolean`                                         | `false`     | Swaps the leading slot for a spinner and blocks activation.                                                               |
 | `disabled`     | `boolean`                                         | `false`     | Disables the button.                                                                                                      |
