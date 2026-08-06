@@ -25,6 +25,37 @@ describe('docs stylesheet', () => {
     ).toMatch(/\.rk-demo :is\(button, input[^)]*\)\s*\{\s*all: revert-layer/)
   })
 
+  it("stops VitePress drawing a grid over a demo's table", async () => {
+    /*
+     * `.vp-doc th, .vp-doc td { border: 1px solid …; padding: 8px 16px }` is
+     * unlayered, so it beat every layered utility the component set: vertical
+     * rules between the columns, the wrong padding, a grey header band and
+     * muted header text — four departures at once, none of them visible in the
+     * class list, and only on the docs site.
+     */
+    const css = await readFile(join(repoRoot, 'docs/.vitepress/theme/tokens.css'), 'utf8')
+    expect(css, 'without this every DataTable demo renders as a bordered grid').toMatch(
+      /\.rk-demo :is\(th, td\)\s*\{\s*all: revert-layer/
+    )
+  })
+
+  it("stops VitePress striping a demo's rows", async () => {
+    /*
+     * `.vp-doc tr:nth-child(2n)` paints every other row grey, which is right
+     * for a markdown table and wrong for a component that paints its own rows —
+     * in the loading state the stripe sat on top of the skeletons and hid them.
+     * The same rule adds a border the cells already draw and a half-second
+     * background transition, which made hover lag the pointer.
+     *
+     * The selector has to out-specify `:nth-child(2n)`; a plain `.rk-demo tr`
+     * loses to it, which is how the stripe survived the fix for the cells.
+     */
+    const css = await readFile(join(repoRoot, 'docs/.vitepress/theme/tokens.css'), 'utf8')
+    expect(css, 'without this every other row in a demo is grey').toMatch(
+      /\.rk-demo tbody tr:nth-child\(2n\)/
+    )
+  })
+
   it('does not reach for `important` mode', async () => {
     /*
      * The blunt fix for the same problem, and it backfires: every utility

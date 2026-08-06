@@ -13,6 +13,14 @@ export interface ButtonProps {
   variant?: NonNullable<ButtonVariants['variant']>
   /** Control height and text size. */
   size?: NonNullable<ButtonVariants['size']>
+  /**
+   * Renders the button square, for a label that is only an icon.
+   *
+   * Supply an accessible name yourself — `aria-label` on the button, or visible
+   * text in an `.sr-only` span. A square button with a glyph in it announces as
+   * nothing at all.
+   */
+  icon?: boolean
   /** Stretches the button to fill its container. */
   block?: boolean
   /**

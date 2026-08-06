@@ -52,7 +52,7 @@ export const Matrix: Story = {
     template: `
       <div class="flex flex-col gap-4">
         <div v-for="appearance in appearances" :key="appearance" class="flex flex-col gap-2">
-          <span class="text-xs font-medium uppercase tracking-wide text-text-muted">{{ appearance }}</span>
+          <span class="text-xs font-medium uppercase tracking-wide text-muted-foreground">{{ appearance }}</span>
           <div class="flex flex-wrap items-center gap-2">
             <Badge v-for="variant in variants" :key="variant" :variant="variant" :appearance="appearance">
               {{ variant }}
@@ -112,21 +112,21 @@ export const InATable: Story = {
       <table class="w-full max-w-md border-collapse text-sm">
         <thead>
           <tr class="border-b border-border text-left">
-            <th class="p-2 font-medium text-text-muted">User</th>
-            <th class="p-2 font-medium text-text-muted">Status</th>
+            <th class="p-2 font-medium text-muted-foreground">User</th>
+            <th class="p-2 font-medium text-muted-foreground">Status</th>
           </tr>
         </thead>
         <tbody>
           <tr class="border-b border-border-subtle">
-            <td class="p-2 text-text">ada@example.com</td>
+            <td class="p-2 text-foreground">ada@example.com</td>
             <td class="p-2"><Badge variant="success" dot>Active</Badge></td>
           </tr>
           <tr class="border-b border-border-subtle">
-            <td class="p-2 text-text">grace@example.com</td>
+            <td class="p-2 text-foreground">grace@example.com</td>
             <td class="p-2"><Badge variant="warning" dot>Invited</Badge></td>
           </tr>
           <tr>
-            <td class="p-2 text-text">alan@example.com</td>
+            <td class="p-2 text-foreground">alan@example.com</td>
             <td class="p-2"><Badge variant="danger" dot>Suspended</Badge></td>
           </tr>
         </tbody>

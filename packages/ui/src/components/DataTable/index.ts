@@ -21,6 +21,7 @@ export {
   dataTableHeaderRowVariants,
   dataTableCheckboxVariants,
   dataTableRadioVariants,
+  dataTableRowActionClass,
   dataTableRowVariants,
   dataTableSelectCellVariants,
   dataTableSortButtonVariants,

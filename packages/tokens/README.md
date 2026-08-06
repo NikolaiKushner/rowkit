@@ -17,7 +17,7 @@ npm i @rowkit/tokens
 
 ## Two layers
 
-**Primitives** are the raw ramps: `--color-primary-600` is one specific blue and means nothing on its own. **Semantic** tokens name a role — `--color-surface`, `--color-text-muted`, `--color-border` — and point at a primitive through `var()`.
+**Primitives** are the raw ramps: `--color-primary-600` is one specific blue and means nothing on its own. **Semantic** tokens name a role — `--color-card`, `--color-muted-foreground`, `--color-border` — and point at a primitive through `var()`.
 
 Only the semantic layer changes under `.dark`, which is what makes dark mode a matter of repointing references rather than hunting hex codes.
 
@@ -30,13 +30,13 @@ As a Tailwind v4 theme:
 @import '@rowkit/tokens/css';
 ```
 
-Every token becomes a theme value, so `bg-surface`, `text-text-muted`, `p-4`, `rounded-md` and `shadow-lg` resolve to the scales above.
+Every token becomes a theme value, so `bg-card`, `text-muted-foreground`, `p-4`, `rounded-md` and `shadow-lg` resolve to the scales above.
 
 As CSS custom properties, for anything Tailwind does not cover:
 
 ```css
 .my-thing {
-  background: var(--color-surface-subtle);
+  background: var(--color-muted);
   border-radius: var(--radius-md);
 }
 ```
@@ -66,3 +66,5 @@ const series = [tokens.color.primary[500], tokens.color.success[500]]
 ## License
 
 MIT © Nikolai Kushner
+
+Design language based on [shadcn/ui](https://ui.shadcn.com) by shadcn, adapted for Vue. shadcn/ui is MIT licensed; rowkit adopts its token values and class recipes, not its code.

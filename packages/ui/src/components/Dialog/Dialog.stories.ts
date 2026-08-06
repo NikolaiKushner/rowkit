@@ -174,7 +174,7 @@ export const CustomHeader: Story = {
               <span class="text-xs font-medium uppercase tracking-wide text-primary-on-subtle">
                 Billing
               </span>
-              <h2 class="text-lg font-semibold text-text">Upgrade plan</h2>
+              <h2 class="text-lg font-semibold text-foreground">Upgrade plan</h2>
             </div>
           </template>
           The accessible name is still "Upgrade plan", from the prop.
@@ -205,6 +205,49 @@ export const Accessibility: Story = {
   },
 }
 
+/**
+ * The focus ring of the last field is not clipped by the scrolling body.
+ *
+ * The body is `overflow-y-auto`, which makes it a clipping boundary, and the
+ * ring is drawn 3px outside the control's border box. With no vertical padding
+ * the bottom of that ring was sliced off: the field looked focused on three
+ * sides and cut on the fourth, and nothing about the markup was wrong.
+ */
+export const FocusRingIsNotClipped: Story = {
+  render: () => ({
+    components: { Dialog, Button, Field, Input },
+    setup: () => ({ open: ref(true), name: ref('Platform') }),
+    template: `
+      <Dialog v-model:open="open" title="Project settings" size="sm">
+        <Field label="Project name"><Input v-model="name" /></Field>
+        <template #footer><Button>Save</Button></template>
+      </Dialog>
+    `,
+  }),
+  play: async () => {
+    const body = within(document.body)
+    const dialog = await body.findByRole('dialog')
+
+    const input = dialog.querySelector('input')
+    if (!input) throw new Error('no input rendered')
+    input.focus()
+
+    // The scrolling region is the element that clips. Walk up from the field.
+    let region: HTMLElement | null = input.parentElement
+    while (region && getComputedStyle(region).overflowY !== 'auto') region = region.parentElement
+    if (!region) throw new Error('no scrolling body found')
+
+    const RING = 3
+    const field = input.getBoundingClientRect()
+    const clip = region.getBoundingClientRect()
+
+    // Measured, not inferred from the class list: a padding utility that failed
+    // to compile would leave the classes correct and the ring still cut.
+    await expect(field.bottom + RING).toBeLessThanOrEqual(clip.bottom)
+    await expect(field.top - RING).toBeGreaterThanOrEqual(clip.top)
+  },
+}
+
 /** Escape closes, and focus returns to the trigger that opened it. */
 export const EscapeRestoresFocus: Story = {
   play: async ({ canvasElement }) => {
@@ -219,6 +262,59 @@ export const EscapeRestoresFocus: Story = {
     await expect(within(document.body).queryByRole('dialog')).toBeNull()
     // Losing the trigger on close is the classic focus bug.
     await expect(trigger).toHaveFocus()
+  },
+}
+
+/**
+ * Tab cycles inside the dialog and cannot reach the page behind it.
+ *
+ * A focus trap that stops trapping is invisible: the dialog still looks modal,
+ * and a keyboard user simply tabs out into content the scrim says is
+ * unavailable, then operates it. Nothing about the rendered output changes when
+ * this breaks, which is why it is asserted rather than assumed.
+ */
+export const TabIsTrapped: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const trigger = canvas.getByRole('button', { name: 'Open dialog' })
+    await userEvent.click(trigger)
+
+    const body = within(document.body)
+    const dialog = await body.findByRole('dialog')
+
+    // Tab far enough to have escaped several times over if it could.
+    for (let i = 0; i < 12; i++) {
+      await userEvent.tab()
+      await expect(dialog.contains(document.activeElement)).toBe(true)
+    }
+
+    // Backwards too — a trap that only holds in one direction is still broken.
+    for (let i = 0; i < 12; i++) {
+      await userEvent.tab({ shift: true })
+      await expect(dialog.contains(document.activeElement)).toBe(true)
+    }
+
+    // The trigger sits behind the scrim, so it must never take focus while open.
+    await expect(trigger).not.toHaveFocus()
+  },
+}
+
+/** Tab visits every control in the dialog, then wraps to the first. */
+export const TabCyclesThroughControls: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: 'Open dialog' }))
+
+    const body = within(document.body)
+    const dialog = await body.findByRole('dialog')
+
+    const focusable = [...dialog.querySelectorAll<HTMLElement>('button, [href], input, select')]
+    await expect(focusable.length).toBeGreaterThan(1)
+
+    // Walking one full lap must return focus to where the lap started.
+    const start = document.activeElement
+    for (let i = 0; i < focusable.length; i++) await userEvent.tab()
+    await expect(document.activeElement).toBe(start)
   },
 }
 
@@ -253,7 +349,7 @@ export const ScrollLock: Story = {
     template: `
       <div>
         <Button @click="open = true">Open over a long page</Button>
-        <p v-for="line in lines" :key="line" class="text-sm text-text-muted">
+        <p v-for="line in lines" :key="line" class="text-sm text-muted-foreground">
           Page line {{ line }} — the page must not shift sideways when the dialog opens.
         </p>
         <Dialog v-model:open="open" title="Scroll lock check">

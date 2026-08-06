@@ -45,14 +45,14 @@ const { copied, copy } = useCopyToken()
         <td>
           <button
             type="button"
-            class="cursor-pointer border-none bg-transparent p-0 font-mono text-sm text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+            class="cursor-pointer border-none bg-transparent p-0 font-mono text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             :aria-label="`Copy ${prefix}-${name}`"
             @click="copy(`${prefix}-${name}`)"
           >
             {{ copied === `${prefix}-${name}` ? 'copied' : `${prefix}-${name}` }}
           </button>
         </td>
-        <td class="font-mono text-sm text-text-muted">{{ value }}</td>
+        <td class="font-mono text-sm text-muted-foreground">{{ value }}</td>
         <td><slot name="preview" :token="String(name)" :value="value" /></td>
       </tr>
     </tbody>

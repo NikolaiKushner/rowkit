@@ -26,9 +26,12 @@ export const badgeVariants = cva(
         solid: '',
         outline: 'bg-transparent',
       },
+      // The reference design's badge is `rounded-md px-2 py-0.5 text-xs`. `sm` keeps a tighter
+      // inline size for badges that live inside a table cell, where `md`'s
+      // padding pushes the row height up.
       size: {
-        sm: 'rounded-xs px-1.5 py-0.5 text-xs',
-        md: 'rounded-sm px-2 py-0.5 text-sm',
+        sm: 'rounded-md px-1.5 py-0.5 text-xs',
+        md: 'rounded-md px-2 py-0.5 text-xs',
       },
     },
     compoundVariants: [
@@ -48,6 +51,8 @@ export const badgeVariants = cva(
         class: 'border-neutral-border text-neutral-on-subtle',
       },
 
+      // Soft chip: tinted fill + matching hairline. Same recipe as neutral —
+      // colour lives in the wash, not in a solid pill or bare coloured text.
       {
         variant: 'primary',
         appearance: 'subtle',

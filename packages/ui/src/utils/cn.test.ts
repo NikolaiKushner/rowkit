@@ -17,7 +17,7 @@ describe('cn', () => {
 
   it('keeps utilities that only look similar', () => {
     // Font size and text colour share the `text-` prefix but not a group.
-    expect(cn('text-sm', 'text-text-muted')).toBe('text-sm text-text-muted')
+    expect(cn('text-sm', 'text-muted-foreground')).toBe('text-sm text-muted-foreground')
   })
 })
 
@@ -82,6 +82,6 @@ describe('semantic colour utilities collide within a property', () => {
   })
 
   it('does not collide across properties', () => {
-    expect(cn('bg-surface', 'text-text')).toBe('bg-surface text-text')
+    expect(cn('bg-card', 'text-foreground')).toBe('bg-card text-foreground')
   })
 })

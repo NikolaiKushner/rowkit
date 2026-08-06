@@ -30,13 +30,13 @@ Nothing is Locked before v1.0, because that is what v1.0 means.
 
 **Data**
 
-| Component                                       | Stage     |
-| ----------------------------------------------- | --------- |
-| [DataTable](/components/data-table)             | 🟢 Stable |
-| [TablePagination](/components/table-pagination) | 🟢 Stable |
-| [FilterBar](/components/filter-bar)             | 🟢 Stable |
-| [EmptyState](/components/empty-state)           | 🟢 Stable |
-| [Skeleton](/components/skeleton)                | 🟢 Stable |
+| Component                             | Stage     |
+| ------------------------------------- | --------- |
+| [DataTable](/components/data-table)   | 🟢 Stable |
+| [Pagination](/components/pagination)  | 🟢 Stable |
+| [FilterBar](/components/filter-bar)   | 🟢 Stable |
+| [EmptyState](/components/empty-state) | 🟢 Stable |
+| [Skeleton](/components/skeleton)      | 🟢 Stable |
 
 **Overlays**
 
@@ -51,8 +51,8 @@ real-world use: an API is not proven by its author.
 
 ## Where the project is
 
-The library is built, tested, documented, and **published**: `rowkit@0.1.0` and
-`@rowkit/tokens@0.1.0` are on npm, released from CI with provenance. The source
+The library is built, tested, documented, and **published**: `rowkit` and
+`@rowkit/tokens` are on npm at <NpmVersion />, released from CI with provenance. The source
 is on [GitHub](https://github.com/NikolaiKushner/rowkit) and this site runs the
 real components.
 

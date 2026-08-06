@@ -86,7 +86,7 @@ function reset() {
       </Field>
     </template>
   </FilterBar>
-  <ul class="!my-0 !pl-5 text-sm text-text-muted">
+  <ul class="!my-0 !pl-5 text-sm text-muted-foreground">
     <li v-for="person in results" :key="person.name">{{ person.name }}</li>
   </ul>
 </DemoBox>
@@ -205,7 +205,7 @@ render, because live regions announce changes rather than initial content.
 
 There is no roving tabstop across the chips. Each remove control is a button in
 document order, so <kbd>Tab</kbd> reaches every one of them — the same reasoning
-as `TablePagination`'s page numbers.
+as `Pagination`'s page numbers.
 
 ## Accessibility
 

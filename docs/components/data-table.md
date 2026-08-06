@@ -381,7 +381,7 @@ browser paints only what is visible. What does grow is initial render — about
 640 ms for 10,000 rows against 66 ms for four, and linear in between.
 
 So the threshold is a render-time one: **above ~500 rows, paginate** with
-`TablePagination`. That is the better interaction regardless, since nobody
+`Pagination`. That is the better interaction regardless, since nobody
 scrolls ten thousand rows looking for something.
 
 ## Dark mode

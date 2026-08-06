@@ -59,7 +59,7 @@ and says so, so neither cost hides behind the other.
 - Renders 10k rows correctly — no crash, scrolling unaffected
 - Keeps per-row cost minimal: no per-cell component wrappers, no per-cell
   computed, one `<td>` per cell
-- Documents the threshold: **above ~500 rows, paginate** — `TablePagination`
+- Documents the threshold: **above ~500 rows, paginate** — `Pagination`
   wiring is in `docs/components/data-table.md`
 - Keeps `Data/DataTable/Ten Thousand Rows` as a living benchmark, with its axe
   scan deliberately off (walking 60,000 nodes takes minutes and asserts nothing

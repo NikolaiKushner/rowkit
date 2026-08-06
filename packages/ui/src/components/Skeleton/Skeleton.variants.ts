@@ -13,12 +13,14 @@ export const skeletonVariants = cva('block shrink-0 bg-skeleton', {
   variants: {
     /** Geometry preset. */
     variant: {
+      // The reference design's Skeleton is a single `rounded-md` shape. rowkit keeps the
+      // geometry presets, but the corner is the reference design's at every one of them.
       /** A line of text. Height tracks the `sm`/`base` line box. */
-      text: 'h-4 w-full rounded-xs',
+      text: 'h-4 w-full rounded-md',
       /** Avatars and icon buttons. */
       circle: 'size-10 rounded-full',
       /** Thumbnails, cards, table cells. */
-      rect: 'h-4 w-full rounded-sm',
+      rect: 'h-4 w-full rounded-md',
     },
     /**
      * `motion-safe:` rather than a bare `animate-pulse`, so the pulse is absent

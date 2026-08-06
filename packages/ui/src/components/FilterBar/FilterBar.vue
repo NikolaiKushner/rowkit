@@ -140,7 +140,7 @@ watch(
         v-if="props.searchable"
         :label="props.searchLabel"
         label-sr-only
-        size="sm"
+        :size="props.size"
         :disabled="props.disabled"
       >
         <Input

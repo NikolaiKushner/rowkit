@@ -7,9 +7,9 @@ import { cva, type VariantProps } from 'class-variance-authority'
 export const emptyStateVariants = cva('flex flex-col items-center justify-center text-center', {
   variants: {
     size: {
-      sm: 'gap-2 px-4 py-6',
-      md: 'gap-3 px-6 py-10',
-      lg: 'gap-4 px-6 py-16',
+      sm: 'gap-2 px-3 py-4',
+      md: 'gap-3 px-4 py-8',
+      lg: 'gap-4 px-4 py-12',
     },
   },
   defaultVariants: { size: 'md' },
@@ -21,7 +21,7 @@ export const emptyStateVariants = cva('flex flex-col items-center justify-center
  * misses the sentence telling them what to do.
  */
 export const emptyStateIconVariants = cva(
-  'flex shrink-0 items-center justify-center text-text-subtle',
+  'flex shrink-0 items-center justify-center text-muted-foreground',
   {
     variants: {
       size: {
@@ -34,7 +34,7 @@ export const emptyStateIconVariants = cva(
   }
 )
 
-export const emptyStateTitleVariants = cva('font-medium text-text', {
+export const emptyStateTitleVariants = cva('font-medium text-foreground', {
   variants: {
     size: {
       sm: 'text-sm',
@@ -67,8 +67,8 @@ export const emptyStateDescriptionVariants = cva('text-balance', {
       lg: 'max-w-md text-sm',
     },
     reason: {
-      'no-data': 'text-text-muted',
-      'no-results': 'text-text-muted',
+      'no-data': 'text-muted-foreground',
+      'no-results': 'text-muted-foreground',
       error: 'text-danger-on-subtle',
     },
   },

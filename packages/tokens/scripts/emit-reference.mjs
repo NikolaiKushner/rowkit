@@ -109,33 +109,33 @@ ${darkVars}
         font-family: var(--font-sans);
         font-size: var(--text-sm, 0.875rem);
         background: var(--color-background);
-        color: var(--color-text);
+        color: var(--color-foreground);
         transition: background var(--transition-duration-normal) var(--ease-standard);
       }
       header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-8); }
       h1 { font-size: 1.5rem; font-weight: var(--font-weight-bold); margin: 0; }
       h2 { font-size: 1.125rem; font-weight: var(--font-weight-semibold); margin: var(--spacing-12) 0 var(--spacing-4); padding-bottom: var(--spacing-2); border-bottom: 1px solid var(--color-border); }
-      h3 { font-size: 0.875rem; font-weight: var(--font-weight-medium); color: var(--color-text-muted); margin: var(--spacing-6) 0 var(--spacing-3); text-transform: uppercase; letter-spacing: var(--tracking-wide); }
+      h3 { font-size: 0.875rem; font-weight: var(--font-weight-medium); color: var(--color-muted-foreground); margin: var(--spacing-6) 0 var(--spacing-3); text-transform: uppercase; letter-spacing: var(--tracking-wide); }
       code { font-family: var(--font-mono); font-size: 0.75rem; }
       button {
         font: inherit; font-weight: var(--font-weight-medium); cursor: pointer;
         padding: var(--spacing-2) var(--spacing-4);
         border-radius: var(--radius-sm);
-        border: 1px solid var(--color-border-control);
-        background: var(--color-surface); color: var(--color-text);
+        border: 1px solid var(--color-input);
+        background: var(--color-card); color: var(--color-foreground);
       }
-      button:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+      button:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
       .scale { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--spacing-2); }
       .swatch { display: flex; flex-direction: column; gap: var(--spacing-1); }
       .chip { height: 56px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); }
       .step { font-weight: var(--font-weight-medium); }
-      .val, .ref { color: var(--color-text-muted); }
+      .val, .ref { color: var(--color-muted-foreground); }
       table { width: 100%; border-collapse: collapse; }
-      th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: var(--tracking-wide); color: var(--color-text-muted); font-weight: var(--font-weight-medium); padding: var(--spacing-2); border-bottom: 1px solid var(--color-border); }
+      th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: var(--tracking-wide); color: var(--color-muted-foreground); font-weight: var(--font-weight-medium); padding: var(--spacing-2); border-bottom: 1px solid var(--color-border); }
       td { padding: var(--spacing-2); border-bottom: 1px solid var(--color-border-subtle); vertical-align: middle; }
-      tbody tr:hover { background: var(--color-surface-hover); }
+      tbody tr:hover { background: var(--color-accent); }
       .dot { display: inline-block; width: 28px; height: 20px; border-radius: var(--radius-xs); border: 1px solid var(--color-border); }
-      .demo-box { background: var(--color-surface); border: 1px solid var(--color-border); }
+      .demo-box { background: var(--color-card); border: 1px solid var(--color-border); }
       .status-row { display: flex; flex-wrap: wrap; gap: var(--spacing-3); }
       .solid { padding: var(--spacing-2) var(--spacing-4); border-radius: var(--radius-sm); font-weight: var(--font-weight-medium); }
       .subtle { padding: var(--spacing-1) var(--spacing-3); border-radius: var(--radius-full); font-size: 0.75rem; font-weight: var(--font-weight-medium); border: 1px solid; }
@@ -145,7 +145,7 @@ ${darkVars}
     <header>
       <div>
         <h1>rowkit design tokens</h1>
-        <p style="color: var(--color-text-muted); margin: var(--spacing-1) 0 0">
+        <p style="color: var(--color-muted-foreground); margin: var(--spacing-1) 0 0">
           Generated from <code>@rowkit/tokens</code>. Every value below comes from the same
           source the components consume.
         </p>
@@ -172,7 +172,7 @@ ${darkVars}
     </div>
 
     <h2>Semantic colours</h2>
-    <p style="color: var(--color-text-muted)">
+    <p style="color: var(--color-muted-foreground)">
       Semantic tokens never hold a literal colour — each points at a primitive, which is what
       lets the theme flip without any value being redefined.
     </p>

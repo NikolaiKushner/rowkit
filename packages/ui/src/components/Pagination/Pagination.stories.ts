@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ref } from 'vue'
 import { expect, userEvent, within } from 'storybook/test'
-import TablePagination from './TablePagination.vue'
+import Pagination from './Pagination.vue'
 
 const sizes = ['sm', 'md'] as const
 
@@ -9,7 +9,7 @@ const sizes = ['sm', 'md'] as const
  * Controls declared explicitly rather than inferred, so the docs table shows
  * the public API instead of Vue's internal slot machinery.
  */
-interface TablePaginationArgs {
+interface PaginationArgs {
   total: number
   siblingCount: number
   showEdges: boolean
@@ -20,21 +20,21 @@ interface TablePaginationArgs {
 }
 
 /** Stateful wrapper — pagination is meaningless without somewhere to store the page. */
-function stateful(args: Partial<TablePaginationArgs>, page = 1, pageSize = 10) {
+function stateful(args: Partial<PaginationArgs>, page = 1, pageSize = 10) {
   return {
-    components: { TablePagination },
+    components: { Pagination },
     setup: () => ({ args, page: ref(page), pageSize: ref(pageSize) }),
     template: `
       <div class="w-full max-w-2xl">
-        <TablePagination v-bind="args" v-model:page="page" v-model:page-size="pageSize" />
+        <Pagination v-bind="args" v-model:page="page" v-model:page-size="pageSize" />
       </div>
     `,
   }
 }
 
-const meta: Meta<TablePaginationArgs> = {
-  title: 'Data/TablePagination',
-  component: TablePagination,
+const meta: Meta<PaginationArgs> = {
+  title: 'Data/Pagination',
+  component: Pagination,
   tags: ['autodocs'],
   args: {
     total: 247,
@@ -58,7 +58,7 @@ const meta: Meta<TablePaginationArgs> = {
 }
 
 export default meta
-type Story = StoryObj<TablePaginationArgs>
+type Story = StoryObj<PaginationArgs>
 
 export const Default: Story = {}
 
@@ -89,18 +89,18 @@ export const PartialLastPage: Story = {
  */
 export const Sizes: Story = {
   render: () => ({
-    components: { TablePagination },
+    components: { Pagination },
     setup: () => ({ page: ref(3), pageSize: ref(10) }),
     template: `
       <div class="flex w-full max-w-2xl flex-col gap-6">
-        <TablePagination
+        <Pagination
           size="sm"
           label="Users pagination (small)"
           :total="247"
           v-model:page="page"
           v-model:page-size="pageSize"
         />
-        <TablePagination
+        <Pagination
           size="md"
           label="Users pagination (medium)"
           :total="247"
@@ -120,15 +120,15 @@ export const Minimal: Story = {
 /** Replacing the summary — for another language, or another way of counting. */
 export const CustomSummary: Story = {
   render: (args) => ({
-    components: { TablePagination },
+    components: { Pagination },
     setup: () => ({ args, page: ref(3), pageSize: ref(10) }),
     template: `
       <div class="w-full max-w-2xl">
-        <TablePagination v-bind="args" v-model:page="page" v-model:page-size="pageSize">
+        <Pagination v-bind="args" v-model:page="page" v-model:page-size="pageSize">
           <template #summary="{ from, to, total }">
             Showing <strong>{{ from }}</strong> to <strong>{{ to }}</strong> of {{ total }} users
           </template>
-        </TablePagination>
+        </Pagination>
       </div>
     `,
   }),

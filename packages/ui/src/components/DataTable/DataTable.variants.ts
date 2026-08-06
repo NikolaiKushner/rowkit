@@ -5,22 +5,34 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * pushing the page sideways, which is what makes a sticky column meaningful.
  */
 export const dataTableWrapperVariants = cva([
-  'relative w-full overflow-auto rounded-md border border-border bg-surface',
+  'relative w-full overflow-auto rounded-md border border-border bg-card',
   // Focusable when it actually scrolls, so the ring has to be visible.
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+  'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
 ])
 
-export const dataTableVariants = cva('w-full border-collapse text-left', {
-  variants: {
-    size: {
-      sm: 'text-xs',
-      md: 'text-sm',
+export const dataTableVariants = cva(
+  [
+    'w-full border-collapse text-left',
+    /*
+     * The header draws the rule beneath it as an inset shadow, and every body
+     * cell draws its own `border-t`. At the first row those are two separate
+     * paints landing on the same boundary, which reads as a heavier line under
+     * the header than between any other pair of rows. Drop the first row's.
+     */
+    '[&>tbody>tr:first-child>*]:border-t-0',
+  ],
+  {
+    variants: {
+      size: {
+        sm: 'text-xs',
+        md: 'text-sm',
+      },
     },
-  },
-  defaultVariants: { size: 'md' },
-})
+    defaultVariants: { size: 'md' },
+  }
+)
 
-export const dataTableCaptionVariants = cva('px-3 py-2 text-left text-text-muted', {
+export const dataTableCaptionVariants = cva('px-3 py-2 text-left text-muted-foreground', {
   variants: {
     size: {
       sm: 'text-xs',
@@ -44,14 +56,21 @@ export const dataTableHeaderRowVariants = cva('relative z-sticky')
 /**
  * Body cells need no z-index of their own: a `sticky` cell is positioned, and a
  * positioned element already paints above its static siblings.
+ *
+ * `bg-card`, not `bg-muted`, and `text-foreground` rather than muted.
+ *
+ * The reference design's header is transparent with a hairline beneath it — the column labels
+ * are full-strength foreground, not a recessed grey band with quiet text. The
+ * fill stays opaque here only because the header can be sticky, and a
+ * transparent sticky header lets the rows scroll through it.
  */
 export const dataTableHeaderCellVariants = cva(
-  'bg-surface-subtle font-medium whitespace-nowrap text-text-muted',
+  'shadow-sticky-header bg-card align-middle font-medium whitespace-nowrap text-foreground',
   {
     variants: {
       size: {
         sm: 'h-8 px-2',
-        md: 'h-10 px-3',
+        md: 'h-10 px-2',
       },
       align: {
         start: 'text-start',
@@ -90,8 +109,8 @@ export const dataTableSortButtonVariants = cva(
   [
     'group inline-flex w-full cursor-pointer items-center gap-1',
     'rounded-xs font-medium text-inherit',
-    'transition-colors duration-fast ease-standard hover:text-text',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+    'transition-colors duration-fast ease-standard hover:text-foreground',
+    'outline-none focus-visible:ring-3 focus-visible:ring-ring',
   ],
   {
     variants: {
@@ -122,11 +141,14 @@ export const dataTableSortIconVariants = cva(
   }
 )
 
-export const dataTableCellVariants = cva('border-t border-border-subtle text-text', {
+// `border-border`, not `border-border-subtle`: the reference design's row separator is its
+// standard hairline, and the fainter one disappeared entirely once the header
+// stopped being a grey band to anchor the grid.
+export const dataTableCellVariants = cva('border-t border-border align-middle text-foreground', {
   variants: {
     size: {
       sm: 'h-8 px-2',
-      md: 'h-10 px-3',
+      md: 'h-10 px-2 py-1',
     },
     align: {
       start: 'text-start',
@@ -147,12 +169,12 @@ export const dataTableCellVariants = cva('border-t border-border-subtle text-tex
  * The row owns the background, not the cell.
  *
  * A pinned cell has to be opaque or the rows underneath show through it while
- * scrolling, but hardcoding `bg-surface` there would paint over the selected
+ * scrolling, but hardcoding `bg-card` there would paint over the selected
  * and hover states. `bg-inherit` on the cell and a real colour on the row keeps
  * one source of truth.
  */
 export const dataTableRowVariants = cva(
-  'bg-surface transition-colors duration-fast ease-standard',
+  'group bg-card transition-colors duration-fast ease-standard',
   {
     variants: {
       /**
@@ -161,7 +183,9 @@ export const dataTableRowVariants = cva(
        * not.
        */
       interactive: {
-        true: 'hover:bg-surface-hover',
+        // Full accent — `/50` disappeared on the cool muted wash. Selection uses
+        // a primary tint, so hover and selected stay distinct.
+        true: 'hover:bg-accent',
         false: '',
       },
       /** Selected wins over hover — losing the highlight on hover hides the state. */
@@ -174,25 +198,44 @@ export const dataTableRowVariants = cva(
   }
 )
 
-export const dataTableSelectCellVariants = cva('w-px border-t border-border-subtle', {
+/** Quiet row action — visible on row hover / focus-within, always for keyboard. */
+export const dataTableRowActionClass =
+  'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100'
+
+// Matches the body cell: same hairline, same padding. The reference design drops the right
+// padding on a checkbox cell so the control sits tight against its column.
+export const dataTableSelectCellVariants = cva('w-px border-t border-border pr-0 align-middle', {
   variants: {
     size: {
       sm: 'h-8 px-2',
-      md: 'h-10 px-3',
+      md: 'h-10 px-2 py-1',
+    },
+    /**
+     * The header composes this on top of the header-cell variant, and inherits
+     * a `border-t` meant for body rows — which painted a short rule above the
+     * checkbox column only, floating above the table with nothing to its right.
+     */
+    header: {
+      true: 'border-t-0',
+      false: '',
     },
   },
-  defaultVariants: { size: 'md' },
+  defaultVariants: { size: 'md', header: false },
 })
 
+/*
+ * `rounded-xs` is the reference `rounded-[4px]` — the radius scale now lands exactly
+ * there, which is the whole reason `xs` exists at 0.4 × `--radius`.
+ */
 export const dataTableCheckboxVariants = cva(
   [
-    'flex shrink-0 cursor-pointer items-center justify-center rounded-xs border',
-    'border-border-control bg-surface text-primary-on-solid',
-    'transition-colors duration-fast ease-standard',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+    'flex shrink-0 cursor-pointer items-center justify-center rounded-xs border shadow-xs',
+    'border-input bg-card text-primary-on-solid',
+    'transition-all duration-fast ease-standard',
+    'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
     'data-[state=checked]:border-primary-solid data-[state=checked]:bg-primary-solid',
     'data-[state=indeterminate]:border-primary-solid data-[state=indeterminate]:bg-primary-solid',
-    'disabled:cursor-not-allowed disabled:border-border disabled:bg-surface-disabled',
+    'disabled:cursor-not-allowed disabled:opacity-50',
   ],
   {
     variants: {
@@ -208,7 +251,7 @@ export const dataTableCheckboxVariants = cva(
 export const dataTableRadioVariants = cva(
   [
     'cursor-pointer accent-primary-solid',
-    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring',
+    'outline-none focus-visible:ring-3 focus-visible:ring-ring',
   ],
   {
     variants: {

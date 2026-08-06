@@ -33,6 +33,16 @@ describe('Badge', () => {
     expect(html).toContain('border-danger-border')
   })
 
+  it('chromatic subtle is a soft chip, not bare text', () => {
+    const html = mount(Badge, {
+      props: { variant: 'success', appearance: 'subtle' },
+      slots: { default: 'x' },
+    }).html()
+    expect(html).toContain('bg-success-subtle')
+    expect(html).toContain('border-success-border')
+    expect(html).not.toContain('bg-transparent')
+  })
+
   it('hides the dot from assistive technology', () => {
     const dot = mount(Badge, { props: { dot: true }, slots: { default: 'x' } }).find(
       '[aria-hidden]'

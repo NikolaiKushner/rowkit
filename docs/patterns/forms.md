@@ -61,7 +61,7 @@ function submit() {
     <Field label="Seats" :error="shown.seats" required><Input v-model="form.seats" type="number" @blur="touched.seats = true" /></Field>
     <div class="flex items-center gap-3">
       <Button type="submit" :loading="saving">Send invitation</Button>
-      <span v-if="saved" class="text-sm text-text-muted">Invitation sent.</span>
+      <span v-if="saved" class="text-sm text-muted-foreground">Invitation sent.</span>
     </div>
   </form>
 </DemoBox>

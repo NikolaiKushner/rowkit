@@ -11,6 +11,7 @@ defineOptions({ name: 'RkButton' })
 const props = withDefaults(defineProps<ButtonProps>(), {
   variant: 'primary',
   size: 'md',
+  icon: false,
   block: false,
   loading: false,
   disabled: false,
@@ -62,7 +63,12 @@ function onClickCapture(event: MouseEvent): void {
     :aria-busy="props.loading ? 'true' : undefined"
     :class="
       cn(
-        buttonVariants({ variant: props.variant, size: props.size, block: props.block }),
+        buttonVariants({
+          variant: props.variant,
+          size: props.size,
+          icon: props.icon,
+          block: props.block,
+        }),
         props.class
       )
     "

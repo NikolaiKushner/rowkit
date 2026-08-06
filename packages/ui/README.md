@@ -80,7 +80,7 @@ The table reports the sort and renders what it is handed — it never reorders i
 
 ## The components
 
-`Button` · `Field` · `Input` · `Select` · `Badge` · `DataTable` · `TablePagination` · `FilterBar` · `EmptyState` · `Skeleton` · `Dialog` · `Toast` · `Tooltip`
+`Button` · `Field` · `Input` · `Select` · `Badge` · `DataTable` · `Pagination` · `FilterBar` · `EmptyState` · `Skeleton` · `Dialog` · `Toast` · `Tooltip`
 
 That is the whole library. If you need forty components covering every case, [Nuxt UI](https://ui.nuxt.com) and [shadcn-vue](https://www.shadcn-vue.com) are better answers — and rowkit composes with either, since all three build on Reka UI.
 
@@ -95,3 +95,5 @@ That is the whole library. If you need forty components covering every case, [Nu
 ## License
 
 MIT © Nikolai Kushner
+
+Design language based on [shadcn/ui](https://ui.shadcn.com) by shadcn, adapted for Vue. shadcn/ui is MIT licensed; rowkit adopts its token values and class recipes, not its code.

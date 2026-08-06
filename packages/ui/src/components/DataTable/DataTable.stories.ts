@@ -167,15 +167,17 @@ export const CustomCells: Story = {
       columns: [...columns, { id: 'actions', header: 'Actions', headerSrOnly: true, align: 'end' }],
       tone: (status: User['status']) =>
         status === 'active' ? 'success' : status === 'invited' ? 'warning' : 'danger',
+      rowAction:
+        'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100',
     }),
     template: `
       <div class="w-full max-w-3xl">
-        <DataTable :rows="users" :columns="columns" caption="Team members">
+        <DataTable :rows="users" :columns="columns" caption="Team members" hoverable>
           <template #[\`cell:status\`]="{ value }">
-            <Badge :variant="tone(value)" dot>{{ value }}</Badge>
+            <Badge :variant="tone(value)" size="sm" dot>{{ value }}</Badge>
           </template>
           <template #[\`cell:actions\`]="{ row }">
-            <Button variant="ghost" size="sm" :aria-label="'Edit ' + row.name">Edit</Button>
+            <Button variant="ghost" size="sm" :class="rowAction" :aria-label="'Edit ' + row.name">Edit</Button>
           </template>
         </DataTable>
       </div>
@@ -268,6 +270,35 @@ export const StickyHeader: Story = {
       </div>
     `,
   }),
+  /*
+   * The rule under a sticky header is the one a border cannot draw. Under
+   * `border-collapse` a border belongs to the table's grid rather than to the
+   * header, so the header scrolls away from its own line and the rows slide
+   * under it with nothing between — exactly what a sticky header exists to
+   * prevent. It is an inset shadow instead, which belongs to the element.
+   */
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const header = canvas.getAllByRole('columnheader')[0]
+    if (!header) throw new Error('no header cell')
+
+    const region = header.closest<HTMLElement>('[class*="overflow"]')
+    if (!region) throw new Error('no scroll container')
+
+    region.scrollTop = 200
+    await new Promise((r) => requestAnimationFrame(() => r(null)))
+
+    // Measured while scrolled: the header has to still be painting its rule,
+    // and still be covering the rows passing beneath it.
+    await expect(getComputedStyle(header).boxShadow).not.toBe('none')
+    await expect(getComputedStyle(header).backgroundColor).not.toBe('rgba(0, 0, 0, 0)')
+    // Still pinned to the top of the scroll region. The tolerance is the
+    // container's own 1px border: sticky resolves against the padding box,
+    // while `getBoundingClientRect` on the container includes the border.
+    const offset = header.getBoundingClientRect().top - region.getBoundingClientRect().top
+    await expect(offset).toBeGreaterThanOrEqual(0)
+    await expect(offset).toBeLessThanOrEqual(2)
+  },
 }
 
 const sortableColumns: DataTableColumn<User>[] = [
@@ -312,7 +343,7 @@ export const ManualSorting: Story = {
     setup: () => ({ users, columns: sortableColumns, sort: ref(undefined) }),
     template: `
       <div class="flex w-full max-w-3xl flex-col gap-3">
-        <p class="text-sm text-text-muted">
+        <p class="text-sm text-muted-foreground">
           Emitted sort: <code>{{ sort ? sort.id + ' ' + sort.direction : 'none' }}</code>
           — the rows below never move.
         </p>
@@ -426,7 +457,7 @@ function selectable(mode: 'single' | 'multiple') {
     setup: () => ({ users, columns, mode, selected: ref<(string | number)[]>([]) }),
     template: `
       <div class="flex w-full max-w-3xl flex-col gap-3">
-        <p class="text-sm text-text-muted">Selected: {{ selected.length }}</p>
+        <p class="text-sm text-muted-foreground">Selected: {{ selected.length }}</p>
         <DataTable
           :rows="users"
           :columns="columns"
@@ -601,5 +632,55 @@ export const TenThousandRows: Story = {
     // Every row is really in the DOM — there is no virtualization, deliberately.
     // Timings are measured out-of-band with Playwright; see decision 004.
     await expect(canvas.getAllByRole('row')).toHaveLength(10_001)
+  },
+}
+
+/**
+ * A loading row is exactly as tall as the row it stands in for.
+ *
+ * The point of a skeleton is that nothing moves when the data arrives. If the
+ * placeholder rows are shorter, the table grows at the moment of load and every
+ * row below jumps — the layout shift a skeleton exists to prevent, delivered by
+ * the skeleton itself.
+ *
+ * The case that used to break it is the flagship one: a row with an action
+ * button. A `size="sm"` button is 32px, and at the old `p-2` that lifted the row
+ * to 48px while the placeholder stayed at the 40px minimum — a measured 9px jump
+ * per row, on the very table this library exists to render.
+ *
+ * The fix is not a taller placeholder, which would only invert the problem for
+ * tables without actions. It is `py-1`: with 4px of vertical padding a 32px
+ * control fits inside the 40px row minimum, so text, a badge, a button and a
+ * skeleton all produce exactly the same row height. This story renders the
+ * button so a regression is caught rather than reasoned about.
+ */
+export const LoadingRowsMatchLoadedRows: Story = {
+  render: () => ({
+    components: { DataTable, Button },
+    setup: () => ({ users, withActions: [...columns, { id: 'actions', header: 'Actions' }] }),
+    template: `
+      <div class="flex flex-col gap-6">
+        <DataTable :rows="users" :columns="withActions" caption="Loaded">
+          <template #[\`cell:actions\`]>
+            <Button variant="ghost" size="sm">Edit</Button>
+          </template>
+        </DataTable>
+        <DataTable :rows="users" :columns="withActions" caption="Loading" loading :loading-rows="3" />
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const [loaded, loading] = canvasElement.querySelectorAll('table')
+    if (!loaded || !loading) throw new Error('expected two tables')
+
+    const loadedRow = loaded.querySelector('tbody tr')
+    const loadingRow = loading.querySelector('tbody tr')
+    if (!loadedRow || !loadingRow) throw new Error('expected a row in each')
+
+    // Measured, not compared by class list: the two paths build their cells
+    // from different variants, so identical classes would prove nothing.
+    const a = loadedRow.getBoundingClientRect().height
+    const b = loadingRow.getBoundingClientRect().height
+    await expect(Math.abs(a - b)).toBeLessThanOrEqual(1)
   },
 }

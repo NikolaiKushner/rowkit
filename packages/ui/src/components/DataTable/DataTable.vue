@@ -326,7 +326,7 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
             :class="
               cn(
                 dataTableHeaderCellVariants({ size: props.size, sticky: true }),
-                dataTableSelectCellVariants({ size: props.size })
+                dataTableSelectCellVariants({ size: props.size, header: true })
               )
             "
           >

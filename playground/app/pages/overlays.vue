@@ -58,14 +58,16 @@ function toastOverDialog() {
   <div class="flex flex-col gap-8">
     <header>
       <h1 class="text-2xl font-semibold">Overlays</h1>
-      <p class="mt-1 text-sm text-text-muted">
+      <p class="mt-1 text-sm text-muted-foreground">
         Dialog, Toast and Tooltip together — the stacking order only fails when they overlap.
       </p>
     </header>
 
     <section class="flex flex-col gap-3">
-      <h2 class="text-sm font-medium uppercase tracking-wide text-text-muted">The stacking test</h2>
-      <p class="max-w-2xl text-sm text-text-muted">
+      <h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+        The stacking test
+      </h2>
+      <p class="max-w-2xl text-sm text-muted-foreground">
         Open the dialog, then fire a toast from inside it. The toast must sit
         <strong>above</strong> the dialog — a confirmation you cannot read is worse than none. The
         select inside the dialog must open above it too.
@@ -80,40 +82,34 @@ function toastOverDialog() {
     </section>
 
     <section class="flex flex-col gap-3">
-      <h2 class="text-sm font-medium uppercase tracking-wide text-text-muted">Tooltips</h2>
-      <p class="max-w-2xl text-sm text-text-muted">
+      <h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Tooltips</h2>
+      <p class="max-w-2xl text-sm text-muted-foreground">
         Tab through these — every one opens on focus, not hover alone. The last is
         <code>aria-disabled</code> rather than <code>disabled</code>, which is why its tooltip works
         at all.
       </p>
       <div class="flex flex-wrap items-center gap-2">
         <Tooltip content="Archive this project" placement="top">
-          <Button variant="secondary" size="sm">Archive</Button>
+          <Button variant="secondary">Archive</Button>
         </Tooltip>
         <Tooltip content="Duplicate into a new project" placement="right">
-          <Button variant="secondary" size="sm">Duplicate</Button>
+          <Button variant="secondary">Duplicate</Button>
         </Tooltip>
         <Tooltip content="Export as CSV" placement="bottom">
-          <Button variant="secondary" size="sm">Export</Button>
+          <Button variant="secondary">Export</Button>
         </Tooltip>
         <Tooltip content="Upgrade your plan to transfer projects" placement="left">
-          <Button variant="secondary" size="sm" aria-disabled="true">Transfer</Button>
+          <Button variant="secondary" aria-disabled="true">Transfer</Button>
         </Tooltip>
       </div>
     </section>
 
     <section class="flex flex-col gap-3">
-      <h2 class="text-sm font-medium uppercase tracking-wide text-text-muted">Toast tones</h2>
+      <h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Toast tones</h2>
       <div class="flex flex-wrap items-center gap-2">
-        <Button variant="secondary" size="sm" @click="success('Project archived')">
-          Success
-        </Button>
-        <Button variant="secondary" size="sm" @click="warning('Two seats remaining')">
-          Warning
-        </Button>
-        <Button variant="secondary" size="sm" @click="confirmOpen = true">
-          Delete, with undo
-        </Button>
+        <Button variant="secondary" @click="success('Project archived')">Success</Button>
+        <Button variant="secondary" @click="warning('Two seats remaining')">Warning</Button>
+        <Button variant="secondary" @click="confirmOpen = true">Delete, with undo</Button>
         <Badge variant="neutral">Three visible at a time</Badge>
       </div>
     </section>
@@ -136,9 +132,7 @@ function toastOverDialog() {
         <Field label="Visibility" hint="Its listbox has to open above the dialog.">
           <Select v-model="visibility" :options="visibilityOptions" placeholder="Choose" />
         </Field>
-        <Button variant="secondary" size="sm" @click="toastOverDialog">
-          Fire a toast from in here
-        </Button>
+        <Button variant="secondary" @click="toastOverDialog">Fire a toast from in here</Button>
       </div>
       <template #footer>
         <Button variant="ghost" @click="dialogOpen = false">Cancel</Button>

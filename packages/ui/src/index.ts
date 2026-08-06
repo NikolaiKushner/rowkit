@@ -10,7 +10,7 @@ export * from './components/Field'
 export * from './components/Input'
 export * from './components/Select'
 export * from './components/Skeleton'
-export * from './components/TablePagination'
+export * from './components/Pagination'
 export * from './components/Toaster'
 export * from './components/Tooltip'
 

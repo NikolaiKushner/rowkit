@@ -67,11 +67,11 @@ import {
 } from '../components/Toaster/Toaster.variants'
 import { tooltipContentVariants } from '../components/Tooltip/Tooltip.variants'
 import {
-  tablePaginationEllipsisVariants,
-  tablePaginationItemVariants,
-  tablePaginationSummaryVariants,
-  tablePaginationVariants,
-} from '../components/TablePagination/TablePagination.variants'
+  paginationEllipsisVariants,
+  paginationItemVariants,
+  paginationSummaryVariants,
+  paginationVariants,
+} from '../components/Pagination/Pagination.variants'
 
 /**
  * Every class a component can emit has to produce CSS.
@@ -98,7 +98,7 @@ async function loadStylesheet(id: string, base: string) {
 
 /** Escapes a class name into the selector Tailwind emits for it. */
 function toSelector(className: string): string {
-  return `.${className.replace(/[:.[\]()/%!#,'"+*~>^$=]/g, (char) => `\\${char}`)}`
+  return `.${className.replace(/[:.[\]()/%!#,'"+*~>^$=&]/g, (char) => `\\${char}`)}`
 }
 
 /** Every combination of a cva config's variant options. */
@@ -145,10 +145,10 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['EmptyState title', emptyStateTitleVariants],
   ['EmptyState description', emptyStateDescriptionVariants],
   ['EmptyState actions', emptyStateActionsVariants],
-  ['TablePagination', tablePaginationVariants],
-  ['TablePagination item', tablePaginationItemVariants],
-  ['TablePagination ellipsis', tablePaginationEllipsisVariants],
-  ['TablePagination summary', tablePaginationSummaryVariants],
+  ['Pagination', paginationVariants],
+  ['Pagination item', paginationItemVariants],
+  ['Pagination ellipsis', paginationEllipsisVariants],
+  ['Pagination summary', paginationSummaryVariants],
   ['FilterBar', filterBarVariants],
   ['FilterBar controls', filterBarControlsVariants],
   ['FilterBar chips', filterBarChipsVariants],
@@ -205,5 +205,33 @@ describe('component classes compile to real utilities', () => {
     // suite passing on an empty set.
     const total = new Set(components.flatMap(([, variant]) => classesOf(variant))).size
     expect(total).toBeGreaterThan(60)
+  })
+})
+
+describe('the focus ring has something to draw', () => {
+  /*
+   * The reference design's recipe is two halves: the border turns the ring colour, and a 3px
+   * ring at 50% opacity appears outside it. The ring is translucent and cannot
+   * carry 3:1 on its own — the solid border is what satisfies WCAG 1.4.11.
+   *
+   * On an element with no border, `focus-visible:border-ring` sets a
+   * colour on a zero-width border and paints nothing. Focus then shows as a
+   * faint translucent halo and the criterion is missed, while a screenshot
+   * still shows "a focus ring". Borderless elements take a solid ring instead.
+   */
+  const TRANSLUCENT = 'focus-visible:ring-ring/50'
+  const RECOLOURS_BORDER = 'focus-visible:border-ring'
+
+  it.each(components)('%s', (_name, variant) => {
+    const classes = classesOf(variant)
+    if (!classes.includes(TRANSLUCENT)) return
+
+    expect(classes, 'a 50% ring is only legal alongside the border half of the recipe').toContain(
+      RECOLOURS_BORDER
+    )
+    expect(
+      classes.some((c) => c === 'border' || /^border-[xytrbles]$/.test(c)),
+      'recolours a border it does not have — use a solid ring instead'
+    ).toBe(true)
   })
 })

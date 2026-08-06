@@ -1,13 +1,13 @@
 import type { HTMLAttributes } from 'vue'
-import type { TablePaginationVariants } from './TablePagination.variants'
+import type { PaginationVariants } from './Pagination.variants'
 
 /**
- * Props for `TablePagination`.
+ * Props for `Pagination`.
  *
  * Declared here rather than inline in the SFC because `<script setup>` cannot
  * export a type, and a consumer annotating their own wrapper needs one.
  */
-export interface TablePaginationProps {
+export interface PaginationProps {
   /** Total number of rows across all pages. */
   total: number
   /** Choices offered in the rows-per-page control. */
@@ -36,7 +36,7 @@ export interface TablePaginationProps {
   /** Accessible name for the next-page control. */
   nextLabel?: string
   /** Control height and text size. */
-  size?: NonNullable<TablePaginationVariants['size']>
+  size?: NonNullable<PaginationVariants['size']>
   /** Disables every control. */
   disabled?: boolean
   /** Additional classes, merged so a consumer's utility wins. */

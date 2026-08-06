@@ -268,7 +268,7 @@ describe('DataTable', () => {
       // states are not painted over by the pinned column.
       const el = setup({ columns: [{ key: 'name', header: 'Name', sticky: true }] })
       expect(el.find('tbody td').classes()).toContain('bg-inherit')
-      expect(el.find('tbody tr').classes()).toContain('bg-surface')
+      expect(el.find('tbody tr').classes()).toContain('bg-card')
     })
 
     it('lets a selected row show through its pinned cell', () => {
@@ -295,10 +295,8 @@ describe('DataTable', () => {
   })
 
   it('does not highlight rows on hover unless they do something', () => {
-    expect(setup().find('tbody tr').classes()).not.toContain('hover:bg-surface-hover')
-    expect(setup({ hoverable: true }).find('tbody tr').classes()).toContain(
-      'hover:bg-surface-hover'
-    )
+    expect(setup().find('tbody tr').classes()).not.toContain('hover:bg-accent')
+    expect(setup({ hoverable: true }).find('tbody tr').classes()).toContain('hover:bg-accent')
   })
 
   describe('column identity', () => {
@@ -503,7 +501,7 @@ describe('DataTable', () => {
     })
 
     it('shows a hover affordance once rows respond to a click', () => {
-      expect(clickable().find('tbody tr').classes()).toContain('hover:bg-surface-hover')
+      expect(clickable().find('tbody tr').classes()).toContain('hover:bg-accent')
     })
   })
 

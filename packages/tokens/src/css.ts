@@ -1,6 +1,7 @@
+import { blur } from './blur'
 import { colorPrimitives, semanticColorDark, semanticColorLight } from './color'
 import { duration, easing } from './motion'
-import { radius } from './radius'
+import { radiusBase, radiusCss } from './radius'
 import { shadow } from './shadow'
 import { spacing, spacingBase } from './spacing'
 import { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
@@ -46,8 +47,11 @@ export function buildThemeCss(): string {
     ...entries(letterSpacing, (k) => `--tracking-${k}`),
     ...entries(lineHeight, (k) => `--leading-${k}`),
     '',
-    section('radii'),
-    ...entries(radius, (k) => `--radius-${k}`),
+    section('radii — multiples of --radius, declared in :root below'),
+    ...entries(radiusCss, (k) => `--radius-${k}`),
+    '',
+    section('blur'),
+    ...entries(blur, (k) => `--blur-${k}`),
     '',
     section('shadows'),
     ...entries(shadow, (k) => `--shadow-${k}`),
@@ -62,6 +66,25 @@ export function buildThemeCss(): string {
     '',
     section('stacking layers'),
     ...entries(zIndex, (k) => `--z-index-${k}`),
+    '}',
+    '',
+    /*
+     * Outside `@theme` on purpose.
+     *
+     * The radius scale is `calc(var(--radius) * f)`, so `--radius` has to
+     * resolve wherever a `rounded-*` utility lands. Tailwind only emits the
+     * theme variables its generated utilities reference, and nothing generates
+     * a utility from a bare `--radius` — left inside `@theme` it can be dropped,
+     * and every `calc()` above then references an undefined variable. That is
+     * not an error in CSS: `border-radius` simply computes to nothing and every
+     * corner in the library goes square, with no warning anywhere.
+     *
+     * Declaring it here also makes it the documented override point: a consumer
+     * sets `--radius` once and the whole scale follows.
+     */
+    '/* The one length the radius scale multiplies. Override to retune every corner. */',
+    ':root {',
+    `  --radius: ${radiusBase};`,
     '}',
     '',
     '/* Dark mode repoints semantic tokens only. Primitives are theme-agnostic. */',

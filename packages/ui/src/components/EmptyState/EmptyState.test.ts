@@ -65,13 +65,13 @@ describe('EmptyState', () => {
       // that says what to do.
       const el = mount(EmptyState, { props: { title, reason: 'error' } })
       expect(el.find('p').classes()).toContain('text-danger-on-subtle')
-      expect(el.find('h2').classes()).toContain('text-text')
+      expect(el.find('h2').classes()).toContain('text-foreground')
     })
 
     it('keeps the other two reasons muted', () => {
       for (const reason of ['no-data', 'no-results'] as const) {
         const el = mount(EmptyState, { props: { title, reason, description: 'x' } })
-        expect(el.find('p').classes(), reason).toContain('text-text-muted')
+        expect(el.find('p').classes(), reason).toContain('text-muted-foreground')
       }
     })
   })

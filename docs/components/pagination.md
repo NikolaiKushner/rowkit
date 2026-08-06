@@ -1,4 +1,4 @@
-# TablePagination
+# Pagination
 
 **Stage:** 🟢 Stable
 
@@ -6,7 +6,7 @@ Page controls for a table: a range summary, a rows-per-page control, and page
 numbers. Built on Reka UI's `Pagination` primitive.
 
 ```vue
-<TablePagination v-model:page="page" v-model:page-size="pageSize" :total="247" />
+<Pagination v-model:page="page" v-model:page-size="pageSize" :total="247" />
 ```
 
 <script setup>
@@ -17,13 +17,13 @@ const pageSize = ref(10)
 </script>
 
 <DemoBox layout="stack">
-  <TablePagination
+  <Pagination
     v-model:page="page"
     v-model:page-size="pageSize"
     :total="247"
     label="Example pagination"
   />
-  <p class="!my-0 text-sm text-text-muted">
+  <p class="!my-0 text-sm text-muted-foreground">
     page {{ page }} · {{ pageSize }} per page
   </p>
 </DemoBox>
@@ -63,7 +63,7 @@ you meant.
 
 ## Props
 
-<!-- @props TablePaginationProps -->
+<!-- @props PaginationProps -->
 
 | Prop              | Type           | Default                   | Description                                                    |
 | ----------------- | -------------- | ------------------------- | -------------------------------------------------------------- |
@@ -146,8 +146,8 @@ page.** Pagination above and below a long table is a normal layout, and two
 entries and cannot tell them apart.
 
 ```vue
-<TablePagination label="Users pagination (top)" … />
-<TablePagination label="Users pagination (bottom)" … />
+<Pagination label="Users pagination (top)" … />
+<Pagination label="Users pagination (bottom)" … />
 ```
 
 **The current page carries `aria-current="page"`**, and is filled rather than

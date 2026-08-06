@@ -74,7 +74,8 @@ grows by the width of the spinner.
 | Prop           | Type                                              | Default     | Description                                                                                                               |
 | -------------- | ------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `variant`      | `'primary' \| 'danger' \| 'secondary' \| 'ghost'` | `'primary'` | Visual weight and intent.                                                                                                 |
-| `size`         | `'sm' \| 'md' \| 'lg'`                            | `'md'`      | Control height and text size.                                                                                             |
+| `size`         | `'sm' \| 'md' \| 'xs' \| 'lg'`                    | `'md'`      | Control height and text size.                                                                                             |
+| `icon`         | `boolean`                                         | `false`     | Renders the button square, for a label that is only an icon.                                                              |
 | `block`        | `boolean`                                         | `false`     | Stretches the button to fill its container.                                                                               |
 | `loading`      | `boolean`                                         | `false`     | Swaps the leading slot for a spinner and blocks activation.                                                               |
 | `disabled`     | `boolean`                                         | `false`     | Disables the button.                                                                                                      |
@@ -121,5 +122,5 @@ pointer and the keyboard path.
 - Rendered as something other than `<button>` — a link, say — `disabled`
   becomes `aria-disabled`, because `<a>` has no `disabled` attribute and
   setting one does nothing.
-- Focus is a 2px ring offset by 2px, using `--color-focus-ring`. Never remove
+- Focus is a 2px ring offset by 2px, using `--color-ring`. Never remove
   it; recolour it if you must.

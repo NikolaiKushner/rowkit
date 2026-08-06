@@ -15,7 +15,7 @@ export default defineConfig({
   lang: 'en-GB',
   cleanUrls: true,
 
-  // The internal planning specs are not product documentation.
+  // Internal planning specs (`docs/phases/`) stay off the published site.
   srcExclude: ['phases/**'],
 
   sitemap: { hostname: 'https://rowkit.dev' },
@@ -91,7 +91,7 @@ export default defineConfig({
         text: 'Data',
         items: [
           { text: 'DataTable', link: '/components/data-table' },
-          { text: 'TablePagination', link: '/components/table-pagination' },
+          { text: 'Pagination', link: '/components/pagination' },
           { text: 'FilterBar', link: '/components/filter-bar' },
           { text: 'EmptyState', link: '/components/empty-state' },
           { text: 'Skeleton', link: '/components/skeleton' },

@@ -4,6 +4,7 @@ import DefaultTheme from 'vitepress/theme'
 import * as rowkit from 'rowkit'
 import ColorScale from './components/ColorScale.vue'
 import DemoBox from './components/DemoBox.vue'
+import NpmVersion from './components/NpmVersion.vue'
 import TokenGrid from './components/TokenGrid.vue'
 import './tokens.css'
 
@@ -30,6 +31,7 @@ export default {
     app.component('DemoBox', DemoBox)
     app.component('ColorScale', ColorScale)
     app.component('TokenGrid', TokenGrid)
+    app.component('NpmVersion', NpmVersion)
 
     /*
      * Vercel Analytics, guarded because `enhanceApp` runs during the static
