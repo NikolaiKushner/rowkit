@@ -36,7 +36,7 @@ const preview: Preview = {
       document.documentElement.classList.toggle('dark', theme === 'dark')
       return {
         components: { story },
-        template: `<div class="bg-background text-text p-6"><story /></div>`,
+        template: `<div class="bg-background text-foreground p-6"><story /></div>`,
       }
     },
   ],

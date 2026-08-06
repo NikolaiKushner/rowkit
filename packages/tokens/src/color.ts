@@ -106,26 +106,42 @@ export const danger = {
 } as const
 
 /**
- * Zero-chroma greys, the reference design neutral.
+ * Greys keyed by OKLCH lightness × 1000, so `gray-922` is lightness 0.922.
  *
- * Named by lightness rather than by a 50…950 position: the step *is* its OKLCH
- * lightness × 1000, so `gray-922` is `oklch(0.922 0 0)` and the table above can
- * be checked against the reference palette by reading it. A ramp position would have
- * been a lie here — the reference design's greys are not evenly spaced and do not fill a
- * ramp, and two of the steps below exist only because a the reference design value failed
- * contrast and had to be darkened.
- *
- * Pure neutral is the point. rowkit's own `neutral` ramp carries a trace of
- * blue (hue 264); the reference design look is the absence of that.
+ * Most steps stay zero-chroma — the reference design's quiet base. A few carry
+ * a cool cast (hue 264, the same as {@link neutral}): lighter hairlines and
+ * soft recessed surfaces. That is rowkit's own signal inside an otherwise
+ * clean, reference-shaped palette — enough to read as itself on a long session,
+ * not enough to look like a tinted theme.
  */
 export const gray = {
+  /** Soft cool page. Slightly off pure white so a day of table work is less glare. */
+  988: 'oklch(0.988 0.002 264)',
   /** the reference `--primary-foreground`, `--foreground` (dark). */
   985: 'oklch(0.985 0 0)',
-  /** the reference `--secondary`, `--muted`, `--accent`. */
+  /**
+   * Cool recessed surface — muted toolbars, row hover, quiet chips.
+   *
+   * Lighter and cooler than the reference `--muted` (0.97 0 0): same job, less
+   * ink on the page.
+   */
+  972: 'oklch(0.972 0.003 264)',
+  /** the reference `--secondary`, `--muted`, `--accent` — kept for dark primary fill. */
   970: 'oklch(0.97 0 0)',
-  /** the reference `--border`. Decorative hairline — deliberately below 3:1. */
+  /**
+   * Cool decorative hairline. Lighter than the reference `--border` (0.922) and
+   * barely tinted — table row rules and card outlines that stay visible without
+   * dividing the page into boxes.
+   */
+  940: 'oklch(0.940 0.004 264)',
+  /** the reference `--border`. Kept for pressed fills that still need a step of weight. */
   922: 'oklch(0.922 0 0)',
-  /** Emphasised hairline. rowkit's; the reference design has no "strong border". */
+  /**
+   * Cool emphasised hairline. rowkit's; the reference design has no "strong border".
+   * Softer than the old 0.87 step so structure reads without shouting.
+   */
+  905: 'oklch(0.905 0.006 264)',
+  /** Emphasised hairline (legacy weight). Prefer {@link gray[905]} for new chrome. */
   870: 'oklch(0.87 0 0)',
   /** the reference `--muted-foreground` (dark), where it clears AA at 7.63:1. */
   708: 'oklch(0.708 0 0)',
@@ -239,13 +255,17 @@ export const amber = {
 /**
  * White at a fraction of opacity, for dark-mode borders.
  *
- * The reference design's dark borders are white at 10% and inputs at 15%, not a solid grey.
- * That is why they read as soft against every surface instead of drawing a hard
- * line on the darkest ones — a solid grey tuned for `--background` is too
- * bright on `--card`. Keep the alpha; it is doing work no ramp step can.
+ * Alpha, not a solid grey: a grey tuned for `--background` draws too hard a
+ * line once the same border sits on `--card`. The reference uses 10% / 15%;
+ * rowkit softens the decorative hairline to 8% so dense tables stay quiet in
+ * dark mode the same way the cool light hairline does.
  */
 export const whiteAlpha = {
+  /** Soft decorative hairline in dark mode. */
+  8: 'oklch(1 0 0 / 8%)',
+  /** the reference dark `--border`. */
   10: 'oklch(1 0 0 / 10%)',
+  /** Emphasised dark hairline / the reference dark `--input`. */
   15: 'oklch(1 0 0 / 15%)',
 } as const
 
@@ -307,31 +327,33 @@ const ref = (token: keyof typeof colorPrimitives): ColorRef => `var(--color-${to
  * hunting down hex codes. `semantic.test.ts` enforces this.
  */
 export const semanticColorLight = {
-  /** Page background, behind all surfaces. The reference `--background`. */
-  background: ref('white'),
+  /**
+   * Page background, behind all surfaces.
+   *
+   * Soft cool off-white rather than the reference pure white — less glare over
+   * a long session, and enough lift that a white `card` still reads as a plane.
+   */
+  background: ref('gray-988'),
   /** Cards, panels, table bodies — the plane content sits on. The reference `--card`. */
   card: ref('white'),
   /**
-   * Table headers, toolbars: a surface that recedes slightly. The reference `--muted`.
+   * Table headers, toolbars: a surface that recedes slightly.
    *
-   * Identical to `surface-hover`: the reference design gives `--muted` and `--accent` the same
-   * value, and the distinction survives here because the two are separate
-   * override points, not because they differ out of the box.
+   * Cool and a touch lighter than the reference `--muted`. Same role as
+   * `accent` out of the box — separate override points, not different colours.
    */
-  muted: ref('gray-970'),
-  /** Row hover. The reference `--accent`. */
-  accent: ref('gray-970'),
+  muted: ref('gray-972'),
+  /** Row hover. */
+  accent: ref('gray-972'),
   /** Row press / active. One step past hover; the reference design has no press token. */
-  'surface-active': ref('gray-922'),
+  'surface-active': ref('gray-940'),
   /**
-   * Selected table row. The reference `data-[state=selected]` is `bg-muted`.
-   *
-   * No longer tinted with the brand: the reference design's neutral is zero-chroma
-   * throughout, and a blue selected row was the loudest thing on the page.
+   * Selected table row. Quiet cool tint — enough to mark state, not enough to
+   * compete with the data.
    */
-  'surface-selected': ref('gray-970'),
+  'surface-selected': ref('gray-972'),
   /** Disabled control background. */
-  'surface-disabled': ref('gray-970'),
+  'surface-disabled': ref('gray-972'),
   /**
    * Loading placeholder fill.
    *
@@ -343,7 +365,7 @@ export const semanticColorLight = {
    * standing in for content that has not arrived, so there is nothing for a
    * reader to perceive and WCAG 1.4.11 does not apply.
    */
-  skeleton: ref('gray-970'),
+  skeleton: ref('gray-972'),
 
   /** Primary body and heading text. The reference `--foreground`. */
   foreground: ref('gray-145'),
@@ -364,38 +386,32 @@ export const semanticColorLight = {
   /**
    * Decorative hairline: row separators, card outlines.
    *
-   * Deliberately below 3:1 against the surface. Do not use it for the boundary
-   * of an interactive control — see {@link semanticColorLight['input']}.
+   * Cool and lighter than the reference 0.922. Deliberately below 3:1 — do not
+   * use it for the boundary of an interactive control; see
+   * {@link semanticColorLight['input']}.
    */
-  border: ref('gray-922'),
+  border: ref('gray-940'),
   /** Emphasised decorative border: dividers that need to read as structure. */
-  'border-strong': ref('gray-870'),
+  'border-strong': ref('gray-905'),
   /** Barely-there separation inside a dense group. */
-  'border-subtle': ref('gray-970'),
+  'border-subtle': ref('gray-972'),
   /**
    * Boundary of an interactive control — text inputs, checkboxes, outlined
    * buttons.
    *
    * WCAG 1.4.11 requires 3:1 against the adjacent surface for the visual
-   * boundary of a UI component. `border` manages only 1.24:1 and
-   * `border-strong` 1.49:1, so neither is legal here; this token is the
-   * lightest neutral that clears the bar.
-   *
-   * the reference `--input` is 0.922 — the same value as its `--border` — which
-   * measures 1.26:1 and is not a legal control boundary. `gray-635` clears 3:1
-   * against the page, a card and a toolbar alike, and it applies only to
-   * controls: `border` keeps the reference design's value exactly, so the hairlines between
-   * table rows and around cards are pixel-identical to the reference design.
+   * boundary of a UI component. Decorative `border` stays well under that;
+   * this token is the lightest neutral that clears the bar on the page, a
+   * card and a toolbar alike.
    */
   input: ref('gray-635'),
   /**
-   * Focus ring. Never remove the ring — recolour it. The reference `--ring`.
+   * Focus ring. Never remove the ring — recolour it.
    *
-   * Neutral now, not brand blue: the reference design's ring is grey, and the whole look is
-   * the absence of chroma. The reference design's own 0.708 is 2.59:1 against the page and
-   * fails 1.4.11, so this is the darkened step.
+   * Matches the brand primary so focused controls and the primary button speak
+   * one language. Clears 1.4.11 against the page and recessed surfaces.
    */
-  ring: ref('gray-635'),
+  ring: ref('primary-600'),
 
   /** Base colour shadows are mixed from. */
   shadow: ref('black'),
@@ -403,23 +419,20 @@ export const semanticColorLight = {
   // `neutral` completes the status family so a component's variant matrix has
   // no special case: a neutral Badge reads the same token names as a danger
   // one. It is the default state — "no status" — not an absence of styling.
-  // The reference `--secondary`: the quiet chip, a near-white fill with dark text.
-  'neutral-solid': ref('gray-970'),
-  'neutral-solid-hover': ref('gray-922'),
+  'neutral-solid': ref('gray-972'),
+  'neutral-solid-hover': ref('gray-940'),
   'neutral-on-solid': ref('gray-205'),
-  'neutral-subtle': ref('gray-970'),
+  'neutral-subtle': ref('gray-972'),
   'neutral-on-subtle': ref('gray-205'),
-  'neutral-border': ref('gray-922'),
+  'neutral-border': ref('gray-940'),
 
-  // The reference `--primary`: near-black in light mode, and it inverts under `.dark`.
-  // There is no brand hue in this design language — the default action is the
-  // darkest thing on the page, not the bluest.
-  'primary-solid': ref('gray-205'),
-  'primary-solid-hover': ref('gray-269'),
-  'primary-on-solid': ref('gray-985'),
-  'primary-subtle': ref('gray-970'),
-  'primary-on-subtle': ref('gray-205'),
-  'primary-border': ref('gray-922'),
+  // Brand indigo (hue 259) — quieter than black, still clear as the one action.
+  'primary-solid': ref('primary-600'),
+  'primary-solid-hover': ref('primary-700'),
+  'primary-on-solid': ref('white'),
+  'primary-subtle': ref('primary-50'),
+  'primary-on-subtle': ref('primary-700'),
+  'primary-border': ref('primary-200'),
 
   'success-solid': ref('green-550'),
   'success-solid-hover': ref('green-520'),
@@ -479,15 +492,15 @@ export const semanticColorDark = {
   'text-subtle': ref('gray-556'),
   'text-disabled': ref('gray-556'),
 
-  // White at alpha, not a solid grey — see `whiteAlpha`. A grey tuned against
-  // `background` draws too hard a line once the same border sits on `surface`.
-  border: ref('white-alpha-10'),
+  // White at alpha, not a solid grey — see `whiteAlpha`. Decorative hairline
+  // softens to 8% so dense tables stay quiet; controls keep 15% for 1.4.11.
+  border: ref('white-alpha-8'),
   'border-strong': ref('white-alpha-15'),
-  'border-subtle': ref('white-alpha-10'),
+  'border-subtle': ref('white-alpha-8'),
   // The reference `--input`, unchanged: composited over the page it measures
   // 3.82:1, and 3.54:1 over a card, so both clear 1.4.11 without help.
   input: ref('white-alpha-15'),
-  ring: ref('gray-556'),
+  ring: ref('primary-400'),
 
   shadow: ref('black'),
 
@@ -498,15 +511,13 @@ export const semanticColorDark = {
   'neutral-on-subtle': ref('gray-985'),
   'neutral-border': ref('gray-371'),
 
-  // The inversion. A primary button in dark mode is near-white with near-black
-  // text, not a brighter version of a colour. Keeping this is most of what
-  // makes a dark the reference design interface recognisable.
-  'primary-solid': ref('gray-922'),
-  'primary-solid-hover': ref('gray-985'),
-  'primary-on-solid': ref('gray-205'),
-  'primary-subtle': ref('gray-269'),
-  'primary-on-subtle': ref('gray-985'),
-  'primary-border': ref('gray-371'),
+  // Bright fill with dark label — same recipe as success/warning on dark pages.
+  'primary-solid': ref('primary-400'),
+  'primary-solid-hover': ref('primary-300'),
+  'primary-on-solid': ref('gray-145'),
+  'primary-subtle': ref('primary-950'),
+  'primary-on-subtle': ref('primary-300'),
+  'primary-border': ref('primary-800'),
 
   'success-solid': ref('green-550'),
   'success-solid-hover': ref('green-520'),

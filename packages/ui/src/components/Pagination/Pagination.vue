@@ -91,11 +91,11 @@ const isDisabled = computed(() => props.disabled || props.total === 0)
       <Field
         v-if="!props.hidePageSize"
         :label="props.pageSizeLabel"
-        size="sm"
+        :size="props.size"
         :disabled="isDisabled"
         class="flex-row items-center gap-2"
       >
-        <Select v-model="pageSize" :options="pageSizeChoices" size="sm" class="w-20" />
+        <Select v-model="pageSize" :options="pageSizeChoices" :size="props.size" class="w-20" />
       </Field>
     </div>
 

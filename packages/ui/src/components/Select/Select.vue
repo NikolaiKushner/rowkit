@@ -200,7 +200,7 @@ watch(inputValue, (value) => {
         :class="
           cn(
             'min-w-0 flex-1 truncate bg-transparent text-inherit outline-none',
-            'placeholder:text-text-subtle disabled:cursor-not-allowed',
+            'placeholder:text-muted-foreground disabled:cursor-not-allowed',
             !props.searchable && 'cursor-pointer'
           )
         "

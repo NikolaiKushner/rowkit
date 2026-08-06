@@ -43,21 +43,14 @@ export const buttonVariants = cva(
         danger:
           'border-danger-solid bg-danger-solid text-danger-on-solid hover:border-danger-solid-hover hover:bg-danger-solid-hover',
       },
-      // The reference design's heights and padding, and `rounded-md` at every size — its
-      // buttons do not change shape as they grow, only scale. `lg` keeps
-      // `text-sm`: the reference design has no larger type on a larger button, and bumping to
-      // `text-base` was rowkit's own invention.
-      /*
-       * The tighter of the two scales the reference ships. Its default control
-       * is 32px, not 36px, and horizontal padding is 10px rather than 16px — a
-       * denser bar of controls, which is what a data-heavy page wants above a
-       * table. `rounded-lg` comes with it.
-       */
+      // Shared control geometry with Input and Select: same height band, same
+      // corner. `rounded-md` (not `rounded-lg`) so a filled primary does not
+      // read as a pill next to an outlined field.
       size: {
-        xs: 'h-6 gap-1 rounded-lg px-2 text-xs',
-        sm: 'h-7 gap-1 rounded-lg px-2.5 text-xs',
-        md: 'h-8 gap-1.5 rounded-lg px-2.5 text-sm',
-        lg: 'h-9 gap-1.5 rounded-lg px-2.5 text-sm',
+        xs: 'h-6 gap-1 rounded-md px-2 text-xs',
+        sm: 'h-7 gap-1 rounded-md px-2.5 text-xs',
+        md: 'h-8 gap-1.5 rounded-md px-2.5 text-sm',
+        lg: 'h-9 gap-1.5 rounded-md px-2.5 text-sm',
       },
       /**
        * Square, for a button whose whole label is an icon.

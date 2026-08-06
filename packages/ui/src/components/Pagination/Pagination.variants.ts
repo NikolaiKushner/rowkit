@@ -22,16 +22,16 @@ export const paginationVariants = cva(
  */
 export const paginationItemVariants = cva(
   [
-    'inline-flex shrink-0 items-center justify-center rounded-lg border font-medium',
+    'inline-flex shrink-0 items-center justify-center rounded-md border font-medium',
     'cursor-pointer transition-colors duration-fast ease-standard',
     'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
     'disabled:pointer-events-none disabled:border-transparent',
-    'disabled:bg-transparent disabled:text-text-disabled',
+    'disabled:bg-transparent disabled:text-muted-foreground',
   ],
   {
     variants: {
       size: {
-        // 32px square at `md`, matching the reference. The earlier bump to
+        // 32px square at `md`, matching Button/Input/Select. The earlier bump to
         // `h-9` chased Button's height, but a page number is not a button
         // you press once — a row of them reads as a strip, and 36px squares
         // make that strip heavier than the table it pages through.
@@ -62,7 +62,7 @@ export const paginationItemVariants = cva(
 )
 
 export const paginationEllipsisVariants = cva(
-  'inline-flex shrink-0 select-none items-center justify-center text-text-subtle',
+  'inline-flex shrink-0 select-none items-center justify-center text-muted-foreground',
   {
     variants: {
       size: {

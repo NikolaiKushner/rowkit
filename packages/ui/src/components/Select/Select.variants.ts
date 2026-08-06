@@ -24,9 +24,9 @@ export const selectTriggerVariants = cva(
   {
     variants: {
       size: {
-        sm: 'h-7 rounded-lg px-2.5 text-sm',
-        md: 'h-8 rounded-lg px-2.5 text-sm',
-        lg: 'h-9 rounded-lg px-2.5 text-sm',
+        sm: 'h-7 rounded-md px-2.5 text-sm',
+        md: 'h-8 rounded-md px-2.5 text-sm',
+        lg: 'h-9 rounded-md px-2.5 text-sm',
       },
       invalid: {
         true: 'border-danger-solid ring-3 ring-danger-solid/20 focus-visible:border-danger-solid focus-visible:ring-danger-solid/20',

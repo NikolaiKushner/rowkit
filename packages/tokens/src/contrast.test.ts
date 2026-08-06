@@ -76,11 +76,11 @@ describe.each([
 
 describe('translucent tokens are measured as they render', () => {
   /*
-   * Dark mode's borders are white at 10% and 15% alpha. Measuring the source
-   * colour instead of the composite would score them as pure white — around
-   * 15:1 against the page — and every threshold above would pass for a border
-   * nobody can see. The pass/fail assertions cannot catch that on their own,
-   * because the wrong answer is comfortably over the bar too.
+   * Dark mode's borders are white at 8% (hairline) and 15% (controls). Measuring
+   * the source colour instead of the composite would score them as pure white —
+   * around 15:1 against the page — and every threshold above would pass for a
+   * border nobody can see. The pass/fail assertions cannot catch that on their
+   * own, because the wrong answer is comfortably over the bar too.
    *
    * So the composite is pinned by value. If `semanticContrast` ever stops
    * compositing, these fail; a ratio near 15 is the signature of that bug.
@@ -93,7 +93,7 @@ describe('translucent tokens are measured as they render', () => {
     )
   })
 
-  it('composites the 10% hairline, which is decorative and stays under 3:1', () => {
+  it('composites the 8% hairline, which is decorative and stays under 3:1', () => {
     const ratio = semanticContrast(semanticColorDark.border, semanticColorDark.card)
     expect(ratio).toBeLessThan(AA_NON_TEXT)
     expect(ratio).toBeGreaterThan(1.5)

@@ -17,7 +17,7 @@ const OKLCH = /^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.]+)%\s*)
 /**
  * Parses an `oklch(L C H)` string, or `oklch(L C H / P%)`.
  *
- * Alpha exists for the dark-mode borders, which are white at 10% and 15% rather
+ * Alpha exists for the dark-mode borders, which are white at 8% and 15% rather
  * than a solid grey. `alpha` is 1 when the value carries no slash, so callers
  * that predate it keep working.
  */
