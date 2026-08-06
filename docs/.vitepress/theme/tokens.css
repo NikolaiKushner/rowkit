@@ -97,6 +97,31 @@
 }
 
 /*
+ * Body rows, for the third time and the same reason.
+ *
+ *   .vp-doc tr { background-color: …; border-top: 1px solid …;
+ *                transition: background-color 0.5s }
+ *   .vp-doc tr:nth-child(2n) { background-color: var(--vp-c-bg-soft) }
+ *
+ * Zebra striping is right for a markdown table and wrong for a component that
+ * paints its own rows — every other row went grey, and in the loading state the
+ * stripe sat on top of the skeletons and hid them. The row also inherited a
+ * border it already draws on its cells, and a **half-second** background
+ * transition, which is why hover in a demo lagged behind the pointer.
+ *
+ * `revert-layer` restores the layered value rather than removing it, so the
+ * row's own `bg-card`, `hover:` and selected utilities all come back.
+ *
+ * `tbody tr:nth-child(2n)` is 0-2-2 against VitePress's 0-2-1. A plain
+ * `.rk-demo tr` is 0-1-1 and loses to the stripe, which is how this survived
+ * the first pass at the cells.
+ */
+.rk-demo tbody tr,
+.rk-demo tbody tr:nth-child(2n) {
+  all: revert-layer;
+}
+
+/*
  * The markdown below the hero shares the hero's lines.
  *
  * Two differences to reconcile. The hero and the feature cards cap at 1152px
