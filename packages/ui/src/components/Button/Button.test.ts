@@ -14,7 +14,7 @@ describe('Button', () => {
 
   it.each([
     ['primary', 'bg-primary-solid'],
-    ['secondary', 'border-input'],
+    ['secondary', 'bg-muted'],
     ['ghost', 'bg-transparent'],
     ['danger', 'bg-danger-solid'],
   ] as const)('%s uses the %s token', (variant, expected) => {

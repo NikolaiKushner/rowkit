@@ -35,7 +35,7 @@ export const paginationItemVariants = cva(
         // `h-9` chased Button's height, but a page number is not a button
         // you press once — a row of them reads as a strip, and 36px squares
         // make that strip heavier than the table it pages through.
-        sm: 'h-7 min-w-7 px-2 text-xs',
+        sm: 'h-7 min-w-7 px-2 text-sm',
         md: 'h-8 min-w-8 px-2 text-sm',
       },
       /**

@@ -70,7 +70,7 @@ handling.
 **Props**
 
 - `variant: 'neutral' | 'primary' | 'success' | 'warning' | 'danger'` — default `'neutral'`. Status family. `neutral` is the "no particular status" default rather than an absence of styling.
-- `appearance: 'subtle' | 'solid' | 'outline'` — default `'subtle'`. How much visual weight the badge carries. Prefer `subtle` in a table — a column of `solid` badges reads as a wall of colour and stops communicating anything.
+- `appearance: 'subtle' | 'solid' | 'outline'` — default `'subtle'`. How much visual weight the badge carries. Prefer `subtle` in a table — soft tinted chip with a matching hairline, quieter than `solid` / `outline`. `solid` is for when a single badge has to carry the page.
 - `size: 'sm' | 'md'` — default `'md'`. Badge size. `sm` is intended for dense table rows.
 - `dot: boolean` — default `false`. Shows a filled dot before the label, inheriting the text colour.
 - `class: string`. Additional classes, merged with the variant classes so a consumer's utility wins over the component's own.

@@ -173,27 +173,34 @@ export const dataTableCellVariants = cva('border-t border-border align-middle te
  * and hover states. `bg-inherit` on the cell and a real colour on the row keeps
  * one source of truth.
  */
-export const dataTableRowVariants = cva('bg-card transition-colors duration-fast ease-standard', {
-  variants: {
-    /**
-     * Row hover is off unless the row does something. A highlight that follows
-     * the pointer across static data suggests the row is clickable when it is
-     * not.
-     */
-    interactive: {
-      // `/50` is the reference design's: the hover tint is half-strength so it reads as a
-      // pointer follow rather than as selection, which is the full tint.
-      true: 'hover:bg-accent/50',
-      false: '',
+export const dataTableRowVariants = cva(
+  'group bg-card transition-colors duration-fast ease-standard',
+  {
+    variants: {
+      /**
+       * Row hover is off unless the row does something. A highlight that follows
+       * the pointer across static data suggests the row is clickable when it is
+       * not.
+       */
+      interactive: {
+        // Full accent — `/50` disappeared on the cool muted wash. Selection uses
+        // a primary tint, so hover and selected stay distinct.
+        true: 'hover:bg-accent',
+        false: '',
+      },
+      /** Selected wins over hover — losing the highlight on hover hides the state. */
+      selected: {
+        true: 'bg-surface-selected hover:bg-surface-selected',
+        false: '',
+      },
     },
-    /** Selected wins over hover — losing the highlight on hover hides the state. */
-    selected: {
-      true: 'bg-surface-selected hover:bg-surface-selected',
-      false: '',
-    },
-  },
-  defaultVariants: { interactive: false, selected: false },
-})
+    defaultVariants: { interactive: false, selected: false },
+  }
+)
+
+/** Quiet row action — visible on row hover / focus-within, always for keyboard. */
+export const dataTableRowActionClass =
+  'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100'
 
 // Matches the body cell: same hairline, same padding. The reference design drops the right
 // padding on a checkbox cell so the control sits tight against its column.

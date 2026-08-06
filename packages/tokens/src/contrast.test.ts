@@ -30,6 +30,7 @@ const pairings: readonly Pairing[] = [
   // A table header is muted text on a recessed surface, which is the one
   // muted pairing this list originally missed.
   ['muted text on a recessed surface', 'muted-foreground', 'muted', AA_TEXT],
+  ['muted text on a selected row', 'muted-foreground', 'surface-selected', AA_TEXT],
 
   ['label on a neutral button', 'neutral-on-solid', 'neutral-solid', AA_TEXT],
   ['label on a primary button', 'primary-on-solid', 'primary-solid', AA_TEXT],

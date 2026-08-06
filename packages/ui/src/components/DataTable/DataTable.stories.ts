@@ -167,15 +167,17 @@ export const CustomCells: Story = {
       columns: [...columns, { id: 'actions', header: 'Actions', headerSrOnly: true, align: 'end' }],
       tone: (status: User['status']) =>
         status === 'active' ? 'success' : status === 'invited' ? 'warning' : 'danger',
+      rowAction:
+        'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100',
     }),
     template: `
       <div class="w-full max-w-3xl">
-        <DataTable :rows="users" :columns="columns" caption="Team members">
+        <DataTable :rows="users" :columns="columns" caption="Team members" hoverable>
           <template #[\`cell:status\`]="{ value }">
-            <Badge :variant="tone(value)" dot>{{ value }}</Badge>
+            <Badge :variant="tone(value)" size="sm" dot>{{ value }}</Badge>
           </template>
           <template #[\`cell:actions\`]="{ row }">
-            <Button variant="ghost" size="sm" :aria-label="'Edit ' + row.name">Edit</Button>
+            <Button variant="ghost" size="sm" :class="rowAction" :aria-label="'Edit ' + row.name">Edit</Button>
           </template>
         </DataTable>
       </div>

@@ -168,7 +168,7 @@ describe('shadows', () => {
   it('carries the geometry from the token', async () => {
     // Shadows are the one scale Tailwind inlines rather than referencing, so
     // the assertion is on the value instead of on a var().
-    expect(await build('shadow-scroll-x')).toContain('8px 0 8px -8px')
+    expect(await build('shadow-scroll-x')).toContain('12px 0 16px -8px')
   })
 
   it('keeps the shadow colour a variable, so .dark repoints it', async () => {

@@ -160,6 +160,12 @@ export const gray = {
    * `surface-subtle`, which clears the bar on both sides of the rounding.
    */
   635: 'oklch(0.635 0 0)',
+  /**
+   * Cool control boundary. Softer and cooler than the a11y floor at 0.635, still
+   * clears 3:1 on the page, a card and a recessed toolbar — so inputs speak the
+   * same language as the cool hairlines without failing WCAG 1.4.11.
+   */
+  642: 'oklch(0.642 0.012 264)',
   /** the reference `--ring` (dark), 4.18:1 against the dark page. */
   556: 'oklch(0.556 0 0)',
   /**
@@ -348,10 +354,9 @@ export const semanticColorLight = {
   /** Row press / active. One step past hover; the reference design has no press token. */
   'surface-active': ref('gray-940'),
   /**
-   * Selected table row. Quiet cool tint — enough to mark state, not enough to
-   * compete with the data.
+   * Selected table row. Quiet primary wash — distinct from hover, not a shout.
    */
-  'surface-selected': ref('gray-972'),
+  'surface-selected': ref('primary-50'),
   /** Disabled control background. */
   'surface-disabled': ref('gray-972'),
   /**
@@ -399,12 +404,11 @@ export const semanticColorLight = {
    * Boundary of an interactive control — text inputs, checkboxes, outlined
    * buttons.
    *
-   * WCAG 1.4.11 requires 3:1 against the adjacent surface for the visual
-   * boundary of a UI component. Decorative `border` stays well under that;
-   * this token is the lightest neutral that clears the bar on the page, a
-   * card and a toolbar alike.
+   * Cooler and a touch lighter than the old pure `gray-635`, still ≥3:1 on the
+   * page, a card and a toolbar. Matches the cool hairline language without
+   * dropping below WCAG 1.4.11.
    */
-  input: ref('gray-635'),
+  input: ref('gray-642'),
   /**
    * Focus ring. Never remove the ring — recolour it.
    *
@@ -479,7 +483,7 @@ export const semanticColorDark = {
   muted: ref('gray-269'),
   accent: ref('gray-269'),
   'surface-active': ref('gray-371'),
-  'surface-selected': ref('gray-269'),
+  'surface-selected': ref('primary-950'),
   'surface-disabled': ref('gray-269'),
   // Lifts off `surface` rather than receding. On a dark page a placeholder
   // darker than its card reads as a hole in the layout.

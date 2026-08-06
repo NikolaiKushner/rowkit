@@ -23,7 +23,7 @@ export const shadow = {
   /** Modal dialogs. */
   xl: '0 20px 25px -5px color-mix(in oklab, var(--color-shadow) 12%, transparent), 0 8px 10px -6px color-mix(in oklab, var(--color-shadow) 12%, transparent)',
   /** Horizontal-scroll affordance on a sticky table column. */
-  'scroll-x': '8px 0 8px -8px color-mix(in oklab, var(--color-shadow) 15%, transparent)',
+  'scroll-x': '12px 0 16px -8px color-mix(in oklab, var(--color-shadow) 22%, transparent)',
   /**
    * The rule under a sticky table header, drawn as a shadow rather than a
    * border.

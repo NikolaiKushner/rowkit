@@ -295,8 +295,8 @@ describe('DataTable', () => {
   })
 
   it('does not highlight rows on hover unless they do something', () => {
-    expect(setup().find('tbody tr').classes()).not.toContain('hover:bg-accent/50')
-    expect(setup({ hoverable: true }).find('tbody tr').classes()).toContain('hover:bg-accent/50')
+    expect(setup().find('tbody tr').classes()).not.toContain('hover:bg-accent')
+    expect(setup({ hoverable: true }).find('tbody tr').classes()).toContain('hover:bg-accent')
   })
 
   describe('column identity', () => {
@@ -501,7 +501,7 @@ describe('DataTable', () => {
     })
 
     it('shows a hover affordance once rows respond to a click', () => {
-      expect(clickable().find('tbody tr').classes()).toContain('hover:bg-accent/50')
+      expect(clickable().find('tbody tr').classes()).toContain('hover:bg-accent')
     })
   })
 

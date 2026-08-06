@@ -7,6 +7,7 @@ import {
   FilterBar,
   Select,
   Pagination,
+  Tooltip,
   compareSortable,
   type DataTableColumn,
   type DataTableSort,
@@ -212,11 +213,11 @@ const selectedCount = computed(() => selected.value.length)
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
-    <header class="flex flex-wrap items-end justify-between gap-4">
+  <div class="flex flex-col gap-4">
+    <header class="flex flex-wrap items-end justify-between gap-3">
       <div>
-        <h1 class="text-2xl font-semibold">Users</h1>
-        <p class="mt-1 text-sm text-muted-foreground">
+        <h1 class="text-xl font-semibold tracking-tight">Users</h1>
+        <p class="mt-0.5 text-sm text-muted-foreground">
           Filterable, sortable and paginated — every piece is a rowkit component.
         </p>
       </div>
@@ -269,6 +270,14 @@ const selectedCount = computed(() => selected.value.length)
       hoverable
       class="max-h-[32rem]"
     >
+      <template #[`cell:email`]="{ row }">
+        <Tooltip :content="(row as User).email">
+          <span class="block max-w-[16rem] truncate tabular-nums text-muted-foreground">
+            {{ (row as User).email }}
+          </span>
+        </Tooltip>
+      </template>
+
       <template #[`cell:status`]="{ row }">
         <Badge :variant="statusTone[(row as User).status]" size="sm" dot>
           {{ (row as User).status }}
@@ -282,7 +291,14 @@ const selectedCount = computed(() => selected.value.length)
       </template>
 
       <template #[`cell:actions`]="{ row }">
-        <Button variant="ghost" size="sm" :aria-label="`Edit ${(row as User).name}`">Edit</Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          class="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100"
+          :aria-label="`Edit ${(row as User).name}`"
+        >
+          Edit
+        </Button>
       </template>
 
       <!--

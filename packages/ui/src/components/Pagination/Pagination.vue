@@ -93,7 +93,7 @@ const isDisabled = computed(() => props.disabled || props.total === 0)
         :label="props.pageSizeLabel"
         :size="props.size"
         :disabled="isDisabled"
-        class="flex-row items-center gap-2"
+        class="flex-row items-center gap-2 [&>label]:whitespace-nowrap"
       >
         <Select v-model="pageSize" :options="pageSizeChoices" :size="props.size" class="w-20" />
       </Field>

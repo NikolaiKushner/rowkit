@@ -19,9 +19,10 @@ export const inputVariants = cva(
   {
     variants: {
       size: {
-        sm: 'h-7 rounded-md px-2.5 py-1 text-sm',
-        md: 'h-8 rounded-md px-2.5 py-1 text-sm',
-        lg: 'h-9 rounded-md px-2.5 py-1 text-sm',
+        // No vertical padding — height is locked by `h-*`, same as Button/Select.
+        sm: 'h-7 rounded-md px-2.5 text-sm',
+        md: 'h-8 rounded-md px-2.5 text-sm',
+        lg: 'h-9 rounded-md px-2.5 text-sm',
       },
       invalid: {
         // The reference design's invalid treatment: the border goes destructive and the focus

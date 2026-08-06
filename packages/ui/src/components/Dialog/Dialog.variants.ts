@@ -82,11 +82,15 @@ export const dialogFooterVariants = cva(
 )
 
 export const dialogCloseVariants = cva([
+  // Same geometry as a Button `icon` at `md`: 32px square, `rounded-md`, and the
+  // shared focus recipe (border + translucent ring). A borderless opaque ring
+  // in the brand colour read as a blue square around the X.
   'absolute right-3 top-3 inline-flex size-8 shrink-0 cursor-pointer',
-  'items-center justify-center rounded-xs text-muted-foreground opacity-70 hover:opacity-100',
+  'items-center justify-center rounded-md border border-transparent',
+  'text-muted-foreground opacity-70 hover:opacity-100',
   'transition-colors duration-fast ease-standard',
   'hover:bg-accent hover:text-foreground',
-  'outline-none focus-visible:ring-3 focus-visible:ring-ring',
+  'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
 ])
 
 export type DialogVariants = VariantProps<typeof dialogContentVariants>

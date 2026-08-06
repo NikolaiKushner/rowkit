@@ -14,8 +14,8 @@ export interface BadgeProps {
   variant?: NonNullable<BadgeVariants['variant']>
   /**
    * How much visual weight the badge carries. Prefer `subtle` in a table —
-   * a column of `solid` badges reads as a wall of colour and stops
-   * communicating anything.
+   * soft tinted chip with a matching hairline, quieter than `solid` / `outline`.
+   * `solid` is for when a single badge has to carry the page.
    */
   appearance?: NonNullable<BadgeVariants['appearance']>
   /** Badge size. `sm` is intended for dense table rows. */

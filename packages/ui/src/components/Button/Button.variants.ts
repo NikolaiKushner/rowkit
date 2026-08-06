@@ -38,17 +38,22 @@ export const buttonVariants = cva(
       variant: {
         primary:
           'border-primary-solid bg-primary-solid text-primary-on-solid hover:border-primary-solid-hover hover:bg-primary-solid-hover',
-        secondary: 'border-input bg-card text-foreground hover:bg-accent active:bg-surface-active',
+        // Filled muted — not the hollow `border-input` shell Input/Select use.
+        // Same height/radius/type as fields; different surface so a secondary
+        // next to a text field never reads as another field.
+        secondary:
+          'border-transparent bg-muted text-foreground shadow-xs hover:bg-surface-active active:bg-surface-active',
         ghost: 'border-transparent bg-transparent text-foreground hover:bg-accent',
         danger:
           'border-danger-solid bg-danger-solid text-danger-on-solid hover:border-danger-solid-hover hover:bg-danger-solid-hover',
       },
-      // Shared control geometry with Input and Select: same height band, same
-      // corner. `rounded-md` (not `rounded-lg`) so a filled primary does not
-      // read as a pill next to an outlined field.
+      // Shared control geometry with Input and Select — same height, radius,
+      // horizontal padding and type size at every step. Only `xs` is button-only
+      // (tighter type); from `sm` up the three controls are interchangeable in a
+      // toolbar.
       size: {
         xs: 'h-6 gap-1 rounded-md px-2 text-xs',
-        sm: 'h-7 gap-1 rounded-md px-2.5 text-xs',
+        sm: 'h-7 gap-1 rounded-md px-2.5 text-sm',
         md: 'h-8 gap-1.5 rounded-md px-2.5 text-sm',
         lg: 'h-9 gap-1.5 rounded-md px-2.5 text-sm',
       },

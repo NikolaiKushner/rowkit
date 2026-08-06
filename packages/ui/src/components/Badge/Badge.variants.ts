@@ -51,6 +51,8 @@ export const badgeVariants = cva(
         class: 'border-neutral-border text-neutral-on-subtle',
       },
 
+      // Soft chip: tinted fill + matching hairline. Same recipe as neutral —
+      // colour lives in the wash, not in a solid pill or bare coloured text.
       {
         variant: 'primary',
         appearance: 'subtle',

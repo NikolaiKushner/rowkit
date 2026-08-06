@@ -12,31 +12,36 @@ function toggleTheme() {
   isDark.value = !isDark.value
   document.documentElement.classList.toggle('dark', isDark.value)
 }
+
+const linkClass =
+  'rounded-sm px-3 py-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground'
+const activeClass = 'bg-card text-foreground shadow-xs'
 </script>
 
 <template>
   <div class="min-h-screen bg-background text-foreground">
     <header class="border-b border-border bg-card">
       <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
-        <nav class="flex items-center gap-1" aria-label="Playground">
-          <NuxtLink
-            to="/"
-            class="rounded-sm px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
-            active-class="bg-muted text-foreground"
-          >
+        <nav
+          class="inline-flex items-center gap-0.5 rounded-md border border-border bg-muted p-0.5"
+          aria-label="Playground"
+        >
+          <NuxtLink to="/" :class="linkClass" active-class="" :exact-active-class="activeClass">
             Invite form
           </NuxtLink>
           <NuxtLink
             to="/users"
-            class="rounded-sm px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
-            active-class="bg-muted text-foreground"
+            :class="linkClass"
+            active-class=""
+            :exact-active-class="activeClass"
           >
             Users admin
           </NuxtLink>
           <NuxtLink
             to="/overlays"
-            class="rounded-sm px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
-            active-class="bg-muted text-foreground"
+            :class="linkClass"
+            active-class=""
+            :exact-active-class="activeClass"
           >
             Overlays
           </NuxtLink>
@@ -48,7 +53,7 @@ function toggleTheme() {
       </div>
     </header>
 
-    <main class="mx-auto max-w-6xl px-6 py-10">
+    <main class="mx-auto max-w-6xl px-6 py-8">
       <NuxtPage />
     </main>
   </div>
