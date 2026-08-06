@@ -14,8 +14,9 @@ import { repoRoot } from '../scripts/component-api.mjs'
  * `<NpmVersion />` renders it from the package instead. This test is what keeps
  * a future edit from quietly typing the literal back in.
  *
- * `phases/` is excluded: those are dated planning records, and "Phase 6 shipped
- * 0.1.0" stays true forever. `srcExclude` keeps them off the site entirely.
+ * `phases/` is excluded when present: dated planning records are not product
+ * docs, and version numbers written there stay historically true. `srcExclude`
+ * keeps them off the site entirely.
  */
 
 const docsDir = join(repoRoot, 'docs')

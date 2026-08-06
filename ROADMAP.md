@@ -55,26 +55,8 @@ Every component is labeled with its current stage. Nothing is marked Stable unti
 
 ## Build phases
 
-- [x] **Phase 0 — Foundation.** Monorepo, Vite library mode, TypeScript strict, ESLint, Vitest, CI.
-      *Done when:* a throwaway component builds, emits correct `.d.ts`, and imports with working types in the playground.
-
-- [x] **Phase 1 — Token system.** Color scales, semantic mappings, spacing, typography, radii, shadows, z-index, motion. Dark mode. Standalone `@rowkit/tokens` package.
-      *Done when:* dark mode toggles with zero hardcoded colors anywhere, and `import { tokens } from '@rowkit/tokens'` is fully typed.
-
-- [x] **Phase 2 — Core components.** The four foundations, one at a time, each fully complete before the next.
-      *Done when:* all four at Stable, playground renders a working form using only rowkit components.
-
-- [x] **Phase 3 — Data layer.** The five data components. DataTable is the centerpiece.
-      *Done when:* playground has a working "users admin" page — filterable, sortable, paginated, with loading and empty states.
-
-- [x] **Phase 4 — Overlays.** Dialog, Toast, Tooltip. SSR-safe.
-      *Done when:* all three keyboard-navigable, focus-managed, no hydration errors in the Nuxt playground.
-
-- [ ] **Phase 5 — Documentation site.** VitePress on rowkit.dev. Foundations, components, patterns, contributing.
-      *Done when:* every Stable component documented, Storybook deployed and linked.
-
-- [ ] **Phase 6 — Ship.** Changesets, trusted publishing via GitHub Actions, `v0.1.0` on npm.
-      *Done when:* `npm i rowkit` works in a fresh project, following only the docs.
+Planning docs live in `docs/phases/` when they exist. The previous phase specs
+were retired; new ones will replace them.
 
 ---
 
