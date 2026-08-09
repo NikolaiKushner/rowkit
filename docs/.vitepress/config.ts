@@ -54,8 +54,8 @@ export default defineConfig({
         text: 'v0.x',
         items: [
           {
-            text: 'Roadmap',
-            link: 'https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md',
+            text: "What's next",
+            link: 'https://github.com/NikolaiKushner/rowkit/blob/main/NEXT.md',
           },
           { text: 'Changelog', link: 'https://github.com/NikolaiKushner/rowkit/releases' },
         ],
@@ -116,7 +116,7 @@ export default defineConfig({
       {
         text: 'Project',
         items: [
-          { text: 'Roadmap', link: '/roadmap' },
+          { text: "What's next", link: '/next' },
           { text: 'Contributing', link: '/contributing' },
         ],
       },

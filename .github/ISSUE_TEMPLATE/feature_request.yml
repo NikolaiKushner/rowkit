@@ -14,7 +14,7 @@ body:
     attributes:
       label: Scope check
       options:
-        - label: I have read [Considered, not planned](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md#considered-not-planned) and this is not on that list.
+        - label: I have read [what's next / out of scope](https://github.com/NikolaiKushner/rowkit/blob/main/NEXT.md) and this is not on that list.
           required: true
         - label: I understand rowkit is twelve components by design, and that a new component is unlikely to be accepted.
           required: true

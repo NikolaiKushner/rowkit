@@ -146,7 +146,7 @@ scrolls as a whole pushes its own Save button off-screen, which is where "where
 did the button go" comes from.
 
 **No `DialogConfirm` convenience wrapper.** Tempting and deferred — it is in
-`ROADMAP.md` under "Considered, not planned".
+`NEXT.md` under "Explicitly out of scope" / non-goals.
 
 ## Keyboard
 

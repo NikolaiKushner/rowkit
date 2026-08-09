@@ -20,6 +20,7 @@ storybook-static/
 npm-debug.log*
 pnpm-debug.log*
 plan.md
+.visual-check/
 
 # VitePress build output and cache
 docs/.vitepress/dist

@@ -123,4 +123,4 @@ Twelve components, aimed at the part those kits leave you: the fast sortable
 table, and the loading, empty and filtered states that have to agree with each
 other. The scope is a decision, not a limitation — the full list, including what
 was deliberately left out, is in
-[the roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md).
+[what's next](https://github.com/NikolaiKushner/rowkit/blob/main/NEXT.md).

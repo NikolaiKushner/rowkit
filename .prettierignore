@@ -11,6 +11,6 @@ CHANGELOG.md
 # Hand-written prose at the repo root — Prettier reflows tables and emphasis
 # markers in ways that churn the diff without improving anything.
 /README.md
-/ROADMAP.md
+/NEXT.md
 /CLAUDE.md
 /AGENTS.md

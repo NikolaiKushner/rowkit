@@ -105,7 +105,7 @@ inside the package.
 rowkit does **not** currently ship a precompiled stylesheet — the distribution
 model is "the consumer's Tailwind compiles it", chosen deliberately so there is
 never a second set of Tailwind output fighting yours. A precompiled build is
-additive and on the roadmap, not built. Until then: reproduce locally, or add
+additive and not built yet. Until then: reproduce locally, or add
 rowkit's dist to your own `@source` list explicitly.
 
 ### `Cannot find module 'rowkit/styles'`

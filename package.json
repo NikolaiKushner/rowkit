@@ -22,6 +22,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test:a11y": "vitest run --project storybook",
+    "visual:check": "node scripts/visual-check.mjs",
     "size": "size-limit",
     "changeset": "changeset",
     "dev": "pnpm --filter playground dev",

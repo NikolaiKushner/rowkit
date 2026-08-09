@@ -73,7 +73,7 @@ that knows whether to validate on blur or on submit.
 
 There is also a list of things deliberately left out — date pickers, a command
 palette, charts — in
-[the roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md#considered-not-planned).
+[what's next](https://github.com/NikolaiKushner/rowkit/blob/main/NEXT.md).
 Recording them is how they stay out.
 
 ## Choosing between them
@@ -100,7 +100,7 @@ it is designed to sit beside a general-purpose kit rather than replace it.
 project's definition of done, and breaking changes are still possible until v1.
 
 Version <NpmVersion /> is on npm, published from CI with provenance attestation. The source
-and the full roadmap are on [GitHub](https://github.com/NikolaiKushner/rowkit).
+and the working backlog are on [GitHub](https://github.com/NikolaiKushner/rowkit).
 
 ## Where to go next
 
