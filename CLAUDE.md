@@ -6,8 +6,9 @@ Repository: `github.com/NikolaiKushner/rowkit`
 Package: `rowkit` on npm
 Docs: `rowkit.dev`
 
-Read `NEXT.md` before proposing work. The backlog is polish, proof, process,
-and new surface when it earns its place — no fixed component count.
+Read `ROADMAP.md` before proposing work. It is the plan of record: where the
+library stands, what 1.0 requires, and what is deliberately out of scope. New
+surface earns its place — there is no fixed component count.
 
 **Visual direction:** restraint, structure without severity, no excess. Neutral chrome; warm-espresso primary (`oklch(0.31 0.038 48)`), not a chromatic shout. Consumers rebrand via tokens — defaults must not fight them. Geist stays.
 

@@ -71,7 +71,7 @@ that knows whether to validate on blur or on submit.
 
 There is also a list of things deliberately left out — date pickers, a command
 palette, charts — in
-[what's next](https://github.com/NikolaiKushner/rowkit/blob/main/NEXT.md).
+[the roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md).
 Recording them is how they stay out.
 
 ## Choosing between them

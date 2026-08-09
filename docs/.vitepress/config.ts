@@ -32,6 +32,16 @@ export default defineConfig({
    * but is unreliable in Safari (WebKit cascade-layer bugs). Wrapping VitePress
    * CSS in `@layer vp-theme` puts the reset below utilities — the correct fix,
    * and Safari-safe.
+   *
+   * The order statement has to ride along on every wrapped file rather than
+   * live in `theme/tokens.css`. Without an explicit statement the browser
+   * orders layers by first appearance, and this plugin's output lands at the
+   * very top of the bundle — so `vp-theme` became the *lowest* layer, below
+   * Tailwind's `base`. Preflight resets `h1`–`h6` to `font-size: inherit`, and
+   * a layer beats specificity, so every heading on every docs page collapsed to
+   * body size. Naming the order here puts `vp-theme` above `base` (headings
+   * survive) and below `utilities` (demos still win). Repeats are harmless: a
+   * layer statement that restates a known order is a no-op.
    */
   vite: {
     plugins: [
@@ -45,7 +55,10 @@ export default defineConfig({
             return null
           }
           if (code.includes('@layer vp-theme')) return null
-          return { code: `@layer vp-theme {\n${code}\n}\n`, map: null }
+          return {
+            code: `@layer theme, base, vp-theme, components, utilities;\n@layer vp-theme {\n${code}\n}\n`,
+            map: null,
+          }
         },
       },
       tailwindcss(),
@@ -80,8 +93,8 @@ export default defineConfig({
         text: 'v0.x',
         items: [
           {
-            text: "What's next",
-            link: 'https://github.com/NikolaiKushner/rowkit/blob/main/NEXT.md',
+            text: 'Roadmap',
+            link: 'https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md',
           },
           { text: 'Changelog', link: 'https://github.com/NikolaiKushner/rowkit/releases' },
         ],
@@ -143,7 +156,7 @@ export default defineConfig({
       {
         text: 'Project',
         items: [
-          { text: "What's next", link: '/next' },
+          { text: 'Roadmap', link: '/roadmap' },
           { text: 'Contributing', link: '/contributing' },
         ],
       },

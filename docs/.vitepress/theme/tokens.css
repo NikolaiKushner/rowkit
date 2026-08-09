@@ -9,11 +9,10 @@
  * Tailwind and rowkit's theme are imported here too, because the live demos on
  * component pages are real rowkit components and need real rowkit utilities.
  *
- * Declare `vp-theme` *before* Tailwind so VitePress CSS (wrapped into that
- * layer in `config.ts`) sorts below `@layer utilities`. A late-first-seen
- * layer would outrank utilities and the form reset would win again.
+ * The `vp-theme` layer order is *not* set here. It rides on the wrapped
+ * VitePress CSS in `config.ts`, which lands above this file in the bundle — an
+ * order statement in this file arrives too late to count. See the note there.
  */
-@layer vp-theme;
 
 @import '@fontsource-variable/geist/wght.css';
 @import '@fontsource-variable/geist-mono/wght.css';

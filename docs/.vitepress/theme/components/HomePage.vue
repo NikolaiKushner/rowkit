@@ -5,20 +5,11 @@
  * Replaces VitePress's stock hero/features so the first viewport reads as
  * rowkit, not as a generic VP landing with a feature-card grid.
  */
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useClientSort } from 'rowkit'
 import type { DataTableColumn, DataTableSort, FilterChip } from 'rowkit'
 import DemoBox from './DemoBox.vue'
-
-interface User {
-  id: number
-  name: string
-  email: string
-  role: string
-  status: 'active' | 'invited' | 'suspended'
-  seats: number
-  lastActive: string
-}
+import { homeUsers, type HomeUser as User } from './home-users'
 
 const columns: DataTableColumn<User>[] = [
   { key: 'name', header: 'Name', sortable: true },
@@ -29,62 +20,7 @@ const columns: DataTableColumn<User>[] = [
   { key: 'lastActive', header: 'Last active' },
 ]
 
-const people: User[] = [
-  {
-    id: 1,
-    name: 'Ada Lovelace',
-    email: 'ada@example.com',
-    role: 'Owner',
-    status: 'active',
-    seats: 3,
-    lastActive: '2 minutes ago',
-  },
-  {
-    id: 2,
-    name: 'Grace Hopper',
-    email: 'grace@example.com',
-    role: 'Admin',
-    status: 'active',
-    seats: 12,
-    lastActive: '1 hour ago',
-  },
-  {
-    id: 3,
-    name: 'Barbara Liskov',
-    email: 'barbara@example.com',
-    role: 'Admin',
-    status: 'active',
-    seats: 7,
-    lastActive: '20 minutes ago',
-  },
-  {
-    id: 4,
-    name: 'Alan Turing',
-    email: 'alan@example.com',
-    role: 'Member',
-    status: 'invited',
-    seats: 1,
-    lastActive: 'never',
-  },
-  {
-    id: 5,
-    name: 'Katherine Johnson',
-    email: 'katherine@example.com',
-    role: 'Member',
-    status: 'suspended',
-    seats: 0,
-    lastActive: '3 weeks ago',
-  },
-  {
-    id: 6,
-    name: 'Margaret Hamilton',
-    email: 'margaret@example.com',
-    role: 'Owner',
-    status: 'active',
-    seats: 24,
-    lastActive: 'yesterday',
-  },
-]
+const people: User[] = homeUsers
 
 const tone = {
   active: 'success',
@@ -105,12 +41,15 @@ const statusOptions = [
 ]
 
 const search = ref('')
-const role = ref<string | undefined>('Admin')
-const status = ref<string | undefined>()
+const role = ref<string | undefined>()
+// Seeded so the hero shows a chip without cutting the roster down to one page.
+const status = ref<string | undefined>('active')
 const sort = ref<DataTableSort<User> | undefined>({ key: 'name', direction: 'asc' })
-const selected = ref<number[]>([2])
+// Ada Lovelace and Alan Turing — both on page one under the seeded name sort,
+// so the selection the footer counts is a selection you can actually see.
+const selected = ref<number[]>([1, 3])
 const page = ref(1)
-const pageSize = ref(5)
+const pageSize = ref(10)
 
 const filtered = computed(() => {
   const q = search.value.trim().toLowerCase()
@@ -120,6 +59,19 @@ const filtered = computed(() => {
     if (!q) return true
     return row.name.toLowerCase().includes(q) || row.email.toLowerCase().includes(q)
   })
+})
+
+/*
+ * Narrowing the roster returns to page 1.
+ *
+ * `Pagination` never does this itself — it reports what the user asked for and
+ * leaves the follow-on decision to the application, which is the convention
+ * this site documents. So the application makes it: without this, filtering
+ * from 70 rows down to 3 while on page 3 leaves a correct component rendering
+ * an empty table.
+ */
+watch([search, role, status], () => {
+  page.value = 1
 })
 
 const chips = computed<FilterChip[]>(() => {
@@ -202,17 +154,6 @@ function clearFilters() {
             </template>
           </FilterBar>
 
-          <div
-            v-if="selected.length > 0"
-            class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-muted px-3 py-1.5"
-          >
-            <p class="text-sm font-medium text-foreground">{{ selected.length }} selected</p>
-            <div class="flex items-center gap-2">
-              <Button variant="ghost" size="sm" @click="selected = []">Clear</Button>
-              <Button variant="destructive" size="sm">Suspend</Button>
-            </div>
-          </div>
-
           <DataTable
             v-model:sort="sort"
             v-model:selected="selected"
@@ -227,7 +168,7 @@ function clearFilters() {
               <span class="font-medium text-foreground">{{ row.name }}</span>
             </template>
             <template #[`cell:email`]="{ row }">
-              <span class="block max-w-[12rem] truncate text-muted-foreground">{{
+              <span class="block max-w-[15rem] truncate text-muted-foreground">{{
                 row.email
               }}</span>
             </template>
@@ -242,11 +183,29 @@ function clearFilters() {
             </template>
           </DataTable>
 
+          <!--
+            Bulk actions sit *below* the table, not between the filters and it.
+            Above, every tick of a checkbox inserted or removed a band and shoved
+            the table down or up under the cursor — the row you were aiming at
+            moved because you selected the one before it. Below, the table never
+            moves; only the footer does.
+          -->
+          <div
+            v-if="selected.length > 0"
+            class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-muted px-3 py-1.5"
+          >
+            <p class="text-sm font-medium text-foreground">{{ selected.length }} selected</p>
+            <div class="flex items-center gap-2">
+              <Button variant="ghost" size="sm" @click="selected = []">Clear</Button>
+              <Button variant="destructive" size="sm">Suspend</Button>
+            </div>
+          </div>
+
           <Pagination
             v-model:page="page"
             v-model:page-size="pageSize"
             :total="filtered.length"
-            :page-size-options="[5, 10]"
+            :page-size-options="[10, 25, 50]"
             label="Users pagination"
           />
         </div>

@@ -90,7 +90,7 @@ That is the whole library. If you need forty components covering every case, [Nu
 
 ## Status
 
-**v0.x.** The API is stabilising toward v1.0 and breaking changes are still possible until then. Releases are cut from CI with provenance attestation. [Changelog](https://github.com/NikolaiKushner/rowkit/blob/main/packages/ui/CHANGELOG.md) · [What's next](https://github.com/NikolaiKushner/rowkit/blob/main/NEXT.md)
+**v0.x.** The API is stabilising toward v1.0 and breaking changes are still possible until then. Releases are cut from CI with provenance attestation. [Changelog](https://github.com/NikolaiKushner/rowkit/blob/main/packages/ui/CHANGELOG.md) · [Roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md)
 
 ## License
 

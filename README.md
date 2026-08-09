@@ -12,7 +12,7 @@
 
 Vue 3 components for data-dense interfaces — tables, filters, and the states around them. Built on [Reka UI](https://reka-ui.com), typed against your row.
 
-**[Documentation](https://rowkit.dev)** · **[Storybook](https://storybook.rowkit.dev)** · **[What's next](./NEXT.md)**
+**[Documentation](https://rowkit.dev)** · **[Storybook](https://storybook.rowkit.dev)** · **[Roadmap](./ROADMAP.md)**
 
 <!--
   Absolute URL on purpose. npm does not resolve relative image paths against the
@@ -97,7 +97,7 @@ The table reports the sort and renders what it is handed — it never reorders i
 
 ## What rowkit is not
 
-A general-purpose UI kit. If you need forty components covering every case, [Nuxt UI](https://ui.nuxt.com) and [shadcn-vue](https://www.shadcn-vue.com) are better answers — and rowkit composes with either, since all three build on Reka UI. The scope is a decision, not a limitation; see [NEXT.md](./NEXT.md) for what is deliberately left out and what comes next.
+A general-purpose UI kit. If you need forty components covering every case, [Nuxt UI](https://ui.nuxt.com) and [shadcn-vue](https://www.shadcn-vue.com) are better answers — and rowkit composes with either, since all three build on Reka UI. The scope is a decision, not a limitation; see the [roadmap](./ROADMAP.md) for what is deliberately left out and what comes next.
 
 ## For coding agents
 

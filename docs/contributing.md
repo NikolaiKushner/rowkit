@@ -3,7 +3,7 @@
 rowkit is a small, deliberately scoped library. The most useful contributions
 are bug reports with a reproduction, and improvements to components that already
 exist. New components are almost certainly out of scope — see
-[what's next](/next) for why.
+[the roadmap](/roadmap) for why.
 
 ## Getting set up
 
@@ -116,7 +116,7 @@ perfectly good bug report, and a screenshot beats a description.
 
 ## What is unlikely to be accepted
 
-- A new component. Twelve is a decision; see [what's next](/next).
+- A new component. Twelve is a decision; see [the roadmap](/roadmap).
 - A new dependency, unless it replaces more code than it adds.
 - A prop that lets a component make a multi-step decision for the consumer —
   auto-resetting the page, auto-sorting a server-paged table. Those belong in

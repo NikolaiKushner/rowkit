@@ -63,7 +63,7 @@ inside one is unreachable by keyboard by construction**. Typing `content` as
 documentation warning nobody reads.
 
 If it needs a link or a button, you want a popover — a different component with
-different focus semantics, deliberately **not in v1** (`NEXT.md`, "Later").
+different focus semantics, deliberately **not in v1** (`ROADMAP.md`, "Later").
 If it needs a paragraph, put it in the page.
 
 ## When to use

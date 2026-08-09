@@ -7,24 +7,43 @@ import { repoRoot } from '../scripts/component-api.mjs'
  * The docs stylesheet has to keep winning against VitePress's own reset.
  *
  * VitePress's default theme ships a form/table reset that fights live demos.
- * Wrapping that CSS in `@layer vp-theme` (declared before Tailwind) puts it
- * below `@layer utilities`, so component classes win without `all: revert-layer`
- * — which Safari mishandles (missing button padding, doubled table borders).
+ * Wrapping that CSS in `@layer vp-theme` puts it below `@layer utilities`, so
+ * component classes win without `all: revert-layer` — which Safari mishandles
+ * (missing button padding, doubled table borders).
  *
  * That is the failure mode this project keeps meeting: correct classes, correct
  * stylesheet, no error anywhere, wrong pixels. It shipped once already.
  */
 describe('docs stylesheet', () => {
-  it('declares vp-theme below Tailwind utilities', async () => {
-    const css = await readFile(join(repoRoot, 'docs/.vitepress/theme/tokens.css'), 'utf8')
-    const layerAt = css.indexOf('@layer vp-theme;')
-    const twAt = css.indexOf("@import 'tailwindcss'")
+  it('orders vp-theme above Tailwind base and below utilities', async () => {
+    /*
+     * Both bounds matter, and an earlier version only had one.
+     *
+     * Declaring the order in `tokens.css` never reached the bundle: the wrapped
+     * VitePress CSS lands above that file, so first-appearance ordering already
+     * won and made `vp-theme` the *lowest* layer — below Tailwind's `base`.
+     * Preflight resets `h1`–`h6` to `font-size: inherit`, a layer beats
+     * specificity, and every heading on every docs page silently collapsed to
+     * body size. The statement therefore has to ride on the wrapped CSS itself.
+     */
+    const config = await readFile(join(repoRoot, 'docs/.vitepress/config.ts'), 'utf8')
+    const order = /@layer\s+([a-z0-9_,\s-]+);/i.exec(config)
+    expect(order, 'the wrapper must emit an explicit @layer order statement').not.toBeNull()
+
+    const layers = (order?.[1] ?? '').split(',').map((name) => name.trim())
+    expect(layers, 'name Tailwind base so headings survive preflight').toContain('base')
+    expect(layers).toContain('vp-theme')
+    expect(layers).toContain('utilities')
     expect(
-      layerAt,
-      'declare @layer vp-theme before Tailwind so the layer sorts below utilities'
-    ).toBeGreaterThan(-1)
-    expect(twAt, 'Tailwind import missing').toBeGreaterThan(-1)
-    expect(layerAt, 'vp-theme must be first-seen before Tailwind').toBeLessThan(twAt)
+      layers.indexOf('base'),
+      'vp-theme below base means preflight wins and headings lose their size'
+    ).toBeLessThan(layers.indexOf('vp-theme'))
+    expect(
+      layers.indexOf('vp-theme'),
+      'vp-theme above utilities means the VitePress reset beats component classes'
+    ).toBeLessThan(layers.indexOf('utilities'))
+
+    const css = await readFile(join(repoRoot, 'docs/.vitepress/theme/tokens.css'), 'utf8')
     expect(css, 'Safari breaks revert-layer — do not bring it back').not.toMatch(
       /all:\s*revert-layer/
     )

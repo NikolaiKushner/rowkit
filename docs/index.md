@@ -29,4 +29,4 @@ better answers, and rowkit composes with either.
 rowkit aims at the part those kits leave you: the fast sortable table, and the
 loading, empty and filtered states that have to agree with each other. The scope
 is a decision, not a limitation — what ships next, and what stays out on purpose,
-is in [what's next](/next).
+is in [the roadmap](/roadmap).
