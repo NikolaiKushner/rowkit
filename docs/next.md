@@ -28,8 +28,8 @@ Chrome stays neutral. Primary is warm espresso graphite
 
 ### Land the current arc
 
-Ship Button API / ButtonGroup / espresso tokens / quiet chrome with honest
-changesets. Then stop reopening that cluster unless real friction appears.
+Ship Button API / ButtonGroup / espresso tokens / quiet chrome / docs home with
+honest changesets. Then stop reopening that cluster unless real friction appears.
 
 ### Consistency pass
 

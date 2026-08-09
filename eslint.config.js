@@ -87,6 +87,18 @@ export default tseslint.config(
     },
   },
 
+  // Docs theme imports .vue SFCs the same way stories do — eslint's program
+  // cannot type them; vue-tsc can. VitePress also wants a `Layout` export key.
+  {
+    files: ['docs/.vitepress/theme/**/*.{ts,vue}'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+    },
+  },
+
   // Tests and stories import .vue files, which typescript-eslint's program
   // cannot type without the Vue language plugin — every such import lands as an
   // error type and trips the unsafe-* rules. `pnpm typecheck` runs vue-tsc,

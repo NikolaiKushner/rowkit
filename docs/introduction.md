@@ -78,12 +78,12 @@ Recording them is how they stay out.
 
 The honest framing, so you can route yourself correctly:
 
-| Compared on      | rowkit                         | Nuxt UI                     | shadcn-vue                      |
-| ---------------- | ------------------------------ | --------------------------- | ------------------------------- |
-| **Distribution** | Versioned npm package          | Versioned npm package       | Source copied into your project |
-| **Scope**        | Twelve components, one problem | Broad, general-purpose      | Broad, general-purpose          |
-| **Data focus**   | The reason it exists           | One area among many         | One area among many             |
-| **Upgrades**     | `semver`, you take the diff    | `semver`, you take the diff | Yours to maintain once copied   |
+| Compared on      | rowkit                                  | Nuxt UI                     | shadcn-vue                      |
+| ---------------- | --------------------------------------- | --------------------------- | ------------------------------- |
+| **Distribution** | Versioned npm package                   | Versioned npm package       | Source copied into your project |
+| **Scope**        | Data-dense surfaces, depth over breadth | Broad, general-purpose      | Broad, general-purpose          |
+| **Data focus**   | The reason it exists                    | One area among many         | One area among many             |
+| **Upgrades**     | `semver`, you take the diff             | `semver`, you take the diff | Yours to maintain once copied   |
 
 All three build on Reka UI, so the accessibility foundation is the same in each.
 The difference is scope and who owns the code after installation.

@@ -46,7 +46,7 @@ const rows = computed(() => (state.value === 'empty' ? [] : sorted.value))
       v-for="value in ['rows', 'loading', 'empty']"
       :key="value"
       size="sm"
-      :variant="state === value ? 'primary' : 'secondary'"
+      :variant="state === value ? 'default' : 'secondary'"
       @click="state = value"
     >{{ value }}</Button>
   </div>

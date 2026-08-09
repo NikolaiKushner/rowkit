@@ -27,9 +27,9 @@ export const selectTriggerVariants = cva(
   {
     variants: {
       size: {
-        sm: 'h-7 rounded-md px-2.5 text-sm',
-        md: 'h-8 rounded-md px-2.5 text-sm',
-        lg: 'h-9 rounded-md px-2.5 text-sm',
+        sm: 'h-7 rounded-md px-2.5 text-sm leading-normal',
+        md: 'h-8 rounded-md px-2.5 text-sm leading-normal',
+        lg: 'h-9 rounded-md px-2.5 text-sm leading-normal',
       },
       invalid: {
         // Same `has-[:focus-visible]` dance as the resting ring — focus lives

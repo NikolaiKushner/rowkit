@@ -25,8 +25,32 @@ export default defineConfig({
    * site loads the token custom properties, generates no utilities at all, and
    * renders every demo unstyled with no error anywhere — the same trap the
    * Storybook setup hit.
+   *
+   * VitePress ships an *unlayered* form/table reset. Tailwind v4 utilities live
+   * in `@layer utilities`, so the reset always won and demos lost padding,
+   * borders and header chrome. `all: revert-layer` papered over it in Chrome
+   * but is unreliable in Safari (WebKit cascade-layer bugs). Wrapping VitePress
+   * CSS in `@layer vp-theme` puts the reset below utilities — the correct fix,
+   * and Safari-safe.
    */
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    plugins: [
+      {
+        name: 'rowkit-layer-vitepress-css',
+        enforce: 'pre',
+        transform(code, id) {
+          const path = id.split('?')[0] ?? id
+          // Only VitePress's own theme CSS — not `docs/.vitepress/theme/*`.
+          if (!path.includes('/node_modules/vitepress/') || !path.endsWith('.css')) {
+            return null
+          }
+          if (code.includes('@layer vp-theme')) return null
+          return { code: `@layer vp-theme {\n${code}\n}\n`, map: null }
+        },
+      },
+      tailwindcss(),
+    ],
+  },
 
   head: [
     ['meta', { name: 'theme-color', content: '#462f24' }],

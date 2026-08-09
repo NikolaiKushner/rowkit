@@ -4,6 +4,7 @@ import DefaultTheme from 'vitepress/theme'
 import * as rowkit from 'rowkit'
 import ColorScale from './components/ColorScale.vue'
 import DemoBox from './components/DemoBox.vue'
+import DocsLayout from './components/DocsLayout.vue'
 import NpmVersion from './components/NpmVersion.vue'
 import TokenGrid from './components/TokenGrid.vue'
 import './tokens.css'
@@ -17,6 +18,7 @@ import './tokens.css'
  */
 export default {
   extends: DefaultTheme,
+  Layout: DocsLayout,
   enhanceApp({ app }) {
     for (const [name, value] of Object.entries(rowkit)) {
       // Every component export is PascalCase; the composables, the `cn` helper

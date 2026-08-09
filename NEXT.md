@@ -68,7 +68,7 @@ Done for this release:
 ### 3. Docs and agent surface
 
 - [x] `pnpm docs:props` / `pnpm docs:agents` after this release's prop/JSDoc changes
-- Docs homepage / pattern page should show the same restraint as the money shot
+- [x] Docs homepage — branded composition + live Users money shot; README screenshots
 - "When not to use" stays sharp; cut fluff
 
 ### 4. Real-world API pressure
