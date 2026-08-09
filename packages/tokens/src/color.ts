@@ -60,9 +60,9 @@ export const primary = {
   400: 'oklch(0.68 0.032 48)',
   500: 'oklch(0.50 0.036 48)',
   600: 'oklch(0.40 0.037 48)',
-  700: 'oklch(0.36 0.037 48)',
+  700: 'oklch(0.35 0.037 48)',
   /** Solid actions — warm espresso, deep enough for white labels. */
-  800: 'oklch(0.33 0.038 48)',
+  800: 'oklch(0.31 0.038 48)',
   900: 'oklch(0.26 0.032 48)',
   950: 'oklch(0.18 0.024 48)',
 } as const
@@ -449,7 +449,7 @@ export const semanticColorLight = {
 
   /**
    * Warm espresso solid — premium brown-graphite, not a black brick.
-   * `primary-800` ≈ `oklch(0.33 0.038 48)`.
+   * `primary-800` ≈ `oklch(0.31 0.038 48)`.
    */
   'primary-solid': ref('primary-800'),
   'primary-solid-hover': ref('primary-900'),

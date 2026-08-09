@@ -9,7 +9,7 @@ Docs: `rowkit.dev`
 Read `NEXT.md` before proposing work. The backlog is polish, proof, process,
 and new surface when it earns its place — no fixed component count.
 
-**Visual direction:** restraint, structure without severity, no excess. Neutral chrome; warm-espresso primary (`oklch(0.33 0.038 48)`), not a chromatic shout. Consumers rebrand via tokens — defaults must not fight them. Geist stays.
+**Visual direction:** restraint, structure without severity, no excess. Neutral chrome; warm-espresso primary (`oklch(0.31 0.038 48)`), not a chromatic shout. Consumers rebrand via tokens — defaults must not fight them. Geist stays.
 
 Read `docs/conventions.md` before designing a component API. Prop naming, state ownership, event and slot shapes, and the recurring accessibility patterns are decided there, once, for every component.
 

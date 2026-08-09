@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/rowkit"><img src="https://img.shields.io/npm/v/rowkit?color=462f24" alt="npm" /></a>
+  <a href="https://www.npmjs.com/package/rowkit"><img src="https://img.shields.io/npm/v/rowkit?color=402a1f" alt="npm" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/rowkit" alt="license" /></a>
   <a href="https://bundlejs.com/?q=rowkit"><img src="https://img.shields.io/bundlejs/size/rowkit" alt="bundle size" /></a>
 </p>

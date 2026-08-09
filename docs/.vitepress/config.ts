@@ -53,7 +53,7 @@ export default defineConfig({
   },
 
   head: [
-    ['meta', { name: 'theme-color', content: '#462f24' }],
+    ['meta', { name: 'theme-color', content: '#402a1f' }],
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/mark.svg' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'rowkit' }],

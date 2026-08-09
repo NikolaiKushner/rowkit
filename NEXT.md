@@ -15,7 +15,7 @@ Restraint. Structure without severity. No excess.
 
 - Chrome stays neutral — near-shadcn. Status colour (success / warning / danger)
   means something; brand colour does not live in the defaults.
-- Primary is **warm espresso** `oklch(0.33 0.038 48)` / `#462f24` — premium
+- Primary is **warm espresso** `oklch(0.31 0.038 48)` / `#402a1f` — premium
   brown-graphite, not pure black and not a loud brand hue. Consumers rebrand by
   pointing `--color-primary-*` at their own colour.
 - Soft destructive (wash + coloured label) in light and dark — never a solid

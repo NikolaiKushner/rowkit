@@ -10,8 +10,8 @@ export default create({
   base: 'light',
 
   // Warm espresso — primary-800. Clearly brown-graphite, not near-black.
-  colorPrimary: '#462f24',
-  colorSecondary: '#462f24',
+  colorPrimary: '#402a1f',
+  colorSecondary: '#402a1f',
 
   // Surfaces — gray-988 page, white card, gray-940 hairline.
   appBg: '#F7F8FA',
@@ -30,8 +30,8 @@ export default create({
   // Toolbar
   barBg: '#FFFFFF',
   barTextColor: '#6B7280',
-  barSelectedColor: '#462f24',
-  barHoverColor: '#462f24',
+  barSelectedColor: '#402a1f',
+  barHoverColor: '#402a1f',
 
   // Controls
   inputBg: '#FFFFFF',

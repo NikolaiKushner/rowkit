@@ -21,7 +21,7 @@ its author.
 Restraint. Structure without severity. No excess.
 
 Chrome stays neutral. Primary is warm espresso graphite
-(`oklch(0.33 0.038 48)`). Soft destructive, soft focus, quiet borders. See
+(`oklch(0.31 0.038 48)`). Soft destructive, soft focus, quiet borders. See
 [`NEXT.md`](https://github.com/NikolaiKushner/rowkit/blob/main/NEXT.md).
 
 ## Working backlog

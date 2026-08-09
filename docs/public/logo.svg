@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 32" fill="none" role="img" aria-label="rowkit">
   <g>
-    <rect width="32" height="32" rx="8" fill="#462f24"/>
+    <rect width="32" height="32" rx="8" fill="#402a1f"/>
     <rect x="7" y="9" width="18" height="3.5" rx="1" fill="#F5F0EC"/>
     <rect x="7" y="14.25" width="18" height="3.5" rx="1" fill="#F5F0EC"/>
     <rect x="7" y="19.5" width="12" height="3.5" rx="1" fill="#F5F0EC"/>
@@ -8,7 +8,7 @@
   <text
     x="42"
     y="22"
-    fill="#462f24"
+    fill="#402a1f"
     font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
     font-size="18"
     font-weight="500"

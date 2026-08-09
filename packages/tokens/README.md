@@ -46,7 +46,7 @@ Or in TypeScript, fully typed, when a value has to reach JavaScript:
 ```ts
 import { tokens } from '@rowkit/tokens'
 
-tokens.color.primary[800] // 'oklch(0.33 0.038 48)' — warm espresso
+tokens.color.primary[800] // 'oklch(0.31 0.038 48)' — warm espresso
 
 const series = [tokens.color.primary[500], tokens.color.success[500]]
 ```
