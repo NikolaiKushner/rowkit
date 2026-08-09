@@ -83,6 +83,18 @@ describe('Input', () => {
         'true'
       )
     })
+
+    it('inherits size from the field when its own size is omitted', () => {
+      expect(mountInField({ size: 'sm' }).find('input').classes()).toContain('h-7')
+      expect(mountInField({ size: 'lg' }).find('input').classes()).toContain('h-9')
+    })
+
+    it('keeps an explicit size over the field size', () => {
+      expect(mountInField({ size: 'sm' }, { size: 'lg' }).find('input').classes()).toContain('h-9')
+      expect(mountInField({ size: 'sm' }, { size: 'lg' }).find('input').classes()).not.toContain(
+        'h-7'
+      )
+    })
   })
 
   it('works standalone, outside any Field', () => {

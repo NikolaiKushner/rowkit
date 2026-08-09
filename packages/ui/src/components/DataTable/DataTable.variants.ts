@@ -5,7 +5,9 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * pushing the page sideways, which is what makes a sticky column meaningful.
  */
 export const dataTableWrapperVariants = cva([
-  'relative w-full overflow-auto rounded-md border border-border bg-card',
+  // `shadow-xs` gives the table a plane without inventing a second card
+  // language — hairline lift, same token as resting inputs.
+  'relative w-full overflow-auto rounded-md border border-border bg-card shadow-xs',
   // Focusable when it actually scrolls, so the ring has to be visible.
   'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
 ])
@@ -65,7 +67,7 @@ export const dataTableHeaderRowVariants = cva('relative z-sticky')
  * transparent sticky header lets the rows scroll through it.
  */
 export const dataTableHeaderCellVariants = cva(
-  'shadow-sticky-header bg-card align-middle font-medium whitespace-nowrap text-foreground',
+  'shadow-sticky-header bg-card align-middle font-medium tracking-tight whitespace-nowrap text-foreground',
   {
     variants: {
       size: {

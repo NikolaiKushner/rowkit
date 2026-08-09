@@ -92,7 +92,15 @@ const meta: Meta<SelectArgs> = {
 export default meta
 type Story = StoryObj<SelectArgs>
 
-export const Default: Story = {}
+export const Default: Story = {
+  render: (args) => ({
+    components: { Select: SelectComponent },
+    setup: () => ({ args, value: ref('active') }),
+    template: `<div class="w-80"><Select v-bind="args" v-model="value" /></div>`,
+  }),
+}
+
+export const Empty: Story = {}
 
 export const WithValue: Story = {
   render: (args) => ({

@@ -18,11 +18,11 @@ describe('generated props tables', () => {
   it('found every component', () => {
     // Guards against the glob silently matching nothing and every assertion
     // below passing on an empty set.
-    expect(tables.size).toBe(13)
+    expect(tables.size).toBe(14)
   })
 
-  it('documents twelve pages', () => {
-    expect(pages).toHaveLength(12)
+  it('documents thirteen pages', () => {
+    expect(pages).toHaveLength(13)
   })
 
   it('keeps every marker, on the page with two of them', async () => {
@@ -34,7 +34,7 @@ describe('generated props tables', () => {
      * here passed, because a table that no longer exists cannot drift.
      */
     const count = (text: string) => text.match(/<!-- @props \w+ -->/g)?.length ?? 0
-    expect(pages.reduce((total, page) => total + count(page.content), 0)).toBe(13)
+    expect(pages.reduce((total, page) => total + count(page.content), 0)).toBe(14)
 
     for (const page of pages) {
       const regenerated = await injectTables(page.content, tables, page.path)

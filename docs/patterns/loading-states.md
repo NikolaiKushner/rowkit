@@ -56,8 +56,8 @@ onUnmounted(() => {
 <!-- prettier-ignore -->
 <DemoBox layout="stack">
   <div class="flex flex-wrap gap-2">
-    <Button size="sm" variant="secondary" @click="load(80)">Fast response (80ms)</Button>
-    <Button size="sm" variant="secondary" @click="load(1800)">Slow response (1800ms)</Button>
+    <Button size="sm" variant="outline" @click="load(80)">Fast response (80ms)</Button>
+    <Button size="sm" variant="outline" @click="load(1800)">Slow response (1800ms)</Button>
   </div>
   <DataTable :rows="rows" :columns="columns" caption="Team members" :loading="showSkeleton" :loading-rows="3" loading-label="Loading team members">
     <template #[`cell:status`]="{ row }"><Badge :variant="tone[row.status]" size="sm" dot>{{ row.status }}</Badge></template>

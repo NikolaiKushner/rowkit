@@ -77,7 +77,7 @@ down to whatever control is inside.
 | `error`       | `string`               | —       | Validation message. Its presence is what puts the field into the error state; there is no separate `invalid` flag to keep in sync.          |
 | `required`    | `boolean`              | `false` | Marks the control required and shows the required indicator.                                                                                |
 | `disabled`    | `boolean`              | `false` | Disables the control inside.                                                                                                                |
-| `size`        | `'sm' \| 'md' \| 'lg'` | `'md'`  | Sizes the label, hint and error together with the control.                                                                                  |
+| `size`        | `'sm' \| 'md' \| 'lg'` | `'md'`  | Sizes the label, hint, error and — via field context — the nested control when that control omits its own `size`.                           |
 | `id`          | `string`               | —       | Id for the control. Generated when omitted — supply one only when something outside the field needs to reference it.                        |
 | `labelSrOnly` | `boolean`              | `false` | Hides the label visually while leaving it available to screen readers. For a search box in a toolbar whose purpose is obvious from context. |
 | `class`       | `string`               | —       | Additional classes, merged so a consumer's utility wins.                                                                                    |
@@ -92,7 +92,7 @@ Slots: `default` (the control), `hint`, `error`.
 
 | Prop          | Type                                                                                  | Default  | Description                                                                                                                   |
 | ------------- | ------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `size`        | `'sm' \| 'md' \| 'lg'`                                                                | `'md'`   | Control height and text size.                                                                                                 |
+| `size`        | `'sm' \| 'md' \| 'lg'`                                                                | —        | Control height and text size. Inherited from a surrounding `Field` when omitted.                                              |
 | `type`        | `'number' \| 'text' \| 'email' \| 'password' \| 'search' \| 'tel' \| 'url' \| 'date'` | `'text'` | Native input type. Deliberately excludes `checkbox`, `radio` and `file`, which need different markup and a different control. |
 | `placeholder` | `string`                                                                              | —        | Short example of the expected value. Never a substitute for a label.                                                          |
 | `disabled`    | `boolean`                                                                             | `false`  | Disables the input. A surrounding disabled `Field` also disables it.                                                          |

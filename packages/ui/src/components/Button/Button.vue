@@ -9,9 +9,8 @@ import type { ButtonProps } from './types'
 defineOptions({ name: 'RkButton' })
 
 const props = withDefaults(defineProps<ButtonProps>(), {
-  variant: 'primary',
-  size: 'md',
-  icon: false,
+  variant: 'default',
+  size: 'default',
   block: false,
   loading: false,
   disabled: false,
@@ -66,12 +65,12 @@ function onClickCapture(event: MouseEvent): void {
         buttonVariants({
           variant: props.variant,
           size: props.size,
-          icon: props.icon,
           block: props.block,
         }),
         props.class
       )
     "
+    data-slot="button"
     @click.capture="onClickCapture"
   >
     <svg

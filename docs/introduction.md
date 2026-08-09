@@ -1,10 +1,8 @@
 # Introduction
 
-rowkit is twelve Vue 3 components for data-dense interfaces: tables, filters,
-and the states around them.
-
-That is the whole library. The number is a decision, not a stage it is passing
-through on the way to forty.
+rowkit is a Vue 3 component library for data-dense interfaces: tables, filters,
+and the states around them. The set grows when a new piece earns its place on
+that surface — not toward forty components for their own sake.
 
 ## The problem it exists for
 

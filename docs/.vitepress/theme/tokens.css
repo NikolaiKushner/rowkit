@@ -9,6 +9,8 @@
  * Tailwind and rowkit's theme are imported here too, because the live demos on
  * component pages are real rowkit components and need real rowkit utilities.
  */
+@import '@fontsource-variable/geist/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
 @import 'tailwindcss';
 @import '../../../packages/ui/src/styles/index.css';
 
@@ -178,6 +180,9 @@
 }
 
 :root {
+  --vp-font-family-base: var(--font-sans);
+  --vp-font-family-mono: var(--font-mono);
+
   --vp-c-brand-1: var(--color-primary-700);
   --vp-c-brand-2: var(--color-primary-600);
   --vp-c-brand-3: var(--color-primary-500);

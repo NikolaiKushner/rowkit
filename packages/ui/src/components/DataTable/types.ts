@@ -211,6 +211,14 @@ export interface DataTableProps<TRow> {
   /** Description for the built-in empty state. */
   emptyDescription?: string
   /**
+   * Why the built-in empty state is empty.
+   *
+   * Defaults to `no-data` (first-run). Pass `no-results` when the table is
+   * empty because filters matched nothing, and `error` when a fetch failed —
+   * the three cases mean different next steps.
+   */
+  emptyReason?: 'no-data' | 'no-results' | 'error'
+  /**
    * Adds a selection column.
    *
    * `multiple` gives checkboxes and a select-all in the header; `single`

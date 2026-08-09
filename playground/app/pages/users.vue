@@ -223,8 +223,8 @@ const selectedCount = computed(() => selected.value.length)
         </p>
       </div>
       <div class="flex items-center gap-2">
-        <Button variant="outline" size="sm">Export</Button>
-        <Button size="sm">Invite teammate</Button>
+        <Button variant="outline">Export</Button>
+        <Button>Invite teammate</Button>
       </div>
     </header>
 
@@ -324,6 +324,7 @@ const selectedCount = computed(() => selected.value.length)
           :level="2"
           size="sm"
           announce
+          reason="no-results"
           title="No users match those filters"
           description="Try a different search, or widen the role and status filters."
         >

@@ -55,6 +55,7 @@ provideFieldContext({
   invalid: hasError,
   disabled: toRef(props, 'disabled'),
   required: toRef(props, 'required'),
+  size: toRef(props, 'size'),
 })
 </script>
 

@@ -26,12 +26,12 @@ export const badgeVariants = cva(
         solid: '',
         outline: 'bg-transparent',
       },
-      // The reference design's badge is `rounded-md px-2 py-0.5 text-xs`. `sm` keeps a tighter
-      // inline size for badges that live inside a table cell, where `md`'s
-      // padding pushes the row height up.
+      // `rounded-sm` — tighter than controls — so a status chip inside a row
+      // reads as a label, not a mini-button. `sm` keeps a tighter inline size
+      // for table cells, where `md`'s padding pushes the row height up.
       size: {
-        sm: 'rounded-md px-1.5 py-0.5 text-xs',
-        md: 'rounded-md px-2 py-0.5 text-xs',
+        sm: 'rounded-sm px-1.5 py-0.5 text-xs',
+        md: 'rounded-sm px-2 py-0.5 text-xs',
       },
     },
     compoundVariants: [

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" role="img" aria-label="rowkit">
+  <!--
+    Mark: three table rows on soft ink. No chromatic brand — structure only.
+    Middle bar is full width; bottom is shorter (a partial row).
+  -->
+  <rect width="32" height="32" rx="8" fill="#191B1E"/>
+  <rect x="7" y="9" width="18" height="3.5" rx="1" fill="#E8EEF2"/>
+  <rect x="7" y="14.25" width="18" height="3.5" rx="1" fill="#E8EEF2"/>
+  <rect x="7" y="19.5" width="12" height="3.5" rx="1" fill="#E8EEF2"/>
+</svg>

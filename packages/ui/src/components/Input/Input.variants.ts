@@ -1,10 +1,9 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
- * The control border uses `border-control`, not `border`. WCAG 1.4.11 asks for
- * 3:1 against the adjacent surface for the boundary of a UI component, and the
- * decorative `border` token is deliberately below that — see the note on the
- * token itself.
+ * Resting edges use `border-input` — quiet structure, intentionally near the
+ * decorative hairline. Focus switches to soft `border-ring` + a translucent
+ * outer ring (silver, not ink).
  */
 export const inputVariants = cva(
   [

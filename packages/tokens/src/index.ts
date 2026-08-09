@@ -9,7 +9,7 @@
  * @example Typed access to a primitive
  * ```ts
  * import { tokens } from '@rowkit/tokens'
- * tokens.color.primary[600] // 'oklch(0.546 0.209 259)'
+ * tokens.color.primary[800] // 'oklch(0.33 0.038 48)' — warm espresso
  * ```
  *
  * @example The stylesheet

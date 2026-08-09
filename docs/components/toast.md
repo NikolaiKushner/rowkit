@@ -32,13 +32,13 @@ function retry() {
 </script>
 
 <DemoBox>
-  <Button variant="secondary" @click="success('Project archived')">success</Button>
-  <Button variant="secondary" @click="warning('Two seats left on this plan')">warning</Button>
+  <Button variant="outline" @click="success('Project archived')">success</Button>
+  <Button variant="outline" @click="warning('Two seats left on this plan')">warning</Button>
   <Button
-    variant="secondary"
+    variant="outline"
     @click="danger('Could not save', { duration: 0, action: { label: 'Retry', onClick: retry } })"
   >danger, with an action</Button>
-  <Button variant="secondary" @click="success('Project archived')">fire a duplicate</Button>
+  <Button variant="outline" @click="success('Project archived')">fire a duplicate</Button>
   <Button variant="ghost" @click="dismissAll()">dismiss all</Button>
   <ClientOnly>
     <Toaster />

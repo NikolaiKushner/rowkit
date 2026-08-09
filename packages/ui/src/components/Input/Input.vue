@@ -9,7 +9,6 @@ import type { InputProps } from './types'
 defineOptions({ name: 'RkInput', inheritAttrs: false })
 
 const props = withDefaults(defineProps<InputProps>(), {
-  size: 'md',
   type: 'text',
   readonly: false,
 })
@@ -40,6 +39,8 @@ const isDisabled = computed(() => props.disabled || (field?.disabled.value ?? fa
 const isInvalid = computed(() => props.invalid || (field?.invalid.value ?? false))
 const isRequired = computed(() => props.required || (field?.required.value ?? false))
 const describedBy = computed(() => field?.describedBy.value)
+/** Explicit `size` wins; otherwise inherit from Field, else `md`. */
+const size = computed(() => props.size ?? field?.size.value ?? 'md')
 </script>
 
 <template>
@@ -64,7 +65,7 @@ const describedBy = computed(() => field?.describedBy.value)
       :aria-describedby="describedBy"
       :class="
         cn(
-          inputVariants({ size: props.size, invalid: isInvalid }),
+          inputVariants({ size, invalid: isInvalid }),
           $slots.leading && 'pl-9',
           $slots.trailing && 'pr-9',
           props.class

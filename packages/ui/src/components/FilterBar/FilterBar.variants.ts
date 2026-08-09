@@ -44,8 +44,10 @@ export const filterBarChipVariants = cva(
   {
     variants: {
       size: {
-        sm: 'gap-1 rounded-md py-0.5 pl-1.5 text-xs',
-        md: 'gap-1 rounded-md py-0.5 pl-2 text-xs',
+        // Match Badge's tighter radius so chips and status labels speak one
+        // language above and inside the table.
+        sm: 'gap-1 rounded-sm py-0.5 pl-1.5 text-xs',
+        md: 'gap-1 rounded-sm py-0.5 pl-2 text-xs',
       },
       /** A chip the user cannot clear keeps the trailing padding the button would occupy. */
       removable: {
@@ -62,7 +64,8 @@ export const filterBarChipRemoveVariants = cva(
     'inline-flex shrink-0 cursor-pointer items-center justify-center rounded-xs',
     'text-muted-foreground transition-colors duration-fast ease-standard',
     'hover:bg-surface-active hover:text-foreground',
-    'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring',
+    // Borderless control — solid ring, same recipe as Dialog close / sort button.
+    'outline-none focus-visible:ring-3 focus-visible:ring-ring',
     'disabled:pointer-events-none disabled:opacity-50',
   ],
   {

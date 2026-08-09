@@ -15,28 +15,34 @@
  * `--radius` still cascades through the whole scale.
  */
 
-/** The single length the scale multiplies. */
-export const radiusBase = '0.625rem'
+/**
+ * The single length the scale multiplies.
+ *
+ * `0.5rem` (8px) keeps corners decisive rather than soft — the silhouette that
+ * reads as a data tool, not a marketing page. Override `--radius` in a
+ * consumer to retune every corner without touching components.
+ */
+export const radiusBase = '0.5rem'
 
 /**
  * Multiples of `--radius`.
  *
- * `sm`/`md`/`lg`/`xl` are the reference design's published factors. `xs` is rowkit's, and
- * lands on 4px — the radius the reference design hardcodes on its Checkbox, which is the
- * control this step exists for.
+ * `sm`/`md`/`lg`/`xl` keep the same factors as the reference scale. `xs` is
+ * rowkit's, and lands on ~3px — the radius used on checkboxes and chip remove
+ * targets inside dense table chrome.
  */
 export const radiusFactor = {
   /** Square. Table cells, and anything that tiles edge to edge. */
   none: 0,
-  /** 4px — checkboxes, tags inside a cell. */
+  /** ~3px — checkboxes, tags inside a cell. */
   xs: 0.4,
-  /** 6px — badges, small controls. */
+  /** ~5px — badges, small controls. */
   sm: 0.6,
-  /** 8px — buttons, inputs, cards. The rowkit default. */
+  /** ~6px — buttons, inputs, cards. The rowkit default. */
   md: 0.8,
-  /** 10px — dialogs, popovers. */
+  /** 8px — dialogs, popovers. */
   lg: 1,
-  /** 14px — large empty-state panels. */
+  /** ~11px — large empty-state panels. */
   xl: 1.4,
 } as const
 
@@ -74,8 +80,8 @@ export type RadiusName = keyof typeof radius
 function resolve(factor: number): string {
   if (factor === 0) return '0rem'
   const base = Number.parseFloat(radiusBase)
-  // Six places, then trailing zeros stripped: 0.625 * 1.4 is 0.8749999… in
-  // binary floating point, and `0.875rem` is the value that belongs in the docs.
+  // Six places, then trailing zeros stripped: 0.5 * 1.4 is clean in decimal
+  // but floating point still needs the round-trip so docs stay readable.
   return `${Number((base * factor).toFixed(6))}rem`
 }
 

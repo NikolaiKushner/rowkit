@@ -1,6 +1,10 @@
 # rowkit
 
-[![npm](https://img.shields.io/npm/v/rowkit?color=3b5bdb)](https://www.npmjs.com/package/rowkit)
+<p align="center">
+  <img src="docs/public/logo.svg" alt="rowkit" width="200" />
+</p>
+
+[![npm](https://img.shields.io/npm/v/rowkit?color=191b1e)](https://www.npmjs.com/package/rowkit)
 [![license](https://img.shields.io/npm/l/rowkit)](./LICENSE)
 [![bundle size](https://img.shields.io/bundlejs/size/rowkit)](https://bundlejs.com/?q=rowkit)
 

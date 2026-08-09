@@ -45,19 +45,26 @@ export const neutral = {
   950: 'oklch(0.13 0.036 264)',
 } as const
 
-/** Brand blue (hue 259). Drives links, focus rings and primary actions. */
+/**
+ * Warm espresso graphite (hue ~48).
+ *
+ * Restrained and premium — not pure black, not a loud brand blue/teal.
+ * Enough warmth to feel intentional on a solid button; quiet enough that
+ * consumers can rebrand without scraping a chromatic default first.
+ */
 export const primary = {
-  50: 'oklch(0.97 0.014 259)',
-  100: 'oklch(0.936 0.03 259)',
-  200: 'oklch(0.885 0.055 259)',
-  300: 'oklch(0.809 0.095 259)',
-  400: 'oklch(0.715 0.147 259)',
-  500: 'oklch(0.623 0.201 259)',
-  600: 'oklch(0.546 0.209 259)',
-  700: 'oklch(0.488 0.187 259)',
-  800: 'oklch(0.442 0.165 259)',
-  900: 'oklch(0.396 0.135 259)',
-  950: 'oklch(0.282 0.086 259)',
+  50: 'oklch(0.975 0.01 48)',
+  100: 'oklch(0.95 0.014 48)',
+  200: 'oklch(0.90 0.02 48)',
+  300: 'oklch(0.80 0.026 48)',
+  400: 'oklch(0.68 0.032 48)',
+  500: 'oklch(0.50 0.036 48)',
+  600: 'oklch(0.40 0.037 48)',
+  700: 'oklch(0.36 0.037 48)',
+  /** Solid actions — warm espresso, deep enough for white labels. */
+  800: 'oklch(0.33 0.038 48)',
+  900: 'oklch(0.26 0.032 48)',
+  950: 'oklch(0.18 0.024 48)',
 } as const
 
 /** Green (hue 152). Reserved for successful outcomes, never for brand accent. */
@@ -129,9 +136,9 @@ export const gray = {
   /** the reference `--secondary`, `--muted`, `--accent` — kept for dark primary fill. */
   970: 'oklch(0.97 0 0)',
   /**
-   * Cool decorative hairline. Lighter than the reference `--border` (0.922) and
-   * barely tinted — table row rules and card outlines that stay visible without
-   * dividing the page into boxes.
+   * Cool decorative hairline / recessed fill step. Lighter than the reference
+   * `--border` (0.922) — table rules, card outlines, and secondary button fill
+   * (`surface-active`) that must read as a surface next to white outline chrome.
    */
   940: 'oklch(0.940 0.004 264)',
   /** the reference `--border`. Kept for pressed fills that still need a step of weight. */
@@ -207,10 +214,16 @@ export const gray = {
  * on the label in both themes and still clears 4.04:1 against the dark page.
  */
 export const red = {
+  /** Soft text on a dark subtle wash. Chroma clamped for sRGB. */
+  850: 'oklch(0.85 0.08 25)',
   /** Destructive fill. The reference design's lightness, chroma clamped. */
   577: 'oklch(0.577 0.235 27.325)',
   /** Destructive hover — darkens in both themes, so the white label improves. */
   520: 'oklch(0.52 0.212 27.325)',
+  /** Soft border on a dark subtle wash. */
+  350: 'oklch(0.38 0.055 25)',
+  /** Soft fill in dark mode — quiet red wash, not a solid brick. */
+  260: 'oklch(0.32 0.045 25)',
 } as const
 
 /**
@@ -401,21 +414,25 @@ export const semanticColorLight = {
   /** Barely-there separation inside a dense group. */
   'border-subtle': ref('gray-972'),
   /**
-   * Boundary of an interactive control — text inputs, checkboxes, outlined
+   * Boundary of an interactive control — text inputs, selects, outlined
    * buttons.
    *
-   * Cooler and a touch lighter than the old pure `gray-635`, still ≥3:1 on the
-   * page, a card and a toolbar. Matches the cool hairline language without
-   * dropping below WCAG 1.4.11.
+   * Quiet on purpose (structure without severity). Resting edges sit near the
+   * decorative hairline; the focus treatment (`border-ring` + ring) is what
+   * carries WCAG 1.4.11. Matching the reference design's soft resting edge
+   * rather than a 3:1 ink outline that shouted next to every field.
    */
-  input: ref('gray-642'),
+  input: ref('gray-870'),
   /**
    * Focus ring. Never remove the ring — recolour it.
    *
-   * Matches the brand primary so focused controls and the primary button speak
-   * one language. Clears 1.4.11 against the page and recessed surfaces.
+   * Soft silver — the payment-form / shadcn weight (`gray-708`), not ink.
+   * Intentionally under 3:1 as a solid; the visible treatment is
+   * `border-ring` plus a translucent outer ring, not a black halo.
+   * Every control that focuses (Button, Input, Select, Dialog close,
+   * Pagination, FilterBar chips, DataTable, Toast) reads this same token.
    */
-  ring: ref('primary-600'),
+  ring: ref('gray-708'),
 
   /** Base colour shadows are mixed from. */
   shadow: ref('black'),
@@ -430,12 +447,15 @@ export const semanticColorLight = {
   'neutral-on-subtle': ref('gray-205'),
   'neutral-border': ref('gray-940'),
 
-  // Brand indigo (hue 259) — quieter than black, still clear as the one action.
-  'primary-solid': ref('primary-600'),
-  'primary-solid-hover': ref('primary-700'),
-  'primary-on-solid': ref('white'),
+  /**
+   * Warm espresso solid — premium brown-graphite, not a black brick.
+   * `primary-800` ≈ `oklch(0.33 0.038 48)`.
+   */
+  'primary-solid': ref('primary-800'),
+  'primary-solid-hover': ref('primary-900'),
+  'primary-on-solid': ref('gray-985'),
   'primary-subtle': ref('primary-50'),
-  'primary-on-subtle': ref('primary-700'),
+  'primary-on-subtle': ref('primary-900'),
   'primary-border': ref('primary-200'),
 
   'success-solid': ref('green-550'),
@@ -463,7 +483,8 @@ export const semanticColorLight = {
   'danger-solid': ref('red-577'),
   'danger-solid-hover': ref('red-520'),
   'danger-on-solid': ref('white'),
-  'danger-subtle': ref('danger-50'),
+  // Soft destructive wash — pink enough to read as danger, not a solid brick.
+  'danger-subtle': ref('danger-100'),
   'danger-on-subtle': ref('danger-700'),
   'danger-border': ref('danger-200'),
 } as const
@@ -471,11 +492,8 @@ export const semanticColorLight = {
 /**
  * Dark-mode semantic colours, applied under `.dark`.
  *
- * Solid fills use the bright `400` step with dark text rather than mirroring
- * light mode's `600` with white text. On a near-black page a `600` fill only
- * reaches 3.6–4.4:1 against the background — the button itself becomes hard to
- * locate even though its label is legible. The `400` fill scores 7.4–8.5:1 on
- * both label and background.
+ * Soft ink fills invert on dark pages: a near-white solid with dark type,
+ * rather than a mid-grey that disappears into the chrome.
  */
 export const semanticColorDark = {
   background: ref('gray-145'),
@@ -483,7 +501,7 @@ export const semanticColorDark = {
   muted: ref('gray-269'),
   accent: ref('gray-269'),
   'surface-active': ref('gray-371'),
-  'surface-selected': ref('primary-950'),
+  'surface-selected': ref('gray-269'),
   'surface-disabled': ref('gray-269'),
   // Lifts off `surface` rather than receding. On a dark page a placeholder
   // darker than its card reads as a hole in the layout.
@@ -504,7 +522,11 @@ export const semanticColorDark = {
   // The reference `--input`, unchanged: composited over the page it measures
   // 3.82:1, and 3.54:1 over a card, so both clear 1.4.11 without help.
   input: ref('white-alpha-15'),
-  ring: ref('primary-400'),
+  /**
+   * Soft focus — white at the same quiet weight as the control border, not a
+   * bright primary wash. Reads as a silver edge on dark surfaces.
+   */
+  ring: ref('white-alpha-15'),
 
   shadow: ref('black'),
 
@@ -515,13 +537,13 @@ export const semanticColorDark = {
   'neutral-on-subtle': ref('gray-985'),
   'neutral-border': ref('gray-371'),
 
-  // Bright fill with dark label — same recipe as success/warning on dark pages.
-  'primary-solid': ref('primary-400'),
-  'primary-solid-hover': ref('primary-300'),
-  'primary-on-solid': ref('gray-145'),
-  'primary-subtle': ref('primary-950'),
-  'primary-on-subtle': ref('primary-300'),
-  'primary-border': ref('primary-800'),
+  // Soft near-white fill with dark label — ink inverted for dark pages.
+  'primary-solid': ref('primary-100'),
+  'primary-solid-hover': ref('primary-50'),
+  'primary-on-solid': ref('primary-900'),
+  'primary-subtle': ref('primary-900'),
+  'primary-on-subtle': ref('primary-200'),
+  'primary-border': ref('primary-700'),
 
   'success-solid': ref('green-550'),
   'success-solid-hover': ref('green-520'),
@@ -541,9 +563,11 @@ export const semanticColorDark = {
   'danger-solid': ref('red-577'),
   'danger-solid-hover': ref('red-520'),
   'danger-on-solid': ref('white'),
-  'danger-subtle': ref('danger-950'),
-  'danger-on-subtle': ref('danger-300'),
-  'danger-border': ref('danger-800'),
+  // Soft destructive wash in dark — same philosophy as light (pink wash +
+  // coloured label), mirroring success/warning dark subtle steps.
+  'danger-subtle': ref('red-260'),
+  'danger-on-subtle': ref('red-850'),
+  'danger-border': ref('red-350'),
 } as const
 
 /** Names of every semantic colour token. */

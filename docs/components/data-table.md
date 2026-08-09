@@ -131,6 +131,7 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 | `loadingLabel`     | `string`                               | `'Loading'`         | Announced while loading.                                                          |
 | `emptyTitle`       | `string`                               | `'Nothing to show'` | Title for the built-in empty state.                                               |
 | `emptyDescription` | `string`                               | —                   | Description for the built-in empty state.                                         |
+| `emptyReason`      | `'no-data' \| 'no-results' \| 'error'` | —                   | Why the built-in empty state is empty.                                            |
 | `selectable`       | `'single' \| 'multiple'`               | —                   | Adds a selection column.                                                          |
 | `rowLabel`         | `(row: TRow, index: number) => string` | —                   | Accessible name for each row's selection control.                                 |
 | `selectionLabel`   | `string`                               | `'Select'`          | Accessible name for the selection column.                                         |

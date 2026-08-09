@@ -16,7 +16,7 @@ body:
       options:
         - label: I have read [what's next / out of scope](https://github.com/NikolaiKushner/rowkit/blob/main/NEXT.md) and this is not on that list.
           required: true
-        - label: I understand rowkit is twelve components by design, and that a new component is unlikely to be accepted.
+        - label: I have described the problem first — a new component is welcome when it earns a place on a data-dense surface.
           required: true
 
   - type: textarea

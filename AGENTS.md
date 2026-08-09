@@ -16,8 +16,8 @@ Instructions for coding agents working **on** rowkit.
   with a public surface. Prop naming, state ownership, event and slot shapes and
   the recurring accessibility patterns are decided there, once, for every
   component.
-- **[`NEXT.md`](./NEXT.md)** — the working backlog. Scope stays twelve
- components; do not propose a thirteenth.
+- **[`NEXT.md`](./NEXT.md)** — the working backlog. No fixed component count;
+  add surface when it earns its place.
 
 ## Commands
 

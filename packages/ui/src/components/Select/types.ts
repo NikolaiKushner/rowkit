@@ -45,7 +45,7 @@ export interface SelectProps<T extends string | number> {
   loading?: boolean
   /** Text shown while `loading`. */
   loadingText?: string
-  /** Control height and text size. */
+  /** Control height and text size. Inherited from a surrounding `Field` when omitted. */
   size?: NonNullable<SelectVariants['size']>
   /** Disables the control. A surrounding disabled `Field` also disables it. */
   disabled?: boolean

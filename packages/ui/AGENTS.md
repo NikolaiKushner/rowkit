@@ -87,9 +87,8 @@ handling.
 
 **Props**
 
-- `variant: 'primary' | 'danger' | 'secondary' | 'ghost'` — default `'primary'`. Visual weight and intent.
-- `size: 'sm' | 'md' | 'xs' | 'lg'` — default `'md'`. Control height and text size.
-- `icon: boolean` — default `false`. Renders the button square, for a label that is only an icon.
+- `variant: 'outline' | 'default' | 'secondary' | 'ghost' | 'destructive' | 'link'` — default `'default'`. Visual weight and intent.
+- `size: 'sm' | 'default' | 'xs' | 'lg' | 'icon' | 'icon-xs' | 'icon-sm' | 'icon-lg'` — default `'default'`. Control height and text size.
 - `block: boolean` — default `false`. Stretches the button to fill its container.
 - `loading: boolean` — default `false`. Swaps the leading slot for a spinner and blocks activation.
 - `disabled: boolean` — default `false`. Disables the button.
@@ -104,6 +103,20 @@ handling.
 - `#default` — The button label.
 - `#leading` — Icon before the label. Replaced by the spinner while loading.
 - `#trailing` — Icon after the label.
+
+### ButtonGroup
+
+`import { ButtonGroup } from 'rowkit'`
+
+**Props**
+
+- `orientation: 'horizontal' | 'vertical'` — default `'horizontal'`. Layout axis.
+- `'aria-label': string`. Accessible name for the group.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — Buttons (or nested groups) to join.
 
 ### DataTable
 
@@ -120,6 +133,7 @@ handling.
 - `loadingLabel: string` — default `'Loading'`. Announced while loading.
 - `emptyTitle: string` — default `'Nothing to show'`. Title for the built-in empty state.
 - `emptyDescription: string`. Description for the built-in empty state.
+- `emptyReason: 'no-data' | 'no-results' | 'error'`. Why the built-in empty state is empty.
 - `selectable: 'single' | 'multiple'`. Adds a selection column.
 - `rowLabel: (row: TRow, index: number) => string`. Accessible name for each row's selection control.
 - `selectionLabel: string` — default `'Select'`. Accessible name for the selection column.
@@ -200,7 +214,7 @@ handling.
 - `error: string`. Validation message. Its presence is what puts the field into the error state; there is no separate `invalid` flag to keep in sync.
 - `required: boolean` — default `false`. Marks the control required and shows the required indicator.
 - `disabled: boolean` — default `false`. Disables the control inside.
-- `size: 'sm' | 'md' | 'lg'` — default `'md'`. Sizes the label, hint and error together with the control.
+- `size: 'sm' | 'md' | 'lg'` — default `'md'`. Sizes the label, hint, error and — via field context — the nested control when that control omits its own `size`.
 - `id: string`. Id for the control. Generated when omitted — supply one only when something outside the field needs to reference it.
 - `labelSrOnly: boolean` — default `false`. Hides the label visually while leaving it available to screen readers. For a search box in a toolbar whose purpose is obvious from context.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
@@ -251,7 +265,7 @@ handling.
 
 **Props**
 
-- `size: 'sm' | 'md' | 'lg'` — default `'md'`. Control height and text size.
+- `size: 'sm' | 'md' | 'lg'`. Control height and text size. Inherited from a surrounding `Field` when omitted.
 - `type: 'number' | 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'date'` — default `'text'`. Native input type. Deliberately excludes `checkbox`, `radio` and `file`, which need different markup and a different control.
 - `placeholder: string`. Short example of the expected value. Never a substitute for a label.
 - `disabled: boolean` — default `false`. Disables the input. A surrounding disabled `Field` also disables it.
@@ -313,7 +327,7 @@ handling.
 - `manualFilter: boolean` — default `false`. Hands filtering to the consumer.
 - `loading: boolean` — default `false`. Shows a loading row in place of the list. For async options.
 - `loadingText: string` — default `'Loading…'`. Text shown while `loading`.
-- `size: 'sm' | 'md' | 'lg'` — default `'md'`. Control height and text size.
+- `size: 'sm' | 'md' | 'lg'`. Control height and text size. Inherited from a surrounding `Field` when omitted.
 - `disabled: boolean` — default `false`. Disables the control. A surrounding disabled `Field` also disables it.
 - `invalid: boolean` — default `false`. Marks the value invalid. A `Field` with an `error` also sets it.
 - `required: boolean` — default `false`. Marks the control required. A required `Field` also sets it.

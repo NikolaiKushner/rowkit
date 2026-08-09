@@ -34,7 +34,7 @@ export const emptyStateIconVariants = cva(
   }
 )
 
-export const emptyStateTitleVariants = cva('font-medium text-foreground', {
+export const emptyStateTitleVariants = cva('font-medium tracking-tight text-foreground', {
   variants: {
     size: {
       sm: 'text-sm',

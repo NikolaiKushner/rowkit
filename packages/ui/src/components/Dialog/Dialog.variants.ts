@@ -78,19 +78,20 @@ export const dialogBodyVariants = cva(
  * the footer simply runs out rather than passing behind an edge.
  */
 export const dialogFooterVariants = cva(
-  'flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-border p-4'
+  // Hairline above the actions — same plane separation shadcn uses so a
+  // scrolling body does not run into the buttons.
+  'flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-border bg-card px-4 py-3'
 )
 
 export const dialogCloseVariants = cva([
-  // Same geometry as a Button `icon` at `md`: 32px square, `rounded-md`, and the
-  // shared focus recipe (border + translucent ring). A borderless opaque ring
-  // in the brand colour read as a blue square around the X.
+  // Ghost chrome — same quiet exit as a footer Cancel, not an outlined icon tile.
+  // Solid ring (not /50): no border half to carry contrast on a borderless control.
   'absolute right-3 top-3 inline-flex size-8 shrink-0 cursor-pointer',
-  'items-center justify-center rounded-md border border-transparent',
+  'items-center justify-center rounded-md border-0 bg-transparent',
   'text-muted-foreground opacity-70 hover:opacity-100',
   'transition-colors duration-fast ease-standard',
   'hover:bg-accent hover:text-foreground',
-  'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
+  'outline-none focus-visible:ring-3 focus-visible:ring-ring',
 ])
 
 export type DialogVariants = VariantProps<typeof dialogContentVariants>

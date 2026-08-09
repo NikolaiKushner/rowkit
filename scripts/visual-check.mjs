@@ -20,20 +20,24 @@ const outDir = resolve(process.cwd(), '.visual-check')
 
 /** Default stories that cover the visual surface without interaction noise. */
 const DEFAULT_STORIES = [
+  'patterns-datatablepage--default',
   'foundations-button--variants',
   'foundations-button--sizes',
+  'foundations-buttongroup--default',
   'foundations-badge--matrix',
+  'foundations-badge--default',
   'foundations-input--states',
   'foundations-field--with-error',
-  'foundations-select--states',
+  'foundations-select--default',
   'data-datatable--default',
   'data-datatable--empty',
   'data-datatable--loading',
   'data-pagination--default',
-  'data-filterbar--with-controls',
+  'data-filterbar--default',
+  'data-emptystate--default',
   'data-emptystate--reasons',
   'data-skeleton--variants',
-  'overlay-dialog--default',
+  'overlay-dialog--open',
   'overlay-toaster--variants',
   'overlay-tooltip--placements',
 ]

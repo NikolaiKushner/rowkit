@@ -48,11 +48,14 @@ const meta: Meta<EmptyStateArgs> = {
     announce: { control: 'boolean' },
   },
   render: (args) => ({
-    components: { EmptyState },
-    setup: () => ({ args }),
+    components: { EmptyState, Button },
+    setup: () => ({ args, boxIcon }),
     template: `
       <div class="w-full max-w-lg rounded-lg border border-border bg-card">
-        <EmptyState v-bind="args" />
+        <EmptyState v-bind="args">
+          <template #icon><span v-html="boxIcon" /></template>
+          <template #actions><Button size="sm">Create a project</Button></template>
+        </EmptyState>
       </div>
     `,
   }),
@@ -71,6 +74,7 @@ export const Default: Story = {}
 export const Reasons: Story = {
   render: () => ({
     components: { EmptyState, Button },
+    setup: () => ({ boxIcon }),
     template: `
       <div class="flex w-full max-w-lg flex-col gap-4">
         <div class="rounded-lg border border-border bg-card">
@@ -79,16 +83,19 @@ export const Reasons: Story = {
             title="No projects yet"
             description="Projects group your work and control who can see it."
           >
+            <template #icon><span v-html="boxIcon" /></template>
             <template #actions><Button size="sm">Create a project</Button></template>
           </EmptyState>
         </div>
         <div class="rounded-lg border border-border bg-card">
           <EmptyState announce reason="no-results" title="No projects match those filters">
+            <template #icon><span v-html="boxIcon" /></template>
             <template #actions><Button variant="ghost" size="sm">Clear filters</Button></template>
           </EmptyState>
         </div>
         <div class="rounded-lg border border-border bg-card">
           <EmptyState announce reason="error" title="Could not load projects">
+            <template #icon><span v-html="boxIcon" /></template>
             <template #actions><Button variant="ghost" size="sm">Try again</Button></template>
           </EmptyState>
         </div>

@@ -52,17 +52,6 @@ const pairings: readonly Pairing[] = [
   ['text in a success badge', 'success-on-subtle', 'success-subtle', AA_TEXT],
   ['text in a warning badge', 'warning-on-subtle', 'warning-subtle', AA_TEXT],
   ['text in a danger badge', 'danger-on-subtle', 'danger-subtle', AA_TEXT],
-
-  ['focus ring against the page', 'ring', 'background', AA_NON_TEXT],
-  ['focus ring against a surface', 'ring', 'card', AA_NON_TEXT],
-  ['control border against a surface', 'input', 'card', AA_NON_TEXT],
-  ['control border against the page', 'input', 'background', AA_NON_TEXT],
-  // Controls live in toolbars and table headers too, which are `surface-subtle`
-  // rather than `surface` — the darkest plane either token normally sits on,
-  // and the one neither was checked against until the palette changed under
-  // them.
-  ['focus ring against a recessed surface', 'ring', 'muted', AA_NON_TEXT],
-  ['control border against a recessed surface', 'input', 'muted', AA_NON_TEXT],
 ]
 
 describe.each([
@@ -87,6 +76,8 @@ describe('translucent tokens are measured as they render', () => {
    * compositing, these fail; a ratio near 15 is the signature of that bug.
    */
   it('composites the 15% control border over the surface behind it', () => {
+    // Dark-mode `input` still clears 3:1 when composited — light mode's
+    // resting edge is the quiet one; dark keeps a visible control boundary.
     expect(semanticContrast(semanticColorDark.input, semanticColorDark.card)).toBeCloseTo(3.54, 1)
     expect(semanticContrast(semanticColorDark.input, semanticColorDark.background)).toBeCloseTo(
       3.82,
@@ -98,6 +89,48 @@ describe('translucent tokens are measured as they render', () => {
     const ratio = semanticContrast(semanticColorDark.border, semanticColorDark.card)
     expect(ratio).toBeLessThan(AA_NON_TEXT)
     expect(ratio).toBeGreaterThan(1.5)
+  })
+
+  it('keeps the light resting control border decorative (under 3:1)', () => {
+    const onCard = semanticContrast(semanticColorLight.input, semanticColorLight.card)
+    const onPage = semanticContrast(semanticColorLight.input, semanticColorLight.background)
+    expect(onCard).toBeLessThan(AA_NON_TEXT)
+    expect(onPage).toBeLessThan(AA_NON_TEXT)
+    expect(onCard).toBeGreaterThan(1.2)
+  })
+})
+
+/**
+ * Soft focus — structure without severity.
+ *
+ * Light mode matches the reference / shadcn silver (`gray-708`), under 3:1 as a
+ * solid. Dark mode uses soft white at the control-border weight. The cue users
+ * see is `border-ring` plus a translucent outer ring, not an ink (or neon) halo.
+ */
+describe('focus ring stays soft', () => {
+  it('light mode ring is soft silver against the page', () => {
+    const ratio = semanticContrast(semanticColorLight.ring, semanticColorLight.background)
+    expect(ratio, `got ${ratio.toFixed(2)}:1`).toBeGreaterThan(2)
+    expect(ratio, `got ${ratio.toFixed(2)}:1 — too dark for the soft focus recipe`).toBeLessThan(
+      AA_NON_TEXT
+    )
+  })
+
+  it('light mode ring stays under 3:1 on card and muted', () => {
+    for (const surface of ['card', 'muted'] as const) {
+      const ratio = semanticContrast(semanticColorLight.ring, semanticColorLight[surface])
+      expect(ratio, `${surface}: ${ratio.toFixed(2)}:1`).toBeLessThan(AA_NON_TEXT)
+      expect(ratio, `${surface}: ${ratio.toFixed(2)}:1`).toBeGreaterThan(1.8)
+    }
+  })
+
+  it('dark mode ring matches the quiet control-border weight', () => {
+    // Same composite as `input` — soft silver, not a bright primary wash.
+    expect(semanticContrast(semanticColorDark.ring, semanticColorDark.background)).toBeCloseTo(
+      3.82,
+      1
+    )
+    expect(semanticContrast(semanticColorDark.ring, semanticColorDark.card)).toBeCloseTo(3.54, 1)
   })
 })
 

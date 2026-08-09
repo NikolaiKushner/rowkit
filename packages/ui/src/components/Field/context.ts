@@ -22,6 +22,12 @@ export interface FieldContext {
   readonly disabled: Ref<boolean>
   /** Whether the control is required. */
   readonly required: Ref<boolean>
+  /**
+   * Shared control height (`sm` | `md` | `lg`). Input and Select inherit this
+   * when they omit their own `size`, so a Field sized for a toolbar actually
+   * sizes the control — not only the label chrome.
+   */
+  readonly size: Ref<'sm' | 'md' | 'lg'>
 }
 
 export const FIELD_CONTEXT: InjectionKey<FieldContext> = Symbol('rowkit.field')

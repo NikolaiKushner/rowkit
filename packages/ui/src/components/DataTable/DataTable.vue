@@ -283,6 +283,7 @@ const emptyStateProps = computed(() => ({
   title: props.emptyTitle,
   size: 'sm' as const,
   level: 3 as const,
+  ...(props.emptyReason === undefined ? {} : { reason: props.emptyReason }),
   ...(props.emptyDescription === undefined ? {} : { description: props.emptyDescription }),
 }))
 

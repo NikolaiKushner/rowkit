@@ -1,42 +1,59 @@
 # What's next
 
-The twelve components for v1 are built and Stable. The backlog lives in
+The backlog lives in
 [`NEXT.md`](https://github.com/NikolaiKushner/rowkit/blob/main/NEXT.md) in the
-repository; this page is the readable version.
+repository; this page is the readable version. No fixed component count —
+new surface ships when it earns a place on a data-dense interface.
 
-## Scope (unchanged)
-
-**Twelve components. No thirteenth without an explicit decision in `NEXT.md`.**
+## Current surface
 
 | Area        | Components                                                                                                                                                                              |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Foundations | [Button](/components/button), [Field & Input](/components/field), [Select](/components/select), [Badge](/components/badge)                                                              |
+| Foundations | [Button](/components/button), [ButtonGroup](/components/button-group), [Field & Input](/components/field), [Select](/components/select), [Badge](/components/badge)                     |
 | Data        | [DataTable](/components/data-table), [Pagination](/components/pagination), [FilterBar](/components/filter-bar), [EmptyState](/components/empty-state), [Skeleton](/components/skeleton) |
 | Overlays    | [Dialog](/components/dialog), [Toast](/components/toast), [Tooltip](/components/tooltip)                                                                                                |
 
-All twelve meet the definition of done. What remains before v1.0 is time and
-real-world use: an API is not proven by its author.
+What remains before v1.0 is time and real-world use: an API is not proven by
+its author.
+
+## Design direction
+
+Restraint. Structure without severity. No excess.
+
+Chrome stays neutral. Primary is warm espresso graphite
+(`oklch(0.33 0.038 48)`). Soft destructive, soft focus, quiet borders. See
+[`NEXT.md`](https://github.com/NikolaiKushner/rowkit/blob/main/NEXT.md).
 
 ## Working backlog
 
-### Visual QA for agents
+### Land the current arc
 
-After any change that touches variants, tokens, layout, or dark mode, agents run
-`pnpm visual:check`, open the PNGs, and fix what looks wrong. Unit tests and
-`addon-a11y` are necessary; they are not sufficient for pixels.
+Ship Button API / ButtonGroup / espresso tokens / quiet chrome with honest
+changesets. Then stop reopening that cluster unless real friction appears.
 
 ### Consistency pass
 
-Focus rings, size scale, dark mode, disabled / loading / empty / error — checked
-across components, not one at a time in isolation. Density is judged on a real
-table page (FilterBar + DataTable + Pagination).
+Done for this release: focus recipes (Select invalid, FilterBar chip remove),
+toolbar heights (FilterBar Clear, Field→control size inheritance), and
+`DataTable` `emptyReason` for intentional empty/filter-empty states.
 
 ### Real-world API pressure
 
 Prefer friction from actual apps over inventing features. Lock APIs only after
 that contact.
 
-## Explicitly out of scope
+### Visual QA for agents
+
+After any change that touches variants, tokens, layout, or dark mode, agents run
+`pnpm visual:check`, open the PNGs, and fix what looks wrong.
+
+## Next surface (if earned)
+
+- DropdownMenu for table row actions
+- Popover when a tooltip needs a link / richer content
+- Sheet / drawer only if dialogs feel wrong for filter or detail panes
+
+## Explicitly out of scope (until demand)
 
 - Date picker / date range picker
 - Rich text editor
@@ -50,8 +67,8 @@ that contact.
 
 ## Non-goals
 
-**Not a general-purpose UI library.** If you need forty components, use
-[Nuxt UI](https://ui.nuxt.com) or [shadcn-vue](https://www.shadcn-vue.com).
+**Not a kitchen-sink UI library.** Prefer depth on data-dense surfaces over
+breadth for its own sake.
 
 **Not a CSS framework.** Tailwind v4 is a peer dependency.
 
@@ -59,7 +76,6 @@ that contact.
 
 ## Later (not promised)
 
-- A popover — the honest answer to "can a tooltip contain a link"
 - Virtualisation for `DataTable`, with a real workload — see
   [decision 004](/decisions/004-datatable-performance)
 - A custom docs theme

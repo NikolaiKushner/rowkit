@@ -9,18 +9,21 @@ import type { HTMLAttributes } from 'vue'
  * export a type, and a consumer annotating their own wrapper needs one.
  */
 export interface ButtonProps {
-  /** Visual weight and intent. */
-  variant?: NonNullable<ButtonVariants['variant']>
-  /** Control height and text size. */
-  size?: NonNullable<ButtonVariants['size']>
   /**
-   * Renders the button square, for a label that is only an icon.
+   * Visual weight and intent.
    *
-   * Supply an accessible name yourself — `aria-label` on the button, or visible
-   * text in an `.sr-only` span. A square button with a glyph in it announces as
-   * nothing at all.
+   * Omit for soft-ink solid (the primary action). `outline` for bordered
+   * chrome, `secondary` for a muted fill, `ghost` for tertiary, `destructive`
+   * for soft delete-style actions, `link` for text that acts.
    */
-  icon?: boolean
+  variant?: NonNullable<ButtonVariants['variant']>
+  /**
+   * Control height and text size.
+   *
+   * `default` matches Field/Input/Select `md` (`h-8`). Icon sizes render a
+   * square — supply `aria-label` yourself.
+   */
+  size?: NonNullable<ButtonVariants['size']>
   /** Stretches the button to fill its container. */
   block?: boolean
   /**

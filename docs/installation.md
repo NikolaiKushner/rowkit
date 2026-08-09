@@ -25,6 +25,25 @@ actually renders.
 
 Note there is no `.css` on either subpath. The export is `rowkit/styles`.
 
+## Typeface (optional, recommended)
+
+rowkit's token stack leads with **Geist**. The library does not ship the font
+files — pull them once in the app:
+
+```bash
+pnpm add @fontsource-variable/geist @fontsource-variable/geist-mono
+```
+
+```css
+@import '@fontsource-variable/geist/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
+@import 'tailwindcss';
+@import 'rowkit/styles';
+```
+
+Skip the imports and the stack falls through to system UI fonts. Override
+`--font-sans` / `--font-mono` if you want a different face.
+
 ## Dark mode
 
 Add the `dark` class to `<html>`. rowkit's tokens key off the class, not

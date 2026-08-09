@@ -45,8 +45,8 @@ const copy = {
   >
     <template #actions>
       <Button v-if="reason === 'no-data'">Create a project</Button>
-      <Button v-else-if="reason === 'no-results'" variant="secondary">Clear filters</Button>
-      <Button v-else variant="secondary">Try again</Button>
+      <Button v-else-if="reason === 'no-results'" variant="outline">Clear filters</Button>
+      <Button v-else variant="outline">Try again</Button>
     </template>
   </EmptyState>
 </DemoBox>

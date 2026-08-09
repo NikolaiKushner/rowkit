@@ -89,10 +89,10 @@ export const Variants: Story = {
   render: () =>
     scene(`
       <div class="flex flex-wrap gap-2 p-8">
-        <Button variant="secondary" @click="toast('Nothing special happened')">Neutral</Button>
-        <Button variant="secondary" @click="success('Project archived')">Success</Button>
-        <Button variant="secondary" @click="warning('Two seats left')">Warning</Button>
-        <Button variant="secondary" @click="danger('Could not save')">Danger</Button>
+        <Button variant="outline" @click="toast('Nothing special happened')">Neutral</Button>
+        <Button variant="outline" @click="success('Project archived')">Success</Button>
+        <Button variant="outline" @click="warning('Two seats left')">Warning</Button>
+        <Button variant="outline" @click="danger('Could not save')">Danger</Button>
         <Toaster />
       </div>
     `),
@@ -121,7 +121,7 @@ export const WithAction: Story = {
     scene(`
       <div class="p-8">
         <Button
-          variant="danger"
+          variant="destructive"
           @click="danger('Project deleted', {
             duration: 0,
             action: { label: 'Undo', onClick: () => success('Restored') },

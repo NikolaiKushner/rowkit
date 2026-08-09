@@ -29,7 +29,8 @@ export default defineConfig({
   vite: { plugins: [tailwindcss()] },
 
   head: [
-    ['meta', { name: 'theme-color', content: '#3b5bdb' }],
+    ['meta', { name: 'theme-color', content: '#462f24' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/mark.svg' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'rowkit' }],
     [
@@ -42,6 +43,7 @@ export default defineConfig({
   ],
 
   themeConfig: {
+    logo: { light: '/mark-light.svg', dark: '/mark.svg', alt: 'rowkit' },
     siteTitle: 'rowkit',
 
     nav: [
@@ -77,6 +79,7 @@ export default defineConfig({
         items: [
           { text: 'Tokens', link: '/foundations/tokens' },
           { text: 'Button', link: '/components/button' },
+          { text: 'ButtonGroup', link: '/components/button-group' },
         ],
       },
       {

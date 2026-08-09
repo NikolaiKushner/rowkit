@@ -6,7 +6,10 @@ Repository: `github.com/NikolaiKushner/rowkit`
 Package: `rowkit` on npm
 Docs: `rowkit.dev`
 
-Read `NEXT.md` before proposing work. The component set is fixed at twelve — do not start a thirteenth. The backlog is polish, proof, and process, not new surface area.
+Read `NEXT.md` before proposing work. The backlog is polish, proof, process,
+and new surface when it earns its place — no fixed component count.
+
+**Visual direction:** restraint, structure without severity, no excess. Neutral chrome; warm-espresso primary (`oklch(0.33 0.038 48)`), not a chromatic shout. Consumers rebrand via tokens — defaults must not fight them. Geist stays.
 
 Read `docs/conventions.md` before designing a component API. Prop naming, state ownership, event and slot shapes, and the recurring accessibility patterns are decided there, once, for every component.
 
@@ -82,6 +85,6 @@ Don't re-litigate these:
 
 - **npm package, not copy-paste distribution.** shadcn-vue's model is deliberate and good, but rowkit ships as a versioned package.
 - **Reka UI, not shadcn-vue as a dependency.** shadcn-vue is a reference implementation to learn from, not something rowkit installs.
-- **Twelve components.** See `NEXT.md`. No thirteenth without an explicit decision there.
+- **No fixed component count.** Add components when they earn a place on a data-dense surface; do not invent for breadth.
 - **MIT license.**
 - **Tokens as a separate package**, so they can be consumed without importing components.
