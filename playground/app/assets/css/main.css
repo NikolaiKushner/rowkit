@@ -5,7 +5,14 @@
  * That means declaring the token theme and the scan path by hand — the shipped
  * stylesheet does both, but it points at dist/index.js.
  */
+@import '@fontsource-variable/geist/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
 @import 'tailwindcss';
 @import '@rowkit/tokens/css';
 
 @source '../../../../packages/ui/src';
+
+html,
+body {
+  font-family: var(--font-sans);
+}

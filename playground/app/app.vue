@@ -19,7 +19,7 @@ const activeClass = 'bg-card text-foreground shadow-xs'
 </script>
 
 <template>
-  <div class="min-h-screen bg-background text-foreground">
+  <div class="min-h-screen bg-background font-sans text-foreground">
     <header class="border-b border-border bg-card">
       <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
         <nav

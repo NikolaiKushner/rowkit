@@ -213,15 +213,19 @@ const selectedCount = computed(() => selected.value.length)
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-5">
     <header class="flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <h1 class="text-xl font-semibold tracking-tight">Users</h1>
-        <p class="mt-0.5 text-sm text-muted-foreground">
-          Filterable, sortable and paginated — every piece is a rowkit component.
+      <div class="min-w-0">
+        <p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">Workspace</p>
+        <h1 class="mt-1 text-2xl font-medium tracking-tight">Users</h1>
+        <p class="mt-1 text-sm text-muted-foreground">
+          {{ filtered.length }} people with access to this workspace.
         </p>
       </div>
-      <Button>Invite a teammate</Button>
+      <div class="flex items-center gap-2">
+        <Button variant="outline" size="sm">Export</Button>
+        <Button size="sm">Invite teammate</Button>
+      </div>
     </header>
 
     <FilterBar
@@ -252,7 +256,7 @@ const selectedCount = computed(() => selected.value.length)
       </p>
       <div class="flex items-center gap-2">
         <Button variant="ghost" size="sm" @click="selected = []">Clear selection</Button>
-        <Button variant="danger" size="sm">Suspend</Button>
+        <Button variant="destructive" size="sm">Suspend</Button>
       </div>
     </div>
 
@@ -270,9 +274,13 @@ const selectedCount = computed(() => selected.value.length)
       hoverable
       class="max-h-[32rem]"
     >
+      <template #[`cell:name`]="{ row }">
+        <span class="font-medium text-foreground">{{ (row as User).name }}</span>
+      </template>
+
       <template #[`cell:email`]="{ row }">
         <Tooltip :content="(row as User).email">
-          <span class="block max-w-[16rem] truncate tabular-nums text-muted-foreground">
+          <span class="block max-w-[16rem] truncate text-muted-foreground">
             {{ (row as User).email }}
           </span>
         </Tooltip>
@@ -282,6 +290,10 @@ const selectedCount = computed(() => selected.value.length)
         <Badge :variant="statusTone[(row as User).status]" size="sm" dot>
           {{ (row as User).status }}
         </Badge>
+      </template>
+
+      <template #[`cell:seats`]="{ row }">
+        <span class="tabular-nums">{{ (row as User).seats }}</span>
       </template>
 
       <template #[`cell:lastActive`]="{ row }">
@@ -294,7 +306,7 @@ const selectedCount = computed(() => selected.value.length)
         <Button
           variant="ghost"
           size="sm"
-          class="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100"
+          class="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 focus-visible:opacity-100"
           :aria-label="`Edit ${(row as User).name}`"
         >
           Edit
