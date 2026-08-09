@@ -16,6 +16,8 @@ export default tseslint.config(
       'playground/.nuxt/**',
       'playground/.output/**',
       'storybook-static/**',
+      // VitePress local/dev cache — not source, and not present in CI.
+      'docs/.vitepress/cache/**',
     ],
   },
 

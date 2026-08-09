@@ -73,7 +73,7 @@ async function waitForStorybook(page, url) {
     await page.waitForTimeout(500)
   }
   throw new Error(
-    `Storybook is not reachable at ${url}. Start it with \`pnpm storybook\` and retry.`,
+    `Storybook is not reachable at ${url}. Start it with \`pnpm storybook\` and retry.`
   )
 }
 
@@ -111,7 +111,7 @@ async function main() {
     }
     await writeFile(
       resolve(outDir, 'manifest.json'),
-      JSON.stringify({ url, stories, themes: ['light', 'dark'], files: written }, null, 2),
+      JSON.stringify({ url, stories, themes: ['light', 'dark'], files: written }, null, 2)
     )
     console.error(`\nWrote ${written.length} screenshots to ${outDir}`)
     console.error('Open the PNGs (Read tool) and inspect before claiming UI work is done.')

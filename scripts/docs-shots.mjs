@@ -71,7 +71,7 @@ async function main() {
   const markSvg = readFileSync(resolve(outDir, 'mark.svg'), 'utf8')
   await page.setContent(
     `<!doctype html><html><body style="margin:0;background:transparent">${markSvg}</body></html>`,
-    { waitUntil: 'domcontentloaded' },
+    { waitUntil: 'domcontentloaded' }
   )
   await page.setViewportSize({ width: 128, height: 128 })
   const markPath = resolve(outDir, 'mark.png')
