@@ -135,7 +135,7 @@ function toastOverDialog() {
         <Button variant="outline" @click="toastOverDialog">Fire a toast from in here</Button>
       </div>
       <template #footer>
-        <Button variant="outline" @click="dialogOpen = false">Cancel</Button>
+        <Button variant="ghost" @click="dialogOpen = false">Cancel</Button>
         <Tooltip content="Saves and closes">
           <Button @click="save">Save</Button>
         </Tooltip>
@@ -152,7 +152,7 @@ function toastOverDialog() {
     >
       Escape and clicking outside do nothing here. The close button still works.
       <template #footer>
-        <Button variant="outline" @click="confirmOpen = false">Cancel</Button>
+        <Button variant="ghost" @click="confirmOpen = false">Cancel</Button>
         <Button variant="destructive" @click="deleteProject">Delete</Button>
       </template>
     </Dialog>
