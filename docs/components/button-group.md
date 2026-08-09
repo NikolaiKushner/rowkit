@@ -44,11 +44,11 @@ Nest groups to space separate units. Children keep their own `variant` and
 
 <!-- @props ButtonGroupProps -->
 
-| Prop           | Type                         | Default        | Description                                              |
-| -------------- | ---------------------------- | -------------- | -------------------------------------------------------- |
-| `orientation`  | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout axis.                                             |
-| `'aria-label'` | `string`                     | —              | Accessible name for the group.                           |
-| `class`        | `string`                     | —              | Additional classes, merged so a consumer's utility wins. |
+| Prop          | Type                         | Default        | Description                                              |
+| ------------- | ---------------------------- | -------------- | -------------------------------------------------------- |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout axis.                                             |
+| `ariaLabel`   | `string`                     | —              | Accessible name for the group.                           |
+| `class`       | `string`                     | —              | Additional classes, merged so a consumer's utility wins. |
 
 <!-- /@props -->
 

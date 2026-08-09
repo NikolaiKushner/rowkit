@@ -19,9 +19,9 @@ export interface ButtonGroupProps {
    * Accessible name for the group.
    *
    * Prefer this (or `aria-labelledby`) so assistive tech can announce what the
-   * joined controls are for.
+   * joined controls are for. In templates, `aria-label` maps to this prop.
    */
-  'aria-label'?: string
+  ariaLabel?: string
   /** Additional classes, merged so a consumer's utility wins. */
   class?: HTMLAttributes['class']
 }

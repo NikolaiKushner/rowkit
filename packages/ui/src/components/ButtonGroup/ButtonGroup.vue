@@ -20,7 +20,7 @@ defineSlots<{
   <div
     role="group"
     data-slot="button-group"
-    :aria-label="props['aria-label']"
+    :aria-label="props.ariaLabel"
     :data-orientation="props.orientation"
     :class="cn(buttonGroupVariants({ orientation: props.orientation }), props.class)"
   >

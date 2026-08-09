@@ -12,7 +12,7 @@
  *   mark.png            — espresso mark at 128px (favicon / social)
  */
 
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { chromium } from 'playwright'
 import { readFileSync } from 'node:fs'

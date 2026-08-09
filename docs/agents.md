@@ -118,7 +118,7 @@ handling.
 **Props**
 
 - `orientation: 'horizontal' | 'vertical'` — default `'horizontal'`. Layout axis.
-- `'aria-label': string`. Accessible name for the group.
+- `ariaLabel: string`. Accessible name for the group.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
 
 **Slots**
