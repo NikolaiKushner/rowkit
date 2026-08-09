@@ -88,8 +88,8 @@ export const Default: Story = {
     setup: () => {
       const filters = ref([...applied])
       const search = ref('')
-      const role = ref<string>('Admin')
-      const status = ref<string>()
+      const role = ref<string | undefined>('Admin')
+      const status = ref<string | undefined>()
       const roles = [
         { label: 'Owner', value: 'Owner' },
         { label: 'Admin', value: 'Admin' },

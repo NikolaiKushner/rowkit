@@ -67,8 +67,8 @@ export const Default: Story = {
     },
     setup: () => {
       const search = ref('')
-      const role = ref<string>('Admin')
-      const status = ref<string>()
+      const role = ref<string | undefined>('Admin')
+      const status = ref<string | undefined>()
       const sort = ref<DataTableSort<DemoUser>>({ key: 'name', direction: 'asc' })
       const page = ref(1)
       const pageSize = ref(5)
@@ -111,7 +111,7 @@ export const Default: Story = {
         }
         if (status.value !== undefined) {
           const label = demoStatusOptions.find((o) => o.value === status.value)?.label
-          applied.push({ id: 'status', label: 'Status', value: label })
+          applied.push({ id: 'status', label: 'Status', value: label ?? status.value })
         }
         return applied
       })

@@ -6,36 +6,48 @@ import { repoRoot } from '../scripts/component-api.mjs'
 /**
  * The docs stylesheet has to keep winning against VitePress's own reset.
  *
- * VitePress's default theme ships an unlayered reset — `button, input, …
- * { border: 0; padding: 0 }` and `button { background-color: transparent }` —
- * and unlayered CSS beats anything in `@layer utilities` regardless of order or
- * specificity. Left alone, every button and input in a live demo renders with no
- * background, no padding and no border, while the properties the reset does not
- * name come through normally.
+ * VitePress's default theme ships a form/table reset that fights live demos.
+ * Wrapping that CSS in `@layer vp-theme` (declared before Tailwind) puts it
+ * below `@layer utilities`, so component classes win without `all: revert-layer`
+ * — which Safari mishandles (missing button padding, doubled table borders).
  *
  * That is the failure mode this project keeps meeting: correct classes, correct
  * stylesheet, no error anywhere, wrong pixels. It shipped once already.
  */
 describe('docs stylesheet', () => {
-  it("restores demo controls from under VitePress's reset", async () => {
+  it('declares vp-theme below Tailwind utilities', async () => {
     const css = await readFile(join(repoRoot, 'docs/.vitepress/theme/tokens.css'), 'utf8')
+    const layerAt = css.indexOf('@layer vp-theme;')
+    const twAt = css.indexOf("@import 'tailwindcss'")
     expect(
-      css,
-      'without this every button and input in a demo loses its background, padding and border'
-    ).toMatch(/\.rk-demo :is\(button, input[^)]*\)\s*\{\s*all: revert-layer/)
+      layerAt,
+      'declare @layer vp-theme before Tailwind so the layer sorts below utilities'
+    ).toBeGreaterThan(-1)
+    expect(twAt, 'Tailwind import missing').toBeGreaterThan(-1)
+    expect(layerAt, 'vp-theme must be first-seen before Tailwind').toBeLessThan(twAt)
+    expect(css, 'Safari breaks revert-layer — do not bring it back').not.toMatch(
+      /all:\s*revert-layer/
+    )
+  })
+
+  it('wraps VitePress theme CSS into vp-theme', async () => {
+    const config = await readFile(join(repoRoot, 'docs/.vitepress/config.ts'), 'utf8')
+    expect(
+      config,
+      'without the Vite plugin, VitePress reset stays unlayered and beats utilities'
+    ).toMatch(/@layer vp-theme/)
+    expect(config).toMatch(/rowkit-layer-vitepress-css/)
   })
 
   it("stops VitePress drawing a grid over a demo's table", async () => {
     /*
-     * `.vp-doc th, .vp-doc td { border: 1px solid …; padding: 8px 16px }` is
-     * unlayered, so it beat every layered utility the component set: vertical
-     * rules between the columns, the wrong padding, a grey header band and
-     * muted header text — four departures at once, none of them visible in the
-     * class list, and only on the docs site.
+     * `.vp-doc th, .vp-doc td { border: 1px solid …; padding: 8px 16px }` still
+     * paints chrome onto DataTable cells unless demos neutralize borders. Do not
+     * zero padding here — that fights utilities if a browser mishandles layers.
      */
     const css = await readFile(join(repoRoot, 'docs/.vitepress/theme/tokens.css'), 'utf8')
     expect(css, 'without this every DataTable demo renders as a bordered grid').toMatch(
-      /\.rk-demo :is\(th, td\)\s*\{\s*all: revert-layer/
+      /\.rk-demo :is\(th, td\)\s*\{[^}]*border:\s*none/
     )
   })
 
