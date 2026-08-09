@@ -213,7 +213,7 @@ const selectedCount = computed(() => selected.value.length)
 </script>
 
 <template>
-  <div class="flex flex-col gap-5">
+  <div class="flex flex-col gap-4">
     <header class="flex flex-wrap items-end justify-between gap-3">
       <div class="min-w-0">
         <p class="text-xs font-medium tracking-wide text-muted-foreground uppercase">Workspace</p>
@@ -228,35 +228,37 @@ const selectedCount = computed(() => selected.value.length)
       </div>
     </header>
 
-    <FilterBar
-      v-model:search="search"
-      label="User filters"
-      search-placeholder="Search name or email…"
-      :filters="chips"
-      :result-count="filtered.length"
-      @remove="removeFilter"
-      @clear="clearFilters"
-    >
-      <template #controls>
-        <Select v-model="role" :options="roleOptions" placeholder="Role" class="w-36" />
-        <Select v-model="status" :options="statusOptions" placeholder="Status" class="w-36" />
-      </template>
-    </FilterBar>
+    <div class="flex flex-col gap-2">
+      <FilterBar
+        v-model:search="search"
+        label="User filters"
+        search-placeholder="Search name or email…"
+        :filters="chips"
+        :result-count="filtered.length"
+        @remove="removeFilter"
+        @clear="clearFilters"
+      >
+        <template #controls>
+          <Select v-model="role" :options="roleOptions" placeholder="Role" class="w-36" />
+          <Select v-model="status" :options="statusOptions" placeholder="Status" class="w-36" />
+        </template>
+      </FilterBar>
 
-    <!--
+      <!--
       A single live region for the bulk bar. It appears and disappears with the
       selection, so it announces the count changing rather than the table.
     -->
-    <div
-      v-if="selectedCount > 0"
-      class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-primary-border bg-primary-subtle px-4 py-2"
-    >
-      <p class="text-sm font-medium text-primary-on-subtle">
-        {{ selectedCount }} {{ selectedCount === 1 ? 'user' : 'users' }} selected
-      </p>
-      <div class="flex items-center gap-2">
-        <Button variant="ghost" size="sm" @click="selected = []">Clear selection</Button>
-        <Button variant="destructive" size="sm">Suspend</Button>
+      <div
+        v-if="selectedCount > 0"
+        class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-muted px-3 py-1.5"
+      >
+        <p class="text-sm font-medium text-foreground">
+          {{ selectedCount }} {{ selectedCount === 1 ? 'user' : 'users' }} selected
+        </p>
+        <div class="flex items-center gap-2">
+          <Button variant="ghost" size="sm" @click="selected = []">Clear selection</Button>
+          <Button variant="destructive" size="sm">Suspend</Button>
+        </div>
       </div>
     </div>
 
