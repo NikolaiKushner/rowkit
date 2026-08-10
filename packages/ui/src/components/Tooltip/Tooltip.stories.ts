@@ -40,7 +40,7 @@ const meta: Meta<TooltipArgs> = {
     template: `
       <div class="flex items-center justify-center p-16">
         <Tooltip v-bind="args">
-          <Button variant="secondary">Archive</Button>
+          <Button variant="outline">Archive</Button>
         </Tooltip>
       </div>
     `,
@@ -65,7 +65,7 @@ export const Placements: Story = {
           :placement="placement"
           :content="'Opens on the ' + placement"
         >
-          <Button variant="secondary">{{ placement }}</Button>
+          <Button variant="outline">{{ placement }}</Button>
         </Tooltip>
       </div>
     `,
@@ -152,7 +152,7 @@ export const DisabledTriggerPattern: Story = {
 
         <div class="flex flex-col items-center gap-2">
           <Tooltip content="Upgrade your plan to export">
-            <Button aria-disabled="true" variant="secondary">Export</Button>
+            <Button aria-disabled="true" variant="outline">Export</Button>
           </Tooltip>
           <span class="text-xs text-muted-foreground">✓ aria-disabled, tooltip works</span>
         </div>

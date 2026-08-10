@@ -8,7 +8,7 @@ import type { InputVariants } from './Input.variants'
  * export a type, and a consumer annotating their own wrapper needs one.
  */
 export interface InputProps {
-  /** Control height and text size. */
+  /** Control height and text size. Inherited from a surrounding `Field` when omitted. */
   size?: NonNullable<InputVariants['size']>
   /**
    * Native input type. Deliberately excludes `checkbox`, `radio` and `file`,

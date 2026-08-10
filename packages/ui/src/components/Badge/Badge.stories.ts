@@ -21,10 +21,10 @@ const meta: Meta<BadgeArgs> = {
   component: Badge,
   tags: ['autodocs'],
   args: {
-    variant: 'neutral',
+    variant: 'success',
     appearance: 'subtle',
-    size: 'md',
-    dot: false,
+    size: 'sm',
+    dot: true,
   },
   argTypes: {
     variant: { control: 'select', options: variants },

@@ -63,6 +63,32 @@ type Story = StoryObj<DialogArgs>
 
 export const Default: Story = {}
 
+/** Open by default — the frame visual QA and portfolio shots actually need. */
+export const Open: Story = {
+  render: () => ({
+    components: { Dialog, Button },
+    setup: () => ({
+      open: ref(true),
+      args: {
+        title: 'Delete project',
+        description: 'This removes the project and everything in it. It cannot be undone.',
+        size: 'md' as const,
+      },
+    }),
+    template: `
+      <div class="min-h-[28rem]">
+        <Dialog v-bind="args" v-model:open="open">
+          Downstream access is revoked immediately.
+          <template #footer>
+            <Button variant="ghost" @click="open = false">Cancel</Button>
+            <Button variant="destructive" @click="open = false">Delete project</Button>
+          </template>
+        </Dialog>
+      </div>
+    `,
+  }),
+}
+
 /** Title alone. No `aria-describedby` is wired rather than a dangling one. */
 export const TitleOnly: Story = {
   render: () =>
@@ -75,7 +101,7 @@ export const Sizes: Story = {
     setup: () => ({ sizes, openSize: ref<(typeof sizes)[number] | undefined>() }),
     template: `
       <div class="flex items-center gap-2">
-        <Button v-for="size in sizes" :key="size" variant="secondary" @click="openSize = size">
+        <Button v-for="size in sizes" :key="size" variant="outline" @click="openSize = size">
           {{ size }}
         </Button>
         <Dialog

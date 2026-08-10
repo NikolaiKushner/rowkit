@@ -1,10 +1,9 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
- * The control border uses `border-control`, not `border`. WCAG 1.4.11 asks for
- * 3:1 against the adjacent surface for the boundary of a UI component, and the
- * decorative `border` token is deliberately below that — see the note on the
- * token itself.
+ * Resting edges use `border-input` — quiet structure, intentionally near the
+ * decorative hairline. Focus switches to soft `border-ring` + a translucent
+ * outer ring (silver, not ink).
  */
 export const inputVariants = cva(
   [
@@ -19,10 +18,12 @@ export const inputVariants = cva(
   {
     variants: {
       size: {
-        // No vertical padding — height is locked by `h-*`, same as Button/Select.
-        sm: 'h-7 rounded-md px-2.5 text-sm',
-        md: 'h-8 rounded-md px-2.5 text-sm',
-        lg: 'h-9 rounded-md px-2.5 text-sm',
+        // Height locked by `h-*`. `leading-normal` keeps the value vertically
+        // centered in Safari, which otherwise parks placeholder/text on the
+        // top edge when line-height is inherited from the page.
+        sm: 'h-7 rounded-md px-2.5 text-sm leading-normal',
+        md: 'h-8 rounded-md px-2.5 text-sm leading-normal',
+        lg: 'h-9 rounded-md px-2.5 text-sm leading-normal',
       },
       invalid: {
         // The reference design's invalid treatment: the border goes destructive and the focus

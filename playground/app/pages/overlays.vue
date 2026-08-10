@@ -75,7 +75,7 @@ function toastOverDialog() {
       <div class="flex flex-wrap items-center gap-2">
         <Button @click="dialogOpen = true">Open dialog</Button>
         <Tooltip content="Fires without opening anything">
-          <Button variant="secondary" @click="toastOverDialog">Toast on its own</Button>
+          <Button variant="outline" @click="toastOverDialog">Toast on its own</Button>
         </Tooltip>
         <Button variant="ghost" @click="dismissAll">Clear toasts</Button>
       </div>
@@ -90,16 +90,16 @@ function toastOverDialog() {
       </p>
       <div class="flex flex-wrap items-center gap-2">
         <Tooltip content="Archive this project" placement="top">
-          <Button variant="secondary">Archive</Button>
+          <Button variant="outline">Archive</Button>
         </Tooltip>
         <Tooltip content="Duplicate into a new project" placement="right">
-          <Button variant="secondary">Duplicate</Button>
+          <Button variant="outline">Duplicate</Button>
         </Tooltip>
         <Tooltip content="Export as CSV" placement="bottom">
-          <Button variant="secondary">Export</Button>
+          <Button variant="outline">Export</Button>
         </Tooltip>
         <Tooltip content="Upgrade your plan to transfer projects" placement="left">
-          <Button variant="secondary" aria-disabled="true">Transfer</Button>
+          <Button variant="outline" aria-disabled="true">Transfer</Button>
         </Tooltip>
       </div>
     </section>
@@ -107,9 +107,9 @@ function toastOverDialog() {
     <section class="flex flex-col gap-3">
       <h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Toast tones</h2>
       <div class="flex flex-wrap items-center gap-2">
-        <Button variant="secondary" @click="success('Project archived')">Success</Button>
-        <Button variant="secondary" @click="warning('Two seats remaining')">Warning</Button>
-        <Button variant="secondary" @click="confirmOpen = true">Delete, with undo</Button>
+        <Button variant="outline" @click="success('Project archived')">Success</Button>
+        <Button variant="outline" @click="warning('Two seats remaining')">Warning</Button>
+        <Button variant="outline" @click="confirmOpen = true">Delete, with undo</Button>
         <Badge variant="neutral">Three visible at a time</Badge>
       </div>
     </section>
@@ -132,7 +132,7 @@ function toastOverDialog() {
         <Field label="Visibility" hint="Its listbox has to open above the dialog.">
           <Select v-model="visibility" :options="visibilityOptions" placeholder="Choose" />
         </Field>
-        <Button variant="secondary" @click="toastOverDialog">Fire a toast from in here</Button>
+        <Button variant="outline" @click="toastOverDialog">Fire a toast from in here</Button>
       </div>
       <template #footer>
         <Button variant="ghost" @click="dialogOpen = false">Cancel</Button>
@@ -153,7 +153,7 @@ function toastOverDialog() {
       Escape and clicking outside do nothing here. The close button still works.
       <template #footer>
         <Button variant="ghost" @click="confirmOpen = false">Cancel</Button>
-        <Button variant="danger" @click="deleteProject">Delete</Button>
+        <Button variant="destructive" @click="deleteProject">Delete</Button>
       </template>
     </Dialog>
 

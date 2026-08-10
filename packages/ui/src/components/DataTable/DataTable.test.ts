@@ -201,6 +201,17 @@ describe('DataTable', () => {
       expect(el.text()).toContain('Invite someone.')
     })
 
+    it('forwards emptyReason to EmptyState', () => {
+      const el = setup({
+        rows: [],
+        emptyTitle: 'No users match',
+        emptyReason: 'no-results',
+      })
+      expect(el.text()).toContain('No users match')
+      // EmptyState's no-results default description when none is supplied.
+      expect(el.text()).toMatch(/filter|widen|clear/i)
+    })
+
     it('nests the empty heading below the page, not at h2', () => {
       expect(setup({ rows: [] }).find('h3').exists()).toBe(true)
     })

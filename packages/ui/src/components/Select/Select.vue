@@ -27,7 +27,6 @@ const props = withDefaults(defineProps<SelectProps<T>>(), {
   manualFilter: false,
   loading: false,
   loadingText: 'Loading…',
-  size: 'md',
 })
 
 /** The selected value. */
@@ -56,6 +55,8 @@ const isDisabled = computed(() => props.disabled || (field?.disabled.value ?? fa
 const isInvalid = computed(() => props.invalid || (field?.invalid.value ?? false))
 const isRequired = computed(() => props.required || (field?.required.value ?? false))
 const describedBy = computed(() => field?.describedBy.value)
+/** Explicit `size` wins; otherwise inherit from Field, else `md`. */
+const size = computed(() => props.size ?? field?.size.value ?? 'md')
 
 const open = ref(false)
 
@@ -185,9 +186,7 @@ watch(inputValue, (value) => {
       control is unreachable by keyboard and announces itself as "Show popup"
       instead of its field label.
     -->
-    <ComboboxAnchor
-      :class="cn(selectTriggerVariants({ size: props.size, invalid: isInvalid }), props.class)"
-    >
+    <ComboboxAnchor :class="cn(selectTriggerVariants({ size, invalid: isInvalid }), props.class)">
       <ComboboxInput
         v-bind="$attrs"
         :id="triggerId"
@@ -246,26 +245,27 @@ watch(inputValue, (value) => {
               :disabled="option.disabled ?? false"
               :class="selectItemVariants()"
             >
+              <span v-if="!$slots.option" class="truncate">{{ option.label }}</span>
+              <slot v-else name="option" :option="option" :selected="option.value === model" />
               <!--
-                The indicator only renders when the item is selected, so the
-                space is reserved by the wrapper. Otherwise every label shifts
-                sideways as the selection moves down the list.
+                Check on the trailing edge — shadcn's recipe. Reserving a fixed
+                gutter means labels do not shift when the selection moves.
               -->
-              <span class="flex size-4 shrink-0 items-center justify-center">
+              <span
+                class="pointer-events-none absolute right-2 flex size-3.5 items-center justify-center"
+              >
                 <ComboboxItemIndicator as-child>
-                  <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <svg class="size-3.5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                     <path
                       d="m5 10 3.5 3.5L15 7"
                       stroke="currentColor"
-                      stroke-width="1.5"
+                      stroke-width="1.75"
                       stroke-linecap="round"
                       stroke-linejoin="round"
                     />
                   </svg>
                 </ComboboxItemIndicator>
               </span>
-              <span v-if="!$slots.option" class="truncate">{{ option.label }}</span>
-              <slot v-else name="option" :option="option" :selected="option.value === model" />
             </ComboboxItem>
           </template>
         </ComboboxViewport>

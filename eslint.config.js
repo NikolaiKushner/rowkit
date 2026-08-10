@@ -16,6 +16,8 @@ export default tseslint.config(
       'playground/.nuxt/**',
       'playground/.output/**',
       'storybook-static/**',
+      // VitePress local/dev cache — not source, and not present in CI.
+      'docs/.vitepress/cache/**',
     ],
   },
 
@@ -84,6 +86,18 @@ export default tseslint.config(
       // rejects an explicit `undefined` default — so the default this rule
       // asks for cannot be written.
       'vue/require-default-prop': 'off',
+    },
+  },
+
+  // Docs theme imports .vue SFCs the same way stories do — eslint's program
+  // cannot type them; vue-tsc can. VitePress also wants a `Layout` export key.
+  {
+    files: ['docs/.vitepress/theme/**/*.{ts,vue}'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
     },
   },
 

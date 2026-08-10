@@ -6,10 +6,19 @@
  * page titles rather than for data.
  */
 
-/** Font families. Both stacks start with a system font — no webfont request. */
+/**
+ * Font families.
+ *
+ * rowkit's face is **Geist** — designed for tools, not marketing pages. The
+ * stack names the webfont first; system fallbacks keep layout honest before
+ * the file lands. Loading the font is the app's job (one import from
+ * `@fontsource-variable/geist`); without it, the stack falls through cleanly.
+ */
 export const fontFamily = {
   /** UI and body text. */
   sans: [
+    '"Geist Variable"',
+    'Geist',
     'ui-sans-serif',
     'system-ui',
     '-apple-system',
@@ -21,6 +30,8 @@ export const fontFamily = {
   ].join(', '),
   /** IDs, hashes, numeric columns that must align vertically. */
   mono: [
+    '"Geist Mono Variable"',
+    'Geist Mono',
     'ui-monospace',
     'SFMono-Regular',
     'Menlo',
@@ -58,11 +69,11 @@ export const fontSize = {
 export const fontWeight = {
   /** Body text. */
   normal: '400',
-  /** Column headers, subtle emphasis. */
+  /** Buttons, labels, card titles — prefer this over semibold in dense UI. */
   medium: '500',
-  /** Buttons, card titles. */
+  /** Page titles and dialog headings. */
   semibold: '600',
-  /** Page titles. */
+  /** Display only. Rarely needed in data views. */
   bold: '700',
 } as const
 

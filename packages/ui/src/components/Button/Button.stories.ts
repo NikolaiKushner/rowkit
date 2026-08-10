@@ -2,8 +2,9 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
 import Button from './Button.vue'
 
-const variants = ['primary', 'secondary', 'ghost', 'danger'] as const
-const sizes = ['sm', 'md', 'lg'] as const
+const variants = ['default', 'outline', 'secondary', 'ghost', 'destructive', 'link'] as const
+const sizes = ['xs', 'sm', 'default', 'lg'] as const
+const iconSizes = ['icon-xs', 'icon-sm', 'icon', 'icon-lg'] as const
 
 interface ButtonArgs {
   variant: (typeof variants)[number]
@@ -20,8 +21,8 @@ const meta: Meta<ButtonArgs> = {
   component: Button,
   tags: ['autodocs'],
   args: {
-    variant: 'primary',
-    size: 'md',
+    variant: 'default',
+    size: 'default',
     loading: false,
     disabled: false,
     block: false,
@@ -67,6 +68,28 @@ export const Sizes: Story = {
   }),
 }
 
+export const IconSizes: Story = {
+  render: () => ({
+    components: { Button },
+    setup: () => ({ iconSizes }),
+    template: `
+      <div class="flex flex-wrap items-center gap-3">
+        <Button
+          v-for="size in iconSizes"
+          :key="size"
+          :size="size"
+          variant="outline"
+          :aria-label="size"
+        >
+          <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="m7 5 5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </Button>
+      </div>
+    `,
+  }),
+}
+
 export const Disabled: Story = {
   render: () => ({
     components: { Button },
@@ -86,7 +109,7 @@ export const Disabled: Story = {
 export const Loading: Story = {
   render: () => ({
     components: { Button },
-    setup: () => ({ variants }),
+    setup: () => ({ variants: variants.filter((v) => v !== 'link') }),
     template: `
       <div class="flex flex-wrap items-center gap-3">
         <Button v-for="variant in variants" :key="variant" :variant="variant" loading>{{ variant }}</Button>
@@ -100,7 +123,7 @@ export const WithIcons: Story = {
     components: { Button },
     template: `
       <div class="flex flex-wrap items-center gap-3">
-        <Button variant="secondary">
+        <Button variant="outline">
           <template #leading>
             <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path d="M10 5v10M5 10h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
@@ -136,8 +159,9 @@ export const AsLink: Story = {
     components: { Button },
     template: `
       <div class="flex flex-wrap items-center gap-3">
-        <Button as="a" href="#" variant="secondary">Link button</Button>
-        <Button as="a" href="#" variant="secondary" disabled>Disabled link</Button>
+        <Button as="a" href="#" variant="outline">Link button</Button>
+        <Button as="a" href="#" variant="outline" disabled>Disabled link</Button>
+        <Button variant="link">Link variant</Button>
       </div>
     `,
   }),

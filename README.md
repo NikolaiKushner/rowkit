@@ -1,12 +1,16 @@
 # rowkit
 
-[![npm](https://img.shields.io/npm/v/rowkit?color=3b5bdb)](https://www.npmjs.com/package/rowkit)
-[![license](https://img.shields.io/npm/l/rowkit)](./LICENSE)
-[![bundle size](https://img.shields.io/bundlejs/size/rowkit)](https://bundlejs.com/?q=rowkit)
+<p align="center">
+  <img src="docs/public/logo.svg" alt="rowkit" width="200" />
+</p>
 
-Vue 3 components for data-dense interfaces — tables, filters, and the states around them.
+<p align="center">
+  <a href="https://www.npmjs.com/package/rowkit"><img src="https://img.shields.io/npm/v/rowkit?color=402a1f" alt="npm" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/rowkit" alt="license" /></a>
+  <a href="https://bundlejs.com/?q=rowkit"><img src="https://img.shields.io/bundlejs/size/rowkit" alt="bundle size" /></a>
+</p>
 
-Twelve components, built on [Reka UI](https://reka-ui.com), typed against your row.
+Vue 3 components for data-dense interfaces — tables, filters, and the states around them. Built on [Reka UI](https://reka-ui.com), typed against your row.
 
 **[Documentation](https://rowkit.dev)** · **[Storybook](https://storybook.rowkit.dev)** · **[Roadmap](./ROADMAP.md)**
 
@@ -16,13 +20,15 @@ Twelve components, built on [Reka UI](https://reka-ui.com), typed against your r
   page — which is the surface this image exists for.
 -->
 
-![A rowkit DataTable being filtered, sorted and paged](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/rowkit-demo.gif)
+![rowkit docs homepage — brand, CTAs, and a live Users table](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/home.png)
 
 ## Why another component library
 
 General-purpose kits handle the easy eighty per cent extremely well — buttons, inputs, cards. Then you build a users admin page, and none of it helped with the part that actually took the week: a sortable table that stays fast at ten thousand rows with column keys typed against your row, a filter bar that makes applied state obvious, and loading, empty and no-results states that agree with each other.
 
 rowkit is that part, done once.
+
+![A filtered, sorted Users table with selection — the rowkit money shot](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/datatable-page.png)
 
 ## Install
 
@@ -91,7 +97,7 @@ The table reports the sort and renders what it is handed — it never reorders i
 
 ## What rowkit is not
 
-A general-purpose UI kit. If you need forty components covering every case, [Nuxt UI](https://ui.nuxt.com) and [shadcn-vue](https://www.shadcn-vue.com) are better answers — and rowkit composes with either, since all three build on Reka UI. The scope is a decision, not a limitation; the full list, including what was deliberately left out, is in [ROADMAP.md](./ROADMAP.md).
+A general-purpose UI kit. If you need forty components covering every case, [Nuxt UI](https://ui.nuxt.com) and [shadcn-vue](https://www.shadcn-vue.com) are better answers — and rowkit composes with either, since all three build on Reka UI. The scope is a decision, not a limitation; see the [roadmap](./ROADMAP.md) for what is deliberately left out and what comes next.
 
 ## For coding agents
 
@@ -112,6 +118,7 @@ pnpm dev          # playground app
 pnpm storybook    # component workshop
 pnpm test         # unit, component and browser tests
 pnpm docs:dev     # documentation site
+pnpm docs:shots   # refresh README homepage screenshots (docs:dev must be running)
 ```
 
 ## License

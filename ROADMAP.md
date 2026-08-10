@@ -1,82 +1,164 @@
 # Roadmap
 
-This file is the scope contract. **Twelve components for v1.0 — nothing else.**
+Where rowkit is, what it needs before 1.0, and what is deliberately not coming.
 
-Anything not on this list goes under "Considered, not planned" at the bottom. If an idea is good enough to build, it earns a place in a future major version, not a detour in this one.
+This file is the plan of record. It is ordered, not exhaustive: an item is here
+because someone can act on it, and things that are merely nice to imagine live
+under [Out of scope](#out-of-scope-until-there-is-demand) so they stay out on
+purpose rather than by neglect.
 
----
-
-## Component stages
-
-Every component is labeled with its current stage. Nothing is marked Stable until it meets the full definition of done.
-
-| Stage | Meaning |
-|---|---|
-| 🔴 **Not started** | — |
-| 🟡 **Experimental** | Renders, has a story, API may still change |
-| 🟢 **Stable** | Full API documented, tested, a11y verified, keyboard support, dark mode |
-| 🔒 **Locked** | Stable, and no breaking changes without a major version |
-
-**Definition of done for Stable:**
-1. Renders all variants correctly in light and dark mode
-2. Full keyboard support, documented
-3. `addon-a11y` passes with zero violations
-4. Props typed and JSDoc'd
-5. Stories cover every variant and state
-6. Interaction test for primary behavior
-7. Docs page written, including "when not to use"
+Last reviewed: **2026-08-09** (v0.1.1).
 
 ---
 
-## v1.0 scope
+## Where rowkit is today
 
-### Foundations
+Fourteen components across three areas, published as `rowkit` with tokens split
+into `@rowkit/tokens`:
 
-- [x] 🟢 **Button** — variants, sizes, loading state, icon slots
-- [x] 🟢 **Input / Field** — label, hint, error, required, disabled
-- [x] 🟢 **Select** — searchable, keyboard nav, async options
-- [x] 🟢 **Badge** — status semantics (neutral / primary / success / warning / danger), three appearances
+| Area        | Components                                                     |
+| ----------- | -------------------------------------------------------------- |
+| Foundations | Button, ButtonGroup, Field, Input, Select, Badge                |
+| Data        | DataTable, Pagination, FilterBar, EmptyState, Skeleton          |
+| Overlays    | Dialog, Toast, Tooltip                                          |
 
-### Data layer
+The engineering baseline is healthy and should stay that way — these are gates
+in CI, not aspirations:
 
-- [x] 🟢 **DataTable** — typed column defs, sorting, row selection, sticky header
-- [x] 🟢 **Pagination** — page size, jump-to-page, total count
-- [x] 🟢 **FilterBar** — composable filter chips with applied-state display
-- [x] 🟢 **EmptyState** — the screen every dashboard needs and nobody designs
-- [x] 🟢 **Skeleton** — loading placeholders matched to the data components
+- 1434 tests green across unit, component and real-browser story runs
+- `addon-a11y` runs as a build gate, not a panel
+- 12.97 kB brotli for the full library against a 14 kB budget; Button alone is
+  1.4 kB, so tree-shaking demonstrably works
+- Strict TypeScript with `exactOptionalPropertyTypes`, no `any`
+- Releases publish from CI over OIDC with provenance, and generated docs are
+  checked for drift before anything ships
 
-### Overlay & feedback
-
-- [x] 🟢 **Dialog** — focus trap, scroll lock, escape handling
-- [x] 🟢 **Toast** — queue management, variants, auto-dismiss
-- [x] 🟢 **Tooltip** — delay, placement, touch behavior
-
----
-
-## Build phases
-
-Planning docs live in `docs/phases/` when they exist. The previous phase specs
-were retired; new ones will replace them.
+What is *not* proven is the API, because it has not been under load. That is the
+whole of the distance to 1.0.
 
 ---
 
-## Considered, not planned
+## The road to 1.0
 
-Ideas that are reasonable but explicitly out of scope for v1.0. Recording them here is how they stay out of the current milestone.
+**1.0 means the API survived contact with real applications**, not that some
+component count was reached. Concretely, before the version number changes:
 
-- Date picker / date range picker
-- Rich text editor
-- Charts (better served by a dedicated library)
-- Command palette
-- Form validation layer (rowkit provides field states; validation is the app's job)
-- Virtualized list beyond DataTable
-- Figma kit
-- React port
+1. rowkit is used in at least two applications nobody wrote for the purpose of
+   using rowkit, and the friction from that is filed.
+2. The documented patterns (`data-table-page`, `forms`, `loading-states`) are
+   rewritten from what those applications actually needed, not from what the
+   components happen to offer.
+3. Public APIs are locked only after the above. Locking early is how a library
+   ships a mistake with a compatibility promise attached.
+
+Everything in **Now** serves that, or clears something out of its way.
+
+---
+
+## Now
+
+Ordered. Finish or deliberately drop an item before starting the next.
+
+### 1. Ship the pending release
+
+Eight unreleased changesets are sitting in `.changeset/`, covering a breaking
+`Button` API, the espresso token shift, quieter chrome, and the docs homepage.
+Cut them as one release with a changelog a consumer can read: what broke, what
+merely got quieter.
+
+### 2. Close the visual-QA blind spot
+
+`pnpm visual:check` screenshots a default matrix, and two entries in it —
+`overlay-toaster--variants` and `overlay-tooltip--placements` — render only
+their trigger buttons. The toast and the tooltip never appear in the frame, so
+four of forty screenshots prove nothing, and the coloured toast variants have
+never actually been reviewed by the process that exists to review them.
+
+Give those stories a `play` function that opens the overlay before the shot, or
+add always-open variants to the matrix.
+
+### 3. Two inconsistencies the restyle left behind
+
+Both are decisions, not bugs — but they should be decided rather than inherited:
+
+- **`Badge` `subtle` + `primary` is indistinguishable from `neutral`** in light
+  mode. That follows from espresso's low chroma, and it makes the variant close
+  to useless. Either give it a distinguishing treatment or drop it.
+- **Dark-mode invalid `Input` contradicts soft destructive.** The rest of the
+  library expresses danger as a quiet wash with a coloured label; the invalid
+  field uses a saturated red border and red text. One meaning, two volumes.
+
+### 4. Harden the documented patterns
+
+The three pattern pages are currently written from the library outward. They
+should be rewritten from an application inward — which requires item 1 of the
+1.0 list to have happened first. Until then, keep them honest rather than
+growing them.
+
+---
+
+## Next surface — only if earned
+
+Nothing here starts on enthusiasm. Each needs a concrete place on a data-dense
+page that is awkward without it:
+
+- **DropdownMenu** — the highest-probability next primitive. Row actions in a
+  table currently force every consumer to invent a one-off icon menu.
+- **Popover** — the honest answer to "can a tooltip contain a link", and
+  plausibly the shell DropdownMenu composes onto.
+- **Sheet / drawer** — only if dialogs start feeling wrong for filter or detail
+  panes. No evidence of that yet.
+
+---
+
+## Later — not promised
+
+- **`DataTable` virtualisation**, and only against a real workload. The
+  reasoning is recorded in [decision 004](./docs/decisions/004-datatable-performance.md).
+- **A custom docs theme.** Legitimate, and the lowest-information work
+  available. It stays last on purpose.
+
+---
+
+## Out of scope (until there is demand)
+
+Recording these is how they stay out. None are bad ideas; none belong in a
+library about data-dense surfaces yet.
+
+Date and date-range pickers · rich text editor · charts (a dedicated library
+does this better) · command palette · a form validation layer (rowkit renders
+field state; deciding what is invalid is the application's job) · virtualised
+lists beyond `DataTable` · a Figma kit · a React port.
 
 ---
 
 ## Non-goals
 
-- **Not a general-purpose UI library.** If you need forty components covering every case, use Nuxt UI or shadcn-vue. rowkit is deliberately narrow.
-- **Not a CSS framework.** Tailwind v4 is a peer dependency, not something rowkit replaces.
-- **Not opinionated about data fetching.** Components take props; where the data comes from is yours.
+Permanent, not "not yet".
+
+**Not a kitchen-sink UI library.** Depth on data-dense surfaces beats breadth.
+If you need forty components, Nuxt UI and shadcn-vue are better answers, and
+rowkit composes with either — all three build on Reka UI.
+
+**Not a CSS framework.** Tailwind v4 stays a peer dependency.
+
+**Not opinionated about data fetching.** Components take props.
+
+---
+
+## Settled decisions
+
+Do not relitigate these without new information:
+
+- **Design direction is restraint** — structure without severity, no excess.
+  Chrome stays neutral; status colour carries meaning and brand colour does not
+  live in the defaults. Primary is warm espresso `oklch(0.31 0.038 48)`.
+  Consumers rebrand by pointing `--color-primary-*` at their own colour.
+- **npm package, not copy-paste distribution.** shadcn-vue's model is good and
+  deliberate; rowkit ships versioned.
+- **Reka UI as the primitive layer**, with shadcn-vue as a reference to learn
+  from rather than a dependency.
+- **Tokens are a separate package**, consumable without importing components.
+- **The consumer owns state.** Sort, selection, page, filters are all `v-model`;
+  components report what happened and the application decides what follows.
+- **MIT.**

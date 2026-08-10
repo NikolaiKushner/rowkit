@@ -21,7 +21,10 @@ export interface FieldProps {
   required?: boolean
   /** Disables the control inside. */
   disabled?: boolean
-  /** Sizes the label, hint and error together with the control. */
+  /**
+   * Sizes the label, hint, error and — via field context — the nested control
+   * when that control omits its own `size`.
+   */
   size?: NonNullable<FieldVariants['size']>
   /**
    * Id for the control. Generated when omitted — supply one only when

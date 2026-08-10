@@ -1,110 +1,74 @@
 # Roadmap
 
-Twelve components for v1.0. That number is a decision rather than a stage on the
-way to forty, and this page is the honest version of what exists, what does not,
-and what was deliberately left out.
-
+The plan of record is
 [`ROADMAP.md`](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md) in
-the repository is the source of truth; this page is the readable one.
+the repository; this page is the readable version. No fixed component count —
+new surface ships when it earns a place on a data-dense interface.
 
-## Stages
+## Current surface
 
-| Stage           | Meaning                                                                 |
-| --------------- | ----------------------------------------------------------------------- |
-| 🟡 Experimental | Renders, has a story, the API may still change                          |
-| 🟢 Stable       | Full API documented, tested, a11y verified, keyboard support, dark mode |
-| 🔒 Locked       | Stable, and no breaking change without a major version                  |
+| Area        | Components                                                                                                                                                                              |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Foundations | [Button](/components/button), [ButtonGroup](/components/button-group), [Field & Input](/components/field), [Select](/components/select), [Badge](/components/badge)                     |
+| Data        | [DataTable](/components/data-table), [Pagination](/components/pagination), [FilterBar](/components/filter-bar), [EmptyState](/components/empty-state), [Skeleton](/components/skeleton) |
+| Overlays    | [Dialog](/components/dialog), [Toast](/components/toast), [Tooltip](/components/tooltip)                                                                                                |
 
-Nothing is Locked before v1.0, because that is what v1.0 means.
+## What 1.0 means
 
-## v1.0 scope
+Not a component count — an API that survived contact with applications nobody
+wrote in order to use rowkit. Until that has happened, the version stays on
+`0.x` and breaking changes remain possible. An API is not proven by its author.
 
-**Foundations**
+## Design direction
 
-| Component                          | Stage     |
-| ---------------------------------- | --------- |
-| [Button](/components/button)       | 🟢 Stable |
-| [Field & Input](/components/field) | 🟢 Stable |
-| [Select](/components/select)       | 🟢 Stable |
-| [Badge](/components/badge)         | 🟢 Stable |
+Restraint. Structure without severity. No excess.
 
-**Data**
+Chrome stays neutral, and status colour means something while brand colour does
+not live in the defaults. Primary is warm espresso graphite
+(`oklch(0.31 0.038 48)`); rebrand by pointing `--color-primary-*` at your own
+colour. Soft destructive, soft focus, quiet borders.
 
-| Component                             | Stage     |
-| ------------------------------------- | --------- |
-| [DataTable](/components/data-table)   | 🟢 Stable |
-| [Pagination](/components/pagination)  | 🟢 Stable |
-| [FilterBar](/components/filter-bar)   | 🟢 Stable |
-| [EmptyState](/components/empty-state) | 🟢 Stable |
-| [Skeleton](/components/skeleton)      | 🟢 Stable |
+## In progress
 
-**Overlays**
+- Shipping the pending release — a breaking `Button` API, espresso tokens,
+  quieter chrome
+- Closing a gap in the screenshot-based visual QA, where two overlay stories
+  were being captured without the overlay open
+- Two consistency calls left over from the restyle: `Badge` `subtle` `primary`
+  reads as neutral, and the dark-mode invalid field is louder than the library's
+  soft-destructive language elsewhere
+- Hardening the pattern pages from real application friction rather than from
+  what the components happen to offer
 
-| Component                      | Stage     |
-| ------------------------------ | --------- |
-| [Dialog](/components/dialog)   | 🟢 Stable |
-| [Toast](/components/toast)     | 🟢 Stable |
-| [Tooltip](/components/tooltip) | 🟢 Stable |
+## Next surface (if earned)
 
-All twelve meet the definition of done. What remains before v1.0 is time and
-real-world use: an API is not proven by its author.
+- DropdownMenu for table row actions — the most likely next primitive
+- Popover, when a tooltip needs a link or richer content
+- Sheet / drawer, only if dialogs start feeling wrong for filter or detail panes
 
-## Where the project is
-
-The library is built, tested, documented, and **published**: `rowkit` and
-`@rowkit/tokens` are on npm at <NpmVersion />, released from CI with provenance. The source
-is on [GitHub](https://github.com/NikolaiKushner/rowkit) and this site runs the
-real components.
-
-After the first release, the useful work is feedback from people who are not me.
-Version 1.0 comes when the API has survived contact with a few real
-applications, not when a checklist empties.
-
-## Considered, not planned
-
-Reasonable ideas that are explicitly out of scope for v1.0. Recording them is how
-they stay out:
+## Explicitly out of scope (until demand)
 
 - Date picker / date range picker
 - Rich text editor
 - Charts — better served by a dedicated library
 - Command palette
 - A form validation layer — rowkit provides field states; validation is the
-  application's job, and [the forms pattern](/patterns/forms) shows the wiring
+  application's job
 - Virtualised lists beyond `DataTable`
 - A Figma kit
 - A React port
 
-If one of these is what you need, a broader kit or a specialist library is the
-better answer, and rowkit composes with both.
-
 ## Non-goals
 
-**Not a general-purpose UI library.** If you need forty components covering every
-case, use [Nuxt UI](https://ui.nuxt.com) or
-[shadcn-vue](https://www.shadcn-vue.com). Both are good; see
-[the introduction](/introduction) for how to route yourself between them.
+**Not a kitchen-sink UI library.** Prefer depth on data-dense surfaces over
+breadth for its own sake.
 
-**Not a CSS framework.** Tailwind v4 is a peer dependency. rowkit does not
-replace it, wrap it, or ship its own copy.
+**Not a CSS framework.** Tailwind v4 is a peer dependency.
 
-**Not opinionated about data fetching.** Components take props. Where the data
-comes from, and when, is yours.
+**Not opinionated about data fetching.** Components take props.
 
-## Beyond v1.0
+## Later (not promised)
 
-Nothing here is promised, and none of it starts before the API has settled:
-
-- A popover, which is the honest answer to "can a tooltip contain a link"
-- Virtualisation for `DataTable`, once there is a real workload that needs it
-  rather than a benchmark — see
-  [the decision record](/decisions/004-datatable-performance) for the current
-  reasoning
-- A custom docs theme, which is a legitimate project and the lowest-information
-  work available today
-
-## Suggesting something
-
-Open an issue. The most useful ones describe the problem rather than the
-component — "the filter bar cannot show a range" is far more actionable than
-"add a date picker", and often has an answer that needs no new component at all.
+- Virtualisation for `DataTable`, with a real workload — see
+  [decision 004](/decisions/004-datatable-performance)
+- A custom docs theme

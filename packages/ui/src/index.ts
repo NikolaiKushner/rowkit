@@ -2,6 +2,7 @@ import { version as pkgVersion } from '../package.json' with { type: 'json' }
 
 export * from './components/Badge'
 export * from './components/Button'
+export * from './components/ButtonGroup'
 export * from './components/DataTable'
 export * from './components/Dialog'
 export * from './components/EmptyState'

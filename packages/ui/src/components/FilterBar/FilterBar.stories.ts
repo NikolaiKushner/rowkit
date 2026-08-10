@@ -82,55 +82,63 @@ const meta: Meta<FilterBarArgs> = {
 export default meta
 type Story = StoryObj<FilterBarArgs>
 
-export const Default: Story = {}
-
-/** Nothing applied yet — no chip row, no clear control, just the search box. */
-export const NoFiltersApplied: Story = {
-  render: (args) => stateful(args, []),
-}
-
-/** The filter controls themselves go in the `controls` slot. */
-export const WithControls: Story = {
+export const Default: Story = {
   render: () => ({
     components: { FilterBar, Select },
     setup: () => {
       const filters = ref([...applied])
       const search = ref('')
-      const role = ref<string>()
+      const role = ref<string | undefined>('Admin')
+      const status = ref<string | undefined>()
       const roles = [
-        { label: 'Owner', value: 'owner' },
-        { label: 'Admin', value: 'admin' },
-        { label: 'Member', value: 'member' },
+        { label: 'Owner', value: 'Owner' },
+        { label: 'Admin', value: 'Admin' },
+        { label: 'Member', value: 'Member' },
       ]
-      return {
-        filters,
-        search,
-        role,
-        roles,
-        remove: (id: string) => {
-          filters.value = filters.value.filter((f) => f.id !== id)
-        },
-        clear: () => {
-          filters.value = []
-        },
+      const statuses = [
+        { label: 'Active', value: 'active' },
+        { label: 'Invited', value: 'invited' },
+        { label: 'Suspended', value: 'suspended' },
+      ]
+      const remove = (id: string) => {
+        filters.value = filters.value.filter((f) => f.id !== id)
       }
+      const clear = () => {
+        filters.value = []
+        role.value = undefined
+        status.value = undefined
+      }
+      const resultCount = computed(() => 67)
+      return { filters, search, role, status, roles, statuses, remove, clear, resultCount }
     },
     template: `
       <div class="w-full max-w-3xl">
         <FilterBar
           v-model:search="search"
           :filters="filters"
-          :result-count="67"
+          :result-count="resultCount"
+          search-placeholder="Search name or email…"
           @remove="remove"
           @clear="clear"
         >
           <template #controls>
-            <Select v-model="role" :options="roles" placeholder="Role" size="md" class="w-40" />
+            <Select v-model="role" :options="roles" placeholder="Role" class="w-36" />
+            <Select v-model="status" :options="statuses" placeholder="Status" class="w-36" />
           </template>
         </FilterBar>
       </div>
     `,
   }),
+}
+
+/** Chips only — no filter controls in the slot. */
+export const ChipsOnly: Story = {
+  render: (args) => stateful(args),
+}
+
+/** Nothing applied yet — no chip row, no clear control, just the search box. */
+export const NoFiltersApplied: Story = {
+  render: (args) => stateful(args, []),
 }
 
 /**

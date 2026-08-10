@@ -87,23 +87,23 @@ typing filters when searchable, <kbd>Esc</kbd> closes without committing.
 
 <!-- @props SelectProps -->
 
-| Prop           | Type                   | Default          | Description                                                              |
-| -------------- | ---------------------- | ---------------- | ------------------------------------------------------------------------ |
-| `options`      | `SelectOption<T>[]`    | **required**     | The available choices.                                                   |
-| `placeholder`  | `string`               | `'Select…'`      | Text shown in the trigger while nothing is selected.                     |
-| `searchable`   | `boolean`              | `false`          | Adds a search box inside the panel.                                      |
-| `togglerLabel` | `string`               | `'Show options'` | Accessible name for the open/close chevron.                              |
-| `emptyText`    | `string`               | `'No results'`   | Shown when no option matches the search term.                            |
-| `manualFilter` | `boolean`              | `false`          | Hands filtering to the consumer.                                         |
-| `loading`      | `boolean`              | `false`          | Shows a loading row in place of the list. For async options.             |
-| `loadingText`  | `string`               | `'Loading…'`     | Text shown while `loading`.                                              |
-| `size`         | `'sm' \| 'md' \| 'lg'` | `'md'`           | Control height and text size.                                            |
-| `disabled`     | `boolean`              | `false`          | Disables the control. A surrounding disabled `Field` also disables it.   |
-| `invalid`      | `boolean`              | `false`          | Marks the value invalid. A `Field` with an `error` also sets it.         |
-| `required`     | `boolean`              | `false`          | Marks the control required. A required `Field` also sets it.             |
-| `id`           | `string`               | —                | Id for the trigger. Inherited from a surrounding `Field` when omitted.   |
-| `name`         | `string`               | —                | Name submitted with a native form.                                       |
-| `class`        | `string`               | —                | Additional classes for the trigger, merged so a consumer's utility wins. |
+| Prop           | Type                   | Default          | Description                                                                      |
+| -------------- | ---------------------- | ---------------- | -------------------------------------------------------------------------------- |
+| `options`      | `SelectOption<T>[]`    | **required**     | The available choices.                                                           |
+| `placeholder`  | `string`               | `'Select…'`      | Text shown in the trigger while nothing is selected.                             |
+| `searchable`   | `boolean`              | `false`          | Adds a search box inside the panel.                                              |
+| `togglerLabel` | `string`               | `'Show options'` | Accessible name for the open/close chevron.                                      |
+| `emptyText`    | `string`               | `'No results'`   | Shown when no option matches the search term.                                    |
+| `manualFilter` | `boolean`              | `false`          | Hands filtering to the consumer.                                                 |
+| `loading`      | `boolean`              | `false`          | Shows a loading row in place of the list. For async options.                     |
+| `loadingText`  | `string`               | `'Loading…'`     | Text shown while `loading`.                                                      |
+| `size`         | `'sm' \| 'md' \| 'lg'` | —                | Control height and text size. Inherited from a surrounding `Field` when omitted. |
+| `disabled`     | `boolean`              | `false`          | Disables the control. A surrounding disabled `Field` also disables it.           |
+| `invalid`      | `boolean`              | `false`          | Marks the value invalid. A `Field` with an `error` also sets it.                 |
+| `required`     | `boolean`              | `false`          | Marks the control required. A required `Field` also sets it.                     |
+| `id`           | `string`               | —                | Id for the trigger. Inherited from a surrounding `Field` when omitted.           |
+| `name`         | `string`               | —                | Name submitted with a native form.                                               |
+| `class`        | `string`               | —                | Additional classes for the trigger, merged so a consumer's utility wins.         |
 
 <!-- /@props -->
 

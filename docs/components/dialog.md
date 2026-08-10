@@ -11,7 +11,7 @@ shape, the token styling, and the opinions.
   Everything in the project goes with it.
   <template #footer>
     <Button variant="ghost" @click="open = false">Cancel</Button>
-    <Button variant="danger" @click="remove">Delete</Button>
+    <Button variant="destructive" @click="remove">Delete</Button>
   </template>
 </Dialog>
 ```
@@ -30,8 +30,8 @@ function remove() {
 </script>
 
 <DemoBox>
-  <Button variant="danger" @click="confirmOpen = true">Delete project</Button>
-  <Button variant="secondary" @click="termsOpen = true">Read the terms</Button>
+  <Button variant="destructive" @click="confirmOpen = true">Delete project</Button>
+  <Button variant="outline" @click="termsOpen = true">Read the terms</Button>
   <span v-if="deleted" class="text-sm text-muted-foreground">Deleted — and focus is back on the button that opened it.</span>
 
   <Dialog
@@ -43,7 +43,7 @@ function remove() {
     invite link you have shared.
     <template #footer>
       <Button variant="ghost" @click="confirmOpen = false">Cancel</Button>
-      <Button variant="danger" @click="remove">Delete</Button>
+      <Button variant="destructive" @click="remove">Delete</Button>
     </template>
   </Dialog>
 
@@ -146,7 +146,7 @@ scrolls as a whole pushes its own Save button off-screen, which is where "where
 did the button go" comes from.
 
 **No `DialogConfirm` convenience wrapper.** Tempting and deferred — it is in
-`ROADMAP.md` under "Considered, not planned".
+`ROADMAP.md` under "Out of scope" / non-goals.
 
 ## Keyboard
 

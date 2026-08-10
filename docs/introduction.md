@@ -1,10 +1,8 @@
 # Introduction
 
-rowkit is twelve Vue 3 components for data-dense interfaces: tables, filters,
-and the states around them.
-
-That is the whole library. The number is a decision, not a stage it is passing
-through on the way to forty.
+rowkit is a Vue 3 component library for data-dense interfaces: tables, filters,
+and the states around them. The set grows when a new piece earns its place on
+that surface — not toward forty components for their own sake.
 
 ## The problem it exists for
 
@@ -73,19 +71,19 @@ that knows whether to validate on blur or on submit.
 
 There is also a list of things deliberately left out — date pickers, a command
 palette, charts — in
-[the roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md#considered-not-planned).
+[the roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md).
 Recording them is how they stay out.
 
 ## Choosing between them
 
 The honest framing, so you can route yourself correctly:
 
-| Compared on      | rowkit                         | Nuxt UI                     | shadcn-vue                      |
-| ---------------- | ------------------------------ | --------------------------- | ------------------------------- |
-| **Distribution** | Versioned npm package          | Versioned npm package       | Source copied into your project |
-| **Scope**        | Twelve components, one problem | Broad, general-purpose      | Broad, general-purpose          |
-| **Data focus**   | The reason it exists           | One area among many         | One area among many             |
-| **Upgrades**     | `semver`, you take the diff    | `semver`, you take the diff | Yours to maintain once copied   |
+| Compared on      | rowkit                                  | Nuxt UI                     | shadcn-vue                      |
+| ---------------- | --------------------------------------- | --------------------------- | ------------------------------- |
+| **Distribution** | Versioned npm package                   | Versioned npm package       | Source copied into your project |
+| **Scope**        | Data-dense surfaces, depth over breadth | Broad, general-purpose      | Broad, general-purpose          |
+| **Data focus**   | The reason it exists                    | One area among many         | One area among many             |
+| **Upgrades**     | `semver`, you take the diff             | `semver`, you take the diff | Yours to maintain once copied   |
 
 All three build on Reka UI, so the accessibility foundation is the same in each.
 The difference is scope and who owns the code after installation.
@@ -100,7 +98,7 @@ it is designed to sit beside a general-purpose kit rather than replace it.
 project's definition of done, and breaking changes are still possible until v1.
 
 Version <NpmVersion /> is on npm, published from CI with provenance attestation. The source
-and the full roadmap are on [GitHub](https://github.com/NikolaiKushner/rowkit).
+and the working backlog are on [GitHub](https://github.com/NikolaiKushner/rowkit).
 
 ## Where to go next
 

@@ -114,7 +114,62 @@ const meta: Meta<DataTableArgs> = {
 export default meta
 type Story = StoryObj<DataTableArgs>
 
-export const Default: Story = {}
+export const Default: Story = {
+  name: 'Default',
+  render: () => ({
+    components: { DataTable, Badge, Button },
+    setup: () => ({
+      users,
+      columns: [
+        { key: 'name', header: 'Name', sortable: true },
+        { key: 'email', header: 'Email' },
+        { key: 'role', header: 'Role' },
+        { key: 'status', header: 'Status', sortable: true },
+        { key: 'seats', header: 'Seats', align: 'end', sortable: true },
+        { id: 'actions', header: 'Actions', headerSrOnly: true, align: 'end' },
+      ] satisfies DataTableColumn<User>[],
+      sort: ref<DataTableSort<User>>({ key: 'name', direction: 'asc' }),
+      selected: ref<PropertyKey[]>([1]),
+      tone: (status: User['status']) =>
+        status === 'active' ? 'success' : status === 'invited' ? 'warning' : 'danger',
+      rowAction:
+        'opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 focus-visible:opacity-100',
+    }),
+    template: `
+      <div class="w-full max-w-3xl">
+        <DataTable
+          v-model:sort="sort"
+          v-model:selected="selected"
+          :rows="users"
+          :columns="columns"
+          caption="Team members"
+          selectable="multiple"
+          :row-label="(row) => 'Select ' + row.name"
+          hoverable
+        >
+          <template #[\`cell:name\`]="{ value }">
+            <span class="font-medium">{{ value }}</span>
+          </template>
+          <template #[\`cell:email\`]="{ value }">
+            <span class="text-muted-foreground">{{ value }}</span>
+          </template>
+          <template #[\`cell:status\`]="{ value }">
+            <Badge :variant="tone(value)" size="sm" dot>{{ value }}</Badge>
+          </template>
+          <template #[\`cell:seats\`]="{ value }">
+            <span class="tabular-nums">{{ value }}</span>
+          </template>
+          <template #[\`cell:actions\`]="{ row }">
+            <Button variant="ghost" size="sm" :class="rowAction" :aria-label="'Edit ' + row.name">Edit</Button>
+          </template>
+        </DataTable>
+      </div>
+    `,
+  }),
+}
+
+/** Bare cells, no slots — useful when checking column chrome alone. */
+export const Plain: Story = {}
 
 /** The caption is the table's accessible name. Showing it is a design choice. */
 export const VisibleCaption: Story = {

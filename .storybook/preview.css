@@ -5,7 +5,14 @@
  * @source is needed because the stories and components are read from source
  * here rather than from the built bundle that dist/styles.css points at.
  */
+@import '@fontsource-variable/geist/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
 @import 'tailwindcss';
 @import '@rowkit/tokens/css';
 
 @source '../packages/ui/src';
+
+html,
+body {
+  font-family: var(--font-sans);
+}

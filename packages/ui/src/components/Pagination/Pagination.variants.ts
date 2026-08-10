@@ -22,7 +22,7 @@ export const paginationVariants = cva(
  */
 export const paginationItemVariants = cva(
   [
-    'inline-flex shrink-0 items-center justify-center rounded-md border font-medium',
+    'inline-flex shrink-0 items-center justify-center rounded-md border',
     'cursor-pointer transition-colors duration-fast ease-standard',
     'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
     'disabled:pointer-events-none disabled:border-transparent',
@@ -47,14 +47,15 @@ export const paginationItemVariants = cva(
        * alone would not have been enough, but a border is not weight.
        *
        * `border-input`, not the decorative `border`. This border is the sole
-       * visual carrier of "you are here", so it has to clear 3:1 against the
-       * surface; the hairline token is deliberately below that. `aria-current`
-       * carries the same state to assistive tech, so the colour is never
-       * alone — but a sighted keyboard user still needs to see it.
+       * visual carrier of "you are here" against transparent siblings —
+       * soft on purpose, same quiet edge as fields. `aria-current` carries the
+       * same state to assistive tech.
        */
       active: {
-        true: 'border-input bg-card text-foreground',
-        false: 'border-transparent bg-transparent text-foreground hover:bg-accent',
+        // Outline + medium — finds your place without a filled square that
+        // competes with the primary action above the table.
+        true: 'border-input bg-card font-medium text-foreground',
+        false: 'border-transparent bg-transparent font-medium text-foreground hover:bg-accent',
       },
     },
     defaultVariants: { size: 'md', active: false },

@@ -16,8 +16,9 @@ Instructions for coding agents working **on** rowkit.
   with a public surface. Prop naming, state ownership, event and slot shapes and
   the recurring accessibility patterns are decided there, once, for every
   component.
-- **[`ROADMAP.md`](./ROADMAP.md)** — before proposing a component. The scope is
-  twelve, and that is a decision rather than a stage.
+- **[`ROADMAP.md`](./ROADMAP.md)** — the plan of record: current state, what 1.0
+  requires, what is out of scope. No fixed component count; add surface when it
+  earns its place.
 
 ## Commands
 
@@ -29,6 +30,10 @@ pnpm typecheck    # vue-tsc, strict
 pnpm format       # prettier
 pnpm size         # bundle budget, brotli
 
+pnpm storybook    # then, in another terminal:
+pnpm visual:check # screenshot default stories, light + dark → .visual-check/
+pnpm visual:check Button  # scoped to one component
+
 pnpm docs:props   # regenerate the props tables after touching a prop or its JSDoc
 pnpm docs:agents  # regenerate packages/ui/AGENTS.md, likewise
 ```
@@ -36,6 +41,10 @@ pnpm docs:agents  # regenerate packages/ui/AGENTS.md, likewise
 `pnpm build` before anything else is not optional. The playground, the docs and
 the type checker all resolve `rowkit` through `packages/ui/dist`, and an unbuilt
 workspace produces a wall of confusing type errors rather than one clear one.
+
+After any change that touches variants, tokens, layout, or dark mode: run
+`pnpm visual:check`, **Read the PNGs**, and fix what looks wrong before claiming
+done. Styling fails silently — screenshots are how agents catch it.
 
 ## Three things that are true here and not everywhere
 

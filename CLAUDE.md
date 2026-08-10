@@ -6,7 +6,11 @@ Repository: `github.com/NikolaiKushner/rowkit`
 Package: `rowkit` on npm
 Docs: `rowkit.dev`
 
-Read `ROADMAP.md` before proposing new components. The scope is fixed at twelve components for v1.0.
+Read `ROADMAP.md` before proposing work. It is the plan of record: where the
+library stands, what 1.0 requires, and what is deliberately out of scope. New
+surface earns its place — there is no fixed component count.
+
+**Visual direction:** restraint, structure without severity, no excess. Neutral chrome; warm-espresso primary (`oklch(0.31 0.038 48)`), not a chromatic shout. Consumers rebrand via tokens — defaults must not fight them. Geist stays.
 
 Read `docs/conventions.md` before designing a component API. Prop naming, state ownership, event and slot shapes, and the recurring accessibility patterns are decided there, once, for every component.
 
@@ -14,14 +18,9 @@ Read `docs/conventions.md` before designing a component API. Prop naming, state 
 
 ## Stack
 
-- **Vue 3.5+** — Composition API, `<script setup>`, TypeScript strict mode
 - **Reka UI** — accessible primitives. NEVER hand-roll focus management, ARIA wiring, or keyboard handling when a Reka primitive exists.
 - **Tailwind CSS v4** — configured via the `@theme` block in CSS. There is no `tailwind.config.js`.
-- **cva** (class-variance-authority) + **tailwind-merge** for variant management
-- **Vite library mode** + **vite-plugin-dts** for declaration files
 - **Vitest** + **Storybook 10** (`@storybook/addon-vitest`, `@storybook/addon-a11y` as a gate, not a panel). Storybook 10, not 9: `@storybook/vue3-vite@9` peers on Vite 7 and this repo is on Vite 8.
-- **VitePress** for documentation
-- **pnpm workspaces** — monorepo with `packages/tokens` and `packages/ui`
 
 ---
 
@@ -57,7 +56,7 @@ components/ComponentName/
 
 ## Definition of done for a component
 
-A component is not finished until all seven are true:
+A component is not finished until all eight are true:
 
 1. Renders all variants correctly in light and dark mode
 2. Full keyboard support, and that support is documented
@@ -66,16 +65,18 @@ A component is not finished until all seven are true:
 5. Stories cover every variant and every state
 6. Interaction test for the primary behavior
 7. Docs page written, including a **"when not to use"** section
+8. **Visual QA:** `pnpm visual:check <Component>` (Storybook must be running), then **Read the PNGs** and fix anything that looks wrong in light or dark. Green tests are not enough.
 
 ---
 
 ## How to work with me on this
 
-- **One component per session.** Don't start a second component before the first meets the definition of done.
+- **One concern per session.** Don't start a second polish cluster before the first is done.
 - **API before implementation.** When I give you a prop interface, build to it exactly. If you think the API is wrong, say so before writing code rather than silently changing it.
 - **Ask before adding dependencies.** Every dependency is a maintenance cost and a bundle-size cost.
 - **Don't scaffold ahead.** No placeholder files for components we haven't started. Empty stubs rot.
 - **When reviewing, list problems without fixing them** unless I ask. I want to decide what matters.
+- **Look at the pixels.** After UI changes, screenshot and inspect. Do not claim "looks fine" from code alone.
 
 ---
 
@@ -85,6 +86,6 @@ Don't re-litigate these:
 
 - **npm package, not copy-paste distribution.** shadcn-vue's model is deliberate and good, but rowkit ships as a versioned package.
 - **Reka UI, not shadcn-vue as a dependency.** shadcn-vue is a reference implementation to learn from, not something rowkit installs.
-- **Twelve components.** See `ROADMAP.md`.
+- **No fixed component count.** Add components when they earn a place on a data-dense surface; do not invent for breadth.
 - **MIT license.**
 - **Tokens as a separate package**, so they can be consumed without importing components.

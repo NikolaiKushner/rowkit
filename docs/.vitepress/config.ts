@@ -25,11 +25,49 @@ export default defineConfig({
    * site loads the token custom properties, generates no utilities at all, and
    * renders every demo unstyled with no error anywhere — the same trap the
    * Storybook setup hit.
+   *
+   * VitePress ships an *unlayered* form/table reset. Tailwind v4 utilities live
+   * in `@layer utilities`, so the reset always won and demos lost padding,
+   * borders and header chrome. `all: revert-layer` papered over it in Chrome
+   * but is unreliable in Safari (WebKit cascade-layer bugs). Wrapping VitePress
+   * CSS in `@layer vp-theme` puts the reset below utilities — the correct fix,
+   * and Safari-safe.
+   *
+   * The order statement has to ride along on every wrapped file rather than
+   * live in `theme/tokens.css`. Without an explicit statement the browser
+   * orders layers by first appearance, and this plugin's output lands at the
+   * very top of the bundle — so `vp-theme` became the *lowest* layer, below
+   * Tailwind's `base`. Preflight resets `h1`–`h6` to `font-size: inherit`, and
+   * a layer beats specificity, so every heading on every docs page collapsed to
+   * body size. Naming the order here puts `vp-theme` above `base` (headings
+   * survive) and below `utilities` (demos still win). Repeats are harmless: a
+   * layer statement that restates a known order is a no-op.
    */
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    plugins: [
+      {
+        name: 'rowkit-layer-vitepress-css',
+        enforce: 'pre',
+        transform(code, id) {
+          const path = id.split('?')[0] ?? id
+          // Only VitePress's own theme CSS — not `docs/.vitepress/theme/*`.
+          if (!path.includes('/node_modules/vitepress/') || !path.endsWith('.css')) {
+            return null
+          }
+          if (code.includes('@layer vp-theme')) return null
+          return {
+            code: `@layer theme, base, vp-theme, components, utilities;\n@layer vp-theme {\n${code}\n}\n`,
+            map: null,
+          }
+        },
+      },
+      tailwindcss(),
+    ],
+  },
 
   head: [
-    ['meta', { name: 'theme-color', content: '#3b5bdb' }],
+    ['meta', { name: 'theme-color', content: '#402a1f' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/mark.svg' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'rowkit' }],
     [
@@ -42,6 +80,7 @@ export default defineConfig({
   ],
 
   themeConfig: {
+    logo: { light: '/mark-light.svg', dark: '/mark.svg', alt: 'rowkit' },
     siteTitle: 'rowkit',
 
     nav: [
@@ -77,6 +116,7 @@ export default defineConfig({
         items: [
           { text: 'Tokens', link: '/foundations/tokens' },
           { text: 'Button', link: '/components/button' },
+          { text: 'ButtonGroup', link: '/components/button-group' },
         ],
       },
       {

@@ -19,17 +19,25 @@ export const selectTriggerVariants = cva(
      */
     'outline-none has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3',
     'has-[:focus-visible]:ring-ring/50',
+    // Reka puts `data-disabled` on the anchor; native `disabled:` alone often
+    // never matches because the focusable input is inside, not the wrapper.
+    'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
     'disabled:cursor-not-allowed disabled:opacity-50',
   ],
   {
     variants: {
       size: {
-        sm: 'h-7 rounded-md px-2.5 text-sm',
-        md: 'h-8 rounded-md px-2.5 text-sm',
-        lg: 'h-9 rounded-md px-2.5 text-sm',
+        sm: 'h-7 rounded-md px-2.5 text-sm leading-normal',
+        md: 'h-8 rounded-md px-2.5 text-sm leading-normal',
+        lg: 'h-9 rounded-md px-2.5 text-sm leading-normal',
       },
       invalid: {
-        true: 'border-danger-solid ring-3 ring-danger-solid/20 focus-visible:border-danger-solid focus-visible:ring-danger-solid/20',
+        // Same `has-[:focus-visible]` dance as the resting ring — focus lives
+        // on the inner ComboboxInput, not the anchor that owns these classes.
+        true: [
+          'border-danger-solid ring-3 ring-danger-solid/20',
+          'has-[:focus-visible]:border-danger-solid has-[:focus-visible]:ring-danger-solid/20',
+        ].join(' '),
         false: 'border-input',
       },
     },
@@ -45,12 +53,12 @@ export const selectContentVariants = cva([
 ])
 
 export const selectItemVariants = cva([
-  'flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-foreground outline-none',
+  // `pr-8` reserves the check gutter so labels never shift when selection moves.
+  'relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pr-8 pl-2 text-sm text-foreground outline-none',
   // Reka drives highlight through data-highlighted, which follows the keyboard
   // as well as the pointer. Styling :hover instead would leave keyboard users
   // with no visible cursor.
   'data-[highlighted]:bg-accent',
-  'data-[state=checked]:bg-surface-selected data-[state=checked]:font-medium',
   'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
 ])
 

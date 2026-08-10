@@ -5,7 +5,9 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * pushing the page sideways, which is what makes a sticky column meaningful.
  */
 export const dataTableWrapperVariants = cva([
-  'relative w-full overflow-auto rounded-md border border-border bg-card',
+  // `shadow-xs` gives the table a plane without inventing a second card
+  // language — hairline lift, same token as resting inputs.
+  'relative w-full overflow-auto rounded-md border border-border bg-card shadow-xs',
   // Focusable when it actually scrolls, so the ring has to be visible.
   'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
 ])
@@ -65,10 +67,14 @@ export const dataTableHeaderRowVariants = cva('relative z-sticky')
  * transparent sticky header lets the rows scroll through it.
  */
 export const dataTableHeaderCellVariants = cva(
-  'shadow-sticky-header bg-card align-middle font-medium whitespace-nowrap text-foreground',
+  'shadow-sticky-header bg-card align-middle font-medium tracking-tight whitespace-nowrap text-foreground',
   {
     variants: {
       size: {
+        // `h-*` on a table cell is the CSS minimum row height (min-height is
+        // ignored on `display: table-cell`). Content can still grow the row
+        // when a name wraps — that is how checkbox columns stay vertically
+        // centered without collapsing single-line rows to bare text height.
         sm: 'h-8 px-2',
         md: 'h-10 px-2',
       },
@@ -147,8 +153,8 @@ export const dataTableSortIconVariants = cva(
 export const dataTableCellVariants = cva('border-t border-border align-middle text-foreground', {
   variants: {
     size: {
-      sm: 'h-8 px-2',
-      md: 'h-10 px-2 py-1',
+      sm: 'h-8 px-2 py-1.5',
+      md: 'h-10 px-2 py-1.5',
     },
     align: {
       start: 'text-start',
@@ -202,26 +208,29 @@ export const dataTableRowVariants = cva(
 export const dataTableRowActionClass =
   'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100'
 
-// Matches the body cell: same hairline, same padding. The reference design drops the right
-// padding on a checkbox cell so the control sits tight against its column.
-export const dataTableSelectCellVariants = cva('w-px border-t border-border pr-0 align-middle', {
-  variants: {
-    size: {
-      sm: 'h-8 px-2',
-      md: 'h-10 px-2 py-1',
+// Checkbox column: keep left padding, drop the right so the control sits close
+// to the first data column without kissing it (`pr-1`, not `pr-0`).
+export const dataTableSelectCellVariants = cva(
+  'w-px border-t border-border align-middle pl-2 pr-1',
+  {
+    variants: {
+      size: {
+        sm: 'h-8 py-1.5',
+        md: 'h-10 py-1.5',
+      },
+      /**
+       * The header composes this on top of the header-cell variant, and inherits
+       * a `border-t` meant for body rows — which painted a short rule above the
+       * checkbox column only, floating above the table with nothing to its right.
+       */
+      header: {
+        true: 'border-t-0',
+        false: '',
+      },
     },
-    /**
-     * The header composes this on top of the header-cell variant, and inherits
-     * a `border-t` meant for body rows — which painted a short rule above the
-     * checkbox column only, floating above the table with nothing to its right.
-     */
-    header: {
-      true: 'border-t-0',
-      false: '',
-    },
-  },
-  defaultVariants: { size: 'md', header: false },
-})
+    defaultVariants: { size: 'md', header: false },
+  }
+)
 
 /*
  * `rounded-xs` is the reference `rounded-[4px]` — the radius scale now lands exactly

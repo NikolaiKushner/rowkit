@@ -121,7 +121,7 @@ watch([search, role, status, sort, pageSize], () => {
     <template #[`cell:status`]="{ row }"><Badge :variant="tone[row.status]" size="sm" dot>{{ row.status }}</Badge></template>
     <template #empty>
       <EmptyState reason="no-results" title="No users match these filters" size="sm" :level="3" announce>
-        <template #actions><Button variant="secondary" size="sm" @click="clearFilters">Clear filters</Button></template>
+        <template #actions><Button variant="outline" size="sm" @click="clearFilters">Clear filters</Button></template>
       </EmptyState>
     </template>
   </DataTable>

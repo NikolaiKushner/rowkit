@@ -1,8 +1,8 @@
 # API conventions
 
-Consistency across twelve components is what makes a library feel designed
-rather than assembled. These are decided once, here, and every component follows
-them. Where a component deviates, its docs page says so and why.
+Consistency across components is what makes a library feel designed rather than
+assembled. These are decided once, here, and every component follows them. Where
+a component deviates, its docs page says so and why.
 
 ---
 
@@ -19,10 +19,12 @@ _opt-out_ rather than inverting the default — `static`, not `animated: true`.
 boolean per variant makes two of them expressible at once, and that state has no
 meaning.
 
-**Sizes use one scale across every component**: `sm | md | lg`, `md` the default.
-A component may offer a subset — `Badge` and `DataTable` stop at `sm | md`,
-because a large table row is not a thing anyone wants — but it never renames the
-steps.
+**Sizes use one shared scale for form controls**: `sm | md | lg`, with `md` the
+default — Field, Input, Select, FilterBar. **Button is the exception:** it
+follows the shadcn size set
+(`default | xs | sm | lg | icon | icon-xs | icon-sm | icon-lg`), where
+`default` matches other components' `md` height (`h-8`). Other components may
+offer a subset of the form scale, but they do not invent new step names.
 
 **Every component accepts `class` and merges it** through `tailwind-merge`, so a
 consumer's utility wins over the component's own without a specificity fight.

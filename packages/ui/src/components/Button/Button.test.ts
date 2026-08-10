@@ -13,21 +13,41 @@ describe('Button', () => {
   })
 
   it.each([
-    ['primary', 'bg-primary-solid'],
-    ['secondary', 'bg-muted'],
+    ['default', 'bg-primary-solid'],
+    ['outline', 'bg-card'],
+    ['secondary', 'bg-surface-active'],
     ['ghost', 'bg-transparent'],
-    ['danger', 'bg-danger-solid'],
+    ['destructive', 'bg-danger-subtle'],
+    ['link', 'underline-offset-4'],
   ] as const)('%s uses the %s token', (variant, expected) => {
     expect(mount(Button, { props: { variant }, slots: { default: 'x' } }).html()).toContain(
       expected
     )
   })
 
+  it('gives outline a visible control border', () => {
+    const classes = mount(Button, {
+      props: { variant: 'outline' },
+      slots: { default: 'x' },
+    }).classes()
+    expect(classes).toContain('border-input')
+    expect(classes).not.toContain('border-transparent')
+  })
+
+  it('renders icon sizes as squares', () => {
+    const classes = mount(Button, {
+      props: { size: 'icon', variant: 'outline' },
+      slots: { default: 'x' },
+      attrs: { 'aria-label': 'Open' },
+    }).classes()
+    expect(classes).toContain('size-8')
+  })
+
   it('lets a consumer class beat the variant class', () => {
     // Assert on the class list, not the raw HTML: `bg-primary-solid` is a
     // substring of the `hover:` utility that legitimately survives the merge.
     const classes = mount(Button, {
-      props: { variant: 'primary', class: 'bg-danger-solid' },
+      props: { variant: 'default', class: 'bg-danger-solid' },
       slots: { default: 'x' },
     }).classes()
     expect(classes).toContain('bg-danger-solid')

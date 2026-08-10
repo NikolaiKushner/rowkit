@@ -195,7 +195,8 @@ watch(
         <Button
           v-if="hasChips"
           variant="ghost"
-          size="sm"
+          :size="props.size === 'sm' ? 'sm' : 'default'"
+          class="text-muted-foreground hover:text-foreground"
           :disabled="props.disabled"
           @click="requestClear"
         >

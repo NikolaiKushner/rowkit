@@ -131,7 +131,7 @@ describe('the radius scale resolves', () => {
   it('declares --radius, so the calc() has something to multiply', async () => {
     const css = await build('rounded-md')
     expect(css, '--radius vanished — every rounded-* utility now computes to 0').toMatch(
-      /--radius:\s*0\.625rem/
+      /--radius:\s*0\.5rem/
     )
   })
 

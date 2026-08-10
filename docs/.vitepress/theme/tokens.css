@@ -8,7 +8,14 @@
  *
  * Tailwind and rowkit's theme are imported here too, because the live demos on
  * component pages are real rowkit components and need real rowkit utilities.
+ *
+ * The `vp-theme` layer order is *not* set here. It rides on the wrapped
+ * VitePress CSS in `config.ts`, which lands above this file in the bundle — an
+ * order statement in this file arrives too late to count. See the note there.
  */
+
+@import '@fontsource-variable/geist/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
 @import 'tailwindcss';
 @import '../../../packages/ui/src/styles/index.css';
 
@@ -26,99 +33,46 @@
 /*
  * A table inside a demo is a table, not a block.
  *
- * VitePress sets `.vp-doc table { display: block; overflow-x: auto }` so a long
- * markdown table scrolls instead of stretching the page. A block-level table
- * generates an anonymous inner table box that is shrink-to-fit, so `width: 100%`
- * sizes the *block* and leaves the cells at their content width — the table
- * measures full width in JavaScript while rendering with several hundred pixels
- * of empty space to its right.
+ * VitePress sets `.vp-doc table { display: block; overflow-x: auto }` and
+ * styles markdown tables (borders, padding, zebra, grey headers). Live demos
+ * sit inside `.vp-doc`, so those rules hit real components unless we isolate.
  *
- * `DataTable` brings its own scroll container, so it neither needs nor wants
- * VitePress's treatment.
+ * VitePress CSS is wrapped in `@layer vp-theme` (see `config.ts`) below
+ * Tailwind utilities — Safari-safe, no `revert-layer`. The block below zeroes
+ * the leftover markdown-table chrome inside `.rk-demo` so dropping a component
+ * into a DemoBox is enough.
  */
-/*
- * Controls inside a demo keep the styling their component gave them.
- *
- * VitePress's default theme ships an **unlayered** reset:
- *
- *   button, input, optgroup, select, textarea { border: 0; padding: 0; … }
- *   button { background-color: transparent; background-image: none }
- *
- * Tailwind v4 puts every utility in `@layer utilities`, and unlayered CSS beats
- * layered CSS whatever the order or the specificity. So `bg-primary-solid`,
- * `px-4` and `border` lost on every button and input in a demo, while `h-9` and
- * `rounded-md` — properties the reset does not name — came through. The result
- * was a live demo of an invisible button.
- *
- * `all: revert-layer` from an unlayered rule rolls every property back to the
- * layered value underneath — the component's own utility where it set one, and
- * Tailwind's preflight default where it did not.
- *
- * `all`, rather than a list of properties, because a list has to guess which
- * property each utility writes and gets it wrong. Reverting `padding` restores
- * the *physical* longhands, while `px-4` writes `padding-inline`; the unlayered
- * shorthand then beat the layered logical property and the controls came back
- * with correct backgrounds, correct borders and no padding at all.
- *
- * The blunt alternative, `@import 'tailwindcss' important`, makes every utility
- * important and collides with Tailwind's own `container` utility — a class
- * VitePress uses for its layout — and for important declarations layer order is
- * reversed, so a layered `!important` beats an unlayered one and the collision
- * is unwinnable.
- */
-.rk-demo :is(button, input, optgroup, select, textarea) {
-  all: revert-layer;
-}
-
 .rk-demo table {
   display: table;
   margin: 0;
   overflow: visible;
 }
 
-/*
- * Table cells, for the same reason as the controls above.
- *
- * VitePress styles markdown tables as a grid, unlayered:
- *
- *   .vp-doc th, .vp-doc td { border: 1px solid …; padding: 8px 16px }
- *   .vp-doc th { background: var(--vp-c-bg-soft); color: var(--vp-c-text-2) }
- *
- * Every one of those beat the component's layered utilities at once, so a
- * DataTable demo rendered with vertical rules between every column, the wrong
- * padding, a grey header band and muted header text — four separate departures
- * from the real component, none of them visible in its class list.
- *
- * `th` and `td` only. Reverting the row would take the hover and selected
- * backgrounds with it, and those are layered utilities the component wants.
- */
-.rk-demo :is(th, td) {
-  all: revert-layer;
-}
+@layer vp-theme {
+  /*
+   * Neutralise `.vp-doc` markdown-table chrome on demo hosts only.
+   *
+   * Do not zero `padding` / `font-*` here. Those belong to the component
+   * utilities; resetting them in this layer is redundant when cascade layers
+   * work, and harmful if a browser ever lets higher-specificity theme rules
+   * leak past utilities (the Safari failure mode that collapsed demos).
+   *
+   * Borders and zebra backgrounds are the ones that still paint *on top of*
+   * component chrome when left alone — clear only those.
+   */
+  .rk-demo :is(th, td) {
+    border: none;
+    background-color: transparent;
+    color: inherit;
+  }
 
-/*
- * Body rows, for the third time and the same reason.
- *
- *   .vp-doc tr { background-color: …; border-top: 1px solid …;
- *                transition: background-color 0.5s }
- *   .vp-doc tr:nth-child(2n) { background-color: var(--vp-c-bg-soft) }
- *
- * Zebra striping is right for a markdown table and wrong for a component that
- * paints its own rows — every other row went grey, and in the loading state the
- * stripe sat on top of the skeletons and hid them. The row also inherited a
- * border it already draws on its cells, and a **half-second** background
- * transition, which is why hover in a demo lagged behind the pointer.
- *
- * `revert-layer` restores the layered value rather than removing it, so the
- * row's own `bg-card`, `hover:` and selected utilities all come back.
- *
- * `tbody tr:nth-child(2n)` is 0-2-2 against VitePress's 0-2-1. A plain
- * `.rk-demo tr` is 0-1-1 and loses to the stripe, which is how this survived
- * the first pass at the cells.
- */
-.rk-demo tbody tr,
-.rk-demo tbody tr:nth-child(2n) {
-  all: revert-layer;
+  .rk-demo thead tr,
+  .rk-demo tbody tr,
+  .rk-demo tbody tr:nth-child(2n) {
+    background-color: transparent;
+    border-top: none;
+    transition: none;
+  }
 }
 
 /*
@@ -158,6 +112,167 @@
 }
 
 /*
+ * Custom home composition. Stock VP hero / feature cards are hidden; brand +
+ * live money shot live in HomePage via `home-hero-before`.
+ */
+.VPHome .VPHero,
+.VPHome .VPFeatures {
+  display: none;
+}
+
+.rk-home {
+  --rk-gutter: 24px;
+
+  box-sizing: content-box;
+  max-width: min(1152px, 100% - 2 * var(--rk-gutter));
+  margin-inline: auto;
+  padding: 2.5rem var(--rk-gutter) 1rem;
+}
+
+@media (min-width: 640px) {
+  .rk-home {
+    --rk-gutter: 48px;
+    padding-top: 3.5rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .rk-home {
+    --rk-gutter: 64px;
+    padding-top: 4rem;
+  }
+}
+
+.rk-home__intro {
+  max-width: 40rem;
+  margin-bottom: 2.5rem;
+}
+
+.rk-home__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 1.5rem;
+}
+
+.rk-home__mark {
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+}
+
+.rk-home__wordmark {
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--color-foreground);
+}
+
+.rk-home__headline {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--color-foreground);
+}
+
+.rk-home__lede {
+  margin: 0 0 1.5rem;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--color-muted-foreground);
+}
+
+.rk-home__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.rk-home__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.25rem;
+  padding: 0 1rem;
+  border-radius: var(--radius-md, 0.375rem);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.rk-home__cta--brand {
+  border: 1px solid var(--color-primary-solid);
+  background: var(--color-primary-solid);
+  color: var(--color-primary-on-solid);
+}
+
+.rk-home__cta--brand:hover {
+  border-color: var(--color-primary-solid-hover);
+  background: var(--color-primary-solid-hover);
+  color: var(--color-primary-on-solid);
+}
+
+.rk-home__cta--alt {
+  border: 1px solid var(--color-input);
+  background: var(--color-card);
+  color: var(--color-foreground);
+}
+
+.rk-home__cta--alt:hover {
+  background: var(--color-accent);
+}
+
+.rk-home__preview {
+  margin-bottom: 2.5rem;
+}
+
+.rk-home__preview .rk-demo {
+  margin: 0;
+}
+
+.rk-home__points {
+  display: grid;
+  gap: 1.25rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .rk-home__points {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+.rk-home__points li {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--color-muted-foreground);
+}
+
+.rk-home__points strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 500;
+  color: var(--color-foreground);
+}
+
+.rk-home__points code {
+  font-size: 0.8125rem;
+}
+
+/*
  * A demo's sticky table header stays inside the demo.
  *
  * `--z-index-sticky` is 100 because rowkit's scale assumes rowkit is the page's
@@ -178,6 +293,9 @@
 }
 
 :root {
+  --vp-font-family-base: var(--font-sans);
+  --vp-font-family-mono: var(--font-mono);
+
   --vp-c-brand-1: var(--color-primary-700);
   --vp-c-brand-2: var(--color-primary-600);
   --vp-c-brand-3: var(--color-primary-500);
