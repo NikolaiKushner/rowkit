@@ -7,7 +7,12 @@ import EmptyState from '../components/EmptyState/EmptyState.vue'
 import FilterBar from '../components/FilterBar/FilterBar.vue'
 import Pagination from '../components/Pagination/Pagination.vue'
 import RawSelect from '../components/Select/Select.vue'
+import RawSelectItem from '../components/Select/SelectItem.vue'
+import SelectContent from '../components/Select/SelectContent.vue'
+import SelectTrigger from '../components/Select/SelectTrigger.vue'
 import Tooltip from '../components/Tooltip/Tooltip.vue'
+import TooltipContent from '../components/Tooltip/TooltipContent.vue'
+import TooltipTrigger from '../components/Tooltip/TooltipTrigger.vue'
 import type { DataTableColumn, DataTableSort } from '../components/DataTable/types'
 import type { FilterChip } from '../components/FilterBar/types'
 import {
@@ -20,6 +25,7 @@ import {
 
 const DataTable = RawDataTable as unknown as ConcreteComponent
 const Select = RawSelect as unknown as ConcreteComponent
+const SelectItem = RawSelectItem as unknown as ConcreteComponent
 
 const columns: DataTableColumn<DemoUser>[] = [
   { key: 'name', header: 'Name', sortable: true, sticky: true, width: '12rem' },
@@ -63,7 +69,12 @@ export const Default: Story = {
       FilterBar,
       Pagination,
       Select,
+      SelectContent,
+      SelectItem,
+      SelectTrigger,
       Tooltip,
+      TooltipContent,
+      TooltipTrigger,
     },
     setup: () => {
       const search = ref('')
@@ -176,8 +187,18 @@ export const Default: Story = {
             @clear="clearFilters"
           >
             <template #controls>
-              <Select v-model="role" :options="demoRoleOptions" placeholder="Role" class="w-36" />
-              <Select v-model="status" :options="demoStatusOptions" placeholder="Status" class="w-36" />
+              <Select v-model="role">
+                <SelectTrigger placeholder="Role" class="w-36" />
+                <SelectContent>
+                  <SelectItem v-for="option in demoRoleOptions" :key="option.value" :value="option.value" :label="option.label" />
+                </SelectContent>
+              </Select>
+              <Select v-model="status">
+                <SelectTrigger placeholder="Status" class="w-36" />
+                <SelectContent>
+                  <SelectItem v-for="option in demoStatusOptions" :key="option.value" :value="option.value" :label="option.label" />
+                </SelectContent>
+              </Select>
             </template>
           </FilterBar>
 
@@ -209,8 +230,11 @@ export const Default: Story = {
             <span class="font-medium text-foreground">{{ row.name }}</span>
           </template>
           <template #[\`cell:email\`]="{ row }">
-            <Tooltip :content="row.email">
-              <span class="block max-w-[14rem] truncate text-muted-foreground">{{ row.email }}</span>
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <span class="block max-w-[14rem] truncate text-muted-foreground">{{ row.email }}</span>
+              </TooltipTrigger>
+              <TooltipContent>{{ row.email }}</TooltipContent>
             </Tooltip>
           </template>
           <template #[\`cell:status\`]="{ row }">

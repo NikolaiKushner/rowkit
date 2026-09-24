@@ -3,9 +3,12 @@
 Where rowkit is, what it needs before 1.0, and what is deliberately not coming.
 
 This file is the plan of record. It is ordered, not exhaustive: an item is here
-because someone can act on it, and things that are merely nice to imagine live
-under [Out of scope](#out-of-scope-until-there-is-demand) so they stay out on
-purpose rather than by neglect.
+because someone can act on it.
+
+The direction is a professional toolkit: the components a product interface is
+built from. Tables, filters and empty states are part of that set. They are not
+the boundary of it. What follows is the plan for the rest of the set — not a
+build, yet.
 
 Last reviewed: **2026-08-09** (v0.1.1).
 
@@ -82,7 +85,7 @@ add always-open variants to the matrix.
 Both are decisions, not bugs — but they should be decided rather than inherited:
 
 - **`Badge` `subtle` + `primary` is indistinguishable from `neutral`** in light
-  mode. That follows from espresso's low chroma, and it makes the variant close
+  mode. That follows from primary's low chroma, and it makes the variant close
   to useless. Either give it a distinguishing treatment or drop it.
 - **Dark-mode invalid `Input` contradicts soft destructive.** The rest of the
   library expresses danger as a quiet wash with a coloured label; the invalid
@@ -97,38 +100,32 @@ growing them.
 
 ---
 
-## Next surface — only if earned
+## The professional set — planned, not started
 
-Nothing here starts on enthusiasm. Each needs a concrete place on a data-dense
-page that is awkward without it:
+A product interface is built from more than a table. This is the set to grow
+into. Nothing here is being built until the items under **Now** are finished
+or deliberately dropped.
 
-- **DropdownMenu** — the highest-probability next primitive. Row actions in a
-  table currently force every consumer to invent a one-off icon menu.
-- **Popover** — the honest answer to "can a tooltip contain a link", and
-  plausibly the shell DropdownMenu composes onto.
-- **Sheet / drawer** — only if dialogs start feeling wrong for filter or detail
-  panes. No evidence of that yet.
+- **Menus and overlays.** DropdownMenu (row actions currently force a one-off
+  icon menu), Popover, Sheet / drawer, and a confirm dialog.
+- **Dates.** Date and date-range pickers.
+- **Finding things.** Command palette.
+- **Writing.** Rich text, when a product surface needs more than `Input`.
+- **Charts.** Only as a component that sits in the same tokens — not a second
+  charting library.
+- **`DataTable` virtualisation**, against a real workload. The reasoning is in
+  [decision 004](./docs/decisions/004-datatable-performance.md).
+
+There is no fixed count. A component belongs here when a product interface is
+awkward without it.
 
 ---
 
-## Later — not promised
+## Later — not the toolkit
 
-- **`DataTable` virtualisation**, and only against a real workload. The
-  reasoning is recorded in [decision 004](./docs/decisions/004-datatable-performance.md).
 - **A custom docs theme.** Legitimate, and the lowest-information work
   available. It stays last on purpose.
-
----
-
-## Out of scope (until there is demand)
-
-Recording these is how they stay out. None are bad ideas; none belong in a
-library about data-dense surfaces yet.
-
-Date and date-range pickers · rich text editor · charts (a dedicated library
-does this better) · command palette · a form validation layer (rowkit renders
-field state; deciding what is invalid is the application's job) · virtualised
-lists beyond `DataTable` · a Figma kit · a React port.
+- **A Figma kit. A React port.** Separate products, not components of this one.
 
 ---
 
@@ -136,13 +133,12 @@ lists beyond `DataTable` · a Figma kit · a React port.
 
 Permanent, not "not yet".
 
-**Not a kitchen-sink UI library.** Depth on data-dense surfaces beats breadth.
-If you need forty components, Nuxt UI and shadcn-vue are better answers, and
-rowkit composes with either — all three build on Reka UI.
-
 **Not a CSS framework.** Tailwind v4 stays a peer dependency.
 
 **Not opinionated about data fetching.** Components take props.
+
+**Not a validation layer.** rowkit renders field state. Deciding what is invalid
+is the application's job.
 
 ---
 
@@ -152,7 +148,7 @@ Do not relitigate these without new information:
 
 - **Design direction is restraint** — structure without severity, no excess.
   Chrome stays neutral; status colour carries meaning and brand colour does not
-  live in the defaults. Primary is warm espresso `oklch(0.31 0.038 48)`.
+  live in the defaults. Primary is ink blue `oklch(0.32 0.09 255)`.
   Consumers rebrand by pointing `--color-primary-*` at their own colour.
 - **npm package, not copy-paste distribution.** shadcn-vue's model is good and
   deliberate; rowkit ships versioned.

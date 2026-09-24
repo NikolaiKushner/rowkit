@@ -89,16 +89,18 @@ handling.
 function renderComponent({ component, props, models, events, slots }) {
   const lines = [`### ${component}`, '', `\`import { ${component} } from 'rowkit'\``, '']
 
-  lines.push('**Props**', '')
-  for (const prop of props) {
-    const suffix = prop.required
-      ? ' _(required)_'
-      : prop.default === undefined
-        ? ''
-        : ` — default \`${prop.default}\``
-    lines.push(`- \`${prop.name}: ${prop.type}\`${suffix}. ${describe(prop.description)}`)
+  if (props.length > 0) {
+    lines.push('**Props**', '')
+    for (const prop of props) {
+      const suffix = prop.required
+        ? ' _(required)_'
+        : prop.default === undefined
+          ? ''
+          : ` — default \`${prop.default}\``
+      lines.push(`- \`${prop.name}: ${prop.type}\`${suffix}. ${describe(prop.description)}`)
+    }
+    lines.push('')
   }
-  lines.push('')
 
   if (models.length > 0) {
     lines.push('**v-model**', '')
@@ -139,8 +141,8 @@ export async function buildAgentsBody() {
     '',
     '# rowkit for coding agents',
     '',
-    'Vue 3 components for data-dense interfaces: tables, filters, and the states',
-    'around them. Twelve components, built on Reka UI, styled with Tailwind v4.',
+    'A professional Vue 3 toolkit: the components a product interface is built',
+    'from. Built on Reka UI, styled with Tailwind v4.',
     '',
     'This file is generated from the source, so it describes the version installed',
     'rather than whatever was current when it was written.',

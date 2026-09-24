@@ -1,228 +1,308 @@
 # API conventions
 
-Consistency across components is what makes a library feel designed rather than
-assembled. These are decided once, here, and every component follows them. Where
-a component deviates, its docs page says so and why.
+A rowkit component is a constructor. The consumer's template is the
+composition: they place the parts, and the arrangement is the variant. A prop
+that hides a header, swaps a mode, or draws a second layout is the thing this
+document exists to prevent.
+
+These rules are decided once. A component that cannot follow one says so on its
+docs page, with the reason.
+
+The assemblies still to rebuild — `Toaster` and `Field` — are single components
+with slots. They get rebuilt to this shape one at a time. Until a component's
+docs show the parts, the code is the previous shape, and this file is the one
+it is moving toward.
+
+---
+
+## Two shapes
+
+**One element stays one component.** `Button`, `Badge`, `Input`, `Skeleton`,
+`EmptyState`. There is nothing to arrange. Splitting them into parts would
+invent a constructor that has only one piece.
+
+**Anything with parts the consumer places is an assembly.** `Dialog`, `Select`,
+`Tooltip`, toast, and the menus and popovers that follow. Also the form chrome
+around a control: label, hint, and error are parts, and the control itself is
+whatever the consumer puts inside.
+
+`DataTable`, `FilterBar`, and `Pagination` are widgets. They compose the parts
+above. They are not themselves split into a trigger and a content, because
+their job is the data contract — typed columns, the page model — not a second
+way to write a `<table>`.
+
+---
+
+## Anatomy
+
+Taken from Reka UI, which rowkit already builds on, and from the way shadcn-vue
+styles those parts without replacing them.
+
+**The root owns the shared state and renders no chrome.** It forwards to the
+Reka root (`DialogRoot`, `SelectRoot`) and `provide`s the context the parts
+read. File and export name drop the `Root` suffix: `Dialog.vue` exports
+`Dialog`. The consumer never imports `DialogRoot`.
+
+**One file per part the consumer places.** `DialogTrigger.vue`,
+`DialogContent.vue`, `DialogTitle.vue`. A part either forwards a Reka part or
+is layout only (`DialogHeader`, `DialogFooter`: a `div` and a slot, no
+behaviour). Behaviour — focus trap, dismiss, typeahead, scroll lock — stays
+inside Reka.
+
+**Abstract the parts that always travel together.** This is Reka's own "Custom
+APIs" guidance, not a shortcut around it. `DialogContent` includes the portal,
+the overlay, and the close button, so a consumer writes `Dialog`,
+`DialogTrigger`, and `DialogContent`. Title, description, header, and footer
+stay parts, because those are what changes from one dialog to the next. A
+`mode` prop that redraws the layout is the thing to avoid. A part that must
+exist for accessibility (a dialog title) is required in the docs, not invented
+as a flag on the root.
+
+**`as` and `as-child` on every part that renders an element the consumer may
+replace.** Triggers are the usual case: `DialogTrigger` with `as-child` hands
+its behaviour to the `Button` inside it, so a dialog opens from the same button
+the rest of the page uses. Parts compose the same way with each other — a
+tooltip trigger around a dialog trigger around a button.
+
+**Props and emits of a Reka part are forwarded**, not re-declared one by one.
+`useForwardPropsEmits` from Reka. rowkit adds `class` and a few opinions of its
+own, such as a dialog content's `size`.
+
+**Open state follows Reka.** `v-model:open` on the root when the consumer needs
+the value. With no model, the root holds it, so a trigger still toggles. Data
+state is different and stays fully controlled: sort, selection, page, filters.
+There is no correct default for those, and a component must not guess. See
+State ownership.
+
+```vue
+<Dialog>
+  <DialogTrigger as-child>
+    <Button>Delete project</Button>
+  </DialogTrigger>
+  <DialogContent size="sm">
+    <DialogHeader>
+      <DialogTitle>Delete project</DialogTitle>
+      <DialogDescription>This cannot be undone.</DialogDescription>
+    </DialogHeader>
+    <DialogBody>Everything in the project goes with it.</DialogBody>
+    <DialogFooter>
+      <Button variant="outline">Cancel</Button>
+      <Button variant="destructive">Delete</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+`index.ts` exports the parts a consumer places. Portal and overlay, once they
+live inside `DialogContent`, do not need their own export.
+
+---
+
+## File structure
+
+A single-element component:
+
+```
+components/Button/
+  Button.vue
+  Button.variants.ts
+  Button.stories.ts
+  Button.test.ts
+  index.ts
+  types.ts          # only when <script setup> cannot export the type
+```
+
+An assembly, same folder. One Vue file for each part the consumer places.
+Portal and overlay can live inside `DialogContent.vue` rather than as their
+own public files. One variants module, one story file, one test file:
+
+```
+components/Dialog/
+  Dialog.vue
+  DialogTrigger.vue
+  DialogContent.vue
+  DialogTitle.vue
+  DialogDescription.vue
+  DialogHeader.vue
+  DialogBody.vue
+  DialogFooter.vue
+  Dialog.variants.ts
+  Dialog.stories.ts
+  Dialog.test.ts
+  index.ts
+```
+
+Variants for every part live in that one `cva` module. A long class string in a
+template is still forbidden.
 
 ---
 
 ## Props
 
 **Booleans read as adjectives, no `is` prefix.** `disabled`, `loading`,
-`required`, `searchable`, `hoverable` — never `isDisabled`.
+`required`. Never `isDisabled`.
 
-**Boolean props default to `false`**, so the absent prop and the off state are
-the same thing. Where the useful default is "on", name the prop for the
-_opt-out_ rather than inverting the default — `static`, not `animated: true`.
+**Boolean props default to `false`.** Where the useful default is on, name the
+opt-out: `static`, not `animated: true`.
 
-**Variants are strings, not booleans.** `variant="danger"`, never `danger`. A
-boolean per variant makes two of them expressible at once, and that state has no
-meaning.
+**Variants are strings.** `variant="destructive"`, never a boolean `destructive`.
+Two booleans can both be true, and that state means nothing.
 
-**Sizes use one shared scale for form controls**: `sm | md | lg`, with `md` the
-default — Field, Input, Select, FilterBar. **Button is the exception:** it
-follows the shadcn size set
-(`default | xs | sm | lg | icon | icon-xs | icon-sm | icon-lg`), where
-`default` matches other components' `md` height (`h-8`). Other components may
-offer a subset of the form scale, but they do not invent new step names.
+**Sizes share one scale.** Form controls: `sm | md | lg`, default `md`.
+`Button` keeps the shadcn set (`default | xs | sm | lg | icon | icon-xs |
+icon-sm | icon-lg`); `default` is the same height as `md` elsewhere (`h-8`).
+No component invents a new step name.
 
-**Every component accepts `class` and merges it** through `tailwind-merge`, so a
-consumer's utility wins over the component's own without a specificity fight.
+**Every part accepts `class` and merges it** through `tailwind-merge`. The
+consumer's utility wins.
 
-**Every prop carries a JSDoc comment.** These feed the docs site and `AGENTS.md`.
-A comment that restates the prop name is worse than none — say why it exists or
-when to reach for it.
+**Every prop has a JSDoc comment** that says why it exists. These feed the docs
+tables (`pnpm docs:props`) and `AGENTS.md` (`pnpm docs:agents`). The first
+paragraph is the table cell. The same comment is required on `defineModel`,
+`defineEmits`, and `defineSlots` members.
 
-The props table on every component page is **generated from this comment**, not
-written by hand: `pnpm docs:props` fills in the `<!-- @props … -->` blocks, and
-`src/props-docs.test.ts` fails if the committed pages have drifted. The first
-paragraph becomes the table cell, so lead with the summary and put the reasoning
-in the paragraphs after it — those stay in the source for anyone reading the
-type, and stay out of a table cell that cannot hold them.
+### `exactOptionalPropertyTypes`
 
-The same comment feeds `AGENTS.md` (`pnpm docs:agents`), which ships inside the
-npm package so a coding agent working in a consumer's project can read the API
-of the exact version installed. That one takes models, events and slots as well,
-so `defineModel`, `defineEmits` and `defineSlots` members want a JSDoc comment
-for the same reason props do.
-
-### Optional props and `exactOptionalPropertyTypes`
-
-TypeScript is strict, and `exactOptionalPropertyTypes` is on. Two consequences
-that come up constantly:
-
-- `withDefaults` cannot list an explicit `undefined` default. Omit the entry.
-- Binding `:foo="undefined"` to an optional prop is a type error, not an
-  omission. Build the props in a computed and spread conditionally:
-
-  ```ts
-  const rootProps = computed(() => ({
-    ...(props.name === undefined ? {} : { name: props.name }),
-  }))
-  ```
-
-  `Select`, `DataTable` and others all do this. It is the standard workaround,
-  not a local hack.
+- `withDefaults` cannot list an explicit `undefined`. Omit the entry.
+- `:foo="undefined"` is a type error. Build the object and spread only when the
+  value is present. This is the normal pattern, used wherever a prop is optional
+  and forwarded.
 
 ---
 
 ## State ownership
 
-**The consumer owns state; components render it and request changes.** Sort,
-selection, page, page size, filters, search — all `v-model`, none owned
-internally. This is what makes server-driven and client-driven usage identical
-from the component's point of view.
+**The consumer owns data state.** Sort, selection, page, page size, filters,
+search are `v-model` on the widget. Nothing is held inside. Changing the page
+size does not move the page. Clearing a filter does not reset anything else.
+The component reports what happened.
 
-The consequence worth stating: a component **does not** make multi-step
-decisions on the consumer's behalf. Changing page size does not silently move
-the page; clearing a filter does not silently reset anything. The component
-emits what happened and the application decides what follows.
+**An assembly root owns presence state** — open, closed — the way Reka does.
+Bind `v-model:open` to take it. Leave it unbound and the root keeps it, which
+is what makes a trigger work without a ref in the page. Do not add a second
+boolean prop for the same fact.
 
-Where convenience genuinely helps, it lives **outside the component** rather than
-behind a prop. `useClientSort` is the case: client-side sorting used to be a
-`sortMode` on `DataTable` and was moved out, because a prop makes the wrong mode
-reachable by accident — a server-paged table that sorts locally reorders only the
-page on screen and looks correct.
+Convenience that is really a policy lives **outside** the component.
+`useClientSort` used to be a `sortMode` prop. A prop made the wrong mode
+reachable by accident: a server-paged table that sorts locally looks correct
+and is not.
 
 ---
 
 ## Events
 
-**Past tense for things that happened**: `@change`, `@select`, `@close`,
-`@remove`, `@clear`.
+**Past tense for things that happened:** `@select`, `@remove`, `@clear`.
 
-**`update:<name>` for every model.** Multiple models are normal:
-`v-model:page`, `v-model:pageSize`, `v-model:sort`, `v-model:selected`.
+**`update:<name>` for every model.** `v-model:open`, `v-model:page`,
+`v-model:sort`.
 
-**The payload is the value, not the DOM event**, unless the event itself is
-genuinely needed. `@remove` emits the chip's `id`, not a `MouseEvent`.
+**The payload is the value**, not the DOM event, unless the event itself is the
+information. `@remove` emits the chip's `id`.
 
-**Identity payloads use stable ids, never array indices or object references.**
-An index is not an identity once a list can sort or filter, and an object
-reference does not survive a refetch.
+**Identity is a stable id.** Never an array index, never an object reference.
+An index stops being an identity the moment the list sorts, and a reference
+does not survive a refetch.
 
 ---
 
 ## Slots
 
-**`default` for content**, where the component has a single content area.
-Components with a fixed internal layout — `EmptyState`, `FilterBar` — have no
-`default` slot at all, because there is no unambiguous place to put it.
+A slot is the content of a part. It is not a way to swap one part for another.
+`DialogHeader` is a component the consumer places. It is not a `#header` slot
+on a single `Dialog`.
 
-**Named slots describe role, not position**: `#controls`, `#actions`, `#empty`,
-`#icon`, `#summary`, `#chip`.
+**`default` is the part's content.** A part with no single place for content
+has no default slot.
 
-**Scoped slots pass the minimum useful data, typed.** `DataTable`'s cell slots
-pass `{ row, column, value, index }` and nothing else.
+**Scoped slots pass the minimum, typed.** A menu item passes the item. A table
+cell passes `{ row, column, value, index }`. Nothing else.
 
-**Per-item slots are namespaced with a colon**: `#cell:status`. The resolution
-order is always specific, then general, then a built-in default.
+**Per-item slots on a widget stay namespaced with a colon:** `#cell:status`.
+Specific, then general, then the built-in default.
 
 ---
 
 ## Types
 
-**Every component exports its props type**, and any type a consumer needs to
-annotate their own state: `SelectOption`, `FilterChip`, `DataTableColumn`,
-`DataTableSort`.
+**Each part exports its props type.** So does any type the consumer needs for
+their own state: `SelectOption`, `DataTableColumn`, `DataTableSort`.
 
-**Types a `<script setup>` block cannot export live in `types.ts`** beside the
-component. `<script setup>` cannot export types; this is not optional.
+**Types a `<script setup>` block cannot export live in `types.ts`.**
 
-**Generic components use one type parameter named for the domain**:
-`DataTable<TRow>`, not `DataTable<T>`.
+**One type parameter, named for the domain.** `DataTable<TRow>`, not
+`DataTable<T>`.
 
-**No `any`.** If typing is genuinely hard, ask rather than escaping the type
-system. `unknown` with a narrowing predicate is almost always the answer — see
-`isFieldColumn` in `DataTable/types.ts`.
+**No `any`.** `unknown` and a narrowing predicate. See `isFieldColumn`.
 
 ---
 
-## Accessibility conventions
+## Accessibility
 
-These recur often enough to be conventions rather than per-component decisions.
+The wiring comes from the Reka part a rowkit part forwards. A part that renders
+its own element still follows these.
 
-**Decorative by default, announced on request.** Anything that repeats
-information already present is `aria-hidden`: `Badge`'s dot, `Pagination`'s
-ellipsis, `DataTable`'s sort icon. `Skeleton` is `aria-hidden` unconditionally
-and has no say in the matter — a loading table renders dozens of them.
+**Decorative by default, announced on request.** A badge dot, a sort icon, an
+ellipsis: `aria-hidden`. `Skeleton` is `aria-hidden` always.
 
-Where a region needs to announce itself, that is an explicit opt-in on **one**
-element that stands for the whole region — `EmptyState`'s `announce`,
-`DataTable`'s loading status — never on every instance.
+**One live region per concern, mounted before it has something to say.** A
+region added in the same tick as its text is often silent. `DataTable` keeps
+an empty `role="status"` and changes only the text.
 
-**Live regions are rendered before they have something to say.** A region added
-to the DOM at the same moment as its content is frequently not announced.
-`DataTable` keeps an empty `role="status"` mounted and changes only its text.
+**Landmarks have names, and two of them on one page have different names.**
+`label` exists for this. Two paginations both called "Pagination" fail axe.
 
-**Every landmark takes a name, and concurrent instances need distinct ones.**
-Two `<nav>`s both called "Pagination" is an axe `landmark-unique` violation, and
-it is the normal layout for a long table. `label` props exist for this.
+**Name a control after what it acts on.** "Remove Role: Admin filter", not
+"Remove".
 
-**Controls are named after what they act on**, not what they do. "Remove Role:
-Admin filter", not "Remove". "Select Ada Lovelace", not "Select row 3".
+**Focus survives destruction.** Removing the focused element moves focus to the
+next sibling, then a nearby control, then the region. Never to the top of the
+document.
 
-**Focus survives destruction.** Removing the element that has focus must move
-focus somewhere sensible — the next sibling, then a nearby control, then the
-region — never to the top of the document. See `FilterBar`'s chip removal.
+**A busy control is `aria-busy`, not `disabled`, while it holds focus.**
+Disabling it pulls the user out of the interface by their own action.
 
-**Never disable a control that has focus mid-request.** Use `aria-busy` and make
-the handler a no-op instead, so a keyboard user is not thrown out of the
-interface by their own action.
-
-**Motion is opt-out at the system level — with one distinction.** An **ambient**
-loop is gated behind `motion-safe:`: it carries no information, so removing it
-costs nothing. `Skeleton`'s pulse is the example.
-
-A loop that is **the only thing telling the user something is happening** is
-exempt, deliberately and by name. `Button`'s spinner is the example: gating it
-would not reduce motion, it would remove the signal, leaving a reduced-motion
-user with a static ring that means nothing. Such an animation must stay small,
-centred and non-parallax — the shapes WCAG 2.3.3 concerns itself with are
-large-area and parallax — and the state must also reach assistive technology by
-another route, which for `Button` is `aria-busy`.
-
-`styles/motion.test.ts` enforces this: an ungated `animate-*` anywhere in a
-component fails unless it is in that file's exemption list with a written
-reason. Transitions are not covered — a 120ms colour fade on hover is not the
-concern.
+**Ambient motion is behind `motion-safe:`.** A loop that is the only signal
+something is happening stays, small and non-parallax, and the state also
+reaches assistive technology another way. `Button`'s spinner is that case,
+paired with `aria-busy`. `styles/motion.test.ts` fails an ungated `animate-*`
+that is not on that exemption list with a written reason.
 
 ---
 
 ## Styling
 
-**No hardcoded design values.** Every colour, spacing value, radius, shadow and
-z-index references a token. If no token fits, propose one — `skeleton` was added
-exactly this way. Relative units that track something else (`1em` tracking font
-size, `w-full`) are not design values and are fine.
+**No hardcoded design values.** Colour, space, radius, shadow, z-index: a
+token. A missing token is a proposal, not an inlined value. `1em` and `w-full`
+track something else and are fine.
 
-**Variants live in `ComponentName.variants.ts`, defined with `cva`.** Never a
-long class string in the template.
+**`data-slot` on every part.** The value is the part's kebab name:
+`data-slot="dialog"`, `data-slot="dialog-title"`, `data-slot="field-error"`.
+This is the public styling hook. Class strings are not, and they may change.
 
-**Class names are written out in full.** Tailwind finds utilities by scanning for
-literal strings, so `bg-${variant}-subtle` is valid TypeScript that generates
-no CSS at all. Colour that is the product of two axes goes in `compoundVariants`.
+**`data-state` comes from the primitive** (`open` | `closed`, `checked`,
+`disabled`). rowkit does not invent a parallel class for the same fact.
+Consumers style with `data-[state=open]:` and `has-[[data-slot=dialog-footer]]:`.
 
-**Every variant is covered by `styles/variants.test.ts`**, which compiles the
-real stylesheet and asserts each class produces output. A class that generates
-nothing is not an error anywhere else in the toolchain.
+**Variants are `cva` in `ComponentName.variants.ts`.** Class names are written
+out in full. Tailwind scans source for literal strings; `` `bg-${variant}` ``
+generates nothing and throws nothing. Two axes of colour go in
+`compoundVariants`. `styles/variants.test.ts` compiles the real stylesheet and
+fails a class that produced no output.
 
 ---
 
 ## Bundle budget
 
-Measured with `size-limit` in CI, in **brotli** — `plan.md`'s original 15 kB /
-45 kB figures were gzip, and brotli runs roughly 10–15% smaller, so the numbers
-are not directly comparable. Current ceilings are in `.size-limit.json`.
-
-One entry deliberately imports a single component, so a barrel change that
-breaks tree-shaking fails CI rather than quietly shipping the whole library to
-someone who wanted a `Button`.
+`size-limit` in CI, brotli. Ceilings are in `.size-limit.json`. One entry
+imports a single component, so a barrel that defeats tree-shaking fails before
+it ships. An assembly's parts are exported from the folder `index.ts`;
+importing `DialogTitle` must not pull `DataTable`.
 
 ---
 
 ## Changesets
 
-Every public API change needs one. `pnpm changeset`, pick the packages, describe
-the change the way a consumer reading a changelog would want it described — what
-changed and what it means for them, not which files moved.
+Every public API change needs one. `pnpm changeset`. Describe what changed for
+the consumer. Rebuilding an assembly from a single component into parts is a
+breaking change and needs a major changeset on purpose, not a patch taken while
+doing something else.

@@ -56,6 +56,7 @@ const size = computed(() => props.size ?? field?.size.value ?? 'md')
       v-bind="$attrs"
       :id="inputId"
       v-model="model"
+      data-slot="input"
       :type="props.type"
       :placeholder="props.placeholder"
       :disabled="isDisabled"

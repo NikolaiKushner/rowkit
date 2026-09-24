@@ -46,25 +46,25 @@ export const neutral = {
 } as const
 
 /**
- * Warm espresso graphite (hue ~48).
+ * Ink blue (hue 255).
  *
- * Restrained and premium — not pure black, not a loud brand blue/teal.
- * Enough warmth to feel intentional on a solid button; quiet enough that
- * consumers can rebrand without scraping a chromatic default first.
+ * Cool and current — the step after warm espresso. Chroma stays low so a
+ * solid button is ink, not a brand shout, and the selected-row wash
+ * (`primary-50`) reads as a cool mist instead of a pink one.
  */
 export const primary = {
-  50: 'oklch(0.975 0.01 48)',
-  100: 'oklch(0.95 0.014 48)',
-  200: 'oklch(0.90 0.02 48)',
-  300: 'oklch(0.80 0.026 48)',
-  400: 'oklch(0.68 0.032 48)',
-  500: 'oklch(0.50 0.036 48)',
-  600: 'oklch(0.40 0.037 48)',
-  700: 'oklch(0.35 0.037 48)',
-  /** Solid actions — warm espresso, deep enough for white labels. */
-  800: 'oklch(0.31 0.038 48)',
-  900: 'oklch(0.26 0.032 48)',
-  950: 'oklch(0.18 0.024 48)',
+  50: 'oklch(0.975 0.011 255)',
+  100: 'oklch(0.948 0.022 255)',
+  200: 'oklch(0.90 0.034 255)',
+  300: 'oklch(0.80 0.05 255)',
+  400: 'oklch(0.68 0.07 255)',
+  500: 'oklch(0.52 0.09 255)',
+  600: 'oklch(0.44 0.095 255)',
+  700: 'oklch(0.38 0.095 255)',
+  /** Solid actions — ink blue, deep enough for white labels. */
+  800: 'oklch(0.32 0.09 255)',
+  900: 'oklch(0.27 0.075 255)',
+  950: 'oklch(0.19 0.05 255)',
 } as const
 
 /** Green (hue 152). Reserved for successful outcomes, never for brand accent. */
@@ -448,8 +448,8 @@ export const semanticColorLight = {
   'neutral-border': ref('gray-940'),
 
   /**
-   * Warm espresso solid — premium brown-graphite, not a black brick.
-   * `primary-800` ≈ `oklch(0.31 0.038 48)`.
+   * Ink-blue solid — cool, not a black brick and not a saturated brand blue.
+   * `primary-800` ≈ `oklch(0.32 0.09 255)`.
    */
   'primary-solid': ref('primary-800'),
   'primary-solid-hover': ref('primary-900'),

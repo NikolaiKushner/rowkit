@@ -247,19 +247,23 @@ export async function buildComponentApi() {
   for (const file of files) {
     const componentDir = dirname(file)
     const componentName = componentDir.split('/').at(-1)
-
-    let sfc = ''
-    try {
-      sfc = await readFile(join(componentDir, `${componentName}.vue`), 'utf8')
-    } catch {
-      // A directory with types but no SFC has nothing more to report.
-    }
-    const { defaults, models, events, slots } = readSfcApi(sfc, componentName)
     const sourceFile = program.getSourceFile(file)
-
+    const registered = new Set()
+    const interfaces = []
     ts.forEachChild(sourceFile, (node) => {
-      if (!ts.isInterfaceDeclaration(node)) return
-      if (!node.name.text.endsWith('Props')) return
+      if (!ts.isInterfaceDeclaration(node) || !node.name.text.endsWith('Props')) return
+      interfaces.push(node)
+    })
+
+    for (const node of interfaces) {
+      const partName = node.name.text.replace(/Props$/, '')
+      let sfc = ''
+      try {
+        sfc = await readFile(join(componentDir, `${partName}.vue`), 'utf8')
+      } catch {
+        // An interface with no matching SFC has nothing more to report.
+      }
+      const { defaults, models, events, slots } = readSfcApi(sfc, partName)
 
       const props = []
       for (const member of node.members) {
@@ -289,17 +293,42 @@ export async function buildComponentApi() {
         })
       }
 
-      if (props.length === 0) return
+      if (props.length === 0 && models.length === 0) continue
 
-      components.set(componentName, {
-        component: componentName,
+      components.set(partName, {
+        component: partName,
         propsType: node.name.text,
         props,
         models,
         events,
         slots,
       })
-    })
+      registered.add(partName)
+    }
+
+    /*
+     * A root that only owns `v-model` has no props interface — `Dialog` is
+     * that shape. It still has to appear in the agent docs, or the model
+     * disappears with the old `title` prop.
+     */
+    if (!registered.has(componentName)) {
+      let sfc = ''
+      try {
+        sfc = await readFile(join(componentDir, `${componentName}.vue`), 'utf8')
+      } catch {
+        // No root SFC — nothing to document.
+      }
+      const { models, events, slots } = readSfcApi(sfc, componentName)
+      if (models.length === 0) continue
+      components.set(componentName, {
+        component: componentName,
+        propsType: `${componentName}Props`,
+        props: [],
+        models,
+        events,
+        slots,
+      })
+    }
   }
 
   return components

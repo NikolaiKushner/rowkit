@@ -6,8 +6,13 @@ import {
   EmptyState,
   FilterBar,
   Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
   Pagination,
   Tooltip,
+  TooltipContent,
+  TooltipTrigger,
   compareSortable,
   type DataTableColumn,
   type DataTableSort,
@@ -239,8 +244,28 @@ const selectedCount = computed(() => selected.value.length)
         @clear="clearFilters"
       >
         <template #controls>
-          <Select v-model="role" :options="roleOptions" placeholder="Role" class="w-36" />
-          <Select v-model="status" :options="statusOptions" placeholder="Status" class="w-36" />
+          <Select v-model="role">
+            <SelectTrigger placeholder="Role" class="w-36" />
+            <SelectContent>
+              <SelectItem
+                v-for="option in roleOptions"
+                :key="option.value"
+                :value="option.value"
+                :label="option.label"
+              />
+            </SelectContent>
+          </Select>
+          <Select v-model="status">
+            <SelectTrigger placeholder="Status" class="w-36" />
+            <SelectContent>
+              <SelectItem
+                v-for="option in statusOptions"
+                :key="option.value"
+                :value="option.value"
+                :label="option.label"
+              />
+            </SelectContent>
+          </Select>
         </template>
       </FilterBar>
 
@@ -281,10 +306,13 @@ const selectedCount = computed(() => selected.value.length)
       </template>
 
       <template #[`cell:email`]="{ row }">
-        <Tooltip :content="(row as User).email">
-          <span class="block max-w-[16rem] truncate text-muted-foreground">
-            {{ (row as User).email }}
-          </span>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <span class="block max-w-[16rem] truncate text-muted-foreground">
+              {{ (row as User).email }}
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>{{ (row as User).email }}</TooltipContent>
         </Tooltip>
       </template>
 

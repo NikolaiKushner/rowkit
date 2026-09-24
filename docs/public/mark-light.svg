@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" role="img" aria-label="rowkit">
-  <!-- Light-surface variant — quiet plate, espresso bars. -->
-  <rect width="32" height="32" rx="8" fill="#F7F4F1" stroke="#E5DDD6" stroke-width="1"/>
-  <rect x="7" y="9" width="18" height="3.5" rx="1" fill="#402a1f"/>
-  <rect x="7" y="14.25" width="18" height="3.5" rx="1" fill="#402a1f"/>
-  <rect x="7" y="19.5" width="12" height="3.5" rx="1" fill="#402a1f"/>
+  <!-- Light-surface variant — quiet plate, ink-blue bars. -->
+  <rect width="32" height="32" rx="8" fill="#F4F7FB" stroke="#E2E8F0" stroke-width="1"/>
+  <rect x="7" y="9" width="18" height="3.5" rx="1" fill="#0c335f"/>
+  <rect x="7" y="14.25" width="18" height="3.5" rx="1" fill="#0c335f"/>
+  <rect x="7" y="19.5" width="12" height="3.5" rx="1" fill="#0c335f"/>
 </svg>

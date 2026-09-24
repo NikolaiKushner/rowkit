@@ -9,7 +9,7 @@
     "jsx": "preserve",
     "useDefineForClassFields": true,
 
-    /* Strictness — see hard rule 7 in CLAUDE.md. */
+    /* Strictness — see hard rule 7 in AGENTS.md. */
     "strict": true,
     "noImplicitOverride": true,
     "noUnusedLocals": true,

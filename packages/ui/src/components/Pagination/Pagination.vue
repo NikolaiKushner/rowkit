@@ -11,6 +11,9 @@ import { computed } from 'vue'
 import { cn } from '../../utils/cn'
 import Field from '../Field/Field.vue'
 import Select from '../Select/Select.vue'
+import SelectContent from '../Select/SelectContent.vue'
+import SelectItem from '../Select/SelectItem.vue'
+import SelectTrigger from '../Select/SelectTrigger.vue'
 import type { SelectOption } from '../Select/types'
 import {
   paginationEllipsisVariants,
@@ -78,7 +81,7 @@ const isDisabled = computed(() => props.disabled || props.total === 0)
 </script>
 
 <template>
-  <div :class="cn(paginationVariants({ size: props.size }), props.class)">
+  <div data-slot="pagination" :class="cn(paginationVariants({ size: props.size }), props.class)">
     <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
       <p v-if="!props.hideSummary" :class="paginationSummaryVariants({ size: props.size })">
         <slot name="summary" :from="from" :to="to" :total="props.total">
@@ -95,7 +98,17 @@ const isDisabled = computed(() => props.disabled || props.total === 0)
         :disabled="isDisabled"
         class="flex-row items-center gap-2 [&>label]:whitespace-nowrap"
       >
-        <Select v-model="pageSize" :options="pageSizeChoices" :size="props.size" class="w-20" />
+        <Select v-model="pageSize">
+          <SelectTrigger :size="props.size" class="w-20" />
+          <SelectContent>
+            <SelectItem
+              v-for="option in pageSizeChoices"
+              :key="option.value"
+              :value="option.value"
+              :label="option.label"
+            />
+          </SelectContent>
+        </Select>
       </Field>
     </div>
 

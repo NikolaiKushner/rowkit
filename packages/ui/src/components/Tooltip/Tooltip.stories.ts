@@ -3,8 +3,12 @@ import { TooltipProvider } from 'reka-ui'
 import { expect, userEvent, within } from 'storybook/test'
 import Button from '../Button/Button.vue'
 import Tooltip from './Tooltip.vue'
+import TooltipContent from './TooltipContent.vue'
+import TooltipTrigger from './TooltipTrigger.vue'
 
 const placements = ['top', 'right', 'bottom', 'left'] as const
+
+const parts = { Tooltip, TooltipTrigger, TooltipContent, Button }
 
 /**
  * Controls declared explicitly rather than inferred, so the docs table shows
@@ -34,13 +38,16 @@ const meta: Meta<TooltipArgs> = {
     disabled: { control: 'boolean' },
   },
   render: (args) => ({
-    components: { Tooltip, Button },
+    components: parts,
     setup: () => ({ args }),
     // Padding, because the tooltip needs somewhere to go in the story frame.
     template: `
       <div class="flex items-center justify-center p-16">
-        <Tooltip v-bind="args">
-          <Button variant="outline">Archive</Button>
+        <Tooltip :delay="args.delay" :disabled="args.disabled">
+          <TooltipTrigger as-child>
+            <Button variant="outline">Archive</Button>
+          </TooltipTrigger>
+          <TooltipContent :placement="args.placement">{{ args.content }}</TooltipContent>
         </Tooltip>
       </div>
     `,
@@ -55,17 +62,15 @@ export const Default: Story = {}
 /** `placement` is a preference. Near a viewport edge it flips automatically. */
 export const Placements: Story = {
   render: () => ({
-    components: { Tooltip, Button },
+    components: parts,
     setup: () => ({ placements }),
     template: `
       <div class="flex items-center justify-center gap-3 p-16">
-        <Tooltip
-          v-for="placement in placements"
-          :key="placement"
-          :placement="placement"
-          :content="'Opens on the ' + placement"
-        >
-          <Button variant="outline">{{ placement }}</Button>
+        <Tooltip v-for="placement in placements" :key="placement">
+          <TooltipTrigger as-child>
+            <Button variant="outline">{{ placement }}</Button>
+          </TooltipTrigger>
+          <TooltipContent :placement="placement">Opens on the {{ placement }}</TooltipContent>
         </Tooltip>
       </div>
     `,
@@ -79,16 +84,19 @@ export const Placements: Story = {
  */
 export const IconButton: Story = {
   render: () => ({
-    components: { Tooltip, Button },
+    components: parts,
     template: `
       <div class="flex items-center justify-center p-16">
-        <Tooltip content="Archive project">
-          <Button variant="ghost" aria-label="Archive project">
-            <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path d="M3 6h14M5 6v9a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6M8 9h4"
-                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            </svg>
-          </Button>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <Button variant="ghost" aria-label="Archive project">
+              <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M3 6h14M5 6v9a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6M8 9h4"
+                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Archive project</TooltipContent>
         </Tooltip>
       </div>
     `,
@@ -103,15 +111,18 @@ export const IconButton: Story = {
  */
 export const ToolbarWithProvider: Story = {
   render: () => ({
-    components: { Tooltip, Button, TooltipProvider },
+    components: { ...parts, TooltipProvider },
     setup: () => ({ actions: ['Bold', 'Italic', 'Underline', 'Strikethrough'] }),
     template: `
       <TooltipProvider :delay-duration="300" :skip-delay-duration="500">
         <div class="flex items-center justify-center gap-1 p-16">
-          <Tooltip v-for="action in actions" :key="action" :content="action">
-            <Button variant="ghost" size="sm" :aria-label="action">
-              {{ action.charAt(0) }}
-            </Button>
+          <Tooltip v-for="action in actions" :key="action">
+            <TooltipTrigger as-child>
+              <Button variant="ghost" size="sm" :aria-label="action">
+                {{ action.charAt(0) }}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{{ action }}</TooltipContent>
           </Tooltip>
         </div>
       </TooltipProvider>
@@ -140,19 +151,25 @@ export const Disabled: Story = {
  */
 export const DisabledTriggerPattern: Story = {
   render: () => ({
-    components: { Tooltip, Button },
+    components: parts,
     template: `
       <div class="flex items-center justify-center gap-6 p-16">
         <div class="flex flex-col items-center gap-2">
-          <Tooltip content="Never appears">
-            <Button disabled>Truly disabled</Button>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button disabled>Truly disabled</Button>
+            </TooltipTrigger>
+            <TooltipContent>Never appears</TooltipContent>
           </Tooltip>
           <span class="text-xs text-muted-foreground">✗ no events, no tooltip</span>
         </div>
 
         <div class="flex flex-col items-center gap-2">
-          <Tooltip content="Upgrade your plan to export">
-            <Button aria-disabled="true" variant="outline">Export</Button>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button aria-disabled="true" variant="outline">Export</Button>
+            </TooltipTrigger>
+            <TooltipContent>Upgrade your plan to export</TooltipContent>
           </Tooltip>
           <span class="text-xs text-muted-foreground">✓ aria-disabled, tooltip works</span>
         </div>

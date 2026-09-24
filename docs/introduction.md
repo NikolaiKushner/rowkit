@@ -1,28 +1,29 @@
 # Introduction
 
-rowkit is a Vue 3 component library for data-dense interfaces: tables, filters,
-and the states around them. The set grows when a new piece earns its place on
-that surface — not toward forty components for their own sake.
+rowkit is a professional Vue 3 toolkit: the components a product interface is
+built from. What is published today — tables, filters, controls, overlays — is
+the part already finished. The rest of the set is the plan in
+[the roadmap](/roadmap), not a build in progress.
 
 ## The problem it exists for
 
-General-purpose component libraries handle the easy eighty per cent extremely
-well. You get buttons, inputs, cards, modals — the parts every application
-needs and nobody wants to build twice.
+A product interface is one system. Controls, menus, overlays, tables, filters,
+and the empty and loading states around them have to agree on type, keyboard
+behaviour and tokens. Split across kits, they don't.
 
-Then you build a users admin page, and none of that helped with the part that
-actually took the week:
+rowkit is that system:
 
-- A sortable table that stays fast at ten thousand rows, with column keys typed
-  against your row so a renamed field is a compile error rather than a column of
-  blanks
+- A sortable table with column keys typed against your row, so a renamed field
+  is a compile error rather than a column of blanks
 - A filter bar that makes the applied state obvious, and gives back focus
   somewhere sensible when a filter is removed
 - Loading, empty, and no-results states that agree with each other — three
   screens that look nearly identical and mean completely different things
+- And, in the plan, the rest of the components a product is built from: menus,
+  dates, sheets, a command palette
 
-Those are the pieces a dashboard is judged on, and they are the pieces left as
-an exercise. rowkit is that exercise, done once, properly.
+The published pieces are done properly. The unpublished ones stay in the plan
+until they are.
 
 ## What you get
 
@@ -54,11 +55,6 @@ from the component's point of view. See [API conventions](/conventions).
 
 ## What rowkit is not
 
-**Not a general-purpose UI library.** If you need forty components covering
-every case, use [Nuxt UI](https://ui.nuxt.com) or
-[shadcn-vue](https://www.shadcn-vue.com). Both are good, and rowkit composes
-with either — they share the same Reka UI foundation.
-
 **Not a CSS framework.** Tailwind v4 is a peer dependency. rowkit does not
 replace it, wrap it, or ship its own copy.
 
@@ -69,28 +65,25 @@ comes from, and when, is yours.
 invalid and when to say so belongs to your application, which is the only thing
 that knows whether to validate on blur or on submit.
 
-There is also a list of things deliberately left out — date pickers, a command
-palette, charts — in
+The components still to build — menus, dates, a command palette, and the rest —
+are listed in
 [the roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md).
-Recording them is how they stay out.
+They are the plan. They are not in this release.
 
 ## Choosing between them
 
 The honest framing, so you can route yourself correctly:
 
-| Compared on      | rowkit                                  | Nuxt UI                     | shadcn-vue                      |
-| ---------------- | --------------------------------------- | --------------------------- | ------------------------------- |
-| **Distribution** | Versioned npm package                   | Versioned npm package       | Source copied into your project |
-| **Scope**        | Data-dense surfaces, depth over breadth | Broad, general-purpose      | Broad, general-purpose          |
-| **Data focus**   | The reason it exists                    | One area among many         | One area among many             |
-| **Upgrades**     | `semver`, you take the diff             | `semver`, you take the diff | Yours to maintain once copied   |
+| Compared on      | rowkit                                        | Nuxt UI                     | shadcn-vue                      |
+| ---------------- | --------------------------------------------- | --------------------------- | ------------------------------- |
+| **Distribution** | Versioned npm package                         | Versioned npm package       | Source copied into your project |
+| **Scope**        | A professional toolkit, still being completed | Broad, already broad        | Broad, already broad            |
+| **Upgrades**     | `semver`, you take the diff                   | `semver`, you take the diff | Yours to maintain once copied   |
 
 All three build on Reka UI, so the accessibility foundation is the same in each.
-The difference is scope and who owns the code after installation.
-
-If you are starting an application, one of the broad kits is very likely the
-right first choice. rowkit is worth adding when the table is the hard part — and
-it is designed to sit beside a general-purpose kit rather than replace it.
+The difference is who owns the code after installation, and how much of the set
+is already shipped. rowkit is the toolkit the product is built from; the
+unpublished components are on the roadmap, not missing by design.
 
 ## Status
 
@@ -108,5 +101,4 @@ and the working backlog are on [GitHub](https://github.com/NikolaiKushner/rowkit
   once
 - [Tokens](/foundations/tokens) — every colour, space and layer, rendered live
   from the package
-- [DataTable](/components/data-table) — the centrepiece, and the fastest way to
-  see whether this library is for you
+- [Components](/components/button) — what is already built

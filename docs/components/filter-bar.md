@@ -15,7 +15,12 @@ and a chip for every filter currently applied.
 >
   <template #controls>
     <Field label="Role" label-sr-only>
-      <Select v-model="role" :options="roles" placeholder="Role" />
+      <Select v-model="role">
+        <SelectTrigger placeholder="Role" />
+        <SelectContent>
+          <SelectItem v-for="option in roles" :key="option.value" :value="option.value" :label="option.label" />
+        </SelectContent>
+      </Select>
     </Field>
   </template>
 </FilterBar>
@@ -82,7 +87,12 @@ function reset() {
   >
     <template #controls>
       <Field label="Role" label-sr-only>
-        <Select v-model="role" :options="roles" placeholder="Role" class="min-w-40" />
+        <Select v-model="role">
+          <SelectTrigger placeholder="Role" class="min-w-40" />
+          <SelectContent>
+            <SelectItem v-for="option in roles" :key="option.value" :value="option.value" :label="option.label" />
+          </SelectContent>
+        </Select>
       </Field>
     </template>
   </FilterBar>

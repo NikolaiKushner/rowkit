@@ -295,6 +295,7 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
 <template>
   <div
     ref="wrapperRef"
+    data-slot="data-table"
     :tabindex="scrollable ? 0 : undefined"
     :role="scrollable ? 'region' : undefined"
     :aria-label="scrollable ? props.caption : undefined"

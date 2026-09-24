@@ -130,6 +130,7 @@ watch(
 <template>
   <div
     ref="rootRef"
+    data-slot="filter-bar"
     role="search"
     :aria-label="props.label"
     tabindex="-1"

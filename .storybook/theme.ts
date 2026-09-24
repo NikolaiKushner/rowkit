@@ -3,15 +3,15 @@ import { create } from 'storybook/theming'
 /**
  * Storybook manager chrome, tuned to rowkit's tokens.
  *
- * Warm espresso primary, quiet neutrals, Geist — the same restraint as the
+ * Ink-blue primary, quiet neutrals, Geist — the same restraint as the
  * components. Not a second brand for the workshop.
  */
 export default create({
   base: 'light',
 
-  // Warm espresso — primary-800. Clearly brown-graphite, not near-black.
-  colorPrimary: '#402a1f',
-  colorSecondary: '#402a1f',
+  // Ink blue — primary-800. Cool, not brown.
+  colorPrimary: '#0c335f',
+  colorSecondary: '#0c335f',
 
   // Surfaces — gray-988 page, white card, gray-940 hairline.
   appBg: '#F7F8FA',
@@ -30,8 +30,8 @@ export default create({
   // Toolbar
   barBg: '#FFFFFF',
   barTextColor: '#6B7280',
-  barSelectedColor: '#402a1f',
-  barHoverColor: '#402a1f',
+  barSelectedColor: '#0c335f',
+  barHoverColor: '#0c335f',
 
   // Controls
   inputBg: '#FFFFFF',

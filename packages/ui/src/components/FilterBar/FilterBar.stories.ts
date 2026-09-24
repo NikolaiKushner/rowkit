@@ -2,6 +2,9 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { computed, ref, type ConcreteComponent } from 'vue'
 import { expect, userEvent, within } from 'storybook/test'
 import RawSelect from '../Select/Select.vue'
+import RawSelectItem from '../Select/SelectItem.vue'
+import SelectContent from '../Select/SelectContent.vue'
+import SelectTrigger from '../Select/SelectTrigger.vue'
 import FilterBar from './FilterBar.vue'
 import type { FilterChip } from './types'
 
@@ -10,6 +13,7 @@ import type { FilterChip } from './types'
  * index signature that a `components` map is checked against.
  */
 const Select = RawSelect as unknown as ConcreteComponent
+const SelectItem = RawSelectItem as unknown as ConcreteComponent
 
 const sizes = ['sm', 'md'] as const
 
@@ -84,7 +88,7 @@ type Story = StoryObj<FilterBarArgs>
 
 export const Default: Story = {
   render: () => ({
-    components: { FilterBar, Select },
+    components: { FilterBar, Select, SelectTrigger, SelectContent, SelectItem },
     setup: () => {
       const filters = ref([...applied])
       const search = ref('')
@@ -122,8 +126,18 @@ export const Default: Story = {
           @clear="clear"
         >
           <template #controls>
-            <Select v-model="role" :options="roles" placeholder="Role" class="w-36" />
-            <Select v-model="status" :options="statuses" placeholder="Status" class="w-36" />
+            <Select v-model="role">
+              <SelectTrigger placeholder="Role" class="w-36" />
+              <SelectContent>
+                <SelectItem v-for="option in roles" :key="option.value" :value="option.value" :label="option.label" />
+              </SelectContent>
+            </Select>
+            <Select v-model="status">
+              <SelectTrigger placeholder="Status" class="w-36" />
+              <SelectContent>
+                <SelectItem v-for="option in statuses" :key="option.value" :value="option.value" :label="option.label" />
+              </SelectContent>
+            </Select>
           </template>
         </FilterBar>
       </div>

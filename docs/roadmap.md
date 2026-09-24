@@ -2,8 +2,9 @@
 
 The plan of record is
 [`ROADMAP.md`](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md) in
-the repository; this page is the readable version. No fixed component count —
-new surface ships when it earns a place on a data-dense interface.
+the repository; this page is the readable version. The direction is a
+professional toolkit — the components a product interface is built from. No
+fixed count. What is listed below as next is the plan, not a build in progress.
 
 ## Current surface
 
@@ -24,8 +25,8 @@ wrote in order to use rowkit. Until that has happened, the version stays on
 Restraint. Structure without severity. No excess.
 
 Chrome stays neutral, and status colour means something while brand colour does
-not live in the defaults. Primary is warm espresso graphite
-(`oklch(0.31 0.038 48)`); rebrand by pointing `--color-primary-*` at your own
+not live in the defaults. Primary is ink blue
+(`oklch(0.32 0.09 255)`); rebrand by pointing `--color-primary-*` at your own
 colour. Soft destructive, soft focus, quiet borders.
 
 ## In progress
@@ -40,35 +41,23 @@ colour. Soft destructive, soft focus, quiet borders.
 - Hardening the pattern pages from real application friction rather than from
   what the components happen to offer
 
-## Next surface (if earned)
+## The professional set (planned, not started)
 
-- DropdownMenu for table row actions — the most likely next primitive
-- Popover, when a tooltip needs a link or richer content
-- Sheet / drawer, only if dialogs start feeling wrong for filter or detail panes
+Menus and overlays (DropdownMenu, Popover, Sheet, confirm dialog) · date and
+date-range pickers · command palette · rich text · charts that share these
+tokens · `DataTable` virtualisation against a real workload. A component belongs
+on this list when a product interface is awkward without it.
 
-## Explicitly out of scope (until demand)
+## Not the toolkit
 
-- Date picker / date range picker
-- Rich text editor
-- Charts — better served by a dedicated library
-- Command palette
-- A form validation layer — rowkit provides field states; validation is the
-  application's job
-- Virtualised lists beyond `DataTable`
-- A Figma kit
-- A React port
+A custom docs theme · a Figma kit · a React port. Separate work, not components
+of this library.
 
 ## Non-goals
-
-**Not a kitchen-sink UI library.** Prefer depth on data-dense surfaces over
-breadth for its own sake.
 
 **Not a CSS framework.** Tailwind v4 is a peer dependency.
 
 **Not opinionated about data fetching.** Components take props.
 
-## Later (not promised)
-
-- Virtualisation for `DataTable`, with a real workload — see
-  [decision 004](/decisions/004-datatable-performance)
-- A custom docs theme
+**Not a validation layer.** rowkit renders field state; deciding what is invalid
+is the application's job.

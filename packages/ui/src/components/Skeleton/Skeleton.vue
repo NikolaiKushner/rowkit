@@ -38,6 +38,7 @@ const a11yAttrs = computed(() =>
   <Primitive
     :as="props.as"
     :as-child="props.asChild"
+    data-slot="skeleton"
     v-bind="a11yAttrs"
     :class="
       isStack

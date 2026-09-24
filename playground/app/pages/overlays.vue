@@ -3,11 +3,22 @@ import {
   Badge,
   Button,
   Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
   Field,
   Input,
   Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
   Toaster,
   Tooltip,
+  TooltipContent,
+  TooltipTrigger,
   useToast,
   type SelectOption,
 } from 'rowkit'
@@ -74,8 +85,11 @@ function toastOverDialog() {
       </p>
       <div class="flex flex-wrap items-center gap-2">
         <Button @click="dialogOpen = true">Open dialog</Button>
-        <Tooltip content="Fires without opening anything">
-          <Button variant="outline" @click="toastOverDialog">Toast on its own</Button>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <Button variant="outline" @click="toastOverDialog">Toast on its own</Button>
+          </TooltipTrigger>
+          <TooltipContent>Fires without opening anything</TooltipContent>
         </Tooltip>
         <Button variant="ghost" @click="dismissAll">Clear toasts</Button>
       </div>
@@ -89,17 +103,29 @@ function toastOverDialog() {
         at all.
       </p>
       <div class="flex flex-wrap items-center gap-2">
-        <Tooltip content="Archive this project" placement="top">
-          <Button variant="outline">Archive</Button>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <Button variant="outline">Archive</Button>
+          </TooltipTrigger>
+          <TooltipContent placement="top">Archive this project</TooltipContent>
         </Tooltip>
-        <Tooltip content="Duplicate into a new project" placement="right">
-          <Button variant="outline">Duplicate</Button>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <Button variant="outline">Duplicate</Button>
+          </TooltipTrigger>
+          <TooltipContent placement="right">Duplicate into a new project</TooltipContent>
         </Tooltip>
-        <Tooltip content="Export as CSV" placement="bottom">
-          <Button variant="outline">Export</Button>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <Button variant="outline">Export</Button>
+          </TooltipTrigger>
+          <TooltipContent placement="bottom">Export as CSV</TooltipContent>
         </Tooltip>
-        <Tooltip content="Upgrade your plan to transfer projects" placement="left">
-          <Button variant="outline" aria-disabled="true">Transfer</Button>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <Button variant="outline" aria-disabled="true">Transfer</Button>
+          </TooltipTrigger>
+          <TooltipContent placement="left">Upgrade your plan to transfer projects</TooltipContent>
         </Tooltip>
       </div>
     </section>
@@ -119,42 +145,62 @@ function toastOverDialog() {
       above the modal — a select trapped under its own dialog is the classic
       stacking bug this scene exists to catch.
     -->
-    <Dialog
-      v-model:open="dialogOpen"
-      title="Project settings"
-      description="Changes apply the moment you save."
-      size="sm"
-    >
-      <div class="flex flex-col gap-4">
-        <Field label="Project name" hint="Shown everywhere the project appears.">
-          <Input v-model="projectName" />
-        </Field>
-        <Field label="Visibility" hint="Its listbox has to open above the dialog.">
-          <Select v-model="visibility" :options="visibilityOptions" placeholder="Choose" />
-        </Field>
-        <Button variant="outline" @click="toastOverDialog">Fire a toast from in here</Button>
-      </div>
-      <template #footer>
-        <Button variant="ghost" @click="dialogOpen = false">Cancel</Button>
-        <Tooltip content="Saves and closes">
-          <Button @click="save">Save</Button>
-        </Tooltip>
-      </template>
+    <Dialog v-model:open="dialogOpen">
+      <DialogContent size="sm">
+        <DialogHeader>
+          <DialogTitle>Project settings</DialogTitle>
+          <DialogDescription>Changes apply the moment you save.</DialogDescription>
+        </DialogHeader>
+        <DialogBody>
+          <div class="flex flex-col gap-4">
+            <Field label="Project name" hint="Shown everywhere the project appears.">
+              <Input v-model="projectName" />
+            </Field>
+            <Field label="Visibility" hint="Its listbox has to open above the dialog.">
+              <Select v-model="visibility">
+                <SelectTrigger placeholder="Choose" />
+                <SelectContent>
+                  <SelectItem
+                    v-for="option in visibilityOptions"
+                    :key="option.value"
+                    :value="option.value"
+                    :label="option.label"
+                  />
+                </SelectContent>
+              </Select>
+            </Field>
+            <Button variant="outline" @click="toastOverDialog">Fire a toast from in here</Button>
+          </div>
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="ghost" @click="dialogOpen = false">Cancel</Button>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button @click="save">Save</Button>
+            </TooltipTrigger>
+            <TooltipContent>Saves and closes</TooltipContent>
+          </Tooltip>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
 
     <!-- preventClose: dismissing by accident would lose the decision. -->
-    <Dialog
-      v-model:open="confirmOpen"
-      title="Delete this project?"
-      description="Everything in it goes too. You will get one chance to undo."
-      size="sm"
-      prevent-close
-    >
-      Escape and clicking outside do nothing here. The close button still works.
-      <template #footer>
-        <Button variant="ghost" @click="confirmOpen = false">Cancel</Button>
-        <Button variant="destructive" @click="deleteProject">Delete</Button>
-      </template>
+    <Dialog v-model:open="confirmOpen">
+      <DialogContent size="sm" prevent-close>
+        <DialogHeader>
+          <DialogTitle>Delete this project?</DialogTitle>
+          <DialogDescription
+            >Everything in it goes too. You will get one chance to undo.</DialogDescription
+          >
+        </DialogHeader>
+        <DialogBody
+          >Escape and clicking outside do nothing here. The close button still works.</DialogBody
+        >
+        <DialogFooter>
+          <Button variant="ghost" @click="confirmOpen = false">Cancel</Button>
+          <Button variant="destructive" @click="deleteProject">Delete</Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
 
     <!--

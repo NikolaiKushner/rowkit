@@ -60,9 +60,10 @@ provideFieldContext({
 </script>
 
 <template>
-  <div :class="cn(fieldVariants({ size: props.size }), props.class)">
+  <div data-slot="field" :class="cn(fieldVariants({ size: props.size }), props.class)">
     <Label
       v-if="props.label"
+      data-slot="field-label"
       :for="controlId"
       :class="
         cn(
@@ -82,7 +83,12 @@ provideFieldContext({
 
     <slot />
 
-    <p v-if="hasHint || $slots.hint" :id="hintId" :class="fieldHintVariants({ size: props.size })">
+    <p
+      v-if="hasHint || $slots.hint"
+      :id="hintId"
+      data-slot="field-hint"
+      :class="fieldHintVariants({ size: props.size })"
+    >
       <slot name="hint">{{ props.hint }}</slot>
     </p>
 
@@ -93,6 +99,7 @@ provideFieldContext({
     <p
       v-if="hasError || $slots.error"
       :id="errorId"
+      data-slot="field-error"
       role="alert"
       :class="fieldErrorVariants({ size: props.size })"
     >
