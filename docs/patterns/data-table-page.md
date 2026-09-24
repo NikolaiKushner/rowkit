@@ -113,8 +113,22 @@ watch([search, role, status, sort, pageSize], () => {
 <DemoBox layout="stack">
   <FilterBar v-model:search="search" :filters="chips" :result-count="filtered.length" label="Filter users" searchable search-placeholder="Search name or email" @remove="removeFilter" @clear="clearFilters">
     <template #controls>
-      <Field label="Role" label-sr-only><Select v-model="role" :options="roleOptions" placeholder="Role" class="min-w-36" /></Field>
-      <Field label="Status" label-sr-only><Select v-model="status" :options="statusOptions" placeholder="Status" class="min-w-36" /></Field>
+      <Field label="Role" label-sr-only>
+        <Select v-model="role">
+          <SelectTrigger placeholder="Role" class="min-w-36" />
+          <SelectContent>
+            <SelectItem v-for="option in roleOptions" :key="option.value" :value="option.value" :label="option.label" />
+          </SelectContent>
+        </Select>
+      </Field>
+      <Field label="Status" label-sr-only>
+        <Select v-model="status">
+          <SelectTrigger placeholder="Status" class="min-w-36" />
+          <SelectContent>
+            <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value" :label="option.label" />
+          </SelectContent>
+        </Select>
+      </Field>
     </template>
   </FilterBar>
   <DataTable :rows="pageRows" :columns="columns" caption="Users" selectable="multiple" :row-label="(row) => `Select ${row.name}`" v-model:sort="sort" v-model:selected="selected" hoverable>

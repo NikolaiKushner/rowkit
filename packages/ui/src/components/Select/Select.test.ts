@@ -1,8 +1,11 @@
 import { mount, type VueWrapper } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
-import { defineComponent, h, nextTick, type Component } from 'vue'
+import { defineComponent, nextTick } from 'vue'
 import Field from '../Field/Field.vue'
 import Select from './Select.vue'
+import SelectContent from './SelectContent.vue'
+import SelectItem from './SelectItem.vue'
+import SelectTrigger from './SelectTrigger.vue'
 import type { SelectOption } from './types'
 
 const options: SelectOption<string>[] = [
@@ -11,12 +14,48 @@ const options: SelectOption<string>[] = [
   { label: 'Suspended', value: 'suspended', disabled: true },
 ]
 
+const Harness = defineComponent({
+  components: { Select, SelectTrigger, SelectContent, SelectItem },
+  props: {
+    modelValue: { type: String, default: undefined },
+    placeholder: { type: String, default: undefined },
+    searchable: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
+    loading: { type: Boolean, default: false },
+    loadingText: { type: String, default: undefined },
+    size: { type: String, default: undefined },
+    surfaceClass: { type: String, default: undefined },
+    options: { type: Array, default: () => options },
+  },
+  emits: ['update:modelValue', 'update:searchTerm'],
+  template: `
+    <Select
+      :model-value="modelValue"
+      :searchable="searchable"
+      :disabled="disabled"
+      @update:model-value="$emit('update:modelValue', $event)"
+      @update:search-term="$emit('update:searchTerm', $event)"
+    >
+      <SelectTrigger :placeholder="placeholder" :size="size" :class="surfaceClass" />
+      <SelectContent :loading="loading" :loading-text="loadingText">
+        <SelectItem
+          v-for="option in options"
+          :key="String(option.value)"
+          :value="option.value"
+          :label="option.label"
+          :disabled="option.disabled"
+        />
+      </SelectContent>
+    </Select>
+  `,
+})
+
 /**
  * Attached to the document because Reka renders the panel through a portal —
  * it lands outside the wrapper's element, so it can only be found on the page.
  */
 function mountSelect(props: Record<string, unknown> = {}) {
-  return mount(Select, { props: { options, ...props }, attachTo: document.body }) as VueWrapper
+  return mount(Harness, { props, attachTo: document.body }) as VueWrapper
 }
 
 /** The combobox itself: the input, not the chevron button. */
@@ -41,8 +80,10 @@ describe('Select', () => {
     expect(input.element.value).toBe('')
   })
 
-  it('shows the label of the selected option', () => {
-    expect(control(mountSelect({ modelValue: 'invited' })).element.value).toBe('Invited')
+  it('shows the label of the selected option', async () => {
+    const wrapper = mountSelect({ modelValue: 'invited' })
+    await nextTick()
+    expect(control(wrapper).element.value).toBe('Invited')
   })
 
   describe('accessibility of the closed control', () => {
@@ -53,15 +94,10 @@ describe('Select', () => {
     })
 
     it('keeps the control in the tab order', () => {
-      // Regression guard. Reka gives its trigger `tabindex="-1"` on the
-      // assumption that an input is present to take focus; building the
-      // control around a bare trigger button made it unreachable by keyboard.
       expect(control(mountSelect()).attributes('tabindex')).not.toBe('-1')
     })
 
     it('does not let the chevron steal the accessible name', () => {
-      // Reka labels its trigger "Show popup". On the input that would override
-      // whatever the field's <label for> says.
       const wrapper = mountSelect()
       expect(control(wrapper).attributes('aria-label')).toBeUndefined()
       expect(wrapper.find('button').attributes('aria-label')).toBe('Show options')
@@ -144,23 +180,34 @@ describe('Select', () => {
   })
 
   it('lets a consumer class beat the control class', () => {
-    const wrapper = mountSelect({ size: 'sm', class: 'h-12' })
+    const wrapper = mountSelect({ size: 'sm', surfaceClass: 'h-12' })
     const anchor = wrapper.find('input').element.parentElement
     expect(anchor?.className).toContain('h-12')
     expect(anchor?.className).not.toContain('h-8')
   })
 
   describe('inside a Field', () => {
-    // `h()` cannot express a generic component's slot types, and these tests do
-    // not exercise slots. The generic surface is covered by the typed usage
-    // above, where `options` is a `SelectOption<string>[]`.
-    const SelectComponent = Select as unknown as Component
-
     function mountInField(fieldProps: Record<string, unknown>) {
       return mount(
         defineComponent({
-          setup: () => () =>
-            h(Field, fieldProps, { default: () => h(SelectComponent, { options }) }),
+          components: { Field, Select, SelectTrigger, SelectContent, SelectItem },
+          setup: () => ({ fieldProps, options }),
+          template: `
+            <Field v-bind="fieldProps">
+              <Select>
+                <SelectTrigger />
+                <SelectContent>
+                  <SelectItem
+                    v-for="option in options"
+                    :key="option.value"
+                    :value="option.value"
+                    :label="option.label"
+                    :disabled="option.disabled"
+                  />
+                </SelectContent>
+              </Select>
+            </Field>
+          `,
         }),
         { attachTo: document.body }
       )

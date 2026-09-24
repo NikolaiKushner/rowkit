@@ -1,29 +1,29 @@
+import type { PrimitiveProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
 import type { DialogVariants } from './Dialog.variants'
 
 /**
- * Props for `Dialog`.
+ * Props for `DialogTrigger`.
  *
  * Declared here rather than inline in the SFC because `<script setup>` cannot
  * export a type, and a consumer annotating their own wrapper needs one.
  */
-export interface DialogProps {
-  /**
-   * Accessible name, rendered as the heading.
-   *
-   * Required, and a prop rather than only a slot. A slot-only title makes the
-   * accessible name optional in practice, and optional means missing — this way
-   * `aria-labelledby` is always wired, and `#header` customises the presentation
-   * without being able to break the contract.
-   */
-  title: string
-  /**
-   * Supporting text under the title, wired to `aria-describedby`.
-   *
-   * Omit it and no description is announced — better than an empty reference,
-   * which some readers announce as a blank.
-   */
-  description?: string
+export interface DialogTriggerProps {
+  /** Element or component to render as. Defaults to a button. */
+  as?: PrimitiveProps['as']
+  /** Merge props onto the single child element instead of rendering a wrapper. */
+  asChild?: PrimitiveProps['asChild']
+  /** Additional classes, merged so a consumer's utility wins. */
+  class?: HTMLAttributes['class']
+}
+
+/**
+ * Props for `DialogContent`.
+ *
+ * The portal, the scrim, and the close button live here. They are not separate
+ * parts: a dialog without them is not a dialog.
+ */
+export interface DialogContentProps {
   /** Width preset. Height is content-driven, capped to the viewport. */
   size?: NonNullable<DialogVariants['size']>
   /**
@@ -37,5 +37,46 @@ export interface DialogProps {
   /** Accessible name for the close button. */
   closeLabel?: string
   /** Additional classes for the dialog surface, merged so a consumer's utility wins. */
+  class?: HTMLAttributes['class']
+}
+
+/** Props for `DialogHeader`. */
+export interface DialogHeaderProps {
+  /** Additional classes, merged so a consumer's utility wins. */
+  class?: HTMLAttributes['class']
+}
+
+/** Props for `DialogTitle`. The title is the dialog's accessible name. */
+export interface DialogTitleProps {
+  /** Additional classes, merged so a consumer's utility wins. */
+  class?: HTMLAttributes['class']
+}
+
+/**
+ * Props for `DialogDescription`.
+ *
+ * Mounting this part wires `aria-describedby`. Leaving it out sets that
+ * attribute to an empty string, so a reader is not pointed at an element that
+ * was never rendered.
+ */
+export interface DialogDescriptionProps {
+  /** Additional classes, merged so a consumer's utility wins. */
+  class?: HTMLAttributes['class']
+}
+
+/**
+ * Props for `DialogBody`.
+ *
+ * The only scrolling region. Header, close, and footer stay put while this
+ * overflows.
+ */
+export interface DialogBodyProps {
+  /** Additional classes, merged so a consumer's utility wins. */
+  class?: HTMLAttributes['class']
+}
+
+/** Props for `DialogFooter`. */
+export interface DialogFooterProps {
+  /** Additional classes, merged so a consumer's utility wins. */
   class?: HTMLAttributes['class']
 }

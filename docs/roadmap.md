@@ -25,8 +25,8 @@ wrote in order to use rowkit. Until that has happened, the version stays on
 Restraint. Structure without severity. No excess.
 
 Chrome stays neutral, and status colour means something while brand colour does
-not live in the defaults. Primary is warm espresso graphite
-(`oklch(0.31 0.038 48)`); rebrand by pointing `--color-primary-*` at your own
+not live in the defaults. Primary is ink blue
+(`oklch(0.32 0.09 255)`); rebrand by pointing `--color-primary-*` at your own
 colour. Soft destructive, soft focus, quiet borders.
 
 ## In progress

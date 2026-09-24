@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import { Badge, Button, Field, Input, Select, type SelectOption } from 'rowkit'
+import {
+  Badge,
+  Button,
+  Field,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  type SelectOption,
+} from 'rowkit'
 import { computed, ref } from 'vue'
 
 /**
@@ -118,17 +128,31 @@ function reset() {
         required
         :error="showErrors ? errors.role : undefined"
       >
-        <Select v-model="form.role" :options="roles" placeholder="Choose a role" />
+        <Select v-model="form.role">
+          <SelectTrigger placeholder="Choose a role" />
+          <SelectContent>
+            <SelectItem
+              v-for="option in roles"
+              :key="option.value"
+              :value="option.value"
+              :label="option.label"
+            />
+          </SelectContent>
+        </Select>
       </Field>
 
       <Field label="Team" hint="Long list, so this one searches.">
-        <Select
-          v-model="form.team"
-          :options="teams"
-          searchable
-          placeholder="Choose a team"
-          empty-text="No teams match"
-        />
+        <Select v-model="form.team" searchable>
+          <SelectTrigger placeholder="Choose a team" />
+          <SelectContent empty-text="No teams match">
+            <SelectItem
+              v-for="option in teams"
+              :key="option.value"
+              :value="option.value"
+              :label="option.label"
+            />
+          </SelectContent>
+        </Select>
       </Field>
 
       <div class="flex items-center justify-end gap-3 border-t border-border-subtle pt-4">

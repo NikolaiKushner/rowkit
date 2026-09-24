@@ -7,7 +7,12 @@ primitives. Generic over the value type, so `v-model` narrows to the values you
 actually passed.
 
 ```vue
-<Select v-model="role" :options="roles" placeholder="Choose a role" />
+<Select v-model="role">
+  <SelectTrigger placeholder="Choose a role" />
+  <SelectContent>
+    <SelectItem v-for="option in roles" :key="option.value" :value="option.value" :label="option.label" />
+  </SelectContent>
+</Select>
 ```
 
 ```ts
@@ -39,10 +44,26 @@ const timezones = [
 
 <DemoBox align="end">
   <Field label="Role" class="min-w-52">
-    <Select v-model="role" :options="roles" placeholder="Choose a role" />
+    <Select v-model="role">
+      <SelectTrigger placeholder="Choose a role" />
+      <SelectContent>
+        <SelectItem
+          v-for="option in roles"
+          :key="option.value"
+          :value="option.value"
+          :label="option.label"
+          :disabled="option.disabled"
+        />
+      </SelectContent>
+    </Select>
   </Field>
   <Field label="Timezone" class="min-w-52">
-    <Select v-model="timezone" :options="timezones" placeholder="Choose a timezone" searchable />
+    <Select v-model="timezone" searchable>
+      <SelectTrigger placeholder="Choose a timezone" />
+      <SelectContent>
+        <SelectItem v-for="option in timezones" :key="option.value" :value="option.value" :label="option.label" />
+      </SelectContent>
+    </Select>
   </Field>
 </DemoBox>
 
@@ -56,12 +77,83 @@ typing filters when searchable, <kbd>Esc</kbd> closes without committing.
 
 ## Anatomy
 
-| Part    | Purpose                                                     |
-| ------- | ----------------------------------------------------------- |
-| Control | An `<input role="combobox">`. Read-only unless `searchable` |
-| Chevron | Opens and closes the panel. Labelled `togglerLabel`         |
-| Panel   | Portalled listbox, width-matched to the control             |
-| Option  | `role="option"`, with a check indicator in reserved space   |
+| Part            | Purpose                                                           |
+| --------------- | ----------------------------------------------------------------- |
+| `Select`        | Root. Holds `v-model` and, when searching, `v-model:searchTerm`   |
+| `SelectTrigger` | The combobox input and the chevron. Read-only unless `searchable` |
+| `SelectContent` | Portalled listbox, width-matched to the control                   |
+| `SelectItem`    | One option. `label` is what the closed trigger shows              |
+
+## Props
+
+### Select
+
+<!-- @props SelectProps -->
+
+| Prop           | Type      | Default | Description                                                            |
+| -------------- | --------- | ------- | ---------------------------------------------------------------------- |
+| `searchable`   | `boolean` | `false` | Lets the trigger accept text and filters the list.                     |
+| `manualFilter` | `boolean` | `false` | Hands filtering to the consumer.                                       |
+| `disabled`     | `boolean` | `false` | Disables the control. A surrounding disabled `Field` also disables it. |
+| `invalid`      | `boolean` | `false` | Marks the value invalid. A `Field` with an `error` also sets it.       |
+| `required`     | `boolean` | `false` | Marks the control required. A required `Field` also sets it.           |
+| `name`         | `string`  | —       | Name submitted with a native form.                                     |
+
+<!-- /@props -->
+
+### SelectTrigger
+
+<!-- @props SelectTriggerProps -->
+
+| Prop           | Type                   | Default          | Description                                                                      |
+| -------------- | ---------------------- | ---------------- | -------------------------------------------------------------------------------- |
+| `placeholder`  | `string`               | `'Select…'`      | Text shown while nothing is selected.                                            |
+| `togglerLabel` | `string`               | `'Show options'` | Accessible name for the open/close chevron.                                      |
+| `size`         | `'sm' \| 'md' \| 'lg'` | —                | Control height and text size. Inherited from a surrounding `Field` when omitted. |
+| `id`           | `string`               | —                | Id for the combobox input. Inherited from a surrounding `Field` when omitted.    |
+| `class`        | `string`               | —                | Additional classes for the control, merged so a consumer's utility wins.         |
+
+<!-- /@props -->
+
+### SelectContent
+
+<!-- @props SelectContentProps -->
+
+| Prop          | Type      | Default        | Description                                                            |
+| ------------- | --------- | -------------- | ---------------------------------------------------------------------- |
+| `emptyText`   | `string`  | `'No results'` | Shown when no option matches the search term.                          |
+| `loading`     | `boolean` | `false`        | Shows a loading row in place of the list. For async options.           |
+| `loadingText` | `string`  | `'Loading…'`   | Text shown while `loading`.                                            |
+| `class`       | `string`  | —              | Additional classes for the panel, merged so a consumer's utility wins. |
+
+<!-- /@props -->
+
+### SelectItem
+
+<!-- @props SelectItemProps -->
+
+| Prop       | Type      | Default      | Description                                               |
+| ---------- | --------- | ------------ | --------------------------------------------------------- |
+| `value`    | `T`       | **required** | The value committed to `v-model`.                         |
+| `label`    | `string`  | **required** | Text shown in the trigger once this item is chosen.       |
+| `disabled` | `boolean` | `false`      | Renders the option unselectable while leaving it visible. |
+| `class`    | `string`  | —            | Additional classes, merged so a consumer's utility wins.  |
+
+<!-- /@props -->
+
+`SelectOption` is still exported, for a list you render into `SelectItem`s. It
+is not a prop.
+
+```ts
+interface SelectOption<TValue> {
+  label: string
+  value: TValue
+  disabled?: boolean
+}
+```
+
+The item slot replaces the row. It receives `{ selected }`. `SelectContent`'s
+`empty` slot replaces the empty-results message.
 
 ## When to use
 
@@ -76,46 +168,12 @@ typing filters when searchable, <kbd>Esc</kbd> closes without committing.
 - **Boolean choices.** That is a checkbox or a switch.
 - **Multi-select.** This component is single-value by design. Selecting many
   things needs different affordances — chips, a count, a clear-all.
-- **Free text with suggestions.** This commits to one of `options`. A control
+- **Free text with suggestions.** This commits to one of the items. A control
   where arbitrary text is valid is a different component.
 - **Actions.** A list of things that _happen_ when chosen is a menu, not a
   select. A select holds a value; a menu fires a command.
 - **`searchable` on a short list.** The search box costs a keystroke and saves
   nothing below ~20 options.
-
-## Props
-
-<!-- @props SelectProps -->
-
-| Prop           | Type                   | Default          | Description                                                                      |
-| -------------- | ---------------------- | ---------------- | -------------------------------------------------------------------------------- |
-| `options`      | `SelectOption<T>[]`    | **required**     | The available choices.                                                           |
-| `placeholder`  | `string`               | `'Select…'`      | Text shown in the trigger while nothing is selected.                             |
-| `searchable`   | `boolean`              | `false`          | Adds a search box inside the panel.                                              |
-| `togglerLabel` | `string`               | `'Show options'` | Accessible name for the open/close chevron.                                      |
-| `emptyText`    | `string`               | `'No results'`   | Shown when no option matches the search term.                                    |
-| `manualFilter` | `boolean`              | `false`          | Hands filtering to the consumer.                                                 |
-| `loading`      | `boolean`              | `false`          | Shows a loading row in place of the list. For async options.                     |
-| `loadingText`  | `string`               | `'Loading…'`     | Text shown while `loading`.                                                      |
-| `size`         | `'sm' \| 'md' \| 'lg'` | —                | Control height and text size. Inherited from a surrounding `Field` when omitted. |
-| `disabled`     | `boolean`              | `false`          | Disables the control. A surrounding disabled `Field` also disables it.           |
-| `invalid`      | `boolean`              | `false`          | Marks the value invalid. A `Field` with an `error` also sets it.                 |
-| `required`     | `boolean`              | `false`          | Marks the control required. A required `Field` also sets it.                     |
-| `id`           | `string`               | —                | Id for the trigger. Inherited from a surrounding `Field` when omitted.           |
-| `name`         | `string`               | —                | Name submitted with a native form.                                               |
-| `class`        | `string`               | —                | Additional classes for the trigger, merged so a consumer's utility wins.         |
-
-<!-- /@props -->
-
-```ts
-interface SelectOption<TValue> {
-  label: string
-  value: TValue
-  disabled?: boolean
-}
-```
-
-Slots: `option` (`{ option, selected }`), `value` (`{ option }`), `empty`.
 
 ## Keyboard
 
@@ -154,5 +212,5 @@ that way.
 Reka keeps its highlight after the panel closes, leaving `aria-activedescendant`
 pointing at a list item that no longer exists — an invalid ARIA reference that
 axe flags and that a screen reader cannot follow. rowkit clears the attribute
-for as long as the panel is shut. The workaround is marked in `Select.vue` and
+for as long as the panel is shut. The workaround is marked in `SelectTrigger.vue` and
 should go once Reka fixes it.

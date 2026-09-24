@@ -1,9 +1,11 @@
 # Contributing
 
-rowkit is a small, deliberately scoped library. The most useful contributions
-are bug reports with a reproduction, and improvements to components that already
-exist. New components are almost certainly out of scope — see
-[the roadmap](/roadmap) for why.
+rowkit is a professional Vue 3 toolkit. The most useful contributions are bug
+reports with a reproduction, and improvements to components that already exist.
+New surface is welcome when a product interface is awkward without it — see
+[the roadmap](/roadmap) for what is planned and what is already being built.
+New assemblies follow [the conventions](/conventions): parts the consumer
+places, not one component with flags.
 
 ## Getting set up
 

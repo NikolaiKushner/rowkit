@@ -158,28 +158,106 @@ handling.
 - `#empty` — Replaces the built-in empty state.
 - `#loading` — Replaces the placeholder rows shown while loading.
 
-### Dialog
+### DialogTrigger
 
-`import { Dialog } from 'rowkit'`
+`import { DialogTrigger } from 'rowkit'`
 
 **Props**
 
-- `title: string` _(required)_. Accessible name, rendered as the heading.
-- `description: string`. Supporting text under the title, wired to `aria-describedby`.
+- `as: string | Component` — default `'button'`. Element or component to render as. Defaults to a button.
+- `asChild: boolean` — default `false`. Merge props onto the single child element instead of rendering a wrapper.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The control that opens the dialog. With `as-child`, this element becomes the trigger.
+
+### DialogContent
+
+`import { DialogContent } from 'rowkit'`
+
+**Props**
+
 - `size: 'sm' | 'md' | 'lg'` — default `'md'`. Width preset. Height is content-driven, capped to the viewport.
 - `preventClose: boolean` — default `false`. Blocks Escape and clicking the scrim, for a flow where dismissing by accident loses work.
 - `closeLabel: string` — default `'Close dialog'`. Accessible name for the close button.
 - `class: string`. Additional classes for the dialog surface, merged so a consumer's utility wins.
 
-**v-model**
+**Slots**
 
-- `v-model:open` — `boolean`. Visibility, controlled.
+- `#default` — Header, body, and footer, in that order.
+
+### DialogHeader
+
+`import { DialogHeader } from 'rowkit'`
+
+**Props**
+
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — Title, and a description when there is one.
+
+### DialogTitle
+
+`import { DialogTitle } from 'rowkit'`
+
+**Props**
+
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The dialog's accessible name.
+
+### DialogDescription
+
+`import { DialogDescription } from 'rowkit'`
+
+**Props**
+
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — Supporting text, wired to `aria-describedby`.
+
+### DialogBody
+
+`import { DialogBody } from 'rowkit'`
+
+**Props**
+
+- `class: string`. Additional classes, merged so a consumer's utility wins.
 
 **Slots**
 
 - `#default` — Dialog body. The only scrolling region.
-- `#header` — Replaces the title and description row. `title` still supplies the accessible name.
-- `#footer` — Actions. Convention is cancel first, primary last — primary nearest the corner.
+
+### DialogFooter
+
+`import { DialogFooter } from 'rowkit'`
+
+**Props**
+
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — Actions. Cancel first, primary last — primary nearest the corner.
+
+### Dialog
+
+`import { Dialog } from 'rowkit'`
+
+**v-model**
+
+- `v-model:open` — `boolean`. Visibility.
+
+**Slots**
+
+- `#default` — Trigger and content.
 
 ### EmptyState
 
@@ -319,32 +397,64 @@ handling.
 
 **Props**
 
-- `options: SelectOption<T>[]` _(required)_. The available choices.
-- `placeholder: string` — default `'Select…'`. Text shown in the trigger while nothing is selected.
-- `searchable: boolean` — default `false`. Adds a search box inside the panel.
-- `togglerLabel: string` — default `'Show options'`. Accessible name for the open/close chevron.
-- `emptyText: string` — default `'No results'`. Shown when no option matches the search term.
+- `searchable: boolean` — default `false`. Lets the trigger accept text and filters the list.
 - `manualFilter: boolean` — default `false`. Hands filtering to the consumer.
-- `loading: boolean` — default `false`. Shows a loading row in place of the list. For async options.
-- `loadingText: string` — default `'Loading…'`. Text shown while `loading`.
-- `size: 'sm' | 'md' | 'lg'`. Control height and text size. Inherited from a surrounding `Field` when omitted.
 - `disabled: boolean` — default `false`. Disables the control. A surrounding disabled `Field` also disables it.
 - `invalid: boolean` — default `false`. Marks the value invalid. A `Field` with an `error` also sets it.
 - `required: boolean` — default `false`. Marks the control required. A required `Field` also sets it.
-- `id: string`. Id for the trigger. Inherited from a surrounding `Field` when omitted.
 - `name: string`. Name submitted with a native form.
-- `class: string`. Additional classes for the trigger, merged so a consumer's utility wins.
 
 **v-model**
 
-- `v-model` — `T | undefined`. The selected value.
+- `v-model` — `T | undefined`. The selected value. `undefined` is nothing selected — Reka's `null` stays inside.
 - `v-model:searchTerm` — `string`. The current search term. Bind it to fetch options asynchronously.
 
 **Slots**
 
-- `#option` `(props: { option: SelectOption<T>; selected: boolean })` — Replaces an option's row.
-- `#value` `(props: { option: SelectOption<T> | undefined })` — Replaces the trigger's text.
+- `#default` — Trigger and content.
+
+### SelectTrigger
+
+`import { SelectTrigger } from 'rowkit'`
+
+**Props**
+
+- `placeholder: string` — default `'Select…'`. Text shown while nothing is selected.
+- `togglerLabel: string` — default `'Show options'`. Accessible name for the open/close chevron.
+- `size: 'sm' | 'md' | 'lg'`. Control height and text size. Inherited from a surrounding `Field` when omitted.
+- `id: string`. Id for the combobox input. Inherited from a surrounding `Field` when omitted.
+- `class: string`. Additional classes for the control, merged so a consumer's utility wins.
+
+### SelectContent
+
+`import { SelectContent } from 'rowkit'`
+
+**Props**
+
+- `emptyText: string` — default `'No results'`. Shown when no option matches the search term.
+- `loading: boolean` — default `false`. Shows a loading row in place of the list. For async options.
+- `loadingText: string` — default `'Loading…'`. Text shown while `loading`.
+- `class: string`. Additional classes for the panel, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The items.
 - `#empty` — Replaces the empty-results message.
+
+### SelectItem
+
+`import { SelectItem } from 'rowkit'`
+
+**Props**
+
+- `value: T` _(required)_. The value committed to `v-model`.
+- `label: string` _(required)_. Text shown in the trigger once this item is chosen.
+- `disabled: boolean` — default `false`. Renders the option unselectable while leaving it visible.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` `(props: { selected: boolean })` — The row. Defaults to `label`.
 
 ### Skeleton
 
@@ -378,11 +488,36 @@ handling.
 
 **Props**
 
-- `content: string` _(required)_. The label. A plain string, and **only** a string — there is no slot for rich content, by design.
-- `placement: 'top' | 'right' | 'bottom' | 'left'` — default `'top'`. Preferred side. Flips automatically on collision.
 - `delay: number` — default `300`. Delay before opening, in milliseconds.
 - `disabled: boolean` — default `false`. Turns the tooltip off without unwrapping the trigger.
 
 **Slots**
 
-- `#default` — The trigger. Rendered through `as-child`, so your element _becomes_ the trigger rather than being wrapped — a wrapper would change the layout and break the disabled-button pattern.
+- `#default` — Trigger and content.
+
+### TooltipTrigger
+
+`import { TooltipTrigger } from 'rowkit'`
+
+**Props**
+
+- `as: string | Component` — default `'button'`. Element or component to render as. Defaults to a button.
+- `asChild: boolean` — default `false`. Merge props onto the single child element instead of rendering a wrapper.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The control the tooltip describes. With `as-child`, this element becomes the trigger.
+
+### TooltipContent
+
+`import { TooltipContent } from 'rowkit'`
+
+**Props**
+
+- `placement: 'top' | 'right' | 'bottom' | 'left'` — default `'top'`. Preferred side. Flips automatically on collision.
+- `class: string`. Additional classes for the bubble, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The label. Plain text.

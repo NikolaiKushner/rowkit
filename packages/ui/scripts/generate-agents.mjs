@@ -89,16 +89,18 @@ handling.
 function renderComponent({ component, props, models, events, slots }) {
   const lines = [`### ${component}`, '', `\`import { ${component} } from 'rowkit'\``, '']
 
-  lines.push('**Props**', '')
-  for (const prop of props) {
-    const suffix = prop.required
-      ? ' _(required)_'
-      : prop.default === undefined
-        ? ''
-        : ` — default \`${prop.default}\``
-    lines.push(`- \`${prop.name}: ${prop.type}\`${suffix}. ${describe(prop.description)}`)
+  if (props.length > 0) {
+    lines.push('**Props**', '')
+    for (const prop of props) {
+      const suffix = prop.required
+        ? ' _(required)_'
+        : prop.default === undefined
+          ? ''
+          : ` — default \`${prop.default}\``
+      lines.push(`- \`${prop.name}: ${prop.type}\`${suffix}. ${describe(prop.description)}`)
+    }
+    lines.push('')
   }
-  lines.push('')
 
   if (models.length > 0) {
     lines.push('**v-model**', '')

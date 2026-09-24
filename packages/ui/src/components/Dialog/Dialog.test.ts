@@ -1,17 +1,60 @@
 import { mount } from '@vue/test-utils'
-import { nextTick } from 'vue'
+import { defineComponent, nextTick } from 'vue'
 import { describe, expect, it } from 'vitest'
 import Dialog from './Dialog.vue'
+import DialogBody from './DialogBody.vue'
+import DialogContent from './DialogContent.vue'
+import DialogDescription from './DialogDescription.vue'
+import DialogFooter from './DialogFooter.vue'
+import DialogHeader from './DialogHeader.vue'
+import DialogTitle from './DialogTitle.vue'
 
 const title = 'Delete project'
 
 /**
- * Async because Reka defers the teleport: the portal target is resolved after
- * mount so the same component can render on a server. Querying synchronously
+ * The public API is the parts, so the tests compose them the way a consumer
+ * does. Reka defers the teleport until after mount, so querying synchronously
  * finds an empty document.
  */
+const Harness = defineComponent({
+  components: {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogBody,
+    DialogFooter,
+  },
+  props: {
+    open: { type: Boolean, default: true },
+    title: { type: String, default: title },
+    description: { type: String, default: undefined },
+    size: { type: String, default: 'md' },
+    preventClose: { type: Boolean, default: false },
+    surfaceClass: { type: String, default: undefined },
+    eyebrow: { type: String, default: undefined },
+  },
+  emits: ['update:open'],
+  template: `
+    <Dialog :open="open" @update:open="$emit('update:open', $event)">
+      <DialogContent :size="size" :prevent-close="preventClose" :class="surfaceClass">
+        <DialogHeader>
+          <slot name="header">
+            <span v-if="eyebrow">{{ eyebrow }}</span>
+            <DialogTitle>{{ title }}</DialogTitle>
+            <DialogDescription v-if="description">{{ description }}</DialogDescription>
+          </slot>
+        </DialogHeader>
+        <DialogBody><slot /></DialogBody>
+        <DialogFooter v-if="$slots.footer"><slot name="footer" /></DialogFooter>
+      </DialogContent>
+    </Dialog>
+  `,
+})
+
 async function setup(props: Record<string, unknown> = {}, slots: Record<string, string> = {}) {
-  const el = mount(Dialog, {
+  const el = mount(Harness, {
     props: { title, open: true, ...props },
     slots: { default: 'Body copy', ...slots },
     attachTo: document.body,
@@ -63,7 +106,7 @@ describe('Dialog', () => {
       expect(dialog()?.parentElement).toBe(document.body)
     })
 
-    it('renders the body slot', async () => {
+    it('renders the body', async () => {
       await setup()
       expect(text()).toContain('Body copy')
     })
@@ -73,14 +116,14 @@ describe('Dialog', () => {
       expect(text()).not.toContain('Confirm')
     })
 
-    it('renders the footer slot', async () => {
+    it('renders the footer', async () => {
       await setup({}, { footer: '<button>Confirm</button>' })
       expect(text()).toContain('Confirm')
     })
   })
 
   describe('accessible name and description', () => {
-    it('always names the dialog from the title prop', async () => {
+    it('names the dialog from DialogTitle', async () => {
       await setup()
       const labelledBy = dialog()?.getAttribute('aria-labelledby')
       expect(labelledBy).toBeTruthy()
@@ -101,12 +144,11 @@ describe('Dialog', () => {
       expect(dialog()?.getAttribute('aria-describedby')).toBe('')
     })
 
-    it('keeps the name when the header slot replaces the visible title', async () => {
-      // The whole reason `title` is a prop and not only a slot.
-      await setup({}, { header: '<h2>Custom header</h2>' })
+    it('keeps the name when the header is composed around the title', async () => {
+      await setup({ eyebrow: 'Billing' })
       const labelledBy = dialog()?.getAttribute('aria-labelledby')
       expect(document.getElementById(labelledBy ?? '')?.textContent).toContain(title)
-      expect(text()).toContain('Custom header')
+      expect(text()).toContain('Billing')
     })
   })
 
@@ -143,9 +185,10 @@ describe('Dialog', () => {
         expect(el.emitted('update:open')?.at(-1)).toEqual([false])
       })
 
-      it('still leaves the close button when the header is replaced', async () => {
-        await setup({ preventClose: true }, { header: '<h2>Custom</h2>' })
+      it('keeps the close button outside the header', async () => {
+        await setup({ preventClose: true, eyebrow: 'Billing' })
         expect(closeButton()).not.toBeNull()
+        expect(closeButton()?.closest('[data-slot="dialog-header"]')).toBeNull()
       })
     })
   })
@@ -156,6 +199,7 @@ describe('Dialog', () => {
       await setup({}, { footer: '<button>Save</button>' })
       const scroller = document.querySelector('[role="dialog"] .overflow-y-auto')
       expect(scroller?.textContent).toContain('Body copy')
+      expect(scroller?.textContent).not.toContain('Save')
     })
 
     it.each([
@@ -179,7 +223,7 @@ describe('Dialog', () => {
   })
 
   it('merges a consumer class onto the surface', async () => {
-    await setup({ class: 'sm:max-w-xs' })
+    await setup({ surfaceClass: 'sm:max-w-xs' })
     const className = dialog()?.className ?? ''
     expect(className).toContain('sm:max-w-xs')
     expect(className).not.toContain('sm:max-w-lg')

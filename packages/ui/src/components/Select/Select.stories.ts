@@ -3,6 +3,9 @@ import { expect, userEvent, within } from 'storybook/test'
 import { ref, type ConcreteComponent } from 'vue'
 import Field from '../Field/Field.vue'
 import Select from './Select.vue'
+import SelectContent from './SelectContent.vue'
+import SelectItem from './SelectItem.vue'
+import SelectTrigger from './SelectTrigger.vue'
 import type { SelectOption } from './types'
 
 const statuses: SelectOption<string>[] = [
@@ -53,10 +56,12 @@ interface SelectArgs {
   options: SelectOption<string>[]
   placeholder: string
   searchable: boolean
+  manualFilter: boolean
   loading: boolean
   disabled: boolean
   invalid: boolean
   size: 'sm' | 'md' | 'lg'
+  emptyText: string
 }
 
 /**
@@ -65,6 +70,7 @@ interface SelectArgs {
  * surface is covered by the typed unit tests instead.
  */
 const SelectComponent = Select as unknown as ConcreteComponent<SelectArgs>
+const parts = { Select: SelectComponent, SelectTrigger, SelectContent, SelectItem }
 
 const meta: Meta<SelectArgs> = {
   title: 'Foundations/Select',
@@ -74,18 +80,41 @@ const meta: Meta<SelectArgs> = {
     options: statuses,
     placeholder: 'Select a status',
     searchable: false,
+    manualFilter: false,
     loading: false,
     disabled: false,
     invalid: false,
     size: 'md',
+    emptyText: 'No results',
   },
   argTypes: {
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
   },
   render: (args) => ({
-    components: { Select: SelectComponent },
+    components: parts,
     setup: () => ({ args, value: ref<string | undefined>(undefined) }),
-    template: `<div class="w-80"><Select v-bind="args" v-model="value" /></div>`,
+    template: `
+      <div class="w-80">
+        <Select
+          v-model="value"
+          :searchable="args.searchable"
+          :manual-filter="args.manualFilter"
+          :disabled="args.disabled"
+          :invalid="args.invalid"
+        >
+          <SelectTrigger :placeholder="args.placeholder" :size="args.size" />
+          <SelectContent :loading="args.loading" :empty-text="args.emptyText">
+            <SelectItem
+              v-for="option in args.options"
+              :key="option.value"
+              :value="option.value"
+              :label="option.label"
+              :disabled="option.disabled"
+            />
+          </SelectContent>
+        </Select>
+      </div>
+    `,
   }),
 }
 
@@ -94,9 +123,24 @@ type Story = StoryObj<SelectArgs>
 
 export const Default: Story = {
   render: (args) => ({
-    components: { Select: SelectComponent },
+    components: parts,
     setup: () => ({ args, value: ref('active') }),
-    template: `<div class="w-80"><Select v-bind="args" v-model="value" /></div>`,
+    template: `
+      <div class="w-80">
+        <Select v-model="value" :searchable="args.searchable">
+          <SelectTrigger :placeholder="args.placeholder" :size="args.size" />
+          <SelectContent>
+            <SelectItem
+              v-for="option in args.options"
+              :key="option.value"
+              :value="option.value"
+              :label="option.label"
+              :disabled="option.disabled"
+            />
+          </SelectContent>
+        </Select>
+      </div>
+    `,
   }),
 }
 
@@ -104,19 +148,45 @@ export const Empty: Story = {}
 
 export const WithValue: Story = {
   render: (args) => ({
-    components: { Select: SelectComponent },
+    components: parts,
     setup: () => ({ args, value: ref('invited') }),
-    template: `<div class="w-80"><Select v-bind="args" v-model="value" /></div>`,
+    template: `
+      <div class="w-80">
+        <Select v-model="value">
+          <SelectTrigger :placeholder="args.placeholder" />
+          <SelectContent>
+            <SelectItem
+              v-for="option in args.options"
+              :key="option.value"
+              :value="option.value"
+              :label="option.label"
+              :disabled="option.disabled"
+            />
+          </SelectContent>
+        </Select>
+      </div>
+    `,
   }),
 }
 
 export const Sizes: Story = {
   render: () => ({
-    components: { Select: SelectComponent },
+    components: parts,
     setup: () => ({ statuses, sizes: ['sm', 'md', 'lg'] as const }),
     template: `
       <div class="flex w-80 flex-col gap-3">
-        <Select v-for="size in sizes" :key="size" :size="size" :options="statuses" :placeholder="size" />
+        <Select v-for="size in sizes" :key="size">
+          <SelectTrigger :size="size" :placeholder="size" />
+          <SelectContent>
+            <SelectItem
+              v-for="option in statuses"
+              :key="option.value"
+              :value="option.value"
+              :label="option.label"
+              :disabled="option.disabled"
+            />
+          </SelectContent>
+        </Select>
       </div>
     `,
   }),
@@ -124,14 +194,32 @@ export const Sizes: Story = {
 
 export const States: Story = {
   render: () => ({
-    components: { Select: SelectComponent },
+    components: parts,
     setup: () => ({ statuses }),
     template: `
       <div class="flex w-80 flex-col gap-3">
-        <Select :options="statuses" placeholder="Default" />
-        <Select :options="statuses" placeholder="Invalid" invalid />
-        <Select :options="statuses" placeholder="Disabled" disabled />
-        <Select :options="[]" placeholder="Loading" loading />
+        <Select>
+          <SelectTrigger placeholder="Default" />
+          <SelectContent>
+            <SelectItem v-for="option in statuses" :key="option.value" :value="option.value" :label="option.label" :disabled="option.disabled" />
+          </SelectContent>
+        </Select>
+        <Select invalid>
+          <SelectTrigger placeholder="Invalid" />
+          <SelectContent>
+            <SelectItem v-for="option in statuses" :key="option.value" :value="option.value" :label="option.label" :disabled="option.disabled" />
+          </SelectContent>
+        </Select>
+        <Select disabled>
+          <SelectTrigger placeholder="Disabled" />
+          <SelectContent>
+            <SelectItem v-for="option in statuses" :key="option.value" :value="option.value" :label="option.label" :disabled="option.disabled" />
+          </SelectContent>
+        </Select>
+        <Select>
+          <SelectTrigger placeholder="Loading" />
+          <SelectContent loading />
+        </Select>
       </div>
     `,
   }),
@@ -146,13 +234,13 @@ export const Searchable: Story = {
 }
 
 /**
- * With `manualFilter` the list is whatever the consumer put in `options` —
- * bind `searchTerm` to fetch it. Filtering locally as well would hide results
- * that matched on a field the label does not show.
+ * With `manualFilter` the list is whatever the consumer rendered — bind
+ * `searchTerm` to fetch it. Filtering locally as well would hide results that
+ * matched on a field the label does not show.
  */
 export const AsyncOptions: Story = {
   render: () => ({
-    components: { Select: SelectComponent },
+    components: parts,
     setup: () => {
       const term = ref('')
       const loading = ref(false)
@@ -178,15 +266,21 @@ export const AsyncOptions: Story = {
     template: `
       <div class="w-80">
         <Select
-          :options="options"
-          :loading="loading"
           :search-term="term"
           manual-filter
           searchable
-          placeholder="Search countries"
-          empty-text="No countries match"
           @update:search-term="onSearch"
-        />
+        >
+          <SelectTrigger placeholder="Search countries" />
+          <SelectContent :loading="loading" empty-text="No countries match">
+            <SelectItem
+              v-for="option in options"
+              :key="option.value"
+              :value="option.value"
+              :label="option.label"
+            />
+          </SelectContent>
+        </Select>
       </div>
     `,
   }),
@@ -194,12 +288,23 @@ export const AsyncOptions: Story = {
 
 export const InAField: Story = {
   render: () => ({
-    components: { Field, Select: SelectComponent },
+    components: { ...parts, Field },
     setup: () => ({ statuses }),
     template: `
       <div class="w-80">
         <Field label="Status" hint="Controls whether the user can sign in.">
-          <Select :options="statuses" placeholder="Select a status" />
+          <Select>
+            <SelectTrigger placeholder="Select a status" />
+            <SelectContent>
+              <SelectItem
+                v-for="option in statuses"
+                :key="option.value"
+                :value="option.value"
+                :label="option.label"
+                :disabled="option.disabled"
+              />
+            </SelectContent>
+          </Select>
         </Field>
       </div>
     `,
@@ -209,14 +314,25 @@ export const InAField: Story = {
 /** The primary behaviour: open, choose, and see the choice reflected. */
 export const SelectingAnOption: Story = {
   render: (args) => ({
-    components: { Select: SelectComponent },
+    components: parts,
     setup: () => {
       const value = ref<string | undefined>(undefined)
       return { args, value }
     },
     template: `
       <div class="w-80">
-        <Select v-bind="args" v-model="value" />
+        <Select v-model="value">
+          <SelectTrigger :placeholder="args.placeholder" />
+          <SelectContent>
+            <SelectItem
+              v-for="option in args.options"
+              :key="option.value"
+              :value="option.value"
+              :label="option.label"
+              :disabled="option.disabled"
+            />
+          </SelectContent>
+        </Select>
         <p class="mt-2 text-sm text-muted-foreground">Value: <span data-testid="echo">{{ value ?? 'none' }}</span></p>
       </div>
     `,

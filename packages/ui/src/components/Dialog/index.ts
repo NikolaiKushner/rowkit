@@ -1,4 +1,11 @@
 export { default as Dialog } from './Dialog.vue'
+export { default as DialogBody } from './DialogBody.vue'
+export { default as DialogContent } from './DialogContent.vue'
+export { default as DialogDescription } from './DialogDescription.vue'
+export { default as DialogFooter } from './DialogFooter.vue'
+export { default as DialogHeader } from './DialogHeader.vue'
+export { default as DialogTitle } from './DialogTitle.vue'
+export { default as DialogTrigger } from './DialogTrigger.vue'
 export {
   dialogBodyVariants,
   dialogCloseVariants,
@@ -10,4 +17,12 @@ export {
   dialogTitleVariants,
   type DialogVariants,
 } from './Dialog.variants'
-export type { DialogProps } from './types'
+export type {
+  DialogBodyProps,
+  DialogContentProps,
+  DialogDescriptionProps,
+  DialogFooterProps,
+  DialogHeaderProps,
+  DialogTitleProps,
+  DialogTriggerProps,
+} from './types'

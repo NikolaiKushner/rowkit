@@ -5,8 +5,27 @@ import Button from '../Button/Button.vue'
 import Field from '../Field/Field.vue'
 import Input from '../Input/Input.vue'
 import Dialog from './Dialog.vue'
+import DialogBody from './DialogBody.vue'
+import DialogContent from './DialogContent.vue'
+import DialogDescription from './DialogDescription.vue'
+import DialogFooter from './DialogFooter.vue'
+import DialogHeader from './DialogHeader.vue'
+import DialogTitle from './DialogTitle.vue'
+import DialogTrigger from './DialogTrigger.vue'
 
 const sizes = ['sm', 'md', 'lg'] as const
+
+const parts = {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+  Button,
+}
 
 /**
  * Controls declared explicitly rather than inferred, so the docs table shows
@@ -22,19 +41,25 @@ interface DialogArgs {
 /** The dialog is controlled, so every story needs somewhere to keep `open`. */
 function withTrigger(args: Partial<DialogArgs>, body = 'Body copy goes here.') {
   return {
-    components: { Dialog, Button },
+    components: parts,
     setup: () => ({ args, open: ref(false), body }),
     template: `
-      <div>
-        <Button @click="open = true">Open dialog</Button>
-        <Dialog v-bind="args" v-model:open="open">
-          {{ body }}
-          <template #footer>
+      <Dialog v-model:open="open">
+        <DialogTrigger as-child>
+          <Button>Open dialog</Button>
+        </DialogTrigger>
+        <DialogContent :size="args.size" :prevent-close="args.preventClose">
+          <DialogHeader>
+            <DialogTitle>{{ args.title }}</DialogTitle>
+            <DialogDescription v-if="args.description">{{ args.description }}</DialogDescription>
+          </DialogHeader>
+          <DialogBody>{{ body }}</DialogBody>
+          <DialogFooter>
             <Button variant="ghost" @click="open = false">Cancel</Button>
             <Button @click="open = false">Confirm</Button>
-          </template>
-        </Dialog>
-      </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     `,
   }
 }
@@ -66,23 +91,24 @@ export const Default: Story = {}
 /** Open by default — the frame visual QA and portfolio shots actually need. */
 export const Open: Story = {
   render: () => ({
-    components: { Dialog, Button },
-    setup: () => ({
-      open: ref(true),
-      args: {
-        title: 'Delete project',
-        description: 'This removes the project and everything in it. It cannot be undone.',
-        size: 'md' as const,
-      },
-    }),
+    components: parts,
+    setup: () => ({ open: ref(true) }),
     template: `
       <div class="min-h-[28rem]">
-        <Dialog v-bind="args" v-model:open="open">
-          Downstream access is revoked immediately.
-          <template #footer>
-            <Button variant="ghost" @click="open = false">Cancel</Button>
-            <Button variant="destructive" @click="open = false">Delete project</Button>
-          </template>
+        <Dialog v-model:open="open">
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete project</DialogTitle>
+              <DialogDescription>
+                This removes the project and everything in it. It cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogBody>Downstream access is revoked immediately.</DialogBody>
+            <DialogFooter>
+              <Button variant="ghost" @click="open = false">Cancel</Button>
+              <Button variant="destructive" @click="open = false">Delete project</Button>
+            </DialogFooter>
+          </DialogContent>
         </Dialog>
       </div>
     `,
@@ -97,7 +123,7 @@ export const TitleOnly: Story = {
 
 export const Sizes: Story = {
   render: () => ({
-    components: { Dialog, Button },
+    components: parts,
     setup: () => ({ sizes, openSize: ref<(typeof sizes)[number] | undefined>() }),
     template: `
       <div class="flex items-center gap-2">
@@ -107,13 +133,18 @@ export const Sizes: Story = {
         <Dialog
           v-for="size in sizes"
           :key="size"
-          :size="size"
-          :title="'Dialog at ' + size"
           :open="openSize === size"
           @update:open="openSize = undefined"
         >
-          Width is the only thing the preset changes. Height always follows the
-          content, capped to the viewport.
+          <DialogContent :size="size">
+            <DialogHeader>
+              <DialogTitle>Dialog at {{ size }}</DialogTitle>
+            </DialogHeader>
+            <DialogBody>
+              Width is the only thing the preset changes. Height always follows the
+              content, capped to the viewport.
+            </DialogBody>
+          </DialogContent>
         </Dialog>
       </div>
     `,
@@ -123,26 +154,29 @@ export const Sizes: Story = {
 /** A form inside a dialog — the most common real use. */
 export const WithForm: Story = {
   render: () => ({
-    components: { Dialog, Button, Field, Input },
+    components: { ...parts, Field, Input },
     setup: () => ({ open: ref(false), name: ref('Platform') }),
     template: `
-      <div>
-        <Button @click="open = true">Rename project</Button>
-        <Dialog
-          v-model:open="open"
-          title="Rename project"
-          description="Everyone with access will see the new name."
-          size="sm"
-        >
-          <Field label="Project name" hint="Up to 60 characters.">
-            <Input v-model="name" />
-          </Field>
-          <template #footer>
+      <Dialog v-model:open="open">
+        <DialogTrigger as-child>
+          <Button>Rename project</Button>
+        </DialogTrigger>
+        <DialogContent size="sm">
+          <DialogHeader>
+            <DialogTitle>Rename project</DialogTitle>
+            <DialogDescription>Everyone with access will see the new name.</DialogDescription>
+          </DialogHeader>
+          <DialogBody>
+            <Field label="Project name" hint="Up to 60 characters.">
+              <Input v-model="name" />
+            </Field>
+          </DialogBody>
+          <DialogFooter>
             <Button variant="ghost" @click="open = false">Cancel</Button>
             <Button @click="open = false">Save</Button>
-          </template>
-        </Dialog>
-      </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     `,
   }),
 }
@@ -153,21 +187,28 @@ export const WithForm: Story = {
  */
 export const LongContent: Story = {
   render: () => ({
-    components: { Dialog, Button },
+    components: parts,
     setup: () => ({ open: ref(false), lines: Array.from({ length: 40 }, (_, i) => i + 1) }),
     template: `
-      <div>
-        <Button @click="open = true">Open terms</Button>
-        <Dialog v-model:open="open" title="Terms of service" size="md">
-          <p v-for="line in lines" :key="line" class="mb-3">
-            Clause {{ line }} — the header and footer stay fixed while this scrolls.
-          </p>
-          <template #footer>
+      <Dialog v-model:open="open">
+        <DialogTrigger as-child>
+          <Button>Open terms</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Terms of service</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <p v-for="line in lines" :key="line" class="mb-3">
+              Clause {{ line }} — the header and footer stay fixed while this scrolls.
+            </p>
+          </DialogBody>
+          <DialogFooter>
             <Button variant="ghost" @click="open = false">Decline</Button>
             <Button @click="open = false">Accept</Button>
-          </template>
-        </Dialog>
-      </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     `,
   }),
 }
@@ -183,32 +224,29 @@ export const PreventClose: Story = {
     withTrigger(args, 'Escape and clicking outside do nothing. The close button still works.'),
 }
 
-/**
- * Replacing the header. The `title` prop still supplies the accessible name, so
- * customising the presentation cannot break the contract.
- */
+/** The header is composed. The accessible name still comes from `DialogTitle`. */
 export const CustomHeader: Story = {
   render: () => ({
-    components: { Dialog, Button },
+    components: parts,
     setup: () => ({ open: ref(false) }),
     template: `
-      <div>
-        <Button @click="open = true">Open</Button>
-        <Dialog v-model:open="open" title="Upgrade plan">
-          <template #header>
-            <div class="flex flex-col gap-1 border-b border-border-subtle pb-4">
-              <span class="text-xs font-medium uppercase tracking-wide text-primary-on-subtle">
-                Billing
-              </span>
-              <h2 class="text-lg font-semibold text-foreground">Upgrade plan</h2>
-            </div>
-          </template>
-          The accessible name is still "Upgrade plan", from the prop.
-          <template #footer>
+      <Dialog v-model:open="open">
+        <DialogTrigger as-child>
+          <Button>Open</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader class="border-b border-border-subtle pb-4">
+            <span class="text-xs font-medium uppercase tracking-wide text-primary-on-subtle">
+              Billing
+            </span>
+            <DialogTitle>Upgrade plan</DialogTitle>
+          </DialogHeader>
+          <DialogBody>The accessible name is still "Upgrade plan", from the title.</DialogBody>
+          <DialogFooter>
             <Button @click="open = false">Done</Button>
-          </template>
-        </Dialog>
-      </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     `,
   }),
 }
@@ -241,12 +279,19 @@ export const Accessibility: Story = {
  */
 export const FocusRingIsNotClipped: Story = {
   render: () => ({
-    components: { Dialog, Button, Field, Input },
+    components: { ...parts, Field, Input },
     setup: () => ({ open: ref(true), name: ref('Platform') }),
     template: `
-      <Dialog v-model:open="open" title="Project settings" size="sm">
-        <Field label="Project name"><Input v-model="name" /></Field>
-        <template #footer><Button>Save</Button></template>
+      <Dialog v-model:open="open">
+        <DialogContent size="sm">
+          <DialogHeader>
+            <DialogTitle>Project settings</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <Field label="Project name"><Input v-model="name" /></Field>
+          </DialogBody>
+          <DialogFooter><Button>Save</Button></DialogFooter>
+        </DialogContent>
       </Dialog>
     `,
   }),
@@ -370,17 +415,26 @@ export const PreventCloseIsNotATrap: Story = {
  */
 export const ScrollLock: Story = {
   render: () => ({
-    components: { Dialog, Button },
+    components: parts,
     setup: () => ({ open: ref(false), lines: Array.from({ length: 60 }, (_, i) => i + 1) }),
     template: `
       <div>
-        <Button @click="open = true">Open over a long page</Button>
+        <Dialog v-model:open="open">
+          <DialogTrigger as-child>
+            <Button>Open over a long page</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Scroll lock check</DialogTitle>
+            </DialogHeader>
+            <DialogBody>
+              Compare the page edges behind the scrim before and after opening.
+            </DialogBody>
+          </DialogContent>
+        </Dialog>
         <p v-for="line in lines" :key="line" class="text-sm text-muted-foreground">
           Page line {{ line }} — the page must not shift sideways when the dialog opens.
         </p>
-        <Dialog v-model:open="open" title="Scroll lock check">
-          Compare the page edges behind the scrim before and after opening.
-        </Dialog>
       </div>
     `,
   }),

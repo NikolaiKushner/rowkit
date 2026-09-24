@@ -85,7 +85,7 @@ add always-open variants to the matrix.
 Both are decisions, not bugs — but they should be decided rather than inherited:
 
 - **`Badge` `subtle` + `primary` is indistinguishable from `neutral`** in light
-  mode. That follows from espresso's low chroma, and it makes the variant close
+  mode. That follows from primary's low chroma, and it makes the variant close
   to useless. Either give it a distinguishing treatment or drop it.
 - **Dark-mode invalid `Input` contradicts soft destructive.** The rest of the
   library expresses danger as a quiet wash with a coloured label; the invalid
@@ -148,7 +148,7 @@ Do not relitigate these without new information:
 
 - **Design direction is restraint** — structure without severity, no excess.
   Chrome stays neutral; status colour carries meaning and brand colour does not
-  live in the defaults. Primary is warm espresso `oklch(0.31 0.038 48)`.
+  live in the defaults. Primary is ink blue `oklch(0.32 0.09 255)`.
   Consumers rebrand by pointing `--color-primary-*` at their own colour.
 - **npm package, not copy-paste distribution.** shadcn-vue's model is good and
   deliberate; rowkit ships versioned.

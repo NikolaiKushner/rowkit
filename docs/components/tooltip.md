@@ -3,25 +3,38 @@
 **Stage:** 🟢 Stable
 
 A label for a control, on hover and on focus. Built on Reka UI's `Tooltip`.
+You place the trigger and the content; the portal lives inside `TooltipContent`.
 
 ```vue
-<Tooltip content="Archive project">
-  <Button variant="ghost" aria-label="Archive project">
-    <ArchiveIcon />
-  </Button>
+<Tooltip>
+  <TooltipTrigger as-child>
+    <Button variant="ghost" aria-label="Archive project">
+      <ArchiveIcon />
+    </Button>
+  </TooltipTrigger>
+  <TooltipContent>Archive project</TooltipContent>
 </Tooltip>
 ```
 
 <DemoBox>
   <TooltipProvider :delay-duration="300" :skip-delay-duration="500">
-    <Tooltip content="Archive project">
-      <Button variant="ghost">Archive</Button>
+    <Tooltip>
+      <TooltipTrigger as-child>
+        <Button variant="ghost">Archive</Button>
+      </TooltipTrigger>
+      <TooltipContent>Archive project</TooltipContent>
     </Tooltip>
-    <Tooltip content="Duplicate project" placement="bottom">
-      <Button variant="ghost">Duplicate</Button>
+    <Tooltip>
+      <TooltipTrigger as-child>
+        <Button variant="ghost">Duplicate</Button>
+      </TooltipTrigger>
+      <TooltipContent placement="bottom">Duplicate project</TooltipContent>
     </Tooltip>
-    <Tooltip content="Export as CSV" placement="right">
-      <Button variant="ghost">Export</Button>
+    <Tooltip>
+      <TooltipTrigger as-child>
+        <Button variant="ghost">Export</Button>
+      </TooltipTrigger>
+      <TooltipContent placement="right">Export as CSV</TooltipContent>
     </Tooltip>
   </TooltipProvider>
 </DemoBox>
@@ -34,37 +47,54 @@ full delay and the row feels broken.
 Tab to them instead and the tooltips open on focus, with no delay at all — a
 keyboard user has already committed to the control by the time they reach it.
 
+## Anatomy
+
+| Part              | Purpose                                                              |
+| ----------------- | -------------------------------------------------------------------- |
+| `Tooltip`         | Root. `delay` and `disabled`. Supplies a provider when none is above |
+| `TooltipTrigger`  | The control. `as-child` so your element becomes the trigger          |
+| `TooltipContent`  | The label, and the portal that floats it                             |
+| `TooltipProvider` | Shared timing for a toolbar. Reka's, re-exported                     |
+
 ## Props
+
+### Tooltip
 
 <!-- @props TooltipProps -->
 
-| Prop        | Type                                     | Default      | Description                                                                                      |
-| ----------- | ---------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------ |
-| `content`   | `string`                                 | **required** | The label. A plain string, and **only** a string — there is no slot for rich content, by design. |
-| `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'top'`      | Preferred side. Flips automatically on collision.                                                |
-| `delay`     | `number`                                 | `300`        | Delay before opening, in milliseconds.                                                           |
-| `disabled`  | `boolean`                                | `false`      | Turns the tooltip off without unwrapping the trigger.                                            |
+| Prop       | Type      | Default | Description                                           |
+| ---------- | --------- | ------- | ----------------------------------------------------- |
+| `delay`    | `number`  | `300`   | Delay before opening, in milliseconds.                |
+| `disabled` | `boolean` | `false` | Turns the tooltip off without unwrapping the trigger. |
 
 <!-- /@props -->
 
-### Slots
+### TooltipTrigger
 
-| Slot      | Description                                                      |
-| --------- | ---------------------------------------------------------------- |
-| `default` | The trigger. Rendered `as-child`, so no wrapper element is added |
+<!-- @props TooltipTriggerProps -->
 
-## `content` is a string, and that is the design
+| Prop      | Type                  | Default    | Description                                                               |
+| --------- | --------------------- | ---------- | ------------------------------------------------------------------------- |
+| `as`      | `string \| Component` | `'button'` | Element or component to render as. Defaults to a button.                  |
+| `asChild` | `boolean`             | `false`    | Merge props onto the single child element instead of rendering a wrapper. |
+| `class`   | `string`              | —          | Additional classes, merged so a consumer's utility wins.                  |
 
-There is no slot for rich content. No links, no buttons, no headings.
+<!-- /@props -->
 
-A tooltip is hover-triggered and never holds focus, so **an interactive element
-inside one is unreachable by keyboard by construction**. Typing `content` as
-`string` closes that whole failure class at the API boundary rather than in a
-documentation warning nobody reads.
+### TooltipContent
 
-If it needs a link or a button, you want a popover — a different component with
-different focus semantics, deliberately **not in v1** (`ROADMAP.md`, "Later").
-If it needs a paragraph, put it in the page.
+<!-- @props TooltipContentProps -->
+
+| Prop        | Type                                     | Default | Description                                                             |
+| ----------- | ---------------------------------------- | ------- | ----------------------------------------------------------------------- |
+| `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'top'` | Preferred side. Flips automatically on collision.                       |
+| `class`     | `string`                                 | —       | Additional classes for the bubble, merged so a consumer's utility wins. |
+
+<!-- /@props -->
+
+The label is the default slot of `TooltipContent`. It is text. A tooltip never
+holds focus, so a link or a button in that slot is unreachable by keyboard. If
+the label needs either, it is a popover — deliberately not in v1.
 
 ## When to use
 
@@ -92,29 +122,41 @@ browser behaviour, not something rowkit can work around.
 
 ```vue
 <!-- ✗ Never opens. -->
-<Tooltip content="Upgrade to export">
-  <Button disabled>Export</Button>
+<Tooltip>
+  <TooltipTrigger as-child>
+    <Button disabled>Export</Button>
+  </TooltipTrigger>
+  <TooltipContent>Upgrade to export</TooltipContent>
 </Tooltip>
 
 <!-- ✓ Focusable, so the tooltip can explain itself. -->
-<Tooltip content="Upgrade your plan to export">
-  <Button aria-disabled="true" @click="showUpgrade">Export</Button>
+<Tooltip>
+  <TooltipTrigger as-child>
+    <Button aria-disabled="true" @click="showUpgrade">Export</Button>
+  </TooltipTrigger>
+  <TooltipContent>Upgrade your plan to export</TooltipContent>
 </Tooltip>
 ```
 
 <DemoBox>
-  <Tooltip content="Upgrade to export">
-    <Button disabled>Export (disabled)</Button>
+  <Tooltip>
+    <TooltipTrigger as-child>
+      <Button disabled>Export (disabled)</Button>
+    </TooltipTrigger>
+    <TooltipContent>Upgrade to export</TooltipContent>
   </Tooltip>
-  <Tooltip content="Upgrade your plan to export">
-    <Button aria-disabled="true">Export (aria-disabled)</Button>
+  <Tooltip>
+    <TooltipTrigger as-child>
+      <Button aria-disabled="true">Export (aria-disabled)</Button>
+    </TooltipTrigger>
+    <TooltipContent>Upgrade your plan to export</TooltipContent>
   </Tooltip>
 </DemoBox>
 
 Hover both. Only the second one ever says anything — and it is the same tooltip,
-on the same component, with the same props. This is the one place the page
-carries a second demo block, because the trap is easier to believe when the
-broken version is sitting next to the working one.
+on the same parts. This is the one place the page carries a second demo block,
+because the trap is easier to believe when the broken version is sitting next to
+the working one.
 
 `aria-disabled` keeps the control in the tab order and announces it as
 unavailable, while leaving it able to fire events. Handle the click as a no-op,
@@ -131,7 +173,7 @@ not to use", repeated here because it is the one people skip.
 
 ## The provider, and the toolbar sweep
 
-A single `<Tooltip>` needs no setup — it supplies its own provider when there is
+A single `Tooltip` needs no setup — it supplies its own provider when there is
 not one above it.
 
 One behaviour needs a shared provider, because the state is shared:
@@ -146,7 +188,7 @@ import { TooltipProvider } from 'rowkit'
 
 <template>
   <TooltipProvider :delay-duration="300" :skip-delay-duration="500">
-    <!-- toolbar -->
+    <!-- toolbar of Tooltip / TooltipTrigger / TooltipContent -->
   </TooltipProvider>
 </template>
 ```

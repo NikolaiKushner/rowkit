@@ -3,16 +3,25 @@
 **Stage:** 🟢 Stable
 
 A modal dialog built on Reka UI's `Dialog`. Focus trap, focus restore, scroll
-lock and background inerting come from the primitive; rowkit supplies the API
-shape, the token styling, and the opinions.
+lock and background inerting come from the primitive. You place the parts;
+the portal, the scrim, and the close button live inside `DialogContent`.
 
 ```vue
-<Dialog v-model:open="open" title="Delete project" description="This cannot be undone.">
-  Everything in the project goes with it.
-  <template #footer>
-    <Button variant="ghost" @click="open = false">Cancel</Button>
-    <Button variant="destructive" @click="remove">Delete</Button>
-  </template>
+<Dialog v-model:open="open">
+  <DialogTrigger as-child>
+    <Button variant="destructive">Delete project</Button>
+  </DialogTrigger>
+  <DialogContent size="sm">
+    <DialogHeader>
+      <DialogTitle>Delete project</DialogTitle>
+      <DialogDescription>This cannot be undone.</DialogDescription>
+    </DialogHeader>
+    <DialogBody>Everything in the project goes with it.</DialogBody>
+    <DialogFooter>
+      <Button variant="ghost" @click="open = false">Cancel</Button>
+      <Button variant="destructive" @click="remove">Delete</Button>
+    </DialogFooter>
+  </DialogContent>
 </Dialog>
 ```
 
@@ -30,35 +39,50 @@ function remove() {
 </script>
 
 <DemoBox>
-  <Button variant="destructive" @click="confirmOpen = true">Delete project</Button>
-  <Button variant="outline" @click="termsOpen = true">Read the terms</Button>
-  <span v-if="deleted" class="text-sm text-muted-foreground">Deleted — and focus is back on the button that opened it.</span>
-
-  <Dialog
-    v-model:open="confirmOpen"
-    title="Delete Ada's project"
-    description="This cannot be undone."
-  >
-    Everything in the project goes with it: 12 tables, 3 saved filters, and every
-    invite link you have shared.
-    <template #footer>
-      <Button variant="ghost" @click="confirmOpen = false">Cancel</Button>
-      <Button variant="destructive" @click="remove">Delete</Button>
-    </template>
+  <Dialog v-model:open="confirmOpen">
+    <DialogTrigger as-child>
+      <Button variant="destructive">Delete project</Button>
+    </DialogTrigger>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>Delete Ada's project</DialogTitle>
+        <DialogDescription>This cannot be undone.</DialogDescription>
+      </DialogHeader>
+      <DialogBody>
+        Everything in the project goes with it: 12 tables, 3 saved filters, and every
+        invite link you have shared.
+      </DialogBody>
+      <DialogFooter>
+        <Button variant="ghost" @click="confirmOpen = false">Cancel</Button>
+        <Button variant="destructive" @click="remove">Delete</Button>
+      </DialogFooter>
+    </DialogContent>
   </Dialog>
 
-  <Dialog v-model:open="termsOpen" title="Terms of service" size="lg">
-    <p v-for="n in 20" :key="n" class="!mt-0">
-      Clause {{ n }}. Nothing here is a real term. It is here so the body has
-      more content than the viewport, which is the only way to see that the body
-      scrolls while the header, the close button and the footer stay put.
-    </p>
+  <Dialog v-model:open="termsOpen">
+    <DialogTrigger as-child>
+      <Button variant="outline">Read the terms</Button>
+    </DialogTrigger>
+    <DialogContent size="lg">
+      <DialogHeader>
+        <DialogTitle>Terms of service</DialogTitle>
+      </DialogHeader>
+      <DialogBody>
+        <p v-for="n in 20" :key="n" class="!mt-0">
+          Clause {{ n }}. Nothing here is a real term. It is here so the body has
+          more content than the viewport, which is the only way to see that the body
+          scrolls while the header, the close button and the footer stay put.
+        </p>
+      </DialogBody>
+    </DialogContent>
   </Dialog>
+
+<span v-if="deleted" class="text-sm text-muted-foreground">Deleted — and focus is back on the button that opened it.</span>
 </DemoBox>
 
 Open either one and press <kbd>Tab</kbd> a few times: focus cycles inside the
 dialog and does not reach the page behind it. <kbd>Esc</kbd> closes, clicking the
-scrim closes, and focus returns to the button you opened it from — which is the
+scrim closes, and focus returns to the trigger — which is the
 part that is easy to lose and very obvious to a keyboard user when it is missing.
 
 The second dialog is long on purpose. The **body is the only scrolling region**,
@@ -66,23 +90,45 @@ so the title and the actions stay reachable no matter how much content there is.
 
 ## Anatomy
 
-| Part    | Purpose                                                         |
-| ------- | --------------------------------------------------------------- |
-| Overlay | The scrim, at `z-overlay`. Clicking it closes, unless prevented |
-| Surface | The dialog, at `z-modal` — above its own backdrop               |
-| Header  | Title and description. Supplies the accessible name             |
-| Close   | Always present, top right. Outside the header slot on purpose   |
-| Body    | The only scrolling region                                       |
-| Footer  | Actions. Rendered only when the slot is used                    |
+| Part                | Purpose                                                              |
+| ------------------- | -------------------------------------------------------------------- |
+| `Dialog`            | Root. Holds `v-model:open`. With no model, the trigger still toggles |
+| `DialogTrigger`     | Opens the dialog. `as-child` turns your button into the trigger      |
+| `DialogContent`     | Surface, plus the portal, the scrim, and the close button            |
+| `DialogHeader`      | Title row. Does not scroll                                           |
+| `DialogTitle`       | Accessible name (`aria-labelledby`)                                  |
+| `DialogDescription` | Supporting text. Omit it and nothing is announced as a description   |
+| `DialogBody`        | The only scrolling region                                            |
+| `DialogFooter`      | Actions. Cancel first, primary last                                  |
 
 ## Props
 
-<!-- @props DialogProps -->
+`Dialog` itself takes no props. Visibility is `v-model:open`.
+
+### v-model
+
+| Model          | Type      | Default | Description                                                                 |
+| -------------- | --------- | ------- | --------------------------------------------------------------------------- |
+| `v-model:open` | `boolean` | `false` | Visibility. Optional — without it, the root holds the state for the trigger |
+
+### DialogTrigger
+
+<!-- @props DialogTriggerProps -->
+
+| Prop      | Type                  | Default    | Description                                                               |
+| --------- | --------------------- | ---------- | ------------------------------------------------------------------------- |
+| `as`      | `string \| Component` | `'button'` | Element or component to render as. Defaults to a button.                  |
+| `asChild` | `boolean`             | `false`    | Merge props onto the single child element instead of rendering a wrapper. |
+| `class`   | `string`              | —          | Additional classes, merged so a consumer's utility wins.                  |
+
+<!-- /@props -->
+
+### DialogContent
+
+<!-- @props DialogContentProps -->
 
 | Prop           | Type                   | Default          | Description                                                                               |
 | -------------- | ---------------------- | ---------------- | ----------------------------------------------------------------------------------------- |
-| `title`        | `string`               | **required**     | Accessible name, rendered as the heading.                                                 |
-| `description`  | `string`               | —                | Supporting text under the title, wired to `aria-describedby`.                             |
 | `size`         | `'sm' \| 'md' \| 'lg'` | `'md'`           | Width preset. Height is content-driven, capped to the viewport.                           |
 | `preventClose` | `boolean`              | `false`          | Blocks Escape and clicking the scrim, for a flow where dismissing by accident loses work. |
 | `closeLabel`   | `string`               | `'Close dialog'` | Accessible name for the close button.                                                     |
@@ -90,19 +136,55 @@ so the title and the actions stay reachable no matter how much content there is.
 
 <!-- /@props -->
 
-### v-model
+### DialogHeader
 
-| Model          | Type      | Default | Description |
-| -------------- | --------- | ------- | ----------- |
-| `v-model:open` | `boolean` | `false` | Visibility  |
+<!-- @props DialogHeaderProps -->
 
-### Slots
+| Prop    | Type     | Default | Description                                              |
+| ------- | -------- | ------- | -------------------------------------------------------- |
+| `class` | `string` | —       | Additional classes, merged so a consumer's utility wins. |
 
-| Slot      | Description                                             |
-| --------- | ------------------------------------------------------- |
-| `default` | Body content. Scrolls if it needs to                    |
-| `header`  | Replaces the title row. `title` still supplies the name |
-| `footer`  | Actions. Cancel first, primary last                     |
+<!-- /@props -->
+
+### DialogTitle
+
+<!-- @props DialogTitleProps -->
+
+| Prop    | Type     | Default | Description                                              |
+| ------- | -------- | ------- | -------------------------------------------------------- |
+| `class` | `string` | —       | Additional classes, merged so a consumer's utility wins. |
+
+<!-- /@props -->
+
+### DialogDescription
+
+<!-- @props DialogDescriptionProps -->
+
+| Prop    | Type     | Default | Description                                              |
+| ------- | -------- | ------- | -------------------------------------------------------- |
+| `class` | `string` | —       | Additional classes, merged so a consumer's utility wins. |
+
+<!-- /@props -->
+
+### DialogBody
+
+<!-- @props DialogBodyProps -->
+
+| Prop    | Type     | Default | Description                                              |
+| ------- | -------- | ------- | -------------------------------------------------------- |
+| `class` | `string` | —       | Additional classes, merged so a consumer's utility wins. |
+
+<!-- /@props -->
+
+### DialogFooter
+
+<!-- @props DialogFooterProps -->
+
+| Prop    | Type     | Default | Description                                              |
+| ------- | -------- | ------- | -------------------------------------------------------- |
+| `class` | `string` | —       | Additional classes, merged so a consumer's utility wins. |
+
+<!-- /@props -->
 
 ## When to use
 
@@ -126,24 +208,26 @@ so the title and the actions stay reachable no matter how much content there is.
 
 ## Design decisions
 
-**`title` is a required prop, not just a slot.** A slot-only title makes the
-accessible name optional in practice, and optional means missing. This way
-`aria-labelledby` is always wired; `#header` customises the presentation without
-being able to break the contract — replace it and the title is still rendered,
-visually hidden, for the name.
+**The title is a part, not a prop.** `DialogTitle` is what `aria-labelledby`
+points at. A required `title` prop used to survive a replaced header by
+rendering a visually hidden copy; that hid the name from the person writing
+the header. Place `DialogTitle` in the tree, and hide it yourself if the
+visible heading is custom.
 
-**Controlled only.** `v-model:open`, no internal state, no template ref with an
-`.open()` method. Same doctrine as the data layer: the consumer owns state. It
-also makes "close on successful submit" a one-line flip of your own ref.
+**The portal, the scrim, and the close button live inside `DialogContent`.**
+They always travel together. A consumer who composes the header cannot
+remove the exit, because the close button is not in the header.
+
+**`v-model:open` is optional.** Bind it when the page opens or closes the
+dialog — a successful submit is a one-line flip of your own ref. Leave it
+unbound and the root holds the state, so `DialogTrigger` still toggles.
 
 **`preventClose` never removes the close button.** It blocks Escape and the
 scrim, for a flow where accidental dismissal loses work. A dialog with no exit
-is hostile, so the button stays — even when `#header` is replaced, because the
-close control lives outside that slot.
+is hostile, so the button stays.
 
-**Only the body scrolls.** Header and footer are fixed rows. A dialog that
-scrolls as a whole pushes its own Save button off-screen, which is where "where
-did the button go" comes from.
+**Only `DialogBody` scrolls.** Header and footer are fixed rows. A dialog that
+scrolls as a whole pushes its own Save button off-screen.
 
 **No `DialogConfirm` convenience wrapper yet.** It is on the planned component
 set in `ROADMAP.md`, not built.
@@ -158,7 +242,8 @@ set in `ROADMAP.md`, not built.
 
 Focus moves into the dialog on open and **returns to the trigger on close** —
 both from Reka, both covered by interaction tests, because losing the trigger is
-the classic bug.
+the classic bug. The trigger has to be `DialogTrigger` for that return to have
+somewhere to go.
 
 ## Accessibility
 
@@ -166,9 +251,9 @@ the classic bug.
 to siblings rather than relying on `aria-modal`, which is the more robust of the
 two — `aria-modal` alone is inconsistently honoured by screen readers.
 
-**No dangling description.** With no `description`, `aria-describedby` is set to
-an empty string rather than pointing at an element that was never rendered. Some
-readers announce a broken reference as a blank.
+**No dangling description.** With no `DialogDescription`, `aria-describedby` is
+set to an empty string rather than pointing at an element that was never
+rendered. Some readers announce a broken reference as a blank.
 
 **Motion is ambient here**, so enter and exit are gated behind `motion-safe:` and
 collapse to instant show/hide under `prefers-reduced-motion`. The animations are

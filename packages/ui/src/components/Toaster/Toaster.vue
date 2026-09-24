@@ -53,6 +53,7 @@ const durationFor = (duration: number): number => (duration === 0 ? Infinity : d
   <ToastProvider :label="props.label" swipe-direction="right">
     <template v-for="item in visible" :key="item.id">
       <ToastRoot
+        data-slot="toast"
         type="background"
         :duration="durationFor(item.duration)"
         :open="true"
@@ -90,6 +91,7 @@ const durationFor = (duration: number): number => (duration === 0 ? Infinity : d
         announced — the same reason DataTable keeps an empty status region.
       -->
       <ToastViewport
+        data-slot="toaster"
         :class="cn(toasterViewportVariants({ position: props.position }), props.class)"
       />
     </ToastPortal>

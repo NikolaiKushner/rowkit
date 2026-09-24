@@ -57,7 +57,14 @@ function submit() {
   <form class="flex w-full max-w-md flex-col gap-4" novalidate @submit.prevent="submit">
     <Field label="Full name" :error="shown.name" required><Input v-model="form.name" @blur="touched.name = true" /></Field>
     <Field label="Work email" hint="Used for the invitation and for billing receipts." :error="shown.email" required><Input v-model="form.email" type="email" placeholder="ada@example.com" @blur="touched.email = true" /></Field>
-    <Field label="Role" hint="Determines what they can change." :error="shown.role" required><Select v-model="form.role" :options="roleOptions" placeholder="Choose a role" /></Field>
+    <Field label="Role" hint="Determines what they can change." :error="shown.role" required>
+      <Select v-model="form.role">
+        <SelectTrigger placeholder="Choose a role" />
+        <SelectContent>
+          <SelectItem v-for="option in roleOptions" :key="option.value" :value="option.value" :label="option.label" />
+        </SelectContent>
+      </Select>
+    </Field>
     <Field label="Seats" :error="shown.seats" required><Input v-model="form.seats" type="number" @blur="touched.seats = true" /></Field>
     <div class="flex items-center gap-3">
       <Button type="submit" :loading="saving">Send invitation</Button>

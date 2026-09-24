@@ -3,13 +3,32 @@ import { TooltipProvider } from 'reka-ui'
 import { defineComponent, nextTick } from 'vue'
 import { describe, expect, it } from 'vitest'
 import Tooltip from './Tooltip.vue'
+import TooltipContent from './TooltipContent.vue'
+import TooltipTrigger from './TooltipTrigger.vue'
 
 const content = 'Archive this project'
 
-async function setup(props: Record<string, unknown> = {}, trigger = '<button>Archive</button>') {
-  const el = mount(Tooltip, {
+const Harness = defineComponent({
+  components: { Tooltip, TooltipTrigger, TooltipContent },
+  props: {
+    content: { type: String, default: content },
+    placement: { type: String, default: 'top' },
+    delay: { type: Number, default: undefined },
+    disabled: { type: Boolean, default: false },
+  },
+  template: `
+    <Tooltip :delay="delay" :disabled="disabled">
+      <TooltipTrigger as-child>
+        <button>Archive</button>
+      </TooltipTrigger>
+      <TooltipContent :placement="placement">{{ content }}</TooltipContent>
+    </Tooltip>
+  `,
+})
+
+async function setup(props: Record<string, unknown> = {}) {
+  const el = mount(Harness, {
     props: { content, ...props },
-    slots: { default: trigger },
     attachTo: document.body,
   })
   await nextTick()
@@ -139,10 +158,13 @@ describe('Tooltip', () => {
      */
     async function setupWithProvider() {
       const Host = defineComponent({
-        components: { Tooltip, TooltipProvider },
+        components: { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider },
         template: `
           <TooltipProvider :delay-duration="0" :skip-delay-duration="500">
-            <Tooltip content="${content}"><button>Archive</button></Tooltip>
+            <Tooltip>
+              <TooltipTrigger as-child><button>Archive</button></TooltipTrigger>
+              <TooltipContent>${content}</TooltipContent>
+            </Tooltip>
           </TooltipProvider>
         `,
       })
@@ -171,10 +193,10 @@ describe('Tooltip', () => {
     })
   })
 
-  describe('content is a string, deliberately', () => {
-    it('renders the content as text', async () => {
-      // The type forbids markup; this pins the runtime behaviour to match, so
-      // an accidental v-html could not slip in unnoticed.
+  describe('the label is text', () => {
+    it('renders a string label as text', async () => {
+      // Interpolated, not v-html: a label that happens to contain markup stays
+      // a label.
       await setup({ content: '<em>not markup</em>' })
       await focusTrigger()
       expect(bubble()?.querySelector('em')).toBeNull()

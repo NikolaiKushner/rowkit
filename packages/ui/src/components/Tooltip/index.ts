@@ -1,6 +1,13 @@
 export { default as Tooltip } from './Tooltip.vue'
+export { default as TooltipContent } from './TooltipContent.vue'
+export { default as TooltipTrigger } from './TooltipTrigger.vue'
 export { tooltipContentVariants, type TooltipVariants } from './Tooltip.variants'
-export type { TooltipPlacement, TooltipProps } from './types'
+export type {
+  TooltipContentProps,
+  TooltipPlacement,
+  TooltipProps,
+  TooltipTriggerProps,
+} from './types'
 
 /**
  * Reka's provider, re-exported unwrapped.

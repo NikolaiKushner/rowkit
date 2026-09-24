@@ -67,6 +67,7 @@ const liveAttrs = computed(() => (props.announce ? ({ role: 'status' } as const)
   <Primitive
     :as="props.as"
     :as-child="props.asChild"
+    data-slot="empty-state"
     v-bind="liveAttrs"
     :class="cn(emptyStateVariants({ size: props.size }), props.class)"
   >

@@ -103,24 +103,26 @@ function clearFilters() {
 <template>
   <section class="rk-home" data-rk-home>
     <div class="rk-home__intro">
-      <p class="rk-home__brand">
-        <img src="/mark.svg" alt="" width="48" height="48" class="rk-home__mark" />
-        <span class="rk-home__wordmark">rowkit</span>
-      </p>
-
-      <h1 class="rk-home__headline">A professional component toolkit</h1>
+      <p class="rk-home__eyebrow">Vue 3 · Reka UI · one token set</p>
+      <h1 class="rk-home__headline">The components a product is built from.</h1>
       <p class="rk-home__lede">
-        Vue&nbsp;3 components a product interface is built from — on Reka&nbsp;UI, typed, and the
-        same tokens in every piece.
+        Controls, tables, filters and overlays that agree with each other — typed against your data,
+        and already running on this page.
       </p>
 
       <div class="rk-home__actions">
         <a class="rk-home__cta rk-home__cta--brand" href="/installation">Get started</a>
-        <a class="rk-home__cta rk-home__cta--alt" href="/components/data-table">Components</a>
+        <a class="rk-home__cta rk-home__cta--alt" href="/components/button">Browse components</a>
       </div>
     </div>
 
-    <div class="rk-home__preview" data-rk-home-preview>
+    <div class="rk-home__stage" data-rk-home-preview>
+      <div class="rk-home__chrome" aria-hidden="true">
+        <span class="rk-home__dot"></span>
+        <span class="rk-home__dot"></span>
+        <span class="rk-home__dot"></span>
+        <span class="rk-home__chrome-title">workspace / users</span>
+      </div>
       <DemoBox layout="stack">
         <div class="flex w-full flex-col gap-3">
           <header class="flex flex-wrap items-end justify-between gap-3">
@@ -149,8 +151,28 @@ function clearFilters() {
             @clear="clearFilters"
           >
             <template #controls>
-              <Select v-model="role" :options="roleOptions" placeholder="Role" class="w-36" />
-              <Select v-model="status" :options="statusOptions" placeholder="Status" class="w-36" />
+              <Select v-model="role">
+                <SelectTrigger placeholder="Role" class="w-36" />
+                <SelectContent>
+                  <SelectItem
+                    v-for="option in roleOptions"
+                    :key="option.value"
+                    :value="option.value"
+                    :label="option.label"
+                  />
+                </SelectContent>
+              </Select>
+              <Select v-model="status">
+                <SelectTrigger placeholder="Status" class="w-36" />
+                <SelectContent>
+                  <SelectItem
+                    v-for="option in statusOptions"
+                    :key="option.value"
+                    :value="option.value"
+                    :label="option.label"
+                  />
+                </SelectContent>
+              </Select>
             </template>
           </FilterBar>
 
@@ -212,28 +234,27 @@ function clearFilters() {
       </DemoBox>
     </div>
 
-    <ul class="rk-home__points">
+    <ol class="rk-home__points">
       <li>
-        <strong>Columns typed against your row.</strong>
+        <span class="rk-home__index">01</span>
+        <strong>Typed against the row.</strong>
         <span>
-          <code>key</code> is <code>keyof TRow</code> — a renamed field is a compile error, not a
+          <code>key</code> is <code>keyof TRow</code>. A renamed field is a compile error, not a
           column of blanks.
         </span>
       </li>
       <li>
-        <strong>Built on Reka UI.</strong>
-        <span>
-          Focus traps, scroll lock, and keyboard models from the primitives. axe is a build gate,
-          not a panel.
-        </span>
+        <span class="rk-home__index">02</span>
+        <strong>Keyboard from Reka UI.</strong>
+        <span
+          >Focus traps, scroll lock, and the models from the primitives. axe fails the build.</span
+        >
       </li>
       <li>
-        <strong>Token-first theming.</strong>
-        <span>
-          Colour, space, radius, and layer — every value is a token. This site is styled from the
-          same package.
-        </span>
+        <span class="rk-home__index">03</span>
+        <strong>One token package.</strong>
+        <span>Colour, space, radius, and layer. This page is styled from the same package.</span>
       </li>
-    </ul>
+    </ol>
   </section>
 </template>

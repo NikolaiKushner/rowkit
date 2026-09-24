@@ -2,6 +2,9 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect, within } from 'storybook/test'
 import Input from '../Input/Input.vue'
 import Select from '../Select/Select.vue'
+import SelectContent from '../Select/SelectContent.vue'
+import SelectItem from '../Select/SelectItem.vue'
+import SelectTrigger from '../Select/SelectTrigger.vue'
 import Field from './Field.vue'
 import type { Component } from 'vue'
 
@@ -106,7 +109,7 @@ export const LabelHiddenVisually: Story = {
 export const WrappingASelect: Story = {
   args: { label: 'Status', error: 'Pick a status before saving.' },
   render: (args) => ({
-    components: { Field, Select: SelectComponent },
+    components: { Field, Select: SelectComponent, SelectTrigger, SelectContent, SelectItem },
     setup: () => ({
       args,
       options: [
@@ -116,7 +119,19 @@ export const WrappingASelect: Story = {
     }),
     template: `
       <div class="w-80">
-        <Field v-bind="args"><Select :options="options" /></Field>
+        <Field v-bind="args">
+          <Select>
+            <SelectTrigger />
+            <SelectContent>
+              <SelectItem
+                v-for="option in options"
+                :key="option.value"
+                :value="option.value"
+                :label="option.label"
+              />
+            </SelectContent>
+          </Select>
+        </Field>
       </div>
     `,
   }),

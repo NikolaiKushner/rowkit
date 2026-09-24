@@ -27,6 +27,7 @@ export async function buildPropsTables() {
   const tables = new Map()
 
   for (const { propsType, props } of components.values()) {
+    if (props.length === 0) continue
     const rows = props.map((prop) => {
       const fallback = prop.required ? '**required**' : (prop.default ?? '—')
       const cell =

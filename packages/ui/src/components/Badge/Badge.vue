@@ -25,6 +25,7 @@ defineSlots<{
   <Primitive
     :as="props.as"
     :as-child="props.asChild"
+    data-slot="badge"
     :class="
       cn(
         badgeVariants({ variant: props.variant, appearance: props.appearance, size: props.size }),
