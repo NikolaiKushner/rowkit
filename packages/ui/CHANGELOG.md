@@ -1,5 +1,49 @@
 # rowkit
 
+## 0.3.0
+
+### Minor Changes
+
+- aef7717: **Breaking (Button).** Variants are now `default` | `outline` | `secondary` | `ghost` | `destructive` | `link` — soft-ink solid is the default (omit `variant` or pass `default`). `primary` and `danger` are removed; soft `destructive` replaces solid danger. Size scale is `default` | `xs` | `sm` | `lg` | `icon` | `icon-xs` | `icon-sm` | `icon-lg`; the `icon` boolean prop is gone. Former bordered `secondary` is now `outline`; `secondary` is a muted fill (`surface-active`). Soft ink solid lightened to `oklch(0.26…)`. Link focus stays typographic (ring only). Dialog Cancel convention is `ghost` so soft Delete wins hierarchy.
+
+  **ButtonGroup.** New `ButtonGroup` joins related buttons with shared edges (`orientation` horizontal | vertical). Nested groups use a clear gap.
+
+  **Tokens.** Default primary is warm espresso graphite (`oklch(0.31 0.038 48)` / `#402a1f`), not near-black. Soft destructive wash in dark mirrors light (coloured label on a quiet red tint). Link focus is underline-only.
+
+### Patch Changes
+
+- aef7717: **Consistency.** Select invalid focus uses `has-[:focus-visible]` (focus is on the inner input). FilterBar chip-remove focus uses the solid ring recipe. FilterBar Clear maps Button size to the bar (`default` at `md`, `sm` at `sm`). Field `size` inherits to nested Input/Select when they omit their own. DataTable gains `emptyReason` for the built-in empty state.
+- 60fbcfd: **Docs.** New homepage composition: espresso mark/logo, branded hero, and a live Users FilterBar + DataTable + Pagination preview. README screenshots refreshed (`home.png`, `datatable-page.png`); outdated “twelve components” copy removed.
+- 36bfac3: **Docs cascade fix.** Every heading on every docs content page was rendering at body size and weight. Wrapping VitePress's CSS in `@layer vp-theme` left the layer order to first-appearance, and the wrapped CSS lands at the top of the bundle — so `vp-theme` sorted _below_ Tailwind's `base`, and preflight's `h1`–`h6` reset (`font-size: inherit`) beat every VitePress heading rule, since a layer beats specificity. The order statement now rides on the wrapped CSS itself (`@layer theme, base, vp-theme, components, utilities`), which puts `vp-theme` above `base` so headings survive and below `utilities` so live demos still win. `docs-styles.test.ts` now asserts both bounds instead of only the lower one.
+
+  **Docs homepage.** The bulk-actions bar moved below the table. Above it, every checkbox tick inserted or removed a band and shoved the table under the cursor — the row you were aiming at moved because you selected the one before it. The demo roster grew to 80 people so the money shot pages through real data — ten rows a page across seven pages, instead of a single page of six — and narrowing a filter now returns to page 1.
+
+  **`NEXT.md` is now `ROADMAP.md`**, rewritten as a plan of record: current state, what 1.0 actually requires, and what stays out of scope. The docs page moves from `/next` to `/roadmap`.
+
+- 60fbcfd: **Safari / docs demos.** VitePress theme CSS is wrapped in `@layer vp-theme` so Tailwind utilities beat its form/table reset without `all: revert-layer` (broken in Safari). DemoBox isolates markdown-table chrome on `.rk-demo`. DataTable keeps `h-*` on cells (`min-height` is ignored for `table-cell`). Input/Select use `leading-normal` for Safari text centering.
+- aef7717: Select shows a trailing checkmark on the selected option (shadcn-style) instead of a left indicator with a selected fill. Secondary buttons use a quiet `border-input` outline on a card surface. Dialog footers keep a hairline divider with Cancel as secondary. Resting control borders (`input`) are quieter. Focus is soft silver (`ring` → `gray-708` light / soft white dark) — border + translucent outer ring, not an ink halo.
+- Updated dependencies [aef7717]
+- Updated dependencies [a46fe24]
+- Updated dependencies [aef7717]
+  - @rowkit/tokens@0.3.0
+
+## 0.2.0
+
+### Minor Changes
+
+- 164ca88: Restyle rowkit on a shadcn/ui-derived language, then tune it for data-dense SaaS — cool chrome, indigo primary, one control geometry.
+
+  **Tokens (breaking if you override theme variables or write rowkit utility classes by hand).** Seven core semantics rename to shadcn’s names: `surface` → `card`, `surface-subtle` → `muted`, `surface-hover` → `accent`, `text` → `foreground`, `text-muted` → `muted-foreground`, `border-control` → `input`, `focus-ring` → `ring`. The greys start from shadcn’s zero-chroma ramp, then pick up rowkit identity: cooler, lighter decorative borders, a cool off-white page, brand indigo primary with a matching focus ring (not near-black), and selected rows on a quiet primary wash. Corners derive from a single `--radius`. New: overlay blur, sticky-header inset shadow, stronger sticky-column scroll shadow. Status families keep the solid/subtle/outline axis Badge and Button already expose.
+
+  **Components.** The shared focus recipe (border + translucent ring) lands on every control. Button, Input and Select share height, radius, padding and `text-sm` from `sm` up; Button adds `xs` and `icon`. Secondary is a muted fill so it never reads as another field; fields stay the outlined hollow shell. Chromatic Badge `subtle` is a soft tinted chip. Tooltip inverts foreground/background instead of painting as a primary bubble. DataTable: opaque sticky header with an inset edge that travels while scrolling, unified loaded/loading row heights, quieter hover vs selection. Dialog: blurred scrim, denser padding, footer rule, close matches an icon button. FilterBar, Field, Toast, EmptyState and Pagination follow the same chrome. Docs demos stop inheriting VitePress’s unlayered table grid and zebra over DataTable.
+
+  **API (0.x breaking).** `TablePagination` is now `Pagination` — same props, events and slots; docs move to `/components/pagination`. Marked `minor` on purpose: on a 0.x line changesets would turn a `major` into `1.0.0`, and 1.0 should wait for real apps, not a rename.
+
+### Patch Changes
+
+- Updated dependencies [164ca88]
+  - @rowkit/tokens@0.2.0
+
 ## 0.1.1
 
 ### Patch Changes
