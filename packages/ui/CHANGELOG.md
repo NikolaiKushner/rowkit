@@ -1,5 +1,27 @@
 # rowkit
 
+## 0.4.0
+
+### Minor Changes
+
+- ddefab7: **Breaking (Dialog).** `Dialog` is now a set of parts. `title`, `description`, `size`, `preventClose`, and `closeLabel` are no longer props of `Dialog`, and the `header`, `footer`, and default slots are gone.
+
+  Place `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogBody`, and `DialogFooter` yourself. `size`, `preventClose`, `closeLabel`, and `class` move to `DialogContent`. The accessible name comes from `DialogTitle`. The portal, the scrim, and the close button stay inside `DialogContent`. `v-model:open` is unchanged and is now optional: with no model, the trigger still toggles.
+
+- ddefab7: **Breaking (Select).** `Select` is now a set of parts. The `options` prop is gone, and so are the `option`, `value`, and `empty` slots on `Select`.
+
+  Place `SelectTrigger`, `SelectContent`, and a `SelectItem` for each choice. `placeholder`, `size`, `id`, and `class` move to `SelectTrigger`. `emptyText`, `loading`, and `loadingText` move to `SelectContent`. `searchable`, `manualFilter`, `disabled`, `invalid`, `required`, and `name` stay on `Select`. `v-model` and `v-model:searchTerm` are unchanged. `label` on `SelectItem` is what the closed trigger shows.
+
+- ddefab7: **Breaking (Tooltip).** `Tooltip` is now a set of parts. The `content` prop and the default slot are gone, and `placement` moves to `TooltipContent`.
+
+  Place `TooltipTrigger` and `TooltipContent` yourself. The label is the content slot, and it is text. `delay` and `disabled` stay on `Tooltip`. A lone tooltip still supplies its own provider; `TooltipProvider` is unchanged, including `skipDelayDuration`.
+
+### Patch Changes
+
+- ddefab7: **Components.** Every component root, and the named parts inside Dialog and Field, now expose a `data-slot`. Style and tests can target `data-slot="dialog-title"` instead of a class string, which stays an implementation detail.
+- Updated dependencies [ddefab7]
+  - @rowkit/tokens@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes
