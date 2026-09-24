@@ -61,7 +61,11 @@ jobs:
           # While unreleased changesets exist this opens or updates the
           # "Version Packages" PR. Merging that PR triggers the run that
           # actually publishes, so a release is always a deliberate merge.
-          publish: pnpm changeset publish
+          # `changeset publish` calls `pnpm publish`. pnpm 11 does that
+          # natively, misses npm's OIDC login, and still exits 0 — so a
+          # release can be tagged without ever landing on npm. Pack with
+          # pnpm (it rewrites `workspace:`), then publish the tarball with npm.
+          publish: node scripts/publish-packages.mjs
           # One GitHub Release per published package, with the changelog as its
           # body — so the repository's Releases tab shows what shipped without
           # anyone writing it out by hand.
