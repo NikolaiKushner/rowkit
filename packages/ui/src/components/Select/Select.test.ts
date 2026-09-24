@@ -1,6 +1,6 @@
 import { mount, type VueWrapper } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
-import { defineComponent, nextTick } from 'vue'
+import { defineComponent, nextTick, type Component } from 'vue'
 import Field from '../Field/Field.vue'
 import Select from './Select.vue'
 import SelectContent from './SelectContent.vue'
@@ -14,8 +14,16 @@ const options: SelectOption<string>[] = [
   { label: 'Suspended', value: 'suspended', disabled: true },
 ]
 
+const SelectComponent = Select as unknown as Component
+const SelectItemComponent = SelectItem as unknown as Component
+
 const Harness = defineComponent({
-  components: { Select, SelectTrigger, SelectContent, SelectItem },
+  components: {
+    Select: SelectComponent,
+    SelectTrigger,
+    SelectContent,
+    SelectItem: SelectItemComponent,
+  },
   props: {
     modelValue: { type: String, default: undefined },
     placeholder: { type: String, default: undefined },
@@ -190,7 +198,13 @@ describe('Select', () => {
     function mountInField(fieldProps: Record<string, unknown>) {
       return mount(
         defineComponent({
-          components: { Field, Select, SelectTrigger, SelectContent, SelectItem },
+          components: {
+            Field,
+            Select: SelectComponent,
+            SelectTrigger,
+            SelectContent,
+            SelectItem: SelectItemComponent,
+          },
           setup: () => ({ fieldProps, options }),
           template: `
             <Field v-bind="fieldProps">

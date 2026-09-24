@@ -13,6 +13,7 @@ import type { Component } from 'vue'
  * surface is covered by the typed unit tests instead.
  */
 const SelectComponent = Select as unknown as Component
+const SelectItemComponent = SelectItem as unknown as Component
 
 interface FieldArgs {
   label: string
@@ -109,7 +110,13 @@ export const LabelHiddenVisually: Story = {
 export const WrappingASelect: Story = {
   args: { label: 'Status', error: 'Pick a status before saving.' },
   render: (args) => ({
-    components: { Field, Select: SelectComponent, SelectTrigger, SelectContent, SelectItem },
+    components: {
+      Field,
+      Select: SelectComponent,
+      SelectTrigger,
+      SelectContent,
+      SelectItem: SelectItemComponent,
+    },
     setup: () => ({
       args,
       options: [

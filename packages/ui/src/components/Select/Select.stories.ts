@@ -70,7 +70,13 @@ interface SelectArgs {
  * surface is covered by the typed unit tests instead.
  */
 const SelectComponent = Select as unknown as ConcreteComponent<SelectArgs>
-const parts = { Select: SelectComponent, SelectTrigger, SelectContent, SelectItem }
+const SelectItemComponent = SelectItem as unknown as ConcreteComponent
+const parts = {
+  Select: SelectComponent,
+  SelectTrigger,
+  SelectContent,
+  SelectItem: SelectItemComponent,
+}
 
 const meta: Meta<SelectArgs> = {
   title: 'Foundations/Select',
