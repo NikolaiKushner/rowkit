@@ -94,6 +94,12 @@ describe('Select', () => {
     expect(control(wrapper).element.value).toBe('Invited')
   })
 
+  it('keeps the closed panel out of the page', () => {
+    mountSelect()
+    expect(document.querySelector('[role="listbox"]')).toBeNull()
+    expect(document.querySelector('[data-reka-focus-guard]')).toBeNull()
+  })
+
   describe('accessibility of the closed control', () => {
     it('exposes the input as the combobox', () => {
       const input = control(mountSelect())

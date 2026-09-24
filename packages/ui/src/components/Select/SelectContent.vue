@@ -28,19 +28,26 @@ if (select === undefined) {
 </script>
 
 <template>
-  <ComboboxPortal :defer="false">
-    <!--
-      `force-mount` keeps the items alive while the panel is shut, so each
-      `SelectItem` can register its label before the first paint of a
-      preselected value. `hidden` takes the closed panel out of sight and out
-      of the accessibility tree; Reka still unmounts nothing we need.
-    -->
+  <!--
+    While shut, the items still have to mount: each `SelectItem` registers its
+    label in setup, and the trigger reads that label for a value that was set
+    before the panel ever opened. They mount here, not inside `ComboboxContent`.
+
+    `ComboboxContent` installs focus guards at the edges of `document.body` for
+    as long as it is mounted, and Reka forces `display: flex` on it. Keeping
+    the panel mounted while closed stole the first Tab stop and left a nameless
+    listbox in the accessibility tree.
+  -->
+  <div v-if="!select.open.value" hidden>
+    <slot />
+  </div>
+
+  <ComboboxPortal v-else :defer="false">
     <ComboboxContent
-      force-mount
       position="popper"
       :side-offset="4"
       data-slot="select-content"
-      :class="cn(selectContentVariants(), !select.open.value && 'hidden', props.class)"
+      :class="cn(selectContentVariants(), props.class)"
     >
       <ComboboxViewport class="max-h-64 overflow-y-auto p-1">
         <div v-if="props.loading" class="px-2 py-1.5 text-sm text-muted-foreground" role="status">
