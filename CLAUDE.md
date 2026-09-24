@@ -1,14 +1,15 @@
 # rowkit
 
-A Vue 3 + TypeScript component library focused on data-dense SaaS interfaces — tables, filters, and the states around them.
+A professional Vue 3 + TypeScript toolkit — the components a product interface is built from.
 
 Repository: `github.com/NikolaiKushner/rowkit`
 Package: `rowkit` on npm
 Docs: `rowkit.dev`
 
 Read `ROADMAP.md` before proposing work. It is the plan of record: where the
-library stands, what 1.0 requires, and what is deliberately out of scope. New
-surface earns its place — there is no fixed component count.
+library stands, what 1.0 requires, and the professional component set still to
+build. New surface belongs when a product interface is awkward without it —
+there is no fixed component count.
 
 **Visual direction:** restraint, structure without severity, no excess. Neutral chrome; warm-espresso primary (`oklch(0.31 0.038 48)`), not a chromatic shout. Consumers rebrand via tokens — defaults must not fight them. Geist stays.
 
@@ -86,6 +87,6 @@ Don't re-litigate these:
 
 - **npm package, not copy-paste distribution.** shadcn-vue's model is deliberate and good, but rowkit ships as a versioned package.
 - **Reka UI, not shadcn-vue as a dependency.** shadcn-vue is a reference implementation to learn from, not something rowkit installs.
-- **No fixed component count.** Add components when they earn a place on a data-dense surface; do not invent for breadth.
+- **The set is the professional toolkit.** Components are added until a product interface can be built from rowkit. There is no fixed count, and tables are one part of that set, not the boundary of it.
 - **MIT license.**
 - **Tokens as a separate package**, so they can be consumed without importing components.

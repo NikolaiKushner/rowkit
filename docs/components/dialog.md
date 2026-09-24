@@ -145,8 +145,8 @@ close control lives outside that slot.
 scrolls as a whole pushes its own Save button off-screen, which is where "where
 did the button go" comes from.
 
-**No `DialogConfirm` convenience wrapper.** Tempting and deferred — it is in
-`ROADMAP.md` under "Out of scope" / non-goals.
+**No `DialogConfirm` convenience wrapper yet.** It is on the planned component
+set in `ROADMAP.md`, not built.
 
 ## Keyboard
 

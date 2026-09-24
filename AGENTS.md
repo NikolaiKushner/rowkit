@@ -17,8 +17,8 @@ Instructions for coding agents working **on** rowkit.
   the recurring accessibility patterns are decided there, once, for every
   component.
 - **[`ROADMAP.md`](./ROADMAP.md)** — the plan of record: current state, what 1.0
-  requires, what is out of scope. No fixed component count; add surface when it
-  earns its place.
+  requires, and the professional component set still to build. No fixed count;
+  the set is whatever a product interface is built from.
 
 ## Commands
 

@@ -1,8 +1,8 @@
 /**
  * Demo roster behind the homepage money shot.
  *
- * Big enough to page through — the hero is claiming rowkit is for data-dense
- * screens, and a six-row table with a single page of results quietly says the
+ * Big enough to page through — the hero shows the toolkit on a real product
+ * screen, and a six-row table with a single page of results quietly says the
  * opposite. Several pages at 25 rows is the smallest set that reads as a real
  * workspace rather than a fixture.
  *

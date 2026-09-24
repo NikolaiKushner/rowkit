@@ -108,10 +108,10 @@ function clearFilters() {
         <span class="rk-home__wordmark">rowkit</span>
       </p>
 
-      <h1 class="rk-home__headline">Components for data-dense interfaces</h1>
+      <h1 class="rk-home__headline">A professional component toolkit</h1>
       <p class="rk-home__lede">
-        Vue&nbsp;3 tables, filters, and the states around them — built on Reka&nbsp;UI, typed
-        against your row.
+        Vue&nbsp;3 components a product interface is built from — on Reka&nbsp;UI, typed, and the
+        same tokens in every piece.
       </p>
 
       <div class="rk-home__actions">

@@ -10,7 +10,7 @@
   <a href="https://bundlejs.com/?q=rowkit"><img src="https://img.shields.io/bundlejs/size/rowkit" alt="bundle size" /></a>
 </p>
 
-Vue 3 components for data-dense interfaces — tables, filters, and the states around them. Built on [Reka UI](https://reka-ui.com), typed against your row.
+A professional Vue 3 toolkit — the components a product interface is built from. Built on [Reka UI](https://reka-ui.com).
 
 **[Documentation](https://rowkit.dev)** · **[Storybook](https://storybook.rowkit.dev)** · **[Roadmap](./ROADMAP.md)**
 
@@ -24,9 +24,7 @@ Vue 3 components for data-dense interfaces — tables, filters, and the states a
 
 ## Why another component library
 
-General-purpose kits handle the easy eighty per cent extremely well — buttons, inputs, cards. Then you build a users admin page, and none of it helped with the part that actually took the week: a sortable table that stays fast at ten thousand rows with column keys typed against your row, a filter bar that makes applied state obvious, and loading, empty and no-results states that agree with each other.
-
-rowkit is that part, done once.
+A product interface is a set of components that have to agree: controls, overlays, tables, filters, empty and loading states. rowkit is that set, built as one toolkit — typed, on Reka UI, from one token package. What is published today is the part already finished. The rest of the set is the plan in the [roadmap](./ROADMAP.md), not a second library to go and find.
 
 ![A filtered, sorted Users table with selection — the rowkit money shot](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/datatable-page.png)
 
@@ -95,9 +93,9 @@ The table reports the sort and renders what it is handed — it never reorders i
 - **Tokens all the way down.** Every colour, space, radius and layer lives in [`@rowkit/tokens`](./packages/tokens), installable on its own. Contrast pairings are asserted in tests, not eyeballed.
 - **State you own.** Sort, selection, page and filters are all `v-model`. Components report what happened; your application decides what follows.
 
-## What rowkit is not
+## Where this is going
 
-A general-purpose UI kit. If you need forty components covering every case, [Nuxt UI](https://ui.nuxt.com) and [shadcn-vue](https://www.shadcn-vue.com) are better answers — and rowkit composes with either, since all three build on Reka UI. The scope is a decision, not a limitation; see the [roadmap](./ROADMAP.md) for what is deliberately left out and what comes next.
+The published components are the start of a professional toolkit, not a specialist for tables. The full set — menus, dates, overlays, and the rest a product interface needs — is planned in the [roadmap](./ROADMAP.md). It is not being built ahead of that plan.
 
 ## For coding agents
 

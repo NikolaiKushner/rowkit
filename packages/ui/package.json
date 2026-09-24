@@ -1,7 +1,7 @@
 {
   "name": "rowkit",
   "version": "0.1.1",
-  "description": "Vue 3 components for data-dense SaaS interfaces — tables, filters, and the states around them.",
+  "description": "A professional Vue 3 toolkit — the components a product interface is built from.",
   "license": "MIT",
   "author": "Nikolai Kushner",
   "homepage": "https://rowkit.dev",

@@ -10,8 +10,7 @@ import { defineConfig } from 'vitepress'
  */
 export default defineConfig({
   title: 'rowkit',
-  description:
-    'Vue 3 components for data-dense interfaces — tables, filters, and the states around them.',
+  description: 'A professional Vue 3 toolkit — the components a product interface is built from.',
   lang: 'en-GB',
   cleanUrls: true,
 
@@ -74,7 +73,7 @@ export default defineConfig({
       'meta',
       {
         property: 'og:description',
-        content: 'Vue 3 components for data-dense interfaces.',
+        content: 'A professional Vue 3 component toolkit.',
       },
     ],
   ],

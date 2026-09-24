@@ -3,9 +3,9 @@
 [![npm](https://img.shields.io/npm/v/rowkit?color=3b5bdb)](https://www.npmjs.com/package/rowkit)
 [![license](https://img.shields.io/npm/l/rowkit)](https://github.com/NikolaiKushner/rowkit/blob/main/LICENSE)
 
-Vue 3 components for data-dense interfaces — tables, filters, and the states around them.
+A professional Vue 3 toolkit — the components a product interface is built from.
 
-Twelve components, built on [Reka UI](https://reka-ui.com), typed against your row.
+Built on [Reka UI](https://reka-ui.com). What is published is the part already finished; the rest of the set is the plan in the [roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md).
 
 **[Documentation](https://rowkit.dev)** · **[Storybook](https://storybook.rowkit.dev)** · **[GitHub](https://github.com/NikolaiKushner/rowkit)**
 

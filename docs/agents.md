@@ -9,8 +9,8 @@ project can read the API of the exact version you installed without
 fetching anything.
 :::
 
-Vue 3 components for data-dense interfaces: tables, filters, and the states
-around them. Twelve components, built on Reka UI, styled with Tailwind v4.
+A professional Vue 3 toolkit: the components a product interface is built
+from. Built on Reka UI, styled with Tailwind v4.
 
 This file is generated from the source, so it describes the version installed
 rather than whatever was current when it was written.

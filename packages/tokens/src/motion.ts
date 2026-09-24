@@ -1,7 +1,7 @@
 /**
  * Motion durations and easing curves.
  *
- * Durations are short. In a data-dense interface an animation is feedback, not
+ * Durations are short. In a working interface an animation is feedback, not
  * decoration: the user is scanning rows, and anything past ~200ms reads as the
  * interface lagging rather than responding.
  *

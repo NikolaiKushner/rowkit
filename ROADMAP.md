@@ -3,9 +3,12 @@
 Where rowkit is, what it needs before 1.0, and what is deliberately not coming.
 
 This file is the plan of record. It is ordered, not exhaustive: an item is here
-because someone can act on it, and things that are merely nice to imagine live
-under [Out of scope](#out-of-scope-until-there-is-demand) so they stay out on
-purpose rather than by neglect.
+because someone can act on it.
+
+The direction is a professional toolkit: the components a product interface is
+built from. Tables, filters and empty states are part of that set. They are not
+the boundary of it. What follows is the plan for the rest of the set — not a
+build, yet.
 
 Last reviewed: **2026-08-09** (v0.1.1).
 
@@ -97,38 +100,32 @@ growing them.
 
 ---
 
-## Next surface — only if earned
+## The professional set — planned, not started
 
-Nothing here starts on enthusiasm. Each needs a concrete place on a data-dense
-page that is awkward without it:
+A product interface is built from more than a table. This is the set to grow
+into. Nothing here is being built until the items under **Now** are finished
+or deliberately dropped.
 
-- **DropdownMenu** — the highest-probability next primitive. Row actions in a
-  table currently force every consumer to invent a one-off icon menu.
-- **Popover** — the honest answer to "can a tooltip contain a link", and
-  plausibly the shell DropdownMenu composes onto.
-- **Sheet / drawer** — only if dialogs start feeling wrong for filter or detail
-  panes. No evidence of that yet.
+- **Menus and overlays.** DropdownMenu (row actions currently force a one-off
+  icon menu), Popover, Sheet / drawer, and a confirm dialog.
+- **Dates.** Date and date-range pickers.
+- **Finding things.** Command palette.
+- **Writing.** Rich text, when a product surface needs more than `Input`.
+- **Charts.** Only as a component that sits in the same tokens — not a second
+  charting library.
+- **`DataTable` virtualisation**, against a real workload. The reasoning is in
+  [decision 004](./docs/decisions/004-datatable-performance.md).
+
+There is no fixed count. A component belongs here when a product interface is
+awkward without it.
 
 ---
 
-## Later — not promised
+## Later — not the toolkit
 
-- **`DataTable` virtualisation**, and only against a real workload. The
-  reasoning is recorded in [decision 004](./docs/decisions/004-datatable-performance.md).
 - **A custom docs theme.** Legitimate, and the lowest-information work
   available. It stays last on purpose.
-
----
-
-## Out of scope (until there is demand)
-
-Recording these is how they stay out. None are bad ideas; none belong in a
-library about data-dense surfaces yet.
-
-Date and date-range pickers · rich text editor · charts (a dedicated library
-does this better) · command palette · a form validation layer (rowkit renders
-field state; deciding what is invalid is the application's job) · virtualised
-lists beyond `DataTable` · a Figma kit · a React port.
+- **A Figma kit. A React port.** Separate products, not components of this one.
 
 ---
 
@@ -136,13 +133,12 @@ lists beyond `DataTable` · a Figma kit · a React port.
 
 Permanent, not "not yet".
 
-**Not a kitchen-sink UI library.** Depth on data-dense surfaces beats breadth.
-If you need forty components, Nuxt UI and shadcn-vue are better answers, and
-rowkit composes with either — all three build on Reka UI.
-
 **Not a CSS framework.** Tailwind v4 stays a peer dependency.
 
 **Not opinionated about data fetching.** Components take props.
+
+**Not a validation layer.** rowkit renders field state. Deciding what is invalid
+is the application's job.
 
 ---
 
