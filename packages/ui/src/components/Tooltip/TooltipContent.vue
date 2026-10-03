@@ -20,6 +20,13 @@ const props = withDefaults(defineProps<TooltipContentProps>(), {
 })
 
 defineSlots<{
+  /**
+   * The label. Plain text.
+   *
+   * A tooltip is hover-triggered and never holds focus, so a link or a button
+   * in here is unreachable by keyboard. If the label needs either, it is a
+   * popover.
+   */
   default: () => unknown
 }>()
 

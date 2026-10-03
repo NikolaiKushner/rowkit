@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<TooltipProps>(), {
 })
 
 defineSlots<{
+  /** Trigger and content. */
   default: () => unknown
 }>()
 

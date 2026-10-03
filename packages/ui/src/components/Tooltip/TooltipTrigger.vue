@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<TooltipTriggerProps>(), {
 })
 
 defineSlots<{
+  /** The control the tooltip describes. With `as-child`, this element becomes the trigger. */
   default: () => unknown
 }>()
 
