@@ -14,7 +14,7 @@ async function setup(props: Record<string, unknown> = {}) {
 }
 
 /**
- * Reka wraps the viewport in a `role="region"` landmark carrying the F8 hotkey
+ * The viewport sits inside a `role="region"` landmark carrying the F8 hotkey
  * label; the `<ol>` inside it is the styled viewport. They are different
  * elements and only the inner one has our classes.
  */
@@ -47,8 +47,8 @@ describe('Toaster', () => {
     })
 
     it('names the region, including the hotkey that focuses it', async () => {
-      // Reka binds F8 to move focus into the toast region — a real keyboard
-      // affordance, and the label is how anyone discovers it.
+      // F8 moves focus into the toast region — a real keyboard affordance, and
+      // the label is how anyone discovers it.
       await setup()
       expect(landmark()?.getAttribute('aria-label')).toContain('F8')
     })
@@ -196,5 +196,71 @@ describe('Toaster', () => {
   it('merges a consumer class onto the viewport', async () => {
     await setup({ class: 'max-w-md' })
     expect(viewport()?.className).toContain('max-w-md')
+  })
+
+  describe('keyboard', () => {
+    const escape = (target: EventTarget = document.body) =>
+      target.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+
+    it('ignores Escape pressed outside the toast region', async () => {
+      // Escape elsewhere belongs to whatever the user is in — a dialog, a menu.
+      await setup()
+      api.toast('Saved', { duration: 0 })
+      await nextTick()
+      escape()
+      await nextTick()
+      expect(api.items.value).toHaveLength(1)
+    })
+
+    it('closes the toast that holds focus on Escape', async () => {
+      await setup()
+      api.toast('First', { duration: 0 })
+      api.toast('Second', { duration: 0 })
+      await nextTick()
+      const second = [...document.querySelectorAll<HTMLElement>('[data-slot="toast"]')].find((el) =>
+        el.textContent?.includes('Second')
+      )
+      second?.focus()
+      escape(second)
+      await nextTick()
+      expect(api.items.value.map((item) => item.message)).toEqual(['First'])
+    })
+
+    it('moves focus into the region on F8', async () => {
+      await setup()
+      api.toast('Saved', { duration: 0 })
+      await nextTick()
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'F8' }))
+      expect(document.activeElement).toBe(viewport())
+    })
+
+    it('puts the newest toast first, so Tab and reading order start there', async () => {
+      await setup()
+      api.toast('Older', { duration: 0 })
+      await new Promise((resolve) => setTimeout(resolve, 350))
+      api.toast('Newer', { duration: 0 })
+      await nextTick()
+      const order = [...document.querySelectorAll('[data-slot="toast"]')].map((el) =>
+        el.textContent?.trim().slice(0, 5)
+      )
+      expect(order).toEqual(['Newer', 'Older'])
+    })
+  })
+
+  describe('announcing', () => {
+    it('writes into a polite status region that exists before any toast', async () => {
+      await setup()
+      const region = document.querySelector('[role="status"][aria-live="polite"]')
+      expect(region).not.toBeNull()
+
+      api.toast('Project archived')
+      await vi.waitFor(() => expect(region?.textContent).toContain('Project archived'))
+      expect(region?.textContent).toContain('Notification')
+    })
+  })
+
+  it('is a branch of open layers, so clicking a toast does not close a dialog', async () => {
+    await setup()
+    expect(landmark()?.hasAttribute('data-dismissable-layer-branch')).toBe(true)
   })
 })

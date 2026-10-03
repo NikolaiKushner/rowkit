@@ -23,6 +23,9 @@ export const layers = reactive({
  */
 export function isInsideLayer(layer: HTMLElement, target: EventTarget | null): boolean {
   if (!(target instanceof Element)) return false
+  // A branch belongs to every layer: interacting with it is never "outside".
+  // The toast region is one, so clicking a toast does not close a dialog.
+  if (target.closest('[data-dismissable-layer-branch]')) return true
   const targetLayer = target.closest('[data-dismissable-layer]')
   if (!targetLayer) return false
   const all = Array.from(layer.ownerDocument.querySelectorAll('[data-dismissable-layer]'))

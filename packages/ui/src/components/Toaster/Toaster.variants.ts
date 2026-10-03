@@ -12,10 +12,13 @@ export const toasterViewportVariants = cva(
   {
     variants: {
       position: {
-        'top-right': 'top-0 right-0',
-        'top-center': 'top-0 left-1/2 -translate-x-1/2',
-        'bottom-right': 'bottom-0 right-0 flex-col-reverse',
-        'bottom-center': 'bottom-0 left-1/2 -translate-x-1/2 flex-col-reverse',
+        // Toasts render newest first. At the top the newest sits lowest,
+        // nearest the content; at the bottom it sits highest. Hence reversed
+        // at the top and natural at the bottom.
+        'top-right': 'top-0 right-0 flex-col-reverse',
+        'top-center': 'top-0 left-1/2 -translate-x-1/2 flex-col-reverse',
+        'bottom-right': 'bottom-0 right-0',
+        'bottom-center': 'bottom-0 left-1/2 -translate-x-1/2',
       },
     },
     defaultVariants: { position: 'bottom-right' },
@@ -27,8 +30,8 @@ export const toastVariants = cva(
     'pointer-events-auto flex items-start gap-3 rounded-lg border p-3 text-sm shadow-lg',
     'motion-safe:data-[state=open]:animate-toast-in',
     'motion-safe:data-[state=closed]:animate-toast-out',
-    // Reka drives the swipe with a transform custom property.
-    'data-[swipe=move]:translate-x-(--reka-toast-swipe-move-x)',
+    // The swipe handler in Toaster.vue drives this custom property.
+    'data-[swipe=move]:translate-x-(--rk-toast-swipe-x)',
     'data-[swipe=cancel]:translate-x-0',
   ],
   {

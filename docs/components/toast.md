@@ -53,8 +53,9 @@ The **danger** one has `duration: 0` and never dismisses itself. Anything
 carrying an action has to wait for the user — a toast that takes its own retry
 button away after four seconds is worse than no toast.
 
-Hover any toast and its timer pauses; move away and it resumes. That is Reka's
-`ToastRoot`, not rowkit — the queue here owns no timers at all.
+Hover any toast and its timer pauses; move away and it resumes. Focusing a
+toast, or switching to another window, pauses it too. The timers live in
+`<Toaster>`, not in the queue: a queued toast has no countdown until it shows.
 
 ## The three pieces
 
@@ -139,18 +140,27 @@ and each has a test.
 
 ## Accessibility
 
-**Everything is announced politely, including danger.** Reka's `foreground` type
-maps to an assertive live region, which interrupts whatever a screen reader is
-currently saying. That is for genuine emergencies. A user mid-sentence somewhere
-else loses more from the interruption than from hearing "could not save" a moment
-later, so **`role="alert"` is never used** and every toast is `background`.
+**Everything is announced politely, including danger.** An assertive live
+region interrupts whatever a screen reader is currently saying. That is for
+genuine emergencies. A user mid-sentence somewhere else loses more from the
+interruption than from hearing "could not save" a moment later, so **`role="alert"`
+is never used**. Announcements go through one persistent `role="status"` region,
+written a frame after the toast appears.
 
-**Toasts never steal focus.** Focus stays where the user left it. The action and
-close buttons are reachable by <kbd>Tab</kbd> in document order.
+**Toasts never steal focus.** Focus stays where the user left it. Toasts sit in
+the document newest first, so <kbd>Tab</kbd> and a screen reader's reading order
+both start at the one that just arrived.
 
-**<kbd>F8</kbd> moves focus into the toast region**, which is Reka's affordance
-and the reason the region is named "Notifications (F8)" — that label is how
-anyone discovers the shortcut.
+**<kbd>F8</kbd> moves focus into the toast region**, which is why the region is
+named "Notifications (F8)" — that label is how anyone discovers the shortcut.
+
+**<kbd>Escape</kbd> closes the toast that holds focus**, and only then. Escape
+pressed anywhere else belongs to what the user is in — it closes a dialog, not
+the notifications. When a focused toast closes, focus moves to the region rather
+than falling to the page.
+
+**Clicking a toast does not close an open dialog.** The region is a branch of
+every layer, so an interaction there is never "outside".
 
 **The viewport is mounted before there is anything in it.** A live region added
 at the same moment as its content is frequently not announced.
@@ -161,18 +171,6 @@ generous default, and the recommendation below.
 
 > **Use `duration: 0` whenever you attach an `action`.** An undo that vanishes at
 > its own pace is worse than no undo.
-
-### One known violation, scoped off
-
-Reka's viewport renders focus guards — `aria-hidden` spans with `tabindex="0"` —
-to catch <kbd>Tab</kbd> and route it into the toast region. They are focusable by
-necessity and hidden from assistive technology by necessity, which is exactly
-what axe's `aria-hidden-focus` forbids.
-
-rowkit cannot reach the element, and rebuilding the viewport to avoid it is what
-"build on the primitive" exists to prevent. The rule is disabled for `Toaster`'s
-stories alone — that rule, that component — and should be reported upstream and
-re-enabled when fixed. The guard is only focusable while toasts exist.
 
 ## Under SSR
 

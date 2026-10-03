@@ -40,28 +40,6 @@ const meta: Meta<ToasterArgs> = {
   component: Toaster,
   tags: ['autodocs'],
   args: { position: 'bottom-right', max: 3 },
-  parameters: {
-    a11y: {
-      config: {
-        rules: [
-          /**
-           * Reka's toast viewport renders focus guards — `aria-hidden` spans
-           * with `tabindex="0"` — to catch Tab and route it into the toast
-           * region for the F8 flow. They are focusable by necessity and hidden
-           * from assistive technology by necessity, which is exactly what
-           * `aria-hidden-focus` forbids.
-           *
-           * The guard only becomes focusable while toasts exist, so it is
-           * inert the rest of the time. rowkit cannot reach the element to fix
-           * it, and rebuilding the viewport to avoid it is what hard rule 2
-           * exists to prevent. Disabled for this component only, and only this
-           * rule — worth reporting upstream and removing when fixed.
-           */
-          { id: 'aria-hidden-focus', enabled: false },
-        ],
-      },
-    },
-  },
   argTypes: {
     position: { control: 'inline-radio', options: positions },
     max: { control: { type: 'number', min: 1, max: 5 } },
@@ -174,7 +152,7 @@ export const AutoDismisses: Story = {
 
 /**
  * Hovering pauses that toast's countdown. Dismissal mid-read is the classic
- * toast failure, and this is Reka's `ToastRoot` doing it — not a timer of ours.
+ * toast failure.
  */
 export const HoverPauses: Story = {
   render: () =>
