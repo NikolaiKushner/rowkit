@@ -28,7 +28,7 @@ Docs: `rowkit.dev`
 
 ## Stack
 
-- **Own behaviour layer, on the way off Reka UI.** The goal is no runtime behaviour dependency. Behaviour lives in `packages/ui/src/primitives/`: platform features where they are good enough (`<dialog>`, native inputs, `aria-live`), otherwise code ported from Reka UI or written from scratch. Reka is still installed while components move over one at a time.
+- **Own behaviour layer, no behaviour library.** Focus scope, dismissable layers, presence, scroll lock, hide-others and positioning live in `packages/ui/src/primitives/`, used by every component. Platform features where they are good enough (native inputs, `aria-live`); otherwise rowkit's own code, some of it ported from Reka UI. Extend a primitive, with its tests, rather than re-solving focus or dismissal inside a component.
 - **Tailwind CSS v4** — configured via the `@theme` block in CSS. There is no `tailwind.config.js`.
 - **Vitest** + **Storybook 10** (`@storybook/addon-vitest`, `@storybook/addon-a11y` as a gate, not a panel). Storybook 10, not 9: `@storybook/vue3-vite@9` peers on Vite 7 and this repo is on Vite 8.
 
@@ -36,8 +36,8 @@ Docs: `rowkit.dev`
 
 1. **No hardcoded design values.** Colour, space, radius, shadow, and z-index come from a token. If a token is missing, propose one.
 2. **Behaviour you own, you test.** Keyboard, focus and dismiss behaviour gets an interaction test, and `addon-a11y` stays a gate. Code ported from Reka UI (MIT) keeps their copyright line in a header comment of the ported file.
-3. **Follow Reka's custom API.** The consumer places the parts that change: root, trigger, content, title, description. Parts that always travel together — portal, overlay, close — belong inside `DialogContent`, which is what Reka's own docs show. A `mode` prop that redraws the layout is the thing to avoid. Details are in `docs/conventions.md`.
-4. **`data-slot` on each public part**, kebab-cased (`dialog`, `dialog-title`). `data-state` comes from Reka.
+3. **Parts, composed by the consumer.** The consumer places the parts that change: root, trigger, content, title, description. Parts that always travel together — portal, overlay, close — belong inside `DialogContent`. A `mode` prop that redraws the layout is the thing to avoid. Details are in `docs/conventions.md`.
+4. **`data-slot` on each public part**, kebab-cased (`dialog`, `dialog-title`), and `data-state` on parts that open and close.
 5. **Variants live in one `ComponentName.variants.ts`**, defined with `cva`.
 6. **Every prop has a JSDoc comment.** These feed the docs site and `packages/ui/AGENTS.md`.
 7. **`vue` is external.** Never bundle the framework into the library output.
@@ -79,8 +79,8 @@ A component is not finished until all of these are true:
 Don't re-litigate these:
 
 - **npm package, not copy-paste distribution.** shadcn-vue's model is deliberate and good, but rowkit ships as a versioned package.
-- **No behaviour library in the end.** Components move off Reka UI one at a time, porting its logic where that is the fastest correct route. Reka and shadcn-vue stay references for part structure and edge cases.
-- **Assemblies follow Reka's custom API.** The consumer places root, trigger, content, and the text parts. Portal, overlay, and close can live inside content. See `docs/conventions.md`.
+- **No behaviour library.** rowkit moved off Reka UI; its primitives are rowkit's own, partly ported from Reka (MIT, attributed). Reka and shadcn-vue stay references for part structure and edge cases, never dependencies.
+- **Assemblies are parts.** The consumer places root, trigger, content, and the text parts. Portal, overlay, and close can live inside content. See `docs/conventions.md`.
 - **The set is the professional toolkit.** Components are added until a product interface can be built from rowkit. There is no fixed count, and tables are one part of that set, not the boundary of it.
 - **MIT license.**
 - **Tokens as a separate package**, so they can be consumed without importing components.

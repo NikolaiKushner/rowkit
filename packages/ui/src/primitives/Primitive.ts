@@ -18,10 +18,8 @@ import {
  * The `as` / `as-child` contract every rowkit part that renders a single
  * element shares.
  *
- * Owned here rather than taken from Reka UI so the simple components — Button,
- * Badge, Skeleton, EmptyState — carry no behaviour library at all. The parts
- * that still sit on Reka (Select, Tooltip) keep Reka's own type; the two are
- * shaped the same, so a consumer sees one contract.
+ * Owned here so rowkit carries no behaviour library: Button, Badge,
+ * Skeleton, EmptyState and every trigger render through it.
  */
 export interface PrimitiveProps {
   /**
@@ -40,8 +38,8 @@ const VOID_TAGS = new Set(['area', 'img', 'input'])
  * Renders `as`, or with `asChild` hands its attributes to the slot's first
  * real element.
  *
- * Semantics match Reka UI's `Primitive` (MIT) on purpose, so swapping one for
- * the other changes no rendered output: fragments are flattened, comment nodes
+ * Semantics match Reka UI's `Primitive` (MIT), which it replaced without
+ * changing any rendered output: fragments are flattened, comment nodes
  * skipped, the child's own props win where both sides set the same one (with
  * classes, styles and listeners merged rather than replaced), and the child's
  * `ref` is dropped so it does not shadow the part's.

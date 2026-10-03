@@ -13,7 +13,6 @@ const external = [
   /^vue\//,
   /^@vue\//,
   /^@rowkit\//,
-  /^reka-ui$/,
   // Kept external so a consumer who already uses them gets one copy. Two
   // copies of tailwind-merge would mean two separate class-group configs.
   /^clsx$/,

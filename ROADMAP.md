@@ -30,9 +30,8 @@ in CI, not aspirations:
 
 - 1434 tests green across unit, component and real-browser story runs
 - `addon-a11y` runs as a build gate, not a panel
-- About 50 kB brotli for the full library against a 52 kB budget, Reka UI
-  included — the budget counts what a consumer actually downloads. Button
-  alone is 1.7 kB, so tree-shaking demonstrably works
+- The size budget counts what a consumer actually downloads, dependencies
+  included. Button alone is 1.7 kB, so tree-shaking demonstrably works
 - Strict TypeScript with `exactOptionalPropertyTypes`, no `any`
 - Releases publish from CI over OIDC with provenance, and generated docs are
   checked for drift before anything ships
@@ -179,10 +178,9 @@ Do not relitigate these without new information:
 - **One theme, light.** Dark mode is dropped in v2.
 - **npm package, not copy-paste distribution.** shadcn-vue's model is good and
   deliberate; rowkit ships versioned.
-- **No behaviour library in the end.** Components move off Reka UI one at a
-  time into rowkit's own primitives — platform features where they suffice,
-  otherwise logic ported from Reka (MIT, attributed). Reka and shadcn-vue stay
-  references, not dependencies.
+- **No behaviour library.** rowkit's focus, dismissal, presence, scroll lock and
+  positioning are its own primitives, partly ported from Reka UI (MIT,
+  attributed). Reka and shadcn-vue stay references, not dependencies.
 - **Tokens are a separate package**, consumable without importing components.
 - **The consumer owns state.** Sort, selection, page, filters are all `v-model`;
   components report what happened and the application decides what follows.

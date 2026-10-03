@@ -103,7 +103,7 @@ function clearFilters() {
 <template>
   <section class="rk-home" data-rk-home>
     <div class="rk-home__intro">
-      <p class="rk-home__eyebrow">Vue 3 · Reka UI · one token set</p>
+      <p class="rk-home__eyebrow">Vue 3 · no behaviour library · one token set</p>
       <h1 class="rk-home__headline">The components a product is built from.</h1>
       <p class="rk-home__lede">
         Controls, tables, filters and overlays that agree with each other — typed against your data,
@@ -245,9 +245,10 @@ function clearFilters() {
       </li>
       <li>
         <span class="rk-home__index">02</span>
-        <strong>Keyboard from Reka UI.</strong>
+        <strong>Keyboard, built in.</strong>
         <span
-          >Focus traps, scroll lock, and the models from the primitives. axe fails the build.</span
+          >Focus traps, scroll lock and keyboard models in shared primitives. axe fails the
+          build.</span
         >
       </li>
       <li>

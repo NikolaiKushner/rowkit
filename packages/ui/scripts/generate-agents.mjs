@@ -142,7 +142,7 @@ export async function buildAgentsBody() {
     '# rowkit for coding agents',
     '',
     'A professional Vue 3 toolkit: the components a product interface is built',
-    'from. Built on Reka UI, styled with Tailwind v4.',
+    'from. No behaviour library underneath, styled with Tailwind v4.',
     '',
     'This file is generated from the source, so it describes the version installed',
     'rather than whatever was current when it was written.',

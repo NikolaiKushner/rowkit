@@ -1,17 +1,7 @@
 import { mount } from '@vue/test-utils'
-import { Primitive as RekaPrimitive } from 'reka-ui'
 import { describe, expect, it, vi } from 'vitest'
-import { Comment, defineComponent, h, ref, type Component } from 'vue'
+import { Comment, defineComponent, h, ref } from 'vue'
 import { Primitive } from './Primitive'
-
-/** Mounts `component` with the same props, attrs and slot, and returns its HTML. */
-function render(component: Component, props: Record<string, unknown>, slot?: () => unknown) {
-  return mount(component, {
-    props,
-    attrs: { class: 'part', 'data-slot': 'x' },
-    slots: { default: slot ?? (() => 'label') },
-  }).html()
-}
 
 describe('Primitive', () => {
   it('renders a div by default', () => {
@@ -103,29 +93,6 @@ describe('Primitive', () => {
         slots: { default: () => h('button', { ref: childRef }, 'Go') },
       })
       expect(wrapper.element.tagName).toBe('BUTTON')
-    })
-  })
-
-  /*
-   * The point of owning this component is to drop Reka from the simple parts
-   * without changing a single rendered byte. While Reka is still installed
-   * for Select and Tooltip, pin that equivalence directly.
-   */
-  describe('matches Reka UI’s Primitive', () => {
-    const cases: [string, Record<string, unknown>, (() => unknown) | undefined][] = [
-      ['default element', {}, undefined],
-      ['as a tag', { as: 'section' }, undefined],
-      ['as a void tag', { as: 'img' }, undefined],
-      [
-        'as-child with an element',
-        { asChild: true },
-        () => h('a', { href: '/x', class: 'own' }, 'x'),
-      ],
-      ['as-child with surrounding text', { asChild: true }, () => [h('em', 'first'), 'tail']],
-    ]
-
-    it.each(cases)('%s', (_label, props, slot) => {
-      expect(render(Primitive, props, slot)).toBe(render(RekaPrimitive, props, slot))
     })
   })
 })

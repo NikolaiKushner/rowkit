@@ -1,26 +1,5 @@
-import { mount } from '@vue/test-utils'
-import { PaginationList, PaginationRoot } from 'reka-ui'
 import { describe, expect, it } from 'vitest'
-import { h } from 'vue'
 import { pageCount, pageItems, type PageItem } from './pagination'
-
-/** What Reka's PaginationList hands its slot for the same inputs. */
-function rekaItems(current: number, count: number, siblings: number, showEdges: boolean) {
-  let items: PageItem[] = []
-  mount(PaginationRoot, {
-    props: { page: current, total: count, itemsPerPage: 1, siblingCount: siblings, showEdges },
-    slots: {
-      default: () =>
-        h(PaginationList, null, {
-          default: ({ items: list }: { items: PageItem[] }) => {
-            items = list
-            return null
-          },
-        }),
-    },
-  })
-  return items
-}
 
 const show = (items: PageItem[]) =>
   items.map((item) => (item.type === 'page' ? item.value : '…')).join(' ')
@@ -61,24 +40,5 @@ describe('pageItems', () => {
       Array.from({ length: 20 }, (_, i) => pageItems(i + 1, 20, 1, true).length)
     )
     expect(lengths).toEqual(new Set([7]))
-  })
-
-  /*
-   * Ported, not rewritten, so the rows must match Reka's for every input the
-   * component can produce. While Reka is still installed, check them all.
-   */
-  it('matches Reka UI for every page, page count, sibling count and edge setting', () => {
-    for (const showEdges of [true, false]) {
-      for (let siblings = 0; siblings <= 3; siblings++) {
-        for (let count = 1; count <= 25; count++) {
-          for (let current = 1; current <= count; current++) {
-            expect(
-              show(pageItems(current, count, siblings, showEdges)),
-              `page ${current}/${count}, siblings ${siblings}, edges ${showEdges}`
-            ).toBe(show(rekaItems(current, count, siblings, showEdges)))
-          }
-        }
-      }
-    }
   })
 })

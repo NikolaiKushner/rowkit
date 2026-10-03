@@ -14,7 +14,7 @@ export interface TooltipProps {
   /**
    * Delay before opening, in milliseconds.
    *
-   * 300 rather than Reka's own 700: a label that takes three-quarters of a
+   * 300 rather than the provider's own 700: a label that takes three-quarters of a
    * second to appear reads as a stutter. The delay exists to stop tooltips
    * firing as the pointer crosses a toolbar, and 300 is enough for that.
    *

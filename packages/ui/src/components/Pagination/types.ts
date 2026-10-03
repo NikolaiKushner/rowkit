@@ -17,7 +17,7 @@ export interface PaginationProps {
   /**
    * Always show the first and last page, with ellipses between.
    *
-   * On by default, unlike the Reka primitive underneath. Without it a user on
+   * On by default. Without it a user on
    * page 12 of 25 sees only `11 12 13` — no indication of how far the table
    * runs and no way to reach the end. For a table that extent is information,
    * not decoration.

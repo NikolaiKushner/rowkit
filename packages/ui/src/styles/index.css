@@ -24,11 +24,12 @@
  * geometry, and the timing comes from the motion tokens through `var()`. The
  * token package stays a set of scales.
  *
- * They are keyframe *animations* rather than transitions on purpose: Reka
- * decides when to unmount a closing overlay by watching for a running
- * animation. A transition alone would let the element disappear before the exit
- * finished. Where reduced motion removes the animation entirely, Reka sees none
- * and unmounts immediately, which is exactly the wanted behaviour.
+ * They are keyframe *animations* rather than transitions on purpose: the
+ * Presence primitive decides when to unmount a closing overlay by watching for
+ * a running animation. A transition alone would let the element disappear
+ * before the exit finished. Where reduced motion removes the animation
+ * entirely, Presence sees none and unmounts immediately, which is exactly the
+ * wanted behaviour.
  */
 @theme {
   --animate-overlay-in: overlay-in var(--transition-duration-fast) var(--ease-enter);

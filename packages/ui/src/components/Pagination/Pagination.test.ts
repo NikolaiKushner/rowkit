@@ -134,7 +134,7 @@ describe('Pagination', () => {
     })
 
     it('shows the first and last page so the extent is visible', () => {
-      // Reka's own default renders only the sibling window — "11 12 13" — which
+      // Without edges only the sibling window renders — "11 12 13" — which
       // tells a table user neither how far the data runs nor how to reach it.
       const labels = setup({ page: 12, siblingCount: 1 })
         .findAll('nav button')

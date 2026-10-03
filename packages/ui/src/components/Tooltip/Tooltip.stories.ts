@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { TooltipProvider } from 'reka-ui'
 import { expect, userEvent, within } from 'storybook/test'
 import Button from '../Button/Button.vue'
 import Tooltip from './Tooltip.vue'
 import TooltipContent from './TooltipContent.vue'
+import TooltipProvider from './TooltipProvider.vue'
 import TooltipTrigger from './TooltipTrigger.vue'
 
 const placements = ['top', 'right', 'bottom', 'left'] as const

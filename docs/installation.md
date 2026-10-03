@@ -70,8 +70,9 @@ export default defineNuxtConfig({
 
 ### Overlays under SSR
 
-Portals do not exist server-side. Reka defers teleport mounting until the client,
-so `Dialog` and `Tooltip` need nothing extra.
+Portals do not exist server-side. rowkit teleports overlays only after the
+component mounts on the client, so `Dialog`, `Tooltip` and `Select` need nothing
+extra.
 
 `Toaster` holds a module-level queue, which is not per-request safe on the
 server. Wrap it:
@@ -85,11 +86,8 @@ server. Wrap it:
 Calls to `toast()` before the client mounts are queued rather than dropped.
 
 > **You do not need `provideSSRWidth`.** Advice to add a VueUse SSR-width plugin
-> circulates for Reka-based apps and does not apply to rowkit on Reka 2.10: the
-> only viewport read in the library's dependency tree is a
-> `matchMedia('(pointer:coarse)')` pointer check, already guarded for SSR. If a
-> future Reka version introduces responsive behaviour that needs it, this section
-> is where it will be documented.
+> circulates for Reka-based apps. rowkit depends on neither Reka nor VueUse, and
+> reads the viewport only on the client, after mount.
 
 ## Troubleshooting
 

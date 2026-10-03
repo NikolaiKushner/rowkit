@@ -161,7 +161,7 @@ export const JumpToPage: Story = {
     const canvas = within(canvasElement)
 
     // The last page is reachable in one click because `showEdges` is on.
-    // Reka names page buttons "Page N" rather than the bare number.
+    // Page buttons are named "Page N" rather than the bare number.
     await userEvent.click(canvas.getByRole('button', { name: 'Page 25' }))
 
     await expect(canvas.getByText('241–247 of 247')).toBeInTheDocument()

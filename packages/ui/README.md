@@ -5,7 +5,7 @@
 
 A professional Vue 3 toolkit — the components a product interface is built from.
 
-Built on [Reka UI](https://reka-ui.com). What is published is the part already finished; the rest of the set is the plan in the [roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md).
+No behaviour library underneath — focus, dismissal and positioning are rowkit's own. What is published is the part already finished; the rest of the set is the plan in the [roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md).
 
 **[Documentation](https://rowkit.dev)** · **[Storybook](https://storybook.rowkit.dev)** · **[GitHub](https://github.com/NikolaiKushner/rowkit)**
 
@@ -73,7 +73,7 @@ The table reports the sort and renders what it is handed — it never reorders i
 ## What you get
 
 - **Columns typed against your row.** `DataTable<TRow>` constrains every column's `key` to `keyof TRow`. Sorting names a field too, so a sort referring to a column that does not exist also fails to compile.
-- **Accessibility as a build gate.** Focus traps, scroll lock, live regions and keyboard models come from Reka UI primitives. Every Storybook story is scanned by axe as part of the test run — a violation fails CI rather than filling a panel nobody opens.
+- **Accessibility as a build gate.** Focus traps, scroll lock, live regions and keyboard models live in shared primitives with their own interaction tests. Every Storybook story is scanned by axe as part of the test run — a violation fails CI rather than filling a panel nobody opens.
 - **Three states that agree.** `Skeleton`, `EmptyState` and the no-results case are designed together, because the bug is never one of them alone.
 - **Tokens all the way down.** Every colour, space, radius and layer lives in [`@rowkit/tokens`](https://www.npmjs.com/package/@rowkit/tokens), installable on its own.
 - **State you own.** Sort, selection, page and filters are all `v-model`. Components report what happened; your application decides what follows.
@@ -82,7 +82,7 @@ The table reports the sort and renders what it is handed — it never reorders i
 
 `Button` · `Field` · `Input` · `Select` · `Badge` · `DataTable` · `Pagination` · `FilterBar` · `EmptyState` · `Skeleton` · `Dialog` · `Toast` · `Tooltip`
 
-That is the whole library. If you need forty components covering every case, [Nuxt UI](https://ui.nuxt.com) and [shadcn-vue](https://www.shadcn-vue.com) are better answers — and rowkit composes with either, since all three build on Reka UI.
+That is the whole library. If you need forty components covering every case, [Nuxt UI](https://ui.nuxt.com) and [shadcn-vue](https://www.shadcn-vue.com) are better answers — and rowkit composes with either.
 
 ## For coding agents
 

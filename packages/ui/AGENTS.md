@@ -3,7 +3,7 @@
 # rowkit for coding agents
 
 A professional Vue 3 toolkit: the components a product interface is built
-from. Built on Reka UI, styled with Tailwind v4.
+from. No behaviour library underneath, styled with Tailwind v4.
 
 This file is generated from the source, so it describes the version installed
 rather than whatever was current when it was written.
@@ -406,7 +406,7 @@ handling.
 
 **v-model**
 
-- `v-model` — `T | undefined`. The selected value. `undefined` is nothing selected — Reka's `null` stays inside.
+- `v-model` — `T | undefined`. The selected value. `undefined` is nothing selected.
 - `v-model:searchTerm` — `string`. The current search term. Bind it to fetch options asynchronously.
 
 **Slots**
@@ -493,7 +493,7 @@ handling.
 
 **Slots**
 
-- `#default` —
+- `#default` — Trigger and content.
 
 ### TooltipTrigger
 
@@ -507,7 +507,7 @@ handling.
 
 **Slots**
 
-- `#default` —
+- `#default` — The control the tooltip describes. With `as-child`, this element becomes the trigger.
 
 ### TooltipContent
 
@@ -520,4 +520,4 @@ handling.
 
 **Slots**
 
-- `#default` —
+- `#default` — The label. Plain text.

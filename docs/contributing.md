@@ -63,8 +63,9 @@ The rules that get work sent back:
   `AGENTS.md`; a comment restating the prop name is worse than none.
 - **No `any`.** If typing is genuinely hard, ask rather than escaping the type
   system.
-- **Build on Reka UI** wherever a primitive exists. Never hand-roll focus
-  management, ARIA wiring or keyboard handling.
+- **Build on the shared primitives** in `packages/ui/src/primitives/` for focus,
+  dismissal, scroll lock and positioning. Do not re-solve them per component;
+  extend a primitive, with its tests, when one falls short.
 
 ## What a finished component looks like
 

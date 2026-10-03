@@ -3,7 +3,7 @@
 **Stage:** 🟢 Stable
 
 Page controls for a table: a range summary, a rows-per-page control, and page
-numbers. Built on Reka UI's `Pagination` primitive.
+numbers.
 
 ```vue
 <Pagination v-model:page="page" v-model:page-size="pageSize" :total="247" />
@@ -121,7 +121,7 @@ that already handle it.
 **With `total: 0` every control is disabled rather than hidden**, so the row
 keeps its height and the layout does not jump when results arrive.
 
-**`showEdges` defaults to `true`, unlike the Reka primitive underneath.** With
+**`showEdges` defaults to `true`.** With
 it off, a user on page 12 of 25 sees only `11 12 13`: no sense of how far the
 table runs and no way to reach the end. For a table, extent is information.
 
@@ -157,5 +157,5 @@ numbers, and it fails entirely for anyone who cannot perceive the difference.
 **The ellipsis is `aria-hidden`.** It is a device for keeping the row short; the
 page numbers either side already convey the gap.
 
-**Page buttons are named "Page 7" by the Reka primitive**, not just "7", so they
+**Page buttons are named "Page 7"**, not just "7", so they
 are unambiguous when read out of context.

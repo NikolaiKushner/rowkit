@@ -361,8 +361,8 @@ offering any way to change it.
 inside a `grid`, and this is a plain `table`; the checkbox's own state carries
 the selection. Rows get a `data-selected` attribute for styling instead.
 
-**Single selection uses native radios rather than Reka's `RadioGroup`.** That
-primitive's root owns the roving tabstop and would have to wrap the table,
+**Single selection uses native radios rather than a `RadioGroup` component.**
+A radio group's root owns the roving tabstop and would have to wrap the table,
 putting `role="radiogroup"` on it and destroying its table semantics. A shared
 `name` groups native radios with no wrapper at all.
 

@@ -31,9 +31,9 @@ until they are.
 `key` to `keyof TRow`. Rename a field and the compiler tells you which columns
 broke, before the page renders blanks.
 
-**Accessibility as a build gate, not a claim.** Components are built on
-[Reka UI](https://reka-ui.com) primitives, so focus traps, scroll lock, live
-regions and keyboard models come from code that specialises in them. Every
+**Accessibility as a build gate, not a claim.** Focus traps, scroll lock, live
+regions and keyboard models live in one set of shared primitives, written once
+and covered by interaction tests, with no behaviour library underneath. Every
 Storybook story is scanned by axe as part of the test run — a violation fails
 CI rather than filling a panel nobody opens.
 
@@ -80,9 +80,9 @@ The honest framing, so you can route yourself correctly:
 | **Scope**        | A professional toolkit, still being completed | Broad, already broad        | Broad, already broad            |
 | **Upgrades**     | `semver`, you take the diff                   | `semver`, you take the diff | Yours to maintain once copied   |
 
-All three build on Reka UI, so the accessibility foundation is the same in each.
-The difference is who owns the code after installation, and how much of the set
-is already shipped. rowkit is the toolkit the product is built from; the
+Nuxt UI and shadcn-vue build on Reka UI; rowkit owns its behaviour layer and
+depends on no behaviour library. The other difference is who owns the code after
+installation, and how much of the set is already shipped. rowkit is the toolkit the product is built from; the
 unpublished components are on the roadmap, not missing by design.
 
 ## Status

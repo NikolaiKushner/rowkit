@@ -2,8 +2,8 @@
 
 **Stage:** 🟢 Stable
 
-A modal dialog built on Reka UI's `Dialog`. Focus trap, focus restore, scroll
-lock and background inerting come from the primitive. You place the parts;
+A modal dialog. Focus trap, focus restore, scroll lock and background inerting
+come from rowkit's shared primitives. You place the parts;
 the portal, the scrim, and the close button live inside `DialogContent`.
 
 ```vue
@@ -196,8 +196,8 @@ so the title and the actions stay reachable no matter how much content there is.
 
 - **For anything the page could show inline.** A modal interrupts. If the user
   can keep working around it, it should not be a dialog.
-- **For a dialog that opens a dialog.** Reka supports stacking; rowkit
-  discourages it. Two modals deep is almost always a design smell — sequence the
+- **For a dialog that opens a dialog.** Stacking works — Escape closes only the
+  top one — but rowkit discourages it. Two modals deep is almost always a design smell — sequence the
   steps, or use one dialog with stages.
 - **For notifications.** Nothing the user did not ask for should trap their
   focus. That is `Toast`.
@@ -241,14 +241,14 @@ set in `ROADMAP.md`, not built.
 | <kbd>Shift+Tab</kbd> | Cycles backwards, same containment                    |
 
 Focus moves into the dialog on open and **returns to the trigger on close** —
-both from Reka, both covered by interaction tests, because losing the trigger is
+both covered by interaction tests, because losing the trigger is
 the classic bug. The trigger has to be `DialogTrigger` for that return to have
 somewhere to go.
 
 ## Accessibility
 
-**The rest of the page is hidden, not just visually.** Reka applies `aria-hidden`
-to siblings rather than relying on `aria-modal`, which is the more robust of the
+**The rest of the page is hidden, not just visually.** The dialog applies
+`aria-hidden` to siblings, leaving `aria-live` regions such as toasts audible, rather than relying on `aria-modal`, which is the more robust of the
 two — `aria-modal` alone is inconsistently honoured by screen readers.
 
 **No dangling description.** With no `DialogDescription`, `aria-describedby` is
@@ -257,13 +257,14 @@ rendered. Some readers announce a broken reference as a blank.
 
 **Motion is ambient here**, so enter and exit are gated behind `motion-safe:` and
 collapse to instant show/hide under `prefers-reduced-motion`. The animations are
-keyframes rather than transitions because Reka decides when to unmount a closing
-overlay by watching for a running animation — with reduced motion there is none,
+keyframes rather than transitions because the dialog decides when to unmount a
+closing overlay by watching for a running animation — with reduced motion there is none,
 and it unmounts immediately, which is the wanted behaviour.
 
 ## Under SSR
 
-Portals do not exist server-side, and Reka defers the teleport until the client,
+Portals do not exist server-side, and the dialog teleports only after it mounts
+on the client,
 so `Dialog` needs nothing extra in Nuxt. In tests this is why the dialog is not
 in the document synchronously after mount — two ticks are needed.
 

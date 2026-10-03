@@ -193,8 +193,8 @@ import { TooltipProvider } from 'rowkit'
 </template>
 ```
 
-`TooltipProvider` renders nothing. It keeps the prop names it had when it was
-Reka UI's (`delayDuration`, `skipDelayDuration`) rather than rowkit's `delay`,
+`TooltipProvider` renders nothing. It keeps the prop names it had when it came
+from Reka UI (`delayDuration`, `skipDelayDuration`) rather than rowkit's `delay`,
 so markup written against it keeps working. A rowkit `Tooltip` inside a provider
 defers to it rather than shadowing it.
 

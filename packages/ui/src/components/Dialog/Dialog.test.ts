@@ -13,8 +13,8 @@ const title = 'Delete project'
 
 /**
  * The public API is the parts, so the tests compose them the way a consumer
- * does. Reka defers the teleport until after mount, so querying synchronously
- * finds an empty document.
+ * does. The dialog teleports only after mount, so querying synchronously finds
+ * an empty document.
  */
 const Harness = defineComponent({
   components: {
@@ -69,7 +69,7 @@ const dialog = () => document.querySelector('[role="dialog"]')
 const closeButton = () => document.querySelector<HTMLElement>('[aria-label="Close dialog"]')
 const text = () => document.body.textContent ?? ''
 
-/** Reka listens on the layer, so the event has to originate inside it. */
+/** Dispatched from inside the dialog, the way a real keypress originates. */
 function pressEscape(): void {
   dialog()?.dispatchEvent(
     new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })
@@ -90,11 +90,11 @@ describe('Dialog', () => {
     })
 
     it('hides the rest of the page from assistive technology', async () => {
-      // Reka makes the dialog modal by hiding siblings rather than by setting
+      // The dialog is made modal by hiding siblings rather than by setting
       // `aria-modal`, which is the more robust of the two — `aria-modal` alone
       // is inconsistently honoured.
       await setup()
-      // `data-aria-hidden` is Reka's own marker for what it hid.
+      // `data-aria-hidden` marks what hideOthers hid.
       const hidden = document.querySelector('[data-aria-hidden]')
       expect(hidden).not.toBeNull()
       expect(hidden?.getAttribute('aria-hidden')).toBe('true')

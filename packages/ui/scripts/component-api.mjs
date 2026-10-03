@@ -26,7 +26,7 @@ export const repoRoot = resolve(packageRoot, '../..')
  * Types whose resolved form is technically accurate and useless to read.
  *
  * `HTMLAttributes['class']` expands to Vue's four-way union including
- * `Record<string, any>`, and `PrimitiveProps['as']` to Reka's full component
+ * `Record<string, any>`, and `PrimitiveProps['as']` to the full component
  * union. A consumer needs to know what to pass, not what the type system will
  * tolerate, so these are stated as written rather than as resolved.
  */

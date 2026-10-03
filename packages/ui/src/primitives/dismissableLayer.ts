@@ -36,10 +36,9 @@ export function isInsideLayer(layer: HTMLElement, target: EventTarget | null): b
  * Whether another dismissable layer was opened after `layer` — one later in
  * the document that `layer` does not contain.
  *
- * Read from the DOM rather than from this module's stack, so layers drawn by
- * something else that marks itself the same way (Reka UI's Select, while it
- * is still on Reka) are seen too. Overlays portal to the end of `<body>`, so
- * document order is opening order.
+ * Read from the DOM rather than from this module's stack, so a layer drawn by
+ * anything else that marks itself the same way is respected too. Overlays
+ * portal to the end of `<body>`, so document order is opening order.
  */
 export function hasLayerAbove(layer: HTMLElement): boolean {
   const all = Array.from(layer.ownerDocument.querySelectorAll('[data-dismissable-layer]'))

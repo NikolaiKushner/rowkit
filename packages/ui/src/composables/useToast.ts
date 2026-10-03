@@ -15,8 +15,8 @@ export interface ToastOptions {
   /**
    * Auto-dismiss delay in milliseconds. `0` never dismisses on its own.
    *
-   * The countdown itself belongs to Reka's `ToastRoot`, which also pauses it
-   * while the pointer is over that toast — this value is passed through.
+   * The countdown itself runs in `Toaster`, which also pauses it while the
+   * pointer or focus is on the stack — this value is passed through.
    *
    * Use `0` whenever an `action` is attached. An undo that disappears at its
    * own pace is worse than no undo — see the WCAG note in the docs.
@@ -134,11 +134,10 @@ export interface UseToastReturn {
  * The toast API.
  *
  * This owns the **queue** — how many are visible, what waits, what coalesces.
- * It deliberately owns no timers: `Toaster` renders each visible toast into a
- * Reka `ToastRoot`, which runs the countdown, pauses it on hover, and handles
- * swipe-to-dismiss. Re-implementing any of that here would be the thing hard
- * rule 2 exists to prevent, and a queued toast still cannot count down early
- * because it has no `ToastRoot` until it is on screen.
+ * It deliberately owns no timers: `Toaster` runs the countdown for each toast
+ * it shows, pauses it on hover and focus, and handles swipe-to-dismiss. A
+ * queued toast cannot count down early, because it has no countdown until it
+ * is on screen.
  *
  * Callable from anywhere, including outside a component — that is the whole
  * point of the module-level queue. Rendering happens in one `<Toaster />`
