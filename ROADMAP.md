@@ -64,9 +64,10 @@ Ordered. Finish or deliberately drop an item before starting the next.
 
 ### 1. The Windows 98 redesign (v2)
 
-Every component, the tokens, the playground and rowkit.dev are being redrawn
-in the style of Windows 98, on `refactor/v2`. Win98 replaces the current look
-entirely; dark mode is dropped.
+Every component, the tokens, the playground, rowkit.dev and the brand — logo,
+favicon, link previews, README banner, Storybook theme — are being redrawn in
+the style of Windows 98, on `refactor/v2`. Win98 replaces the current look
+everywhere rowkit appears; dark mode is dropped.
 
 1. A designer draws the Figma file first: Variables mirroring the semantic
    token names, bevel effect styles, every component in every variant and

@@ -30,8 +30,8 @@ at your own colour.
 
 ## In progress
 
-- The Windows 98 redesign (v2): tokens, every component, the playground and
-  this site, drawn in Figma first and then restyled one component at a time
+- The Windows 98 redesign (v2): tokens, every component, the playground, this
+  site and the logo, drawn in Figma first and then restyled one component at a time
 - Closing a gap in the screenshot-based visual QA, where two overlay stories
   were being captured without the overlay open
 - Two consistency calls for the redesign to settle: `Badge` `subtle` `primary`
