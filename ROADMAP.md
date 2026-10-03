@@ -82,9 +82,13 @@ everywhere rowkit appears; dark mode is dropped.
    navigation lives in a Start menu and a taskbar. That needs a custom
    VitePress layout, which overrides the earlier "default theme only" choice.
 
-Open before the Figma work goes past foundations: which pixel font (licence
-compatible with MIT, Cyrillic, outside the 14 kB budget), and how literal the
-sizes are (11px and 23px controls, or larger with ≥ 24px touch targets).
+Settled for the redesign: the face is W95FA (OFL, Latin only — Cyrillic falls
+back to system faces; the app loads it, rowkit does not ship it). Sizes follow
+Win98 on desktop (11px text, ~23px controls) and grow to ≥ 24px touch targets
+on touch screens. `Button` loses `outline`; hover appears only where Win98 had
+it; `background` is `#C0C0C0`, with teal `#008080` as a separate `desktop`
+token. rowkit.dev gets a VitePress theme written from scratch, in English, with
+article text in a readable system face and W95FA in the window chrome.
 
 ### 2. Close the visual-QA blind spot
 

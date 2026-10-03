@@ -22,7 +22,8 @@ export default create({
   appBorderRadius: 6,
 
   // Type
-  fontBase: 'Tahoma, "Microsoft Sans Serif", "MS Sans Serif", Verdana, Arial, sans-serif',
+  fontBase:
+    'WIN95FA, W95FA, Tahoma, "Microsoft Sans Serif", "MS Sans Serif", Verdana, Arial, sans-serif',
   fontCode: '"Lucida Console", "Courier New", ui-monospace, monospace',
   textColor: '#1A1D21',
   textMutedColor: '#6B7280',
