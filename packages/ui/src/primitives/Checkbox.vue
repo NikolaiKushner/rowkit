@@ -1,7 +1,3 @@
-<!--
-  Adapted from Reka UI's CheckboxRoot and CheckboxIndicator (MIT).
-  Copyright (c) 2023 UnoVue <https://github.com/unovue>
--->
 <script setup lang="ts">
 import { computed } from 'vue'
 
@@ -11,9 +7,9 @@ import { computed } from 'vue'
  * and select-all controls.
  *
  * Internal, not exported. Controlled only — the owner holds the state — and
- * deliberately smaller than Reka's: no checkbox group, no hidden form input,
- * no roving focus, because nothing in rowkit uses them. The rendered contract
- * is Reka's, so styles keyed on `data-state` keep working.
+ * deliberately small: no checkbox group, no hidden form input, no roving
+ * focus, because nothing in rowkit uses them. Styles key on `data-state`
+ * (`checked`, `unchecked`, `indeterminate`).
  */
 const props = withDefaults(
   defineProps<{
@@ -26,7 +22,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  /** Activating an indeterminate checkbox checks it, as Reka's does. */
+  /** Activating an indeterminate checkbox checks it, rather than clearing it. */
   'update:modelValue': [value: boolean]
 }>()
 

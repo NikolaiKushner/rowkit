@@ -1,7 +1,3 @@
-/*
- * Adapted from Reka UI's Presence and usePresence (MIT).
- * Copyright (c) 2023 UnoVue <https://github.com/unovue>
- */
 import {
   cloneVNode,
   Comment,

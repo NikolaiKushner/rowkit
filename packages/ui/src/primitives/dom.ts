@@ -1,7 +1,3 @@
-/*
- * Adapted from Reka UI's shared and FocusScope utilities (MIT).
- * Copyright (c) 2023 UnoVue <https://github.com/unovue>
- */
 import type { ComponentPublicInstance } from 'vue'
 
 /** True outside SSR. */

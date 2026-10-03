@@ -23,7 +23,8 @@
   "sideEffects": false,
   "files": [
     "dist",
-    "AGENTS.md"
+    "AGENTS.md",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",

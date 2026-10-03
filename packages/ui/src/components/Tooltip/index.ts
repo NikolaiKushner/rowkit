@@ -17,8 +17,8 @@ export type {
  * toolbar of icon buttons and show each tooltip immediately after the first.
  * That state is shared between tooltips, so it has to live above them.
  *
- * It keeps the prop names it had when it came from Reka UI (`delayDuration`,
- * `skipDelayDuration`) instead of rowkit's own `delay`, so existing markup
- * keeps working; `docs/components/tooltip.md` says so.
+ * Its props are `delayDuration` and `skipDelayDuration` rather than rowkit's
+ * `delay`, kept as they were so existing markup keeps working;
+ * `docs/components/tooltip.md` says so.
  */
 export { default as TooltipProvider } from './TooltipProvider.vue'

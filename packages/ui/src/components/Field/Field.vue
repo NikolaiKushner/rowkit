@@ -67,8 +67,7 @@ function onLabelMousedown(event: MouseEvent): void {
     <!--
       Double-clicking a label selects its text, which reads as a glitch next to
       a control. Suppressing the second mousedown keeps the click (focus moves
-      to the control) and drops only the selection. Same guard Reka UI's Label
-      applies.
+      to the control) and drops only the selection.
     -->
     <label
       v-if="props.label"

@@ -1,7 +1,3 @@
-<!--
-  Adapted from Reka UI's FocusScope (MIT).
-  Copyright (c) 2023 UnoVue <https://github.com/unovue>
--->
 <script lang="ts">
 import { ref as vueRef } from 'vue'
 
@@ -47,7 +43,7 @@ import { Primitive } from './Primitive'
  * it to where it came from on unmount.
  *
  * Renders no element of its own: its `tabindex` and key handling land on the
- * single child, the way Reka's `as-child` FocusScope does.
+ * single child, as if it were `as-child`.
  */
 const props = withDefaults(
   defineProps<{

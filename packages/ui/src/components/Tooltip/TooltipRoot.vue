@@ -1,7 +1,3 @@
-<!--
-  Adapted from Reka UI's TooltipRoot (MIT).
-  Copyright (c) 2023 UnoVue <https://github.com/unovue>
--->
 <script setup lang="ts">
 import { computed, inject, onBeforeUnmount, provide, ref, useId, watch } from 'vue'
 import { TOOLTIP_OPEN, tooltipKey, tooltipProviderKey } from './context'

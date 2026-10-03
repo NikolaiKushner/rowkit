@@ -179,8 +179,7 @@ Do not relitigate these without new information:
 - **npm package, not copy-paste distribution.** shadcn-vue's model is good and
   deliberate; rowkit ships versioned.
 - **No behaviour library.** rowkit's focus, dismissal, presence, scroll lock and
-  positioning are its own primitives, partly ported from Reka UI (MIT,
-  attributed). Reka and shadcn-vue stay references, not dependencies.
+  positioning are its own primitives, with no runtime dependency behind them.
 - **Tokens are a separate package**, consumable without importing components.
 - **The consumer owns state.** Sort, selection, page, filters are all `v-model`;
   components report what happened and the application decides what follows.

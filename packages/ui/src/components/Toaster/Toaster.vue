@@ -1,7 +1,3 @@
-<!--
-  Behaviour adapted from Reka UI's Toast (MIT).
-  Copyright (c) 2023 UnoVue <https://github.com/unovue>
--->
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue'
 import { useToast, type ToastItem } from '../../composables/useToast'
@@ -40,8 +36,8 @@ const hasToasts = computed(() => visible.value.length > 0)
  * start at the toast that just arrived. The variants flip the flex direction
  * to keep the visual stacking the position asks for.
  *
- * Reka keeps DOM order oldest-first and reverses Tab by hand, with hidden
- * focusable proxies at both ends — which is exactly what axe's
+ * The alternative — DOM oldest-first with Tab reversed by hand — needs hidden
+ * focusable proxies at both ends, which is exactly what axe's
  * `aria-hidden-focus` rule forbids. Ordering the DOM needs none of it.
  */
 const newestFirst = computed(() => [...visible.value].reverse())
@@ -185,9 +181,8 @@ function onAction(item: ToastItem, event: MouseEvent): void {
 
 /*
  * F8 jumps to the stack from anywhere, and Escape closes the toast that holds
- * focus. Reka closes every toast on any Escape on the page — including the one
- * that was meant to close a dialog. Here Escape only reaches a toast the user
- * is actually in.
+ * focus — and only then. An Escape anywhere else belongs to what the user is
+ * in, such as a dialog, and must not sweep the notifications away with it.
  */
 watchEffect((onCleanup) => {
   if (!isClient) return
@@ -265,9 +260,9 @@ function onPointerUp(event: PointerEvent): void {
 /**
  * What the live region says.
  *
- * One persistent polite region, written a frame after a toast appears. Reka
- * inserts a fresh alert element per toast instead, and a live region that
- * arrives together with its text is frequently not announced. Polite for every
+ * One persistent polite region, written a frame after a toast appears. A live
+ * region inserted together with its text, one per toast, is frequently not
+ * announced. Polite for every
  * tone, danger included: an assertive region interrupts whatever the reader is
  * saying, and "could not save" is not worth losing that.
  */

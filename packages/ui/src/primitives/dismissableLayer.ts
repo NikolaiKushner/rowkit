@@ -1,7 +1,3 @@
-/*
- * Adapted from Reka UI's DismissableLayer (MIT).
- * Copyright (c) 2023 UnoVue <https://github.com/unovue>
- */
 import { reactive } from 'vue'
 
 export type PointerDownOutsideEvent = CustomEvent<{ originalEvent: PointerEvent }>

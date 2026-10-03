@@ -497,7 +497,7 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
               </svg>
             </Checkbox>
             <!--
-              A native radio, not Reka's RadioGroup. That primitive's root owns
+              A native radio, not a RadioGroup component. A radio group's root owns
               the roving tabstop and would have to wrap the table, putting
               `role="radiogroup"` on it and destroying its table semantics. A
               shared `name` groups native radios with no wrapper at all.

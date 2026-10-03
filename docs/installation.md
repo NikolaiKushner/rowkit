@@ -85,8 +85,7 @@ server. Wrap it:
 
 Calls to `toast()` before the client mounts are queued rather than dropped.
 
-> **You do not need `provideSSRWidth`.** Advice to add a VueUse SSR-width plugin
-> circulates for Reka-based apps. rowkit depends on neither Reka nor VueUse, and
+> **You do not need `provideSSRWidth`.** rowkit does not depend on VueUse and
 > reads the viewport only on the client, after mount.
 
 ## Troubleshooting

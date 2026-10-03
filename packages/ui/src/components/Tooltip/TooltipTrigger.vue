@@ -1,7 +1,3 @@
-<!--
-  Adapted from Reka UI's TooltipTrigger (MIT).
-  Copyright (c) 2023 UnoVue <https://github.com/unovue>
--->
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { unrefElement } from '../../primitives/dom'

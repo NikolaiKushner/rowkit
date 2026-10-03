@@ -1,9 +1,3 @@
-/*
- * Adapted from Reka UI's pagination utils (MIT), themselves based on zag's
- * pagination machine (MIT).
- * Copyright (c) 2023 UnoVue <https://github.com/unovue>
- */
-
 /** One slot in a pagination row: a page button or a gap. */
 export type PageItem = { type: 'page'; value: number } | { type: 'ellipsis' }
 

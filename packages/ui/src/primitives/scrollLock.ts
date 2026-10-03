@@ -1,7 +1,3 @@
-/*
- * Adapted from Reka UI's useBodyScrollLock (MIT).
- * Copyright (c) 2023 UnoVue <https://github.com/unovue>
- */
 import { getCurrentInstance, nextTick, onBeforeUnmount } from 'vue'
 import { isClient } from './dom'
 

@@ -28,14 +28,14 @@ Docs: `rowkit.dev`
 
 ## Stack
 
-- **Own behaviour layer, no behaviour library.** Focus scope, dismissable layers, presence, scroll lock, hide-others and positioning live in `packages/ui/src/primitives/`, used by every component. Platform features where they are good enough (native inputs, `aria-live`); otherwise rowkit's own code, some of it ported from Reka UI. Extend a primitive, with its tests, rather than re-solving focus or dismissal inside a component.
+- **Own behaviour layer, no behaviour library.** Focus scope, dismissable layers, presence, scroll lock, hide-others and positioning live in `packages/ui/src/primitives/`, used by every component. Platform features where they are good enough (native inputs, `aria-live`); otherwise rowkit's own code. Extend a primitive, with its tests, rather than re-solving focus or dismissal inside a component.
 - **Tailwind CSS v4** — configured via the `@theme` block in CSS. There is no `tailwind.config.js`.
 - **Vitest** + **Storybook 10** (`@storybook/addon-vitest`, `@storybook/addon-a11y` as a gate, not a panel). Storybook 10, not 9: `@storybook/vue3-vite@9` peers on Vite 7 and this repo is on Vite 8.
 
 ## Rules
 
 1. **No hardcoded design values.** Colour, space, radius, shadow, and z-index come from a token. If a token is missing, propose one.
-2. **Behaviour you own, you test.** Keyboard, focus and dismiss behaviour gets an interaction test, and `addon-a11y` stays a gate. Code ported from Reka UI (MIT) keeps their copyright line in a header comment of the ported file.
+2. **Behaviour you own, you test.** Keyboard, focus and dismiss behaviour gets an interaction test, and `addon-a11y` stays a gate.
 3. **Parts, composed by the consumer.** The consumer places the parts that change: root, trigger, content, title, description. Parts that always travel together — portal, overlay, close — belong inside `DialogContent`. A `mode` prop that redraws the layout is the thing to avoid. Details are in `docs/conventions.md`.
 4. **`data-slot` on each public part**, kebab-cased (`dialog`, `dialog-title`), and `data-state` on parts that open and close.
 5. **Variants live in one `ComponentName.variants.ts`**, defined with `cva`.
@@ -44,6 +44,7 @@ Docs: `rowkit.dev`
 8. **Every public API change requires a changeset.** Rebuilding a component into parts is breaking. On 0.x, mark that changeset `minor` and say so in the text — a `major` here publishes 1.0.0.
 9. **No `any`.** If typing is genuinely hard, ask rather than escaping the type system.
 10. **Every public part accepts `class` and merges it** via `tailwind-merge`. A trigger the consumer restyles takes `as-child`.
+11. **No competitor names in code.** Source, comments, tests, stories and docs pages do not mention Reka UI. Explain a design choice on its own terms ("a traced polygon would…"), not by contrast with another library. The only places it is named: changesets, this file, and `packages/ui/THIRD_PARTY_NOTICES.md` (the MIT notice for code adapted from it — when you adapt more, add it there, never as a file header).
 
 `Toaster` and `Field` are still single components. Leave them that way unless rebuilding one is the task.
 
@@ -74,12 +75,18 @@ A component is not finished until all of these are true:
 - **When reviewing, list problems without fixing them** unless asked. The maintainer decides what matters.
 - **Look at the pixels.** After UI changes, screenshot and inspect. Do not claim "looks fine" from code alone.
 
+## The competitor: Reka UI
+
+[Reka UI](https://reka-ui.com) is rowkit's main competitor: the headless Vue behaviour library that Nuxt UI and shadcn-vue are built on, and that rowkit itself was built on until v2. Its source (MIT) is the best reference there is for how an accessible Vue component is put together — read it when designing a part: how its focus scope, dismissable layer, presence, popper or combobox handle the edge cases.
+
+Take how it is built; build it better. rowkit's versions already differ where Reka's were weak — Escape that reaches only the toast in focus, toasts ordered newest-first in the DOM instead of hidden focus proxies, one persistent live region, a tooltip that is its own description, a select written to the WAI-ARIA combobox pattern instead of a general engine with workarounds. Before porting something, ask what it gets wrong. Never add it back as a dependency, and never name it in code (rule 11).
+
 ## Design decisions already made
 
 Don't re-litigate these:
 
 - **npm package, not copy-paste distribution.** shadcn-vue's model is deliberate and good, but rowkit ships as a versioned package.
-- **No behaviour library.** rowkit moved off Reka UI; its primitives are rowkit's own, partly ported from Reka (MIT, attributed). Reka and shadcn-vue stay references for part structure and edge cases, never dependencies.
+- **No behaviour library.** rowkit's primitives are its own. Nothing like Reka UI is ever added back as a dependency.
 - **Assemblies are parts.** The consumer places root, trigger, content, and the text parts. Portal, overlay, and close can live inside content. See `docs/conventions.md`.
 - **The set is the professional toolkit.** Components are added until a product interface can be built from rowkit. There is no fixed count, and tables are one part of that set, not the boundary of it.
 - **MIT license.**

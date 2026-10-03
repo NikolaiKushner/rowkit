@@ -1,8 +1,3 @@
-<!--
-  Adapted from Reka UI's DismissableLayer (MIT).
-  Copyright (c) 2023 UnoVue <https://github.com/unovue>
--->
-
 <script setup lang="ts">
 import { computed, nextTick, ref, watch, watchEffect } from 'vue'
 import {

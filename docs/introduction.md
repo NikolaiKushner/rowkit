@@ -80,8 +80,8 @@ The honest framing, so you can route yourself correctly:
 | **Scope**        | A professional toolkit, still being completed | Broad, already broad        | Broad, already broad            |
 | **Upgrades**     | `semver`, you take the diff                   | `semver`, you take the diff | Yours to maintain once copied   |
 
-Nuxt UI and shadcn-vue build on Reka UI; rowkit owns its behaviour layer and
-depends on no behaviour library. The other difference is who owns the code after
+rowkit owns its behaviour layer and depends on no behaviour library. The other
+difference is who owns the code after
 installation, and how much of the set is already shipped. rowkit is the toolkit the product is built from; the
 unpublished components are on the roadmap, not missing by design.
 

@@ -1,7 +1,3 @@
-<!--
-  Adapted from Reka UI's TooltipProvider (MIT).
-  Copyright (c) 2023 UnoVue <https://github.com/unovue>
--->
 <script setup lang="ts">
 import { onBeforeUnmount, provide, ref, toRef } from 'vue'
 import { tooltipProviderKey } from './context'
@@ -9,8 +5,8 @@ import { tooltipProviderKey } from './context'
 /**
  * Shares tooltip timing across a group — a toolbar, typically.
  *
- * Renders nothing. Prop names match Reka UI's provider, which this replaces,
- * so existing markup keeps working.
+ * Renders nothing. Its prop names (`delayDuration`, `skipDelayDuration`) are
+ * kept stable, so existing markup keeps working.
  */
 defineOptions({ name: 'RkTooltipProvider' })
 

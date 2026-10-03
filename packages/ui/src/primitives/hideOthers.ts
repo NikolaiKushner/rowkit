@@ -1,8 +1,3 @@
-/*
- * Adapted from aria-hidden by Anton Korzunov (MIT), as used by Reka UI.
- * Copyright (c) 2017 Anton Korzunov
- */
-
 /** How many open layers currently hide each node. */
 let hiddenBy = new WeakMap<Element, number>()
 /** Nodes that were already `aria-hidden` before any layer touched them. */

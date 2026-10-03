@@ -80,7 +80,7 @@ async function waitForStorybook(page, url) {
 async function shot(page, baseUrl, storyId) {
   const url = `${baseUrl}/iframe.html?id=${storyId}&viewMode=story`
   await page.goto(url, { waitUntil: 'networkidle' })
-  // Let fonts / Reka portals settle.
+  // Let fonts and portals settle.
   await page.waitForTimeout(200)
   const file = resolve(outDir, `${storyId}.png`)
   await page.screenshot({ path: file, fullPage: true })

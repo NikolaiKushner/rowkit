@@ -1,7 +1,3 @@
-/*
- * Adapted from Reka UI's Primitive and Slot (MIT).
- * Copyright (c) 2023 UnoVue <https://github.com/unovue>
- */
 import {
   cloneVNode,
   Comment,
@@ -38,8 +34,7 @@ const VOID_TAGS = new Set(['area', 'img', 'input'])
  * Renders `as`, or with `asChild` hands its attributes to the slot's first
  * real element.
  *
- * Semantics match Reka UI's `Primitive` (MIT), which it replaced without
- * changing any rendered output: fragments are flattened, comment nodes
+ * The rules, chosen so swapping an element for `as-child` changes nothing else: fragments are flattened, comment nodes
  * skipped, the child's own props win where both sides set the same one (with
  * classes, styles and listeners merged rather than replaced), and the child's
  * `ref` is dropped so it does not shadow the part's.

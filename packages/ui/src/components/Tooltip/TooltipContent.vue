@@ -1,7 +1,3 @@
-<!--
-  Adapted from Reka UI's TooltipContent (MIT).
-  Copyright (c) 2023 UnoVue <https://github.com/unovue>
--->
 <script setup lang="ts">
 import { computed, onMounted, ref, watchEffect, type ComponentPublicInstance } from 'vue'
 import DismissableLayer from '../../primitives/DismissableLayer.vue'
@@ -76,8 +72,8 @@ watchEffect((onCleanup) => {
  * Hoverable content. Once the pointer leaves the trigger the tooltip stays
  * open while the pointer is over the trigger, the bubble, or the box spanning
  * both — so the 4px gap is crossable — and closes the moment it leaves that
- * box. Reka traces a polygon for the same job; the bounding box is simpler and
- * a little more forgiving.
+ * box. A bounding box rather than a traced polygon: simpler, and a little more
+ * forgiving.
  */
 watchEffect((onCleanup) => {
   if (!isClient || !tooltip.open.value || tooltip.disableHoverableContent.value) return
@@ -110,9 +106,8 @@ watchEffect((onCleanup) => {
     <Presence :present="tooltip.open.value">
       <!--
         The bubble is the description itself: role="tooltip", pointed at by
-        the trigger's aria-describedby. Reka renders a visually hidden copy of
-        the text inside the bubble for that job, so the text exists twice; one
-        element is enough.
+        the trigger's aria-describedby. No visually hidden copy of the text:
+        one element is enough, and the text exists once.
 
         A layer for Escape and outside clicks, but one that never blocks the
         page or reacts to focus moving on.

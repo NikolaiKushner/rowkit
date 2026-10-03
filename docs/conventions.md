@@ -35,8 +35,8 @@ way to write a `<table>`.
 
 ## Anatomy
 
-The part structure follows Reka UI's and shadcn-vue's, which rowkit started on.
-The behaviour behind the parts is rowkit's own, in `packages/ui/src/primitives/`.
+The behaviour behind the parts lives in `packages/ui/src/primitives/`, shared by
+every component.
 
 **The root owns the shared state and renders no chrome.** It `provide`s the
 context the parts read. File and export name drop the `Root` suffix:
@@ -48,8 +48,7 @@ from the shared primitives, or is layout only (`DialogHeader`, `DialogFooter`: a
 `div` and a slot, no behaviour). Focus trap, dismiss, scroll lock and
 positioning live in the primitives, written once, not re-solved per component.
 
-**Abstract the parts that always travel together.** This is the "Custom APIs"
-pattern Reka UI documents, not a shortcut around it. `DialogContent` includes the portal,
+**Abstract the parts that always travel together.** `DialogContent` includes the portal,
 the overlay, and the close button, so a consumer writes `Dialog`,
 `DialogTrigger`, and `DialogContent`. Title, description, header, and footer
 stay parts, because those are what changes from one dialog to the next. A
