@@ -70,7 +70,7 @@ The rules that get work sent back:
 
 Nothing is marked Stable until all seven are true:
 
-1. Renders every variant correctly in light and dark mode
+1. Renders every variant correctly in the Windows 98 theme
 2. Full keyboard support, and that support is documented
 3. `addon-a11y` passes with zero violations
 4. All props typed and JSDoc'd

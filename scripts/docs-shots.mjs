@@ -46,12 +46,9 @@ async function main() {
 
   await waitForDocs(page, baseUrl)
 
-  // Force light — README embeds are read on a light GitHub page.
+  // The site has one theme, but pin the media query so an OS dark setting on
+  // the machine taking the shot cannot leak into anything that reads it.
   await page.emulateMedia({ colorScheme: 'light' })
-  await page.evaluate(() => {
-    document.documentElement.classList.remove('dark')
-  })
-  await page.waitForTimeout(400)
 
   await page.waitForSelector('[data-rk-home]', { timeout: 15_000 })
   // Let fonts + table paint settle.

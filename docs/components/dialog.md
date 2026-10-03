@@ -280,9 +280,3 @@ The `Overlay/Dialog/Scroll Lock` story exists for this. Its interaction test
 asserts `clientWidth` is unchanged, which catches the measurable half; the visual
 half needs looking at on a platform with real scrollbars, or with
 **System Settings → Appearance → Show scroll bars: Always**.
-
-## Dark mode
-
-The scrim is `neutral-950/50` in both themes — a scrim is a dimming layer, not a
-surface, so it does not flip. Everything else uses `surface`, `border` and `text`
-tokens and follows the theme.

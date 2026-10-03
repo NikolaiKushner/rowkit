@@ -17,9 +17,8 @@ const OKLCH = /^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.]+)%\s*)
 /**
  * Parses an `oklch(L C H)` string, or `oklch(L C H / P%)`.
  *
- * Alpha exists for the dark-mode borders, which are white at 8% and 15% rather
- * than a solid grey. `alpha` is 1 when the value carries no slash, so callers
- * that predate it keep working.
+ * `alpha` is 1 when the value carries no slash, so callers that predate it
+ * keep working.
  */
 export function parseOklch(value: string): { l: number; c: number; h: number; alpha: number } {
   const match = OKLCH.exec(value)
@@ -100,8 +99,8 @@ export function resolveColorRefWithAlpha(cssVar: string): { rgb: LinearRgb; alph
  * Contrast between two semantic tokens, each given as a `var()` reference.
  *
  * A translucent foreground is composited over the background first. Without
- * that, dark mode's `border-control` — white at 15% — would be measured as pure
- * white and score 15:1 against the page, which is not a colour anyone sees.
+ * that, a white-at-15% border would be measured as pure white and score 15:1
+ * against the page, which is not a colour anyone sees.
  * The background is assumed opaque, which every surface token is.
  */
 export function semanticContrast(foreground: string, background: string): number {

@@ -3,8 +3,9 @@ import { create } from 'storybook/theming'
 /**
  * Storybook manager chrome, tuned to rowkit's tokens.
  *
- * Ink-blue primary, quiet neutrals, Geist — the same restraint as the
- * components. Not a second brand for the workshop.
+ * Still the pre-v2 palette. The Windows 98 colours and logo for this chrome
+ * come from the designer's brand frame; until then only the fonts follow the
+ * interim token stack. Not a second brand for the workshop.
  */
 export default create({
   base: 'light',
@@ -21,8 +22,8 @@ export default create({
   appBorderRadius: 6,
 
   // Type
-  fontBase: '"Geist Variable", Geist, ui-sans-serif, system-ui, sans-serif',
-  fontCode: '"Geist Mono Variable", "Geist Mono", ui-monospace, monospace',
+  fontBase: 'Tahoma, "Microsoft Sans Serif", "MS Sans Serif", Verdana, Arial, sans-serif',
+  fontCode: '"Lucida Console", "Courier New", ui-monospace, monospace',
   textColor: '#1A1D21',
   textMutedColor: '#6B7280',
   textInverseColor: '#F7F8FA',

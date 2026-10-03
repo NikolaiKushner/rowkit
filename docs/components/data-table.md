@@ -384,9 +384,3 @@ browser paints only what is visible. What does grow is initial render — about
 So the threshold is a render-time one: **above ~500 rows, paginate** with
 `Pagination`. That is the better interaction regardless, since nobody
 scrolls ten thousand rows looking for something.
-
-## Dark mode
-
-Header uses `surface-subtle`, body `surface`, separators `border-subtle`. Pinned
-cells carry their own `surface` background so rows do not show through them
-while scrolling. All of it flips with the theme.

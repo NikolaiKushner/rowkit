@@ -171,9 +171,3 @@ polite: it waits for a pause rather than cutting off whatever is being read.
 repeats what the title already says, and an unlabelled graphic in the middle of
 an explanation is noise. If the icon genuinely carries meaning the title does
 not, the title is wrong.
-
-## Dark mode
-
-Nothing special — text uses `text` and `text-muted`, the icon `text-subtle`, and
-all three flip with the theme. The component paints no background of its own, so
-it sits on whatever surface contains it.

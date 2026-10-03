@@ -3,7 +3,7 @@
  * The container every live demo on the site sits in.
  *
  * One component rather than a CSS class per page, so a demo cannot invent its
- * own padding, forget dark mode, or overflow the page on a phone. The border
+ * own padding or overflow the page on a phone. The border
  * and background come from rowkit's own semantic tokens, which means a demo
  * box on `rowkit.dev` is styled by the package it is demonstrating.
  *

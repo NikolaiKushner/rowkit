@@ -19,7 +19,7 @@ npm i @rowkit/tokens
 
 **Primitives** are the raw ramps: `--color-primary-600` is one specific blue and means nothing on its own. **Semantic** tokens name a role — `--color-card`, `--color-muted-foreground`, `--color-border` — and point at a primitive through `var()`.
 
-Only the semantic layer changes under `.dark`, which is what makes dark mode a matter of repointing references rather than hunting hex codes.
+Rebranding is a matter of repointing semantic references rather than hunting hex codes. There is one theme; rowkit has no dark mode.
 
 ## Use
 

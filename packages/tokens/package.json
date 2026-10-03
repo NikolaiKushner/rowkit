@@ -40,8 +40,7 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "build": "vue-tsc -b tsconfig.lib.json --force && vite build && node scripts/fix-dts-specifiers.mjs && node scripts/emit-css.mjs && node scripts/emit-reference.mjs",
-    "typecheck": "vue-tsc -b --force",
-    "reference": "pnpm build && open dist/reference.html"
+    "build": "vue-tsc -b tsconfig.lib.json --force && vite build && node scripts/fix-dts-specifiers.mjs && node scripts/emit-css.mjs",
+    "typecheck": "vue-tsc -b --force"
   }
 }

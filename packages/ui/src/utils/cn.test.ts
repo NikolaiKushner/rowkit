@@ -74,7 +74,7 @@ describe.each(stockScales)('%s tokens collide with each other', (_scale, prefix,
  * overriding one has to win.
  */
 describe('semantic colour utilities collide within a property', () => {
-  const semantic = Object.keys(tokens.color.semantic.light)
+  const semantic = Object.keys(tokens.color.semantic)
 
   it.each(['bg', 'text', 'border', 'ring', 'fill'] as const)('%s-*', (prefix) => {
     const [first, second] = [semantic[0], semantic[1]]

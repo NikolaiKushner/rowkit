@@ -4,7 +4,7 @@ import { defineConfig } from 'vitepress'
 /**
  * The default theme, customised through CSS variables — not a custom theme.
  *
- * The default ships search, sidebar, prev/next, mobile nav, dark mode and its
+ * The default ships search, sidebar, prev/next, mobile nav and its
  * own accessibility work. Rebuilding those produces a worse version of each,
  * and the brand is expressible entirely in `theme/tokens.css`.
  */
@@ -14,8 +14,9 @@ export default defineConfig({
   lang: 'en-GB',
   cleanUrls: true,
 
-  // Internal planning specs (`docs/phases/`) stay off the published site.
-  srcExclude: ['phases/**'],
+  // rowkit has one theme. This removes VitePress's light/dark switch and its
+  // `.dark` class, rather than leaving a toggle that restyles nothing.
+  appearance: false,
 
   sitemap: { hostname: 'https://rowkit.dev' },
 
@@ -79,7 +80,7 @@ export default defineConfig({
   ],
 
   themeConfig: {
-    logo: { light: '/mark-light.svg', dark: '/mark.svg', alt: 'rowkit' },
+    logo: { src: '/mark-light.svg', alt: 'rowkit' },
     siteTitle: 'rowkit',
 
     nav: [

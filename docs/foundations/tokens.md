@@ -32,7 +32,7 @@ means nothing on its own. **Semantic** tokens name a role — `--color-card`,
 `--color-muted-foreground`, `--color-border` — and point at a primitive through
 `var()`.
 
-Components only ever reference the semantic layer. That is what makes dark mode
+Components only ever reference the semantic layer. That is what makes a rebrand
 a matter of repointing references rather than hunting hex codes, and it is
 enforced in the package's own tests rather than left as a convention.
 
@@ -56,7 +56,7 @@ currently rendering it — **toggle the site's theme and every swatch here chang
 while the primitives above stay put.** That is the whole design in one
 interaction.
 
-<TokenGrid :tokens="tokens.color.semantic.light" prefix="--color">
+<TokenGrid :tokens="tokens.color.semantic" prefix="--color">
   <template #preview="{ token }">
     <span
       class="inline-block h-6 w-16 rounded-sm border border-border align-middle"
@@ -65,10 +65,8 @@ interaction.
   </template>
 </TokenGrid>
 
-The `light` and `dark` maps hold the same keys by construction, so there is no
-token that exists in one theme and not the other. Contrast for every pairing is
-asserted in the package's tests — the ratios are a build gate, not a claim in a
-comment.
+There is one theme, so there is one map. Contrast for every pairing is asserted
+in the package's tests — the ratios are a build gate, not a claim in a comment.
 
 ## Spacing
 
@@ -103,10 +101,6 @@ than one table.
 
 Each shadow mixes from `--color-shadow`, itself a semantic token, rather than
 hardcoding a colour.
-
-Dark mode leans on surface lightness for elevation instead of on shadows. A
-shadow is a darker region, and on a near-black page there is very little
-headroom left to darken — so the raised surface colour does that work.
 
 <TokenGrid :tokens="tokens.shadow" prefix="--shadow">
   <template #preview="{ value }">

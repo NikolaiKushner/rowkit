@@ -5,8 +5,7 @@ import {
   danger,
   neutral,
   primary,
-  semanticColorDark,
-  semanticColorLight,
+  semanticColor,
   success,
   warning,
 } from './color'
@@ -39,34 +38,26 @@ describe('colour primitives', () => {
 })
 
 describe('semantic colours', () => {
-  const themes = { light: semanticColorLight, dark: semanticColorDark }
-
   // Hard rule 1: no hardcoded design values. A semantic token that inlined a
   // colour would be invisible to a re-theme.
-  it.each(Object.entries(themes))('%s holds only primitive references', (_mode, theme) => {
-    for (const [token, value] of Object.entries(theme)) {
+  it('holds only primitive references', () => {
+    for (const [token, value] of Object.entries(semanticColor)) {
       expect(value, `${token} should be a var() reference`).toMatch(/^var\(--color-[a-z0-9-]+\)$/)
     }
   })
 
-  it.each(Object.entries(themes))('%s references primitives that exist', (_mode, theme) => {
-    for (const [token, value] of Object.entries(theme)) {
+  it('references primitives that exist', () => {
+    for (const [token, value] of Object.entries(semanticColor)) {
       const name = /^var\(--color-([a-z0-9-]+)\)$/.exec(value)?.[1]
       expect(Object.keys(colorPrimitives), `${token} points at --color-${name}`).toContain(name)
     }
   })
 
-  it('defines the same tokens in both themes', () => {
-    expect(Object.keys(semanticColorDark).sort()).toEqual(Object.keys(semanticColorLight).sort())
-  })
-
   it('does not reference a semantic token from another semantic token', () => {
-    const semanticNames = new Set(Object.keys(semanticColorLight))
-    for (const theme of Object.values(themes)) {
-      for (const value of Object.values(theme)) {
-        const name = /^var\(--color-([a-z0-9-]+)\)$/.exec(value)?.[1] ?? ''
-        expect(semanticNames.has(name)).toBe(false)
-      }
+    const semanticNames = new Set(Object.keys(semanticColor))
+    for (const value of Object.values(semanticColor)) {
+      const name = /^var\(--color-([a-z0-9-]+)\)$/.exec(value)?.[1] ?? ''
+      expect(semanticNames.has(name)).toBe(false)
     }
   })
 })

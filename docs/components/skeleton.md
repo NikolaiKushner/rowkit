@@ -115,9 +115,3 @@ meaningful graphics, and this is neither.
 **Animation timing** does not come from the motion tokens. Those cap at 320ms
 because they describe interaction feedback, where anything slower reads as lag.
 An ambient loop is a different thing and runs at Tailwind's 2s `animate-pulse`.
-
-## Dark mode
-
-The fill lifts off the surface rather than receding: `neutral-800` against a
-`neutral-900` card. A placeholder darker than the surface it sits on reads as a
-hole in the layout instead of as content on its way.

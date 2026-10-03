@@ -3,7 +3,7 @@
  * Screenshot Storybook stories for agent visual QA.
  *
  * Usage:
- *   pnpm visual:check              # default matrix, light + dark
+ *   pnpm visual:check              # default matrix
  *   pnpm visual:check Button       # only stories whose id contains "button"
  *   pnpm visual:check --url http://127.0.0.1:6006
  *
@@ -77,12 +77,12 @@ async function waitForStorybook(page, url) {
   )
 }
 
-async function shot(page, baseUrl, storyId, theme) {
-  const url = `${baseUrl}/iframe.html?id=${storyId}&globals=theme:${theme}&viewMode=story`
+async function shot(page, baseUrl, storyId) {
+  const url = `${baseUrl}/iframe.html?id=${storyId}&viewMode=story`
   await page.goto(url, { waitUntil: 'networkidle' })
   // Let fonts / Reka portals settle.
   await page.waitForTimeout(200)
-  const file = resolve(outDir, `${storyId}__${theme}.png`)
+  const file = resolve(outDir, `${storyId}.png`)
   await page.screenshot({ path: file, fullPage: true })
   return file
 }
@@ -103,15 +103,13 @@ async function main() {
     await waitForStorybook(page, url)
     const written = []
     for (const id of stories) {
-      for (const theme of ['light', 'dark']) {
-        const file = await shot(page, url, id, theme)
-        written.push(file)
-        console.log(file)
-      }
+      const file = await shot(page, url, id)
+      written.push(file)
+      console.log(file)
     }
     await writeFile(
       resolve(outDir, 'manifest.json'),
-      JSON.stringify({ url, stories, themes: ['light', 'dark'], files: written }, null, 2)
+      JSON.stringify({ url, stories, files: written }, null, 2)
     )
     console.error(`\nWrote ${written.length} screenshots to ${outDir}`)
     console.error('Open the PNGs (Read tool) and inspect before claiming UI work is done.')

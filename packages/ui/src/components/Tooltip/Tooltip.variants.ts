@@ -8,8 +8,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * `max-w-xs` is a hard limit rather than a suggestion. A tooltip that wraps to
  * four lines is documentation, and documentation belongs in the page.
  *
- * Near-black in light mode, near-white in dark — quiet chrome, not the brand
- * primary. A coloured tooltip reads as a floating button.
+ * Near-black — quiet chrome, not the brand primary. A coloured tooltip reads as a floating button.
  */
 export const tooltipContentVariants = cva([
   'z-tooltip max-w-xs rounded-md px-3 py-1.5',

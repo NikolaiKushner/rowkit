@@ -231,10 +231,3 @@ a list of them is exactly what a screen reader user gets.
 **The search box has a real label**, visually hidden via `Field`'s
 `labelSrOnly`. A placeholder is not a label — it disappears on the first
 keystroke and is not reliably announced.
-
-## Dark mode
-
-Chips use `surface-subtle` with a `border` hairline, both of which flip with the
-theme. They are deliberately quieter than `Badge`: a chip states a condition the
-user set, not a status that needs to catch the eye, and a row of coloured chips
-above a table competes with the data.

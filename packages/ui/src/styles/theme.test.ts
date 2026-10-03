@@ -154,7 +154,7 @@ describe('shadows', () => {
     // A border cannot do this job: under `border-collapse` it belongs to the
     // table grid, so a sticky header scrolls away from its own rule. The value
     // has to survive Tailwind's shadow-colour handling with the var() intact,
-    // or the line renders in the wrong colour under `.dark`.
+    // or the line stops following the border token.
     const css = await build('shadow-sticky-header')
     expect(css, 'shadow-sticky-header generated no rule').toContain('.shadow-sticky-header {')
     expect(css).toContain('inset')
@@ -171,13 +171,13 @@ describe('shadows', () => {
     expect(await build('shadow-scroll-x')).toContain('12px 0 16px -8px')
   })
 
-  it('keeps the shadow colour a variable, so .dark repoints it', async () => {
+  it('keeps the shadow colour a variable, so a rebrand repoints it', async () => {
     // Worth pinning, because the first thing Tailwind emits looks like it
     // breaks the theming model: it resolves --color-shadow to a literal for an
     // sRGB fallback. The live declaration sits in the @supports block below it
     // and keeps the var() intact, so a browser that can do color-mix — which
-    // is every browser that can read these oklch tokens — still picks up the
-    // dark override.
+    // is every browser that can read these oklch tokens — still follows the
+    // token.
     const css = await build('shadow-md')
     const rule = css.slice(css.indexOf('.shadow-md {'))
     const supports = rule.slice(rule.indexOf('@supports'))
@@ -185,20 +185,11 @@ describe('shadows', () => {
   })
 })
 
-describe('dark mode', () => {
-  it('is driven by the .dark class, not the OS setting', async () => {
-    const css = await build('dark:bg-card')
-    expect(css).toContain('.dark')
-    // Tailwind's stock `dark` variant is prefers-color-scheme. The token
-    // stylesheet redefines it so an app can offer an explicit theme switch.
-    expect(css).not.toContain('prefers-color-scheme')
-  })
-
-  it('repoints semantic colours without redefining primitives', async () => {
-    const css = await build('bg-card')
-    const darkBlock = css.slice(css.indexOf('.dark'))
-    expect(darkBlock).toContain('--color-card:')
-    expect(darkBlock).not.toContain('--color-neutral-900:')
+describe('one theme', () => {
+  it('ships no dark-mode overrides', async () => {
+    // rowkit has a single theme. A `.dark` block surviving in the token
+    // stylesheet would invite consumers to build on a theme that is gone.
+    expect(await build('bg-card')).not.toContain('.dark')
   })
 })
 

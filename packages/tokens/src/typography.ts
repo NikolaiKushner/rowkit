@@ -9,36 +9,24 @@
 /**
  * Font families.
  *
- * rowkit's face is **Geist** — designed for tools, not marketing pages. The
- * stack names the webfont first; system fallbacks keep layout honest before
- * the file lands. Loading the font is the app's job (one import from
- * `@fontsource-variable/geist`); without it, the stack falls through cleanly.
+ * Interim stack for the Windows 98 redesign. The final face is a pixel sans in
+ * the spirit of MS Sans Serif, and a pixel mono; neither is chosen yet (the
+ * licence has to sit with an MIT package and cover Cyrillic). Until then the
+ * stack leads with faces close to the Win98 look that operating systems
+ * already ship, so nothing has to be installed and nothing is loaded.
  */
 export const fontFamily = {
   /** UI and body text. */
   sans: [
-    '"Geist Variable"',
-    'Geist',
-    'ui-sans-serif',
-    'system-ui',
-    '-apple-system',
-    'Segoe UI',
-    'Roboto',
-    'Helvetica Neue',
+    'Tahoma',
+    '"Microsoft Sans Serif"',
+    '"MS Sans Serif"',
+    'Verdana',
     'Arial',
     'sans-serif',
   ].join(', '),
   /** IDs, hashes, numeric columns that must align vertically. */
-  mono: [
-    '"Geist Mono Variable"',
-    'Geist Mono',
-    'ui-monospace',
-    'SFMono-Regular',
-    'Menlo',
-    'Consolas',
-    'Liberation Mono',
-    'monospace',
-  ].join(', '),
+  mono: ['"Lucida Console"', '"Courier New"', 'ui-monospace', 'monospace'].join(', '),
 } as const
 
 /**

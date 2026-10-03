@@ -25,37 +25,17 @@ actually renders.
 
 Note there is no `.css` on either subpath. The export is `rowkit/styles`.
 
-## Typeface (optional, recommended)
+## Typeface
 
-rowkit's token stack leads with **Geist**. The library does not ship the font
-files — pull them once in the app:
-
-```bash
-pnpm add @fontsource-variable/geist @fontsource-variable/geist-mono
-```
-
-```css
-@import '@fontsource-variable/geist/wght.css';
-@import '@fontsource-variable/geist-mono/wght.css';
-@import 'tailwindcss';
-@import 'rowkit/styles';
-```
-
-Skip the imports and the stack falls through to system UI fonts. Override
+Nothing to install. The token stack leads with faces operating systems already
+ship (Tahoma, then Microsoft Sans Serif and Verdana). A pixel face in the
+spirit of MS Sans Serif is planned for the Windows 98 redesign. Override
 `--font-sans` / `--font-mono` if you want a different face.
 
-## Dark mode
+## One theme
 
-Add the `dark` class to `<html>`. rowkit's tokens key off the class, not
-`prefers-color-scheme`, so you control when the theme flips:
-
-```ts
-document.documentElement.classList.toggle('dark', isDark)
-```
-
-Only semantic tokens change under `.dark`; the colour primitives stay fixed. A
-component never knows which theme is active — it reads `--color-card` and the
-answer differs.
+rowkit ships a single theme. There is no dark mode and no `.dark` class to set;
+rebrand by repointing the semantic tokens instead.
 
 ## Nuxt
 
@@ -138,11 +118,6 @@ supports package exports (Vite 5+, webpack 5+) and that TypeScript is on
 These are token-backed utilities and need `rowkit/styles` imported. If they still
 produce nothing, the token CSS has not been picked up — confirm
 `@rowkit/tokens` resolved, since `rowkit/styles` imports it.
-
-### Dark mode does not switch
-
-rowkit keys off the `.dark` class rather than `prefers-color-scheme`. Setting the
-OS preference alone does nothing; the class has to be on `<html>`.
 
 ## Tokens without components
 

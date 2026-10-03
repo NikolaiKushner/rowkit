@@ -272,23 +272,6 @@ export const amber = {
 } as const
 
 /**
- * White at a fraction of opacity, for dark-mode borders.
- *
- * Alpha, not a solid grey: a grey tuned for `--background` draws too hard a
- * line once the same border sits on `--card`. The reference uses 10% / 15%;
- * rowkit softens the decorative hairline to 8% so dense tables stay quiet in
- * dark mode the same way the cool light hairline does.
- */
-export const whiteAlpha = {
-  /** Soft decorative hairline in dark mode. */
-  8: 'oklch(1 0 0 / 8%)',
-  /** the reference dark `--border`. */
-  10: 'oklch(1 0 0 / 10%)',
-  /** Emphasised dark hairline / the reference dark `--input`. */
-  15: 'oklch(1 0 0 / 15%)',
-} as const
-
-/**
  * Every primitive colour, keyed by the CSS custom property it becomes.
  *
  * These are the only place a literal colour value appears in rowkit. Everything
@@ -301,7 +284,6 @@ export const colorPrimitives = {
   ...prefixKeys('red', red),
   ...prefixKeys('green', green),
   ...prefixKeys('amber', amber),
-  ...prefixKeys('white-alpha', whiteAlpha),
   ...prefix('neutral', neutral),
   ...prefix('primary', primary),
   ...prefix('success', success),
@@ -321,8 +303,8 @@ function prefix<N extends string>(
 /**
  * The same, for a scale that is not an eleven-step ramp.
  *
- * `gray` and `whiteAlpha` are keyed by lightness and by opacity, so they cannot
- * go through {@link prefix}, which walks {@link colorSteps}.
+ * `gray`, `red`, `green` and `amber` are keyed by lightness, so they cannot go
+ * through {@link prefix}, which walks {@link colorSteps}.
  */
 function prefixKeys<N extends string, S extends Record<string | number, string>>(
   name: N,
@@ -345,7 +327,7 @@ const ref = (token: keyof typeof colorPrimitives): ColorRef => `var(--color-${to
  * through `var()`, so re-theming means repointing references rather than
  * hunting down hex codes. `semantic.test.ts` enforces this.
  */
-export const semanticColorLight = {
+export const semanticColor = {
   /**
    * Page background, behind all surfaces.
    *
@@ -406,7 +388,7 @@ export const semanticColorLight = {
    *
    * Cool and lighter than the reference 0.922. Deliberately below 3:1 — do not
    * use it for the boundary of an interactive control; see
-   * {@link semanticColorLight['input']}.
+   * {@link semanticColor['input']}.
    */
   border: ref('gray-940'),
   /** Emphasised decorative border: dividers that need to read as structure. */
@@ -489,86 +471,5 @@ export const semanticColorLight = {
   'danger-border': ref('danger-200'),
 } as const
 
-/**
- * Dark-mode semantic colours, applied under `.dark`.
- *
- * Soft ink fills invert on dark pages: a near-white solid with dark type,
- * rather than a mid-grey that disappears into the chrome.
- */
-export const semanticColorDark = {
-  background: ref('gray-145'),
-  card: ref('gray-205'),
-  muted: ref('gray-269'),
-  accent: ref('gray-269'),
-  'surface-active': ref('gray-371'),
-  'surface-selected': ref('gray-269'),
-  'surface-disabled': ref('gray-269'),
-  // Lifts off `surface` rather than receding. On a dark page a placeholder
-  // darker than its card reads as a hole in the layout.
-  skeleton: ref('gray-269'),
-
-  foreground: ref('gray-985'),
-  // The reference design's own value, kept: 7.63:1 on the page and 5.83:1 on `--muted`, so
-  // dark mode needs none of the correction light mode did.
-  'muted-foreground': ref('gray-708'),
-  'text-subtle': ref('gray-556'),
-  'text-disabled': ref('gray-556'),
-
-  // White at alpha, not a solid grey — see `whiteAlpha`. Decorative hairline
-  // softens to 8% so dense tables stay quiet; controls keep 15% for 1.4.11.
-  border: ref('white-alpha-8'),
-  'border-strong': ref('white-alpha-15'),
-  'border-subtle': ref('white-alpha-8'),
-  // The reference `--input`, unchanged: composited over the page it measures
-  // 3.82:1, and 3.54:1 over a card, so both clear 1.4.11 without help.
-  input: ref('white-alpha-15'),
-  /**
-   * Soft focus — white at the same quiet weight as the control border, not a
-   * bright primary wash. Reads as a silver edge on dark surfaces.
-   */
-  ring: ref('white-alpha-15'),
-
-  shadow: ref('black'),
-
-  'neutral-solid': ref('gray-269'),
-  'neutral-solid-hover': ref('gray-371'),
-  'neutral-on-solid': ref('gray-985'),
-  'neutral-subtle': ref('gray-269'),
-  'neutral-on-subtle': ref('gray-985'),
-  'neutral-border': ref('gray-371'),
-
-  // Soft near-white fill with dark label — ink inverted for dark pages.
-  'primary-solid': ref('primary-100'),
-  'primary-solid-hover': ref('primary-50'),
-  'primary-on-solid': ref('primary-900'),
-  'primary-subtle': ref('primary-900'),
-  'primary-on-subtle': ref('primary-200'),
-  'primary-border': ref('primary-700'),
-
-  'success-solid': ref('green-550'),
-  'success-solid-hover': ref('green-520'),
-  'success-on-solid': ref('white'),
-  'success-subtle': ref('green-260'),
-  'success-on-subtle': ref('green-850'),
-  'success-border': ref('green-350'),
-
-  'warning-solid': ref('amber-550'),
-  'warning-solid-hover': ref('amber-520'),
-  'warning-on-solid': ref('white'),
-  'warning-subtle': ref('amber-260'),
-  'warning-on-subtle': ref('amber-850'),
-  'warning-border': ref('amber-350'),
-
-  // The same red as light mode, with a white label. See `red`.
-  'danger-solid': ref('red-577'),
-  'danger-solid-hover': ref('red-520'),
-  'danger-on-solid': ref('white'),
-  // Soft destructive wash in dark — same philosophy as light (pink wash +
-  // coloured label), mirroring success/warning dark subtle steps.
-  'danger-subtle': ref('red-260'),
-  'danger-on-subtle': ref('red-850'),
-  'danger-border': ref('red-350'),
-} as const
-
 /** Names of every semantic colour token. */
-export type SemanticColorName = keyof typeof semanticColorLight
+export type SemanticColorName = keyof typeof semanticColor

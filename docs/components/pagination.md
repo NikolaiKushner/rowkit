@@ -159,8 +159,3 @@ page numbers either side already convey the gap.
 
 **Page buttons are named "Page 7" by the Reka primitive**, not just "7", so they
 are unambiguous when read out of context.
-
-## Dark mode
-
-The active page uses `primary-solid` with `primary-on-solid`, which flips with
-the theme. Everything else is transparent over whatever surface contains it.

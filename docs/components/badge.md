@@ -82,8 +82,8 @@ yourself wanting keyboard support here, you want a different component.
 
 - The dot is `aria-hidden`: it repeats information the label already carries,
   and announcing it before every status would be noise.
-- Every `variant` × `appearance` pair meets WCAG AA for text contrast in both
-  light and dark mode. This is asserted in `@rowkit/tokens`, not assumed.
+- Every `variant` × `appearance` pair meets WCAG AA for text contrast. This
+  is asserted in `@rowkit/tokens`, not assumed.
 - A badge announces as plain text. If its appearance is the _result_ of an
   action the user just took, put it in a container with `aria-live`, not on
   the badge itself.

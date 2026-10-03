@@ -30,11 +30,9 @@ import {
   neutral,
   primary,
   red,
-  semanticColorDark,
-  semanticColorLight,
+  semanticColor,
   success,
   warning,
-  whiteAlpha,
 } from './color'
 import { duration, easing } from './motion'
 import { radius, radiusBase } from './radius'
@@ -53,11 +51,9 @@ export {
   neutral,
   primary,
   red,
-  semanticColorDark,
-  semanticColorLight,
+  semanticColor,
   success,
   warning,
-  whiteAlpha,
 } from './color'
 export type { ColorRef, ColorStep, SemanticColorName } from './color'
 
@@ -95,7 +91,6 @@ export const tokens = {
     gray,
     green,
     amber,
-    whiteAlpha,
     neutral,
     primary,
     red,
@@ -105,10 +100,7 @@ export const tokens = {
     /** Flat map of every primitive, keyed by CSS custom property suffix. */
     primitives: colorPrimitives,
     /** Semantic tokens, which reference primitives via `var()`. */
-    semantic: {
-      light: semanticColorLight,
-      dark: semanticColorDark,
-    },
+    semantic: semanticColor,
   },
   spacing,
   spacingBase,

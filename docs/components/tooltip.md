@@ -225,9 +225,3 @@ hoverable content, so the tooltip is not snatched away mid-read.
 
 **Motion is ambient**, so it is gated behind `motion-safe:` and collapses to an
 instant show/hide under `prefers-reduced-motion`.
-
-## Dark mode
-
-The bubble uses `neutral-solid` with `neutral-on-solid`, which inverts with the
-theme — dark bubble on a light page, light bubble on a dark one — so it always
-reads as a layer above the surface rather than part of it.

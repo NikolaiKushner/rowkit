@@ -196,9 +196,3 @@ Enter and exit are ambient, so they are gated behind `motion-safe:` and collapse
 to instant under `prefers-reduced-motion`. The travel is horizontal because every
 position preset is anchored to a side edge; vertical entry would read as the
 stack reordering itself.
-
-## Dark mode
-
-Each tone uses its `-subtle` / `-on-subtle` / `-border` trio, all of which flip
-with the theme. Neutral sits on `surface` so it reads as a raised card rather
-than a coloured alert.

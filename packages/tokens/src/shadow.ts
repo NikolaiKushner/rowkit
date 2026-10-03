@@ -2,12 +2,7 @@
  * Elevation shadows.
  *
  * Each shadow mixes from `--color-shadow`, a semantic token, rather than
- * hardcoding a colour — so dark mode swaps the base to pure black by
- * repointing one variable.
- *
- * Dark mode leans on surface lightness for elevation rather than on shadows.
- * A shadow is a darker region, and on a near-black page there is very little
- * headroom left to darken; the raised surface colour does the work instead.
+ * hardcoding a colour, so the base can be repointed in one place.
  */
 export const shadow = {
   /** No elevation. */

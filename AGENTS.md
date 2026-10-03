@@ -97,7 +97,7 @@ pnpm format       # prettier
 pnpm size         # bundle budget, brotli
 
 pnpm storybook    # then, in another terminal:
-pnpm visual:check # screenshot default stories → .visual-check/ (still shoots dark too until v2 drops it)
+pnpm visual:check # screenshot default stories → .visual-check/
 pnpm visual:check Button  # scoped to one component
 
 pnpm docs:props   # regenerate the props tables after touching a prop or its JSDoc
