@@ -24,7 +24,7 @@ Docs: `rowkit.dev`
   New surface belongs when a product interface is awkward without it. There is
   no fixed component count.
 
-**Visual direction:** restraint, structure without severity, no excess. Neutral chrome; ink-blue primary (`oklch(0.32 0.09 255)`), not a chromatic shout. Consumers rebrand via tokens — defaults must not fight them. Geist stays.
+**Visual direction:** Windows 98. Grey `#C0C0C0` face, two-pixel bevels (raised, pressed, sunken), navy `#000080` selection and title-bar gradient, square corners, no soft shadows, no blur, next to no motion. A pixel sans in the spirit of MS Sans Serif replaces Geist. One light theme — there is no dark mode. The style, not the assets: no Microsoft logos, Windows flag or original system icons. Consumers still rebrand via tokens (`--color-primary-*`). The v2 redesign is in progress on `refactor/v2`; until a component is redrawn, its current look is legacy, not a reference.
 
 ## Stack
 
@@ -55,14 +55,14 @@ A single element (`Button`, `Badge`, `Input`, `Skeleton`, `EmptyState`) is one V
 
 A component is not finished until all of these are true:
 
-1. Renders all variants correctly in light and dark mode
+1. Renders all variants correctly in the Windows 98 theme
 2. Full keyboard support, and that support is documented
 3. `addon-a11y` passes with zero violations
 4. All props typed and JSDoc'd
 5. Stories cover every variant, every state, and — for an assembly — the parts composed by the consumer
 6. Interaction test for the primary behavior
 7. Docs page written, including a **"when not to use"** section
-8. **Visual QA:** `pnpm visual:check <Component>` (Storybook must be running), then **Read the PNGs** and fix anything that looks wrong in light or dark. Green tests are not enough.
+8. **Visual QA:** `pnpm visual:check <Component>` (Storybook must be running), then **Read the PNGs** and fix anything that looks wrong: blurred bevel edges, fractional pixels, an invisible focus rectangle. Green tests are not enough.
 
 ## How to work on this
 
@@ -84,6 +84,7 @@ Don't re-litigate these:
 - **The set is the professional toolkit.** Components are added until a product interface can be built from rowkit. There is no fixed count, and tables are one part of that set, not the boundary of it.
 - **MIT license.**
 - **Tokens as a separate package**, so they can be consumed without importing components.
+- **Windows 98 is the only theme.** It replaces the previous restrained look entirely, and dark mode is dropped. Semantic token names stay; their values change.
 
 ## Commands
 
@@ -96,7 +97,7 @@ pnpm format       # prettier
 pnpm size         # bundle budget, brotli
 
 pnpm storybook    # then, in another terminal:
-pnpm visual:check # screenshot default stories, light + dark → .visual-check/
+pnpm visual:check # screenshot default stories → .visual-check/ (still shoots dark too until v2 drops it)
 pnpm visual:check Button  # scoped to one component
 
 pnpm docs:props   # regenerate the props tables after touching a prop or its JSDoc
@@ -107,7 +108,7 @@ pnpm docs:agents  # regenerate packages/ui/AGENTS.md, likewise
 the type checker all resolve `rowkit` through `packages/ui/dist`, and an unbuilt
 workspace produces a wall of confusing type errors rather than one clear one.
 
-After any change that touches variants, tokens, layout, or dark mode: run
+After any change that touches variants, tokens, or layout: run
 `pnpm visual:check`, **Read the PNGs**, and fix what looks wrong before claiming
 done. Styling fails silently — screenshots are how agents catch it.
 

@@ -22,22 +22,21 @@ wrote in order to use rowkit. Until that has happened, the version stays on
 
 ## Design direction
 
-Restraint. Structure without severity. No excess.
-
-Chrome stays neutral, and status colour means something while brand colour does
-not live in the defaults. Primary is ink blue
-(`oklch(0.32 0.09 255)`); rebrand by pointing `--color-primary-*` at your own
-colour. Soft destructive, soft focus, quiet borders.
+Windows 98. Grey face, two-pixel bevels, navy selection, square corners, a
+pixel sans — the style, not the assets. It replaces the earlier restrained look
+entirely, and there is one light theme: dark mode is dropped in v2. Status is
+carried by an icon as well as a colour. Rebrand by pointing `--color-primary-*`
+at your own colour.
 
 ## In progress
 
-- Shipping the pending release — a breaking `Button` API, espresso tokens,
-  quieter chrome
+- The Windows 98 redesign (v2): tokens, every component, the playground and
+  this site, drawn in Figma first and then restyled one component at a time
 - Closing a gap in the screenshot-based visual QA, where two overlay stories
   were being captured without the overlay open
-- Two consistency calls left over from the restyle: `Badge` `subtle` `primary`
-  reads as neutral, and the dark-mode invalid field is louder than the library's
-  soft-destructive language elsewhere
+- Two consistency calls for the redesign to settle: `Badge` `subtle` `primary`
+  reads as neutral, and the invalid field is louder than the library's danger
+  states elsewhere
 - Hardening the pattern pages from real application friction rather than from
   what the components happen to offer
 
@@ -50,7 +49,7 @@ on this list when a product interface is awkward without it.
 
 ## Not the toolkit
 
-A custom docs theme · a Figma kit · a React port. Separate work, not components
+A published Figma kit · a React port. Separate work, not components
 of this library.
 
 ## Non-goals
