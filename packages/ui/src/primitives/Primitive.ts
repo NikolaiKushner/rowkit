@@ -5,6 +5,7 @@ import {
   Fragment,
   h,
   mergeProps,
+  Text,
   type Component,
   type PropType,
   type VNode,
@@ -23,21 +24,75 @@ export interface PrimitiveProps {
    * this part's attributes, classes and listeners onto it.
    */
   asChild?: boolean
-  /** The element or component to render. Ignored when `asChild` is set. */
+  /** The element or component to render. Defaults to `div`. */
   as?: string | Component
 }
 
-/** Void elements: rendering them with children is invalid, so they get none. */
-const VOID_TAGS = new Set(['area', 'img', 'input'])
+/** Elements that cannot have children; slot content is dropped for them. */
+const EMPTY_ELEMENTS = new Set([
+  'area',
+  'base',
+  'br',
+  'col',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'link',
+  'meta',
+  'source',
+  'track',
+  'wbr',
+])
 
 /**
- * Renders `as`, or with `asChild` hands its attributes to the slot's first
- * real element.
+ * Walks the slot output in render order and returns the first node that will
+ * actually produce an element: fragments are opened, comments and
+ * whitespace-only text are passed over.
+ */
+export function firstRenderable(nodes: readonly unknown[]): VNode | undefined {
+  for (const node of nodes) {
+    if (Array.isArray(node)) {
+      const found = firstRenderable(node)
+      if (found) return found
+      continue
+    }
+    if (node === null || typeof node !== 'object') continue
+    const vnode = node as VNode
+    if (vnode.type === Comment) continue
+    if (vnode.type === Text && (typeof vnode.children !== 'string' || vnode.children.trim() === ''))
+      continue
+    if (vnode.type === Fragment) {
+      const found = firstRenderable(Array.isArray(vnode.children) ? vnode.children : [])
+      if (found) return found
+      continue
+    }
+    return vnode
+  }
+  return undefined
+}
+
+/**
+ * Hands the part's attributes to the consumer's element.
  *
- * The rules, chosen so swapping an element for `as-child` changes nothing else: fragments are flattened, comment nodes
- * skipped, the child's own props win where both sides set the same one (with
- * classes, styles and listeners merged rather than replaced), and the child's
- * `ref` is dropped so it does not shadow the part's.
+ * Attributes are merged once, with the child listed last: where both set the
+ * same plain attribute the child's value stands, while classes, styles and
+ * listeners from both sides are kept. A `ref` on the child stays where it was,
+ * so whoever placed it — the consumer or an enclosing part — still reaches the
+ * element; a ref on this component resolves to the same element through `$el`.
+ */
+function adopt(child: VNode, attrs: Record<string, unknown>): VNode {
+  const copy = cloneVNode(child, {}, false)
+  copy.props = mergeProps(attrs, child.props ?? {})
+  return copy
+}
+
+/**
+ * Renders `as`, or with `asChild` lends its attributes to the first element
+ * the consumer's slot produces.
+ *
+ * Swapping a wrapper for `as-child` is meant to change nothing else: the same
+ * attributes, classes and listeners end up on the rendered element either way.
  */
 export const Primitive = defineComponent({
   name: 'RkPrimitive',
@@ -48,36 +103,12 @@ export const Primitive = defineComponent({
   },
   setup(props, { attrs, slots }) {
     return () => {
-      if (props.asChild) return renderAsChild(attrs, slots.default?.())
-      if (typeof props.as === 'string' && VOID_TAGS.has(props.as)) return h(props.as, attrs)
-      return h(props.as, attrs, { default: slots.default })
+      if (props.asChild) {
+        const child = firstRenderable(slots.default?.() ?? [])
+        return child ? adopt(child, attrs) : null
+      }
+      const childless = typeof props.as === 'string' && EMPTY_ELEMENTS.has(props.as)
+      return h(props.as, attrs, childless ? undefined : slots.default)
     }
   },
 })
-
-function renderAsChild(
-  attrs: Record<string, unknown>,
-  slotContent: VNode[] | undefined
-): VNode | VNode[] | null {
-  if (!slotContent) return null
-  const children = flatten(slotContent)
-  const index = children.findIndex((child) => child.type !== Comment)
-  const child = children[index]
-  if (child === undefined) return children
-
-  const childProps = { ...child.props }
-  delete childProps.ref
-  const cloned = cloneVNode({ ...child, props: {} }, mergeProps(attrs, childProps))
-
-  if (children.length === 1) return cloned
-  children[index] = cloned
-  return children
-}
-
-function flatten(nodes: VNode[]): VNode[] {
-  return nodes.flatMap((node) =>
-    node.type === Fragment && Array.isArray(node.children)
-      ? flatten(node.children as VNode[])
-      : [node]
-  )
-}

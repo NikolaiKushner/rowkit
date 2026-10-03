@@ -1,49 +1,21 @@
-<script lang="ts">
-import { ref as vueRef } from 'vue'
-
-interface Scope {
-  paused: boolean
-}
-
-/**
- * Open scopes, newest first. Opening a scope pauses the one below it, so a
- * Select inside a Dialog can take focus without the Dialog's trap pulling it
- * back.
- */
-const stack = vueRef<Scope[]>([])
-
-function addScope(scope: Scope): void {
-  const active = stack.value[0]
-  if (active && active !== scope) active.paused = true
-  stack.value = [scope, ...stack.value.filter((s) => s !== scope)]
-}
-
-function removeScope(scope: Scope): void {
-  stack.value = stack.value.filter((s) => s !== scope)
-  const next = stack.value[0]
-  if (next) next.paused = false
-}
-</script>
-
 <script setup lang="ts">
-import { computed, nextTick, reactive, ref, watchEffect } from 'vue'
-import {
-  focus,
-  focusFirst,
-  getActiveElement,
-  getTabbableCandidates,
-  getTabbableEdges,
-  isClient,
-  unrefElement,
-} from './dom'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch, type ComponentPublicInstance } from 'vue'
+import { getActiveElement, unrefElement } from './dom'
+import { enterTrap, moveFocus, tabbables } from './focus'
 import { Primitive } from './Primitive'
 
 /**
- * Moves focus into its child on mount, optionally keeps it there, and returns
- * it to where it came from on unmount.
+ * Keeps keyboard focus with a piece of UI for as long as it is open.
  *
- * Renders no element of its own: its `tabindex` and key handling land on the
- * single child, as if it were `as-child`.
+ * - On mount, focus moves to the first thing Tab can reach inside, or to the
+ *   scope itself when there is nothing.
+ * - `trapped`: focus that leaves — by Tab, by a click outside, by script — is
+ *   brought back to where it last was inside.
+ * - `loop`: Tab past the last stop wraps to the first, Shift+Tab back.
+ * - On unmount, focus goes back to whatever had it before the scope opened.
+ *
+ * The scope renders no element of its own; it lends `tabindex="-1"` and its
+ * Tab handling to the single child.
  */
 const props = withDefaults(
   defineProps<{
@@ -62,124 +34,120 @@ const emit = defineEmits<{
   unmountAutoFocus: [event: Event]
 }>()
 
-const root = ref<InstanceType<typeof Primitive> | null>(null)
-const container = computed(() => unrefElement(root.value))
-const lastFocused = ref<HTMLElement | null>(null)
-const scope = reactive<Scope>({ paused: false })
+const root = ref<ComponentPublicInstance>()
+const scope = (): HTMLElement | undefined => unrefElement(root.value)
 
-const MOUNT = 'focusScope.autoFocusOnMount'
-const UNMOUNT = 'focusScope.autoFocusOnUnmount'
-const EVENT_OPTIONS = { bubbles: false, cancelable: true }
+/** Where focus was before the scope opened; it goes back there on close. */
+let previous: HTMLElement | undefined
+/** The last element inside that had focus; a trap pulls focus back to it. */
+let lastInside: HTMLElement | undefined
 
-/* Trap ---------------------------------------------------------------------- */
+function contains(node: EventTarget | null): node is HTMLElement {
+  return node instanceof HTMLElement && (scope()?.contains(node) ?? false)
+}
 
-watchEffect((onCleanup) => {
-  if (!isClient || !props.trapped) return
-  const el = container.value
-  if (!el) return
+let trap: ReturnType<typeof enterTrap> | undefined
+let observer: MutationObserver | undefined
 
-  const onFocusIn = (event: FocusEvent) => {
-    if (scope.paused) return
-    const target = event.target as HTMLElement | null
-    if (el.contains(target)) lastFocused.value = target
-    else focus(lastFocused.value, { select: true })
-  }
-
-  /*
-   * A null relatedTarget means the window lost focus, or Chrome removed the
-   * focused node. Leave both alone: the browser restores focus itself, and
-   * refocusing a removed node in Chrome spins the CPU.
-   */
-  const onFocusOut = (event: FocusEvent) => {
-    if (scope.paused) return
-    const next = event.relatedTarget as HTMLElement | null
-    if (next !== null && !el.contains(next)) focus(lastFocused.value, { select: true })
-  }
-
-  /* When the focused element is removed, browsers drop focus to <body>. */
-  const observer = new MutationObserver((mutations) => {
-    const last = lastFocused.value
-    if (!last || !mutations.some((m) => m.removedNodes.length > 0)) return
-    if (!el.contains(last)) focus(el)
-  })
-
-  document.addEventListener('focusin', onFocusIn)
-  document.addEventListener('focusout', onFocusOut)
-  observer.observe(el, { childList: true, subtree: true })
-  onCleanup(() => {
-    document.removeEventListener('focusin', onFocusIn)
-    document.removeEventListener('focusout', onFocusOut)
-    observer.disconnect()
-  })
-})
-
-/* Auto-focus on mount, restore on unmount ---------------------------------- */
-
-watchEffect((onCleanup) => {
-  const el = container.value
-  if (!el) return
-  let restore: (() => void) | undefined
-  let cancelled = false
-
-  // A tick late, so the content has rendered and has something to focus.
-  void nextTick().then(() => {
-    if (cancelled) return
-    addScope(scope)
-    const previous = getActiveElement() as HTMLElement | null
-
-    if (!el.contains(previous)) {
-      const event = new CustomEvent(MOUNT, EVENT_OPTIONS)
-      const handler = (e: Event) => emit('mountAutoFocus', e)
-      el.addEventListener(MOUNT, handler)
-      el.dispatchEvent(event)
-      el.removeEventListener(MOUNT, handler)
-      if (!event.defaultPrevented) {
-        focusFirst(getTabbableCandidates(el), { select: true })
-        if (getActiveElement() === previous) focus(el)
-      }
-    }
-
-    restore = () => {
-      const event = new CustomEvent(UNMOUNT, EVENT_OPTIONS)
-      const handler = (e: Event) => emit('unmountAutoFocus', e)
-      el.addEventListener(UNMOUNT, handler)
-      el.dispatchEvent(event)
-      el.setAttribute('data-focus-scope-unmounting', '')
-      setTimeout(() => {
-        if (!event.defaultPrevented) focus(previous ?? document.body, { select: true })
-        el.removeEventListener(UNMOUNT, handler)
-        removeScope(scope)
-        el.removeAttribute('data-focus-scope-unmounting')
-      }, 0)
-    }
-  })
-
-  onCleanup(() => {
-    cancelled = true
-    restore?.()
-  })
-})
-
-/* Tab looping ---------------------------------------------------------------- */
-
-function onKeyDown(event: KeyboardEvent): void {
-  if ((!props.loop && !props.trapped) || scope.paused) return
-  const isTab = event.key === 'Tab' && !event.altKey && !event.ctrlKey && !event.metaKey
-  const focused = getActiveElement() as HTMLElement | null
-  if (!isTab || !focused) return
-
-  const el = event.currentTarget as HTMLElement
-  const [first, last] = getTabbableEdges(el)
-  if (!first || !last) {
-    if (focused === el) event.preventDefault()
+function onFocusIn(event: FocusEvent): void {
+  if (contains(event.target)) {
+    lastInside = event.target
     return
   }
-  if (!event.shiftKey && focused === last) {
+  if (!trap?.innermost()) return
+  if (!moveFocus(lastInside)) moveFocus(scope())
+}
+
+/** The focused element was removed from inside: keep focus in the scope. */
+function onMutation(): void {
+  if (!trap?.innermost()) return
+  const active = getActiveElement()
+  if (active === null || active === document.body) moveFocus(scope())
+}
+
+function startTrap(): void {
+  const element = scope()
+  if (trap || !element) return
+  trap = enterTrap()
+  document.addEventListener('focusin', onFocusIn)
+  observer = new MutationObserver(onMutation)
+  observer.observe(element, { childList: true, subtree: true })
+}
+
+function stopTrap(): void {
+  if (!trap) return
+  trap.leave()
+  trap = undefined
+  document.removeEventListener('focusin', onFocusIn)
+  observer?.disconnect()
+  observer = undefined
+}
+
+let mounted = false
+
+onMounted(() => {
+  mounted = true
+  const element = scope()
+  if (!element) return
+  const active = getActiveElement()
+  if (active instanceof HTMLElement) previous = active
+  if (props.trapped) startTrap()
+
+  // Once everything opening with the scope has rendered and run its own
+  // post-render work — which may still want to know where focus was.
+  void nextTick(() => {
+    if (!mounted || element.contains(getActiveElement())) return
+    const event = new CustomEvent('rowkit.focusScope.mount', { cancelable: true })
+    emit('mountAutoFocus', event)
+    if (event.defaultPrevented) return
+    if (!moveFocus(tabbables(element)[0], { select: true })) moveFocus(element)
+  })
+})
+
+watch(
+  () => props.trapped,
+  (trapped) => (trapped ? startTrap() : stopTrap())
+)
+
+/*
+ * Before unmounting, not after: Vue drops events emitted by an unmounted
+ * component, and the handler must still be able to cancel and place focus.
+ */
+onBeforeUnmount(() => {
+  mounted = false
+  stopTrap()
+  const event = new CustomEvent('rowkit.focusScope.unmount', { cancelable: true })
+  emit('unmountAutoFocus', event)
+  if (event.defaultPrevented) return
+  // Only when focus is about to go down with the scope; never steal it from elsewhere.
+  const active = getActiveElement()
+  if (active === null || active === document.body || scope()?.contains(active)) moveFocus(previous)
+})
+
+function onKeyDown(event: KeyboardEvent): void {
+  if (event.key !== 'Tab' || event.altKey || event.ctrlKey || event.metaKey) return
+  // A nested scope already handled it.
+  if (event.defaultPrevented || (!props.loop && !props.trapped)) return
+  const element = scope()
+  if (!element) return
+
+  const stops = tabbables(element)
+  if (stops.length === 0) {
+    if (props.trapped) event.preventDefault()
+    return
+  }
+
+  const active = getActiveElement()
+  const first = stops[0]
+  const last = stops[stops.length - 1]
+  const leaving = event.shiftKey ? active === first || active === element : active === last
+  if (!leaving) return
+
+  if (props.loop) {
     event.preventDefault()
-    if (props.loop) focus(first, { select: true })
-  } else if (event.shiftKey && focused === first) {
+    moveFocus(event.shiftKey ? last : first, { select: true })
+  } else if (props.trapped) {
     event.preventDefault()
-    if (props.loop) focus(last, { select: true })
   }
 }
 </script>

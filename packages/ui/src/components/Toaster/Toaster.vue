@@ -1,7 +1,16 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue'
+import {
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  shallowRef,
+  watch,
+  type ComponentPublicInstance,
+} from 'vue'
 import { useToast, type ToastItem } from '../../composables/useToast'
-import { getActiveElement, isClient } from '../../primitives/dom'
+import { getActiveElement, unrefElement } from '../../primitives/dom'
+import { moveFocus } from '../../primitives/focus'
 import { cn } from '../../utils/cn'
 import {
   toastActionVariants,
@@ -23,277 +32,368 @@ const props = withDefaults(defineProps<ToasterProps>(), {
 
 const { visible, dismiss, setMax } = useToast()
 
-watch(() => props.max, setMax, { immediate: true })
-
+/** The key that moves focus into the stack. Named in the region's label. */
 const HOTKEY = 'F8'
-const SWIPE_THRESHOLD = 50
 
-const viewport = ref<HTMLOListElement>()
-const hasToasts = computed(() => visible.value.length > 0)
+/** Travel, in pixels, before a press on a toast becomes a drag rather than a click. */
+const DRAG_THRESHOLD = 8
 
-/**
- * Newest first in the DOM, so Tab and a screen reader's reading order both
- * start at the toast that just arrived. The variants flip the flex direction
- * to keep the visual stacking the position asks for.
- *
- * The alternative — DOM oldest-first with Tab reversed by hand — needs hidden
- * focusable proxies at both ends, which is exactly what axe's
- * `aria-hidden-focus` rule forbids. Ordering the DOM needs none of it.
- */
-const newestFirst = computed(() => [...visible.value].reverse())
+/** Travel, in pixels, past which letting go of a dragged toast dismisses it. */
+const SWIPE_DISMISS = 50
 
-/*
- * Teleport only after mount, so the server render and the first client render
- * agree. The region itself stays mounted whether or not anything is queued: a
- * live region added at the same moment as its content is often not announced.
- */
-const mounted = ref(false)
-onMounted(() => {
-  mounted.value = true
-})
-
-/* -------------------------------------------------------------------------- */
-/* Countdown                                                                   */
-/* -------------------------------------------------------------------------- */
-
-interface Countdown {
-  remaining: number
-  startedAt: number
-  timer: number | undefined
-}
-
-/** One countdown per visible toast. A queued toast has none until it shows. */
-const countdowns = new Map<string, Countdown>()
-/** Hovering or focusing the stack pauses every countdown in it. */
-const paused = ref(false)
-
-function start(id: string, countdown: Countdown): void {
-  if (countdown.remaining <= 0 || !Number.isFinite(countdown.remaining)) return
-  window.clearTimeout(countdown.timer)
-  countdown.startedAt = Date.now()
-  countdown.timer = window.setTimeout(() => close(id), countdown.remaining)
-}
-
-function stop(countdown: Countdown): void {
-  window.clearTimeout(countdown.timer)
-  countdown.timer = undefined
-  countdown.remaining -= Date.now() - countdown.startedAt
-}
-
+// The queue limit belongs to whatever renders the queue.
 watch(
-  visible,
-  (items) => {
-    if (!isClient) return
-    const ids = new Set(items.map((item) => item.id))
-    for (const [id, countdown] of countdowns) {
-      if (!ids.has(id)) {
-        window.clearTimeout(countdown.timer)
-        countdowns.delete(id)
-      }
-    }
-    for (const item of items) {
-      if (countdowns.has(item.id)) continue
-      // `0` in the public API means "stays until dismissed".
-      const countdown: Countdown = {
-        remaining: item.duration === 0 ? Infinity : item.duration,
-        startedAt: Date.now(),
-        timer: undefined,
-      }
-      countdowns.set(item.id, countdown)
-      if (!paused.value) start(item.id, countdown)
-    }
-  },
+  () => props.max,
+  (max) => setMax(max),
   { immediate: true }
 )
 
-watch(paused, (isPaused) => {
-  for (const [id, countdown] of countdowns) {
-    if (isPaused) stop(countdown)
-    else start(id, countdown)
-  }
-})
+/**
+ * Teleporting needs a `document`, and rendering the region on the server would
+ * only produce a hydration mismatch, so it appears once mounted. It is there
+ * before any toast is, because a live region created together with its
+ * content is often not announced.
+ */
+const mounted = ref(false)
+const stack = ref<HTMLOListElement>()
 
-onBeforeUnmount(() => {
-  for (const countdown of countdowns.values()) window.clearTimeout(countdown.timer)
-})
+/*
+ * What is on screen
+ *
+ * The queue removes a toast the moment it is dismissed, which frees its slot
+ * for the next one at once. The stack keeps it a little longer, marked closed,
+ * so its exit animation can play. Newest first: the toast that just arrived is
+ * where Tab and a screen reader's reading order start.
+ */
 
-watchEffect((onCleanup) => {
-  const el = viewport.value
-  if (!el || !hasToasts.value) return
-  const pause = () => {
-    paused.value = true
-  }
-  const resume = () => {
-    paused.value = false
-  }
-  const onFocusOut = (event: FocusEvent) => {
-    if (!el.contains(event.relatedTarget as Node | null)) resume()
-  }
-  const onPointerLeave = () => {
-    if (!el.contains(getActiveElement())) resume()
-  }
-  el.addEventListener('focusin', pause)
-  el.addEventListener('focusout', onFocusOut)
-  el.addEventListener('pointermove', pause)
-  el.addEventListener('pointerleave', onPointerLeave)
-  // A toast should not expire while the user is in another window.
-  window.addEventListener('blur', pause)
-  window.addEventListener('focus', resume)
-  onCleanup(() => {
-    el.removeEventListener('focusin', pause)
-    el.removeEventListener('focusout', onFocusOut)
-    el.removeEventListener('pointermove', pause)
-    el.removeEventListener('pointerleave', onPointerLeave)
-    window.removeEventListener('blur', pause)
-    window.removeEventListener('focus', resume)
-  })
-})
+interface Shown {
+  item: ToastItem
+  /** Dismissed, and playing its exit before it leaves the DOM. */
+  closing: boolean
+}
 
-/* -------------------------------------------------------------------------- */
-/* Closing                                                                     */
-/* -------------------------------------------------------------------------- */
+const shown = shallowRef<Shown[]>([])
+const elements = new Map<string, HTMLElement>()
+
+function track(id: string, el: Element | ComponentPublicInstance | null): void {
+  const element = unrefElement(el)
+  if (element) elements.set(id, element)
+  else elements.delete(id)
+}
 
 /**
- * Removes the toast. When it held keyboard focus, focus moves to the stack
- * instead of falling to <body>, so a screen reader user hears where they are
- * and can carry on to the next toast.
+ * Brings the stack in line with the queue. Runs before the DOM updates, so a
+ * toast on its way out is still focusable here and focus can be handed to the
+ * stack before the toast turns inert.
  */
-function close(id: string, byKeyboard = false): void {
-  const el = viewport.value?.querySelector(`[data-toast-id="${id}"]`)
-  if (byKeyboard && el?.contains(getActiveElement())) viewport.value?.focus()
-  if (byKeyboard) paused.value = false
+function reconcile(queue: readonly ToastItem[]): void {
+  const inQueue = new Set(queue.map((item) => item.id))
+  const onScreen = new Set(shown.value.map((entry) => entry.item.id))
+
+  const arriving = queue.filter((item) => !onScreen.has(item.id))
+  const leaving = shown.value
+    .filter((entry) => !entry.closing && !inQueue.has(entry.item.id))
+    .map((entry) => entry.item.id)
+
+  for (const id of leaving) {
+    keepFocusInStack(id)
+    stopClock(id)
+  }
+
+  // The queue lists oldest first; the stack wants the newest on top.
+  shown.value = [
+    ...[...arriving].reverse().map((item) => ({ item, closing: false })),
+    ...shown.value.map((entry) =>
+      leaving.includes(entry.item.id) ? { item: entry.item, closing: true } : entry
+    ),
+  ]
+
+  for (const item of arriving) startClock(item)
+  announce(arriving)
+  if (leaving.length > 0) void nextTick(() => leaving.forEach(removeAfterExit))
+}
+
+/**
+ * Takes a closed toast out of the DOM once its exit animation has run. With
+ * no animation — reduced motion, or no layout engine at all — it goes now.
+ */
+function removeAfterExit(id: string): void {
+  const element = elements.get(id)
+  const running =
+    element && typeof element.getAnimations === 'function'
+      ? element
+          .getAnimations()
+          .filter(
+            (animation) =>
+              animation.playState !== 'finished' &&
+              animation.effect?.getComputedTiming().endTime !== Infinity
+          )
+      : []
+  const drop = () => {
+    shown.value = shown.value.filter((entry) => entry.item.id !== id)
+  }
+  if (running.length === 0) drop()
+  // A cancelled animation rejects `finished`; the toast is done either way.
+  else void Promise.allSettled(running.map((animation) => animation.finished)).then(drop)
+}
+
+/**
+ * A toast that closes while it holds focus would drop focus onto `<body>`,
+ * losing the user's place. Focus goes to the stack instead, one Tab away from
+ * the next toast.
+ */
+function keepFocusInStack(id: string): void {
+  const element = elements.get(id)
+  const active = getActiveElement()
+  if (element && active && element.contains(active)) moveFocus(stack.value)
+}
+
+/*
+ * Countdown
+ *
+ * Each toast on screen runs its own clock, and a queued toast has none, so
+ * nothing can expire before it is seen. A clock stops while anything holds the
+ * toast: the pointer over it, focus inside it, a drag in progress. Holding one
+ * toast leaves the others counting, or a resting mouse would pin the whole
+ * stack in place. Leaving the window stops every clock: nobody is reading.
+ */
+
+type Hold = 'pointer' | 'focus' | 'drag'
+
+interface Clock {
+  /** Milliseconds still to run. */
+  remaining: number
+  /** When the current run began, or `undefined` while stopped. */
+  runningSince: number | undefined
+  timeout: number | undefined
+}
+
+const clocks = new Map<string, Clock>()
+const holds = new Map<string, Set<Hold>>()
+let windowAway = false
+
+function startClock(item: ToastItem): void {
+  // `0` means the toast waits for the user, however long that takes.
+  if (!(item.duration > 0) || !Number.isFinite(item.duration)) return
+  clocks.set(item.id, { remaining: item.duration, runningSince: undefined, timeout: undefined })
+  updateClock(item.id)
+}
+
+function stopClock(id: string): void {
+  window.clearTimeout(clocks.get(id)?.timeout)
+  clocks.delete(id)
+  holds.delete(id)
+}
+
+/** Starts or stops a toast's clock to match whether anything is holding it. */
+function updateClock(id: string): void {
+  const clock = clocks.get(id)
+  if (!clock) return
+  const held = windowAway || (holds.get(id)?.size ?? 0) > 0
+  const now = performance.now()
+
+  if (held && clock.runningSince !== undefined) {
+    window.clearTimeout(clock.timeout)
+    clock.remaining = Math.max(0, clock.remaining - (now - clock.runningSince))
+    clock.runningSince = undefined
+    clock.timeout = undefined
+  } else if (!held && clock.runningSince === undefined) {
+    clock.runningSince = now
+    clock.timeout = window.setTimeout(() => dismiss(id), clock.remaining)
+  }
+}
+
+function hold(id: string, reason: Hold): void {
+  const reasons = holds.get(id) ?? new Set<Hold>()
+  reasons.add(reason)
+  holds.set(id, reasons)
+  updateClock(id)
+}
+
+function release(id: string, reason: Hold): void {
+  holds.get(id)?.delete(reason)
+  updateClock(id)
+}
+
+function onWindowBlur(): void {
+  windowAway = true
+  clocks.forEach((_, id) => updateClock(id))
+}
+
+function onWindowFocus(): void {
+  windowAway = false
+  clocks.forEach((_, id) => updateClock(id))
+}
+
+function onFocusOut(id: string, event: FocusEvent): void {
+  // Tabbing from the message to the action button is still focus on the toast.
+  const next = event.relatedTarget
+  const element = event.currentTarget
+  if (element instanceof Node && next instanceof Node && element.contains(next)) return
+  release(id, 'focus')
+}
+
+/*
+ * Announcing
+ *
+ * One status region, there from the start, carries every toast to a screen
+ * reader politely: danger included, since interrupting the reader mid-sentence
+ * costs more than hearing "could not save" a moment later. The region is
+ * emptied first and written a frame later, so a message identical to the last
+ * one is still a change and is still read.
+ */
+
+const announcement = ref('')
+let pendingAnnouncements: string[] = []
+let cancelAnnouncement: (() => void) | undefined
+
+function afterFrame(callback: () => void): () => void {
+  if (typeof window.requestAnimationFrame === 'function') {
+    const frame = window.requestAnimationFrame(callback)
+    return () => window.cancelAnimationFrame(frame)
+  }
+  const timeout = window.setTimeout(callback, 16)
+  return () => window.clearTimeout(timeout)
+}
+
+function announce(items: readonly ToastItem[]): void {
+  if (items.length === 0) return
+  // Toasts arriving together are read together, rather than the last one
+  // overwriting the rest before the reader gets to them.
+  pendingAnnouncements.push(...items.map((item) => `${props.label}: ${item.message}`))
+  announcement.value = ''
+  cancelAnnouncement?.()
+  cancelAnnouncement = afterFrame(() => {
+    announcement.value = pendingAnnouncements.join('\n')
+    pendingAnnouncements = []
+    cancelAnnouncement = undefined
+  })
+}
+
+function onWindowKeydown(event: KeyboardEvent): void {
+  if (event.key !== HOTKEY || event.defaultPrevented) return
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return
+  if (!shown.value.some((entry) => !entry.closing)) return
+  event.preventDefault()
+  moveFocus(stack.value)
+}
+
+/**
+ * Escape closes the toast that holds focus and stops there. Left to bubble, it
+ * would reach the window and close the dialog underneath as well, and one
+ * press should close one thing.
+ */
+function onToastKeydown(id: string, event: KeyboardEvent): void {
+  if (event.key !== 'Escape' || event.isComposing || event.defaultPrevented) return
+  event.preventDefault()
+  event.stopPropagation()
   dismiss(id)
 }
 
-/** A keyboard-activated click has `detail === 0`; a pointer click does not. */
-function onClose(item: ToastItem, event: MouseEvent): void {
-  close(item.id, event.detail === 0)
-}
-
-function onAction(item: ToastItem, event: MouseEvent): void {
-  item.action?.onClick()
-  onClose(item, event)
-}
-
-/* -------------------------------------------------------------------------- */
-/* Keyboard                                                                    */
-/* -------------------------------------------------------------------------- */
-
 /*
- * F8 jumps to the stack from anywhere, and Escape closes the toast that holds
- * focus — and only then. An Escape anywhere else belongs to what the user is
- * in, such as a dialog, and must not sweep the notifications away with it.
+ * Swipe to dismiss
+ *
+ * A toast follows the pointer rightwards, toward the edge it is anchored to,
+ * and goes if released far enough along. A drag only starts after a few pixels
+ * of mostly horizontal travel, so an ordinary click on the action or the close
+ * button is never mistaken for one. Once dragging, the pointer is captured: the
+ * release lands on the toast, and no button underneath it receives a click.
  */
-watchEffect((onCleanup) => {
-  if (!isClient) return
-  const onKeyDown = (event: KeyboardEvent) => {
-    if (event.key === HOTKEY) {
-      viewport.value?.focus()
-      return
-    }
-    if (event.key !== 'Escape' || event.defaultPrevented) return
-    const active = getActiveElement()
-    const el = viewport.value
-    if (!el || !(active instanceof HTMLElement) || !el.contains(active)) return
-    const toast = active.closest<HTMLElement>('[data-toast-id]')
-    const ids = toast ? [toast.dataset.toastId ?? ''] : visible.value.map((item) => item.id)
-    for (const id of ids) close(id, true)
+
+interface Drag {
+  id: string
+  pointerId: number
+  startX: number
+  startY: number
+  dragging: boolean
+}
+
+let drag: Drag | undefined
+
+function onPointerDown(id: string, event: PointerEvent): void {
+  if (!event.isPrimary || event.button !== 0) return
+  drag = {
+    id,
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    dragging: false,
   }
-  window.addEventListener('keydown', onKeyDown)
-  onCleanup(() => window.removeEventListener('keydown', onKeyDown))
-})
-
-/* -------------------------------------------------------------------------- */
-/* Swipe to dismiss                                                            */
-/* -------------------------------------------------------------------------- */
-
-let swipe: { id: string; startX: number; startY: number; dx: number | null } | null = null
-
-function onPointerDown(item: ToastItem, event: PointerEvent): void {
-  if (event.button !== 0) return
-  swipe = { id: item.id, startX: event.clientX, startY: event.clientY, dx: null }
 }
 
 function onPointerMove(event: PointerEvent): void {
-  if (!swipe) return
-  const toast = event.currentTarget as HTMLElement
-  const x = event.clientX - swipe.startX
-  const y = event.clientY - swipe.startY
-  const buffer = event.pointerType === 'touch' ? 10 : 2
-  const dx = Math.max(0, x)
-  if (swipe.dx === null) {
-    if (dx > buffer && Math.abs(x) > Math.abs(y)) {
-      ;(event.target as HTMLElement).setPointerCapture(event.pointerId)
-    } else {
-      // Moving the wrong way — a scroll or a text selection, not a swipe.
-      if (Math.abs(x) > buffer || Math.abs(y) > buffer) swipe = null
+  const element = event.currentTarget
+  if (!drag || event.pointerId !== drag.pointerId || !(element instanceof HTMLElement)) return
+  const dx = event.clientX - drag.startX
+  const dy = event.clientY - drag.startY
+
+  if (!drag.dragging) {
+    if (Math.abs(dy) > DRAG_THRESHOLD && Math.abs(dy) >= Math.abs(dx)) {
+      drag = undefined
       return
     }
+    if (dx < DRAG_THRESHOLD) return
+    drag.dragging = true
+    element.setPointerCapture(event.pointerId)
+    element.dataset.swipe = 'move'
+    hold(drag.id, 'drag')
   }
-  swipe.dx = dx
-  toast.setAttribute('data-swipe', 'move')
-  toast.style.setProperty('--rk-toast-swipe-x', `${String(dx)}px`)
+  element.style.setProperty('--rk-toast-swipe-x', `${String(Math.max(0, dx))}px`)
 }
 
 function onPointerUp(event: PointerEvent): void {
-  const target = event.target as HTMLElement
-  if (target.hasPointerCapture(event.pointerId)) target.releasePointerCapture(event.pointerId)
-  const current = swipe
-  swipe = null
-  if (current?.dx == null) return
-
-  const toast = event.currentTarget as HTMLElement
-  toast.style.removeProperty('--rk-toast-swipe-x')
-  // The pointer-up that ends a swipe must not also click a button inside.
-  toast.addEventListener('click', (e) => e.preventDefault(), { once: true })
-  if (current.dx > SWIPE_THRESHOLD) {
-    close(current.id)
-  } else {
-    toast.setAttribute('data-swipe', 'cancel')
-  }
+  finishDrag(event, true)
 }
 
-/* -------------------------------------------------------------------------- */
-/* Announcements                                                               */
-/* -------------------------------------------------------------------------- */
+function onPointerCancel(event: PointerEvent): void {
+  finishDrag(event, false)
+}
 
-/**
- * What the live region says.
- *
- * One persistent polite region, written a frame after a toast appears. A live
- * region inserted together with its text, one per toast, is frequently not
- * announced. Polite for every
- * tone, danger included: an assertive region interrupts whatever the reader is
- * saying, and "could not save" is not worth losing that.
- */
-const announcement = ref('')
-const announced = new Set<string>()
-let clearTimer: number | undefined
+function finishDrag(event: PointerEvent, released: boolean): void {
+  const element = event.currentTarget
+  if (!drag || event.pointerId !== drag.pointerId) return
+  const { id, dragging, startX } = drag
+  drag = undefined
+  if (!dragging || !(element instanceof HTMLElement)) return
 
-watch(
-  visible,
-  (items) => {
-    if (!isClient) return
-    const fresh = items.filter((item) => !announced.has(item.id))
-    for (const item of fresh) announced.add(item.id)
-    for (const id of announced) if (!items.some((item) => item.id === id)) announced.delete(id)
-    if (fresh.length === 0) return
-    const text = fresh
-      .map((item) => [props.label, item.message, item.action?.label].filter(Boolean).join(' '))
-      .join('. ')
-    // Two frames: NVDA misses text written in the same frame as the toast.
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
-        announcement.value = text
-        window.clearTimeout(clearTimer)
-        clearTimer = window.setTimeout(() => (announcement.value = ''), 1000)
-      })
-    )
-  },
-  { immediate: true }
-)
+  if (released && event.clientX - startX >= SWIPE_DISMISS) {
+    // Left at its offset, so it fades out from where it was let go.
+    dismiss(id)
+    return
+  }
+  element.dataset.swipe = 'cancel'
+  element.style.removeProperty('--rk-toast-swipe-x')
+  release(id, 'drag')
+}
 
-onBeforeUnmount(() => window.clearTimeout(clearTimer))
+function runAction(item: ToastItem): void {
+  item.action?.onClick()
+  // Acting on a toast is answering it; it has nothing left to say.
+  dismiss(item.id)
+}
+
+let stopReconciling: (() => void) | undefined
+
+onMounted(() => {
+  mounted.value = true
+  // Toasts fired before the Toaster mounted are picked up here, and only now
+  // start counting down.
+  stopReconciling = watch(visible, reconcile, { immediate: true })
+  window.addEventListener('keydown', onWindowKeydown)
+  window.addEventListener('blur', onWindowBlur)
+  window.addEventListener('focus', onWindowFocus)
+})
+
+onBeforeUnmount(() => {
+  stopReconciling?.()
+  window.removeEventListener('keydown', onWindowKeydown)
+  window.removeEventListener('blur', onWindowBlur)
+  window.removeEventListener('focus', onWindowFocus)
+  clocks.forEach((clock) => window.clearTimeout(clock.timeout))
+  clocks.clear()
+  holds.clear()
+  cancelAnnouncement?.()
+})
 </script>
 
 <template>
@@ -307,29 +407,37 @@ onBeforeUnmount(() => window.clearTimeout(clearTimer))
       :aria-label="`Notifications (${HOTKEY})`"
       tabindex="-1"
       data-dismissable-layer-branch
-      :style="hasToasts ? undefined : { pointerEvents: 'none' }"
+      :style="shown.length > 0 ? undefined : { pointerEvents: 'none' }"
     >
       <div class="sr-only" role="status" aria-live="polite">{{ announcement }}</div>
 
       <ol
-        ref="viewport"
+        ref="stack"
         data-slot="toaster"
         tabindex="-1"
         :class="cn(toasterViewportVariants({ position: props.position }), props.class)"
       >
         <li
-          v-for="item in newestFirst"
+          v-for="{ item, closing } in shown"
           :key="item.id"
+          :ref="(el) => track(item.id, el)"
           :data-toast-id="item.id"
           data-slot="toast"
-          data-state="open"
+          :data-state="closing ? 'closed' : 'open'"
           data-swipe-direction="right"
           tabindex="0"
+          :inert="closing"
           :class="toastVariants({ variant: item.variant })"
           style="user-select: none; touch-action: none"
-          @pointerdown="onPointerDown(item, $event)"
+          @pointerenter="hold(item.id, 'pointer')"
+          @pointerleave="release(item.id, 'pointer')"
+          @focusin="hold(item.id, 'focus')"
+          @focusout="onFocusOut(item.id, $event)"
+          @keydown="onToastKeydown(item.id, $event)"
+          @pointerdown="onPointerDown(item.id, $event)"
           @pointermove="onPointerMove"
           @pointerup="onPointerUp"
+          @pointercancel="onPointerCancel"
         >
           <span :class="toastMessageVariants()">{{ item.message }}</span>
 
@@ -337,7 +445,7 @@ onBeforeUnmount(() => window.clearTimeout(clearTimer))
             v-if="item.action"
             type="button"
             :class="toastActionVariants()"
-            @click="onAction(item, $event)"
+            @click="runAction(item)"
           >
             {{ item.action.label }}
           </button>
@@ -346,7 +454,7 @@ onBeforeUnmount(() => window.clearTimeout(clearTimer))
             type="button"
             :aria-label="props.closeLabel"
             :class="toastCloseVariants()"
-            @click="onClose(item, $event)"
+            @click="dismiss(item.id)"
           >
             <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <path

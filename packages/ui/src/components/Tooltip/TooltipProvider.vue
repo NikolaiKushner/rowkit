@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onBeforeUnmount, provide, ref, toRef } from 'vue'
-import { tooltipProviderKey } from './context'
+import { computed, onUnmounted, provide, ref } from 'vue'
+import { tooltipGroupKey } from './context'
 
 /**
  * Shares tooltip timing across a group — a toolbar, typically.
@@ -43,27 +43,50 @@ defineSlots<{
   default: () => unknown
 }>()
 
-const isOpenDelayed = ref(true)
-let skipTimer: number | undefined
+/*
+ * The group is "warm" while the user is reading labels: a tooltip in it is
+ * open, or one closed less than `skipDelayDuration` ago. The delay is there to
+ * tell a pointer passing through from one that stopped on purpose, and once a
+ * label has been read the user has shown which they are.
+ */
+const showing = ref(0)
+const recentlyClosed = ref(false)
+let cooldown: ReturnType<typeof setTimeout> | undefined
 
-provide(tooltipProviderKey, {
-  delayDuration: toRef(props, 'delayDuration'),
-  isOpenDelayed,
-  disableHoverableContent: toRef(props, 'disableHoverableContent'),
-  disableClosingTrigger: toRef(props, 'disableClosingTrigger'),
-  disabled: toRef(props, 'disabled'),
-  ignoreNonKeyboardFocus: toRef(props, 'ignoreNonKeyboardFocus'),
-  onOpen: () => {
-    window.clearTimeout(skipTimer)
-    isOpenDelayed.value = false
+function stopCooldown(): void {
+  if (cooldown !== undefined) clearTimeout(cooldown)
+  cooldown = undefined
+}
+
+provide(tooltipGroupKey, {
+  delay: computed(() => props.delayDuration),
+  warm: computed(() => showing.value > 0 || recentlyClosed.value),
+  hoverableContent: computed(() => !props.disableHoverableContent),
+  closesOnActivate: computed(() => !props.disableClosingTrigger),
+  keyboardFocusOnly: computed(() => props.ignoreNonKeyboardFocus),
+  disabled: computed(() => props.disabled),
+  opened() {
+    stopCooldown()
+    showing.value += 1
   },
-  onClose: () => {
-    window.clearTimeout(skipTimer)
-    skipTimer = window.setTimeout(() => (isOpenDelayed.value = true), props.skipDelayDuration)
+  closed() {
+    showing.value = Math.max(0, showing.value - 1)
+    if (showing.value > 0) return
+    stopCooldown()
+    if (props.skipDelayDuration <= 0) {
+      recentlyClosed.value = false
+      return
+    }
+    recentlyClosed.value = true
+    cooldown = setTimeout(() => {
+      cooldown = undefined
+      recentlyClosed.value = false
+    }, props.skipDelayDuration)
   },
 })
 
-onBeforeUnmount(() => window.clearTimeout(skipTimer))
+// After the tooltips inside have closed and reported it.
+onUnmounted(stopCooldown)
 </script>
 
 <template>

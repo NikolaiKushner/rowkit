@@ -3,19 +3,33 @@ export type PageItem = { type: 'page'; value: number } | { type: 'ellipsis' }
 
 /** Pages needed to show `total` rows at `perPage` a page. Never less than one. */
 export function pageCount(total: number, perPage: number): number {
-  return Math.max(1, Math.ceil(total / (perPage || 1)))
+  const size = Math.max(1, perPage)
+  return Math.max(1, Math.ceil(total / size))
+}
+
+const gap: PageItem = { type: 'ellipsis' }
+
+function run(from: number, to: number): PageItem[] {
+  const out: PageItem[] = []
+  for (let value = from; value <= to; value++) out.push({ type: 'page', value })
+  return out
 }
 
 /**
  * The pages to show around `current`.
  *
- * With `showEdges`, the first and last page always appear, and a gap of more
- * than one page collapses into an ellipsis. The row length stays constant as
- * the current page moves — `2 * siblings + 5` slots, or fewer when there are
- * fewer pages — so the buttons do not jump under the pointer.
+ * The row is a fixed number of slots, so the buttons never jump under the
+ * pointer as the current page moves.
  *
- * Without `showEdges`, a sliding window of `2 * siblings + 1` pages, clamped
- * to the ends, with no ellipses.
+ * With `showEdges` there are `2 * siblings + 5` slots: the first page, a gap,
+ * the current page with `siblings` on each side, a gap, the last page. Near
+ * either end the gap on that side is not needed, and the freed slots go to
+ * pages instead — so a gap always stands for at least two hidden pages.
+ *
+ * Without `showEdges` there are `2 * siblings + 1` slots: a window around the
+ * current page that stops at the first and last page. No gaps.
+ *
+ * When every page fits in the slots, every page is shown.
  */
 export function pageItems(
   current: number,
@@ -23,42 +37,26 @@ export function pageItems(
   siblings: number,
   showEdges: boolean
 ): PageItem[] {
-  return range(current, count, siblings, showEdges).map((value) =>
-    value === ELLIPSIS ? { type: 'ellipsis' } : { type: 'page', value }
-  )
-}
-
-const ELLIPSIS = 0
-
-function span(start: number, end: number): number[] {
-  return Array.from({ length: end - start + 1 }, (_, i) => i + start)
-}
-
-function range(current: number, count: number, siblings: number, showEdges: boolean): number[] {
-  const first = 1
-  const last = count
-  const left = Math.max(current - siblings, first)
-  const right = Math.min(current + siblings, last)
+  const slots = showEdges ? 2 * siblings + 5 : 2 * siblings + 1
+  if (count <= slots) return run(1, count)
 
   if (!showEdges) {
-    const window = siblings * 2 + 1
-    if (count < window) return span(first, last)
-    if (current <= siblings + 1) return span(first, window)
-    if (count - current <= siblings) return span(count - window + 1, last)
-    return span(left, right)
+    const start = Math.min(Math.max(current - siblings, 1), count - slots + 1)
+    return run(start, start + slots - 1)
   }
 
-  // Siblings either side, plus first, last, current and the two ellipses.
-  const slots = Math.min(2 * siblings + 5, count)
-  // One ellipsis and one edge page take two of those slots.
-  const run = slots - 2
+  // Pages that fit between an edge and its gap when the gap is on one side only.
+  const span = slots - 2
+  const nearStart = current <= siblings + 3
+  const nearEnd = current >= count - siblings - 2
 
-  const leftGap =
-    left > first + 2 && Math.abs(last - run - first + 1) > 2 && Math.abs(left - first) > 2
-  const rightGap = right < last - 2 && Math.abs(last - run) > 2 && Math.abs(last - right) > 2
-
-  if (!leftGap && rightGap) return [...span(first, run), ELLIPSIS, last]
-  if (leftGap && !rightGap) return [first, ELLIPSIS, ...span(last - run + 1, last)]
-  if (leftGap && rightGap) return [first, ELLIPSIS, ...span(left, right), ELLIPSIS, last]
-  return span(first, last)
+  if (nearStart) return [...run(1, span), gap, ...run(count, count)]
+  if (nearEnd) return [...run(1, 1), gap, ...run(count - span + 1, count)]
+  return [
+    ...run(1, 1),
+    gap,
+    ...run(current - siblings, current + siblings),
+    gap,
+    ...run(count, count),
+  ]
 }

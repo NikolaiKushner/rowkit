@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import DismissableLayer from './DismissableLayer.vue'
+import type { FocusOutsideEvent, PointerDownOutsideEvent } from './dismissableLayer'
 import { hideOthers } from './hideOthers'
 import { useBodyScrollLock } from './scrollLock'
 
@@ -129,5 +130,140 @@ describe('DismissableLayer', () => {
     expect((wrapper.element as HTMLElement).style.pointerEvents).toBe('auto')
     wrapper.unmount()
     expect(document.body.style.pointerEvents).toBe('auto')
+  })
+})
+
+describe('DismissableLayer outside the pointer', () => {
+  const press = (target: Element) =>
+    target.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }))
+
+  function page(blocking: boolean) {
+    const onOuter = vi.fn()
+    const onInner = vi.fn()
+    mount(
+      defineComponent({
+        setup: () => () => [
+          h('button', { id: 'page' }, 'page'),
+          h('div', { id: 'toast', 'data-dismissable-layer-branch': '' }, 'toast'),
+          h(
+            DismissableLayer,
+            { id: 'outer', disableOutsidePointerEvents: blocking, onDismiss: onOuter },
+            () => 'outer'
+          ),
+          h(DismissableLayer, { id: 'inner', onDismiss: onInner }, () => 'inner'),
+        ],
+      }),
+      { attachTo: document.body }
+    )
+    const at = (id: string) => document.getElementById(id) as HTMLElement
+    return { onOuter, onInner, at }
+  }
+
+  it('dismisses every layer the pointer is outside of, top down', async () => {
+    const { onOuter, onInner, at } = page(false)
+    await nextTick()
+    press(at('page'))
+    expect(onInner).toHaveBeenCalledOnce()
+    expect(onOuter).toHaveBeenCalledOnce()
+  })
+
+  it('stops at the layer the pointer landed in', async () => {
+    const { onOuter, onInner, at } = page(false)
+    await nextTick()
+    press(at('outer'))
+    expect(onInner).toHaveBeenCalledOnce()
+    expect(onOuter).not.toHaveBeenCalled()
+  })
+
+  it('leaves the layers under a modal layer alone', async () => {
+    const onBottom = vi.fn()
+    const onModal = vi.fn()
+    mount(
+      defineComponent({
+        setup: () => () => [
+          h('button', { id: 'page' }, 'page'),
+          h(DismissableLayer, { onDismiss: onBottom }, () => 'bottom'),
+          h(
+            DismissableLayer,
+            { disableOutsidePointerEvents: true, onDismiss: onModal },
+            () => 'modal'
+          ),
+        ],
+      }),
+      { attachTo: document.body }
+    )
+    await nextTick()
+    press(document.getElementById('page') as HTMLElement)
+    expect(onModal).toHaveBeenCalledOnce()
+    expect(onBottom).not.toHaveBeenCalled()
+  })
+
+  it('treats a branch as inside every layer', async () => {
+    const { onOuter, onInner, at } = page(false)
+    await nextTick()
+    press(at('toast'))
+    expect(onInner).not.toHaveBeenCalled()
+    expect(onOuter).not.toHaveBeenCalled()
+  })
+
+  it('reports the pointer event, aimed at what was pressed, and can be cancelled', async () => {
+    const onDismiss = vi.fn()
+    let seen: PointerDownOutsideEvent | undefined
+    mount(
+      defineComponent({
+        setup: () => () => [
+          h('button', { id: 'page' }, 'page'),
+          h(
+            DismissableLayer,
+            {
+              onPointerDownOutside: (event: PointerDownOutsideEvent) => {
+                seen = event
+                event.preventDefault()
+              },
+              onDismiss,
+            },
+            () => 'layer'
+          ),
+        ],
+      }),
+      { attachTo: document.body }
+    )
+    await nextTick()
+    const target = document.getElementById('page') as HTMLElement
+    press(target)
+    expect(seen?.target).toBe(target)
+    expect(seen?.detail.originalEvent.type).toBe('pointerdown')
+    expect(onDismiss).not.toHaveBeenCalled()
+  })
+
+  it('dismisses when focus moves outside, unless cancelled', async () => {
+    const onDismiss = vi.fn()
+    const cancel = ref(false)
+    mount(
+      defineComponent({
+        setup: () => () => [
+          h('button', { id: 'page' }, 'page'),
+          h(
+            DismissableLayer,
+            {
+              onFocusOutside: (event: FocusOutsideEvent) => cancel.value && event.preventDefault(),
+              onDismiss,
+            },
+            () => h('button', { id: 'inside' }, 'inside')
+          ),
+        ],
+      }),
+      { attachTo: document.body }
+    )
+    await nextTick()
+    ;(document.getElementById('inside') as HTMLElement).focus()
+    expect(onDismiss).not.toHaveBeenCalled()
+    cancel.value = true
+    ;(document.getElementById('page') as HTMLElement).focus()
+    expect(onDismiss).not.toHaveBeenCalled()
+    cancel.value = false
+    ;(document.getElementById('inside') as HTMLElement).focus()
+    ;(document.getElementById('page') as HTMLElement).focus()
+    expect(onDismiss).toHaveBeenCalledOnce()
   })
 })

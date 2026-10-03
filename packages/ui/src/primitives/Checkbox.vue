@@ -2,14 +2,14 @@
 import { computed } from 'vue'
 
 /**
- * A tri-state checkbox drawn as a button, for the places a native
- * `<input type="checkbox">` cannot be styled into the design: DataTable's row
- * and select-all controls.
+ * A checkbox with a third, mixed state, for DataTable's row and select-all
+ * controls — the one place a native `<input type="checkbox">` cannot be drawn
+ * the way the design needs.
  *
- * Internal, not exported. Controlled only — the owner holds the state — and
- * deliberately small: no checkbox group, no hidden form input, no roving
- * focus, because nothing in rowkit uses them. Styles key on `data-state`
- * (`checked`, `unchecked`, `indeterminate`).
+ * Internal and controlled: the owner holds the value and gets every change
+ * through `update:modelValue`. Nothing else rowkit does not need is here — no
+ * groups, no hidden form field. Style it by `data-state`: `checked`,
+ * `unchecked` or `indeterminate`.
  */
 const props = withDefaults(
   defineProps<{
@@ -31,16 +31,20 @@ defineSlots<{
   default: (props: { state: boolean | 'indeterminate' }) => unknown
 }>()
 
-const dataState = computed(() =>
-  props.modelValue === 'indeterminate'
-    ? 'indeterminate'
-    : props.modelValue
-      ? 'checked'
-      : 'unchecked'
+const mixed = computed(() => props.modelValue === 'indeterminate')
+const state = computed(() =>
+  mixed.value ? 'indeterminate' : props.modelValue ? 'checked' : 'unchecked'
 )
 
-function toggle(): void {
-  emit('update:modelValue', props.modelValue === 'indeterminate' ? true : !props.modelValue)
+/** Mixed resolves to checked: selecting the rest is what a user means by it. */
+function activate(): void {
+  if (props.disabled) return
+  emit('update:modelValue', mixed.value || props.modelValue === false)
+}
+
+/** A checkbox answers Space only; a native button would also click on Enter. */
+function onKeydown(event: KeyboardEvent): void {
+  if (event.key === 'Enter') event.preventDefault()
 }
 </script>
 
@@ -48,22 +52,16 @@ function toggle(): void {
   <button
     type="button"
     role="checkbox"
-    :aria-checked="props.modelValue === 'indeterminate' ? 'mixed' : props.modelValue"
-    :data-state="dataState"
+    :aria-checked="mixed ? 'mixed' : props.modelValue === true"
+    :data-state="state"
     :data-disabled="props.disabled ? '' : undefined"
     :disabled="props.disabled"
-    @keydown.enter.prevent
-    @click="toggle"
+    @keydown="onKeydown"
+    @click="activate"
   >
-    <!--
-      Enter is swallowed above: per WAI-ARIA a checkbox toggles on Space only,
-      and a native button would otherwise fire click on both. This comment
-      sits inside the button so the component keeps a single root element and
-      inherits the consumer's class and aria-label.
-    -->
     <span
       v-if="props.modelValue !== false"
-      :data-state="dataState"
+      :data-state="state"
       class="pointer-events-none flex items-center justify-center"
     >
       <slot :state="props.modelValue" />

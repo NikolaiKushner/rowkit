@@ -60,7 +60,7 @@ component, a change to an existing one, or the Windows 98 design.
 8. **Every public API change requires a changeset.** Rebuilding a component into parts is breaking. On 0.x, mark that changeset `minor` and say so in the text — a `major` here publishes 1.0.0.
 9. **No `any`.** If typing is genuinely hard, ask rather than escaping the type system.
 10. **Every public part accepts `class` and merges it** via `tailwind-merge`. A trigger the consumer restyles takes `as-child`.
-11. **No competitor names in code.** Source, comments, tests, stories and docs pages do not mention Reka UI. Explain a design choice on its own terms ("a traced polygon would…"), not by contrast with another library. The only places it is named: changesets, this file, and `packages/ui/THIRD_PARTY_NOTICES.md` (the MIT notice for code adapted from it — when you adapt more, add it there, never as a file header).
+11. **No competitor names in code.** Source, comments, tests, stories and docs pages do not mention Reka UI. Explain a design choice on its own terms ("a traced polygon would…"), not by contrast with another library. The only places it is named: changesets and this file. rowkit carries no code adapted from it — learn from how it behaves, then write the implementation yourself. If code from any MIT project is ever adapted, its license notice has to ship with the package: add a `THIRD_PARTY_NOTICES.md` and list it in `files`, never as a file header.
 
 `Toaster` and `Field` are still single components. Leave them that way unless rebuilding one is the task.
 
@@ -93,9 +93,9 @@ A component is not finished until all of these are true:
 
 ## The competitor: Reka UI
 
-[Reka UI](https://reka-ui.com) is rowkit's main competitor: the headless Vue behaviour library that Nuxt UI and shadcn-vue are built on, and that rowkit itself was built on until v2. Its source (MIT) is the best reference there is for how an accessible Vue component is put together — read it when designing a part: how its focus scope, dismissable layer, presence, popper or combobox handle the edge cases.
+[Reka UI](https://reka-ui.com) is rowkit's main competitor: the headless Vue behaviour library that Nuxt UI and shadcn-vue are built on, and that rowkit itself was built on until v2. Its source (MIT) is the best reference there is for how an accessible Vue component is put together — study it when designing a part: which edge cases its focus scope, dismissable layer, presence, popper or combobox handle. Then write rowkit's own; do not copy its code (rule 11).
 
-Take how it is built; build it better. rowkit's versions already differ where Reka's were weak — Escape that reaches only the toast in focus, toasts ordered newest-first in the DOM instead of hidden focus proxies, one persistent live region, a tooltip that is its own description, a select written to the WAI-ARIA combobox pattern instead of a general engine with workarounds. Before porting something, ask what it gets wrong. Do not add it back as a dependency, and keep its name out of code (rule 11).
+Take how it is built; build it better. rowkit's versions already differ where Reka's were weak — Escape that reaches only the toast in focus, toasts ordered newest-first in the DOM instead of hidden focus proxies, one persistent live region, a tooltip that is its own description, a select written to the WAI-ARIA combobox pattern instead of a general engine with workarounds. Before building something it has, ask what it gets wrong. Do not add it back as a dependency, and keep its name out of code (rule 11).
 
 ## Design decisions already made
 

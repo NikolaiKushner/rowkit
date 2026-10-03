@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { unrefElement } from '../../primitives/dom'
 import { Primitive } from '../../primitives/Primitive'
 import { cn } from '../../utils/cn'
@@ -21,50 +21,12 @@ defineSlots<{
 const tooltip = useTooltipContext('TooltipTrigger')
 const root = ref<InstanceType<typeof Primitive> | null>(null)
 
+// The element the bubble is placed against, and half of the hover area.
 onMounted(() => {
-  tooltip.trigger.value = unrefElement(root.value)
+  tooltip.triggerElement.value = unrefElement(root.value)
 })
-
-let pointerDown = false
-let openedByPointer = false
-
-const listeners = computed(() => {
-  if (tooltip.disabled.value) return {}
-  return {
-    pointermove: (event: PointerEvent) => {
-      // Touch has no hover; a tap focuses, and focus opens it.
-      if (event.pointerType === 'touch' || openedByPointer) return
-      tooltip.onTriggerEnter()
-      openedByPointer = true
-    },
-    pointerleave: () => {
-      tooltip.onTriggerLeave()
-      openedByPointer = false
-    },
-    pointerdown: () => {
-      // Pressing the control means the user has read enough.
-      if (!tooltip.disableClosingTrigger.value) tooltip.onClose()
-      pointerDown = true
-      document.addEventListener('pointerup', () => setTimeout(() => (pointerDown = false), 1), {
-        once: true,
-      })
-    },
-    focus: (event: FocusEvent) => {
-      // Focus from a click is not a request for the label.
-      if (pointerDown) return
-      if (
-        tooltip.ignoreNonKeyboardFocus.value &&
-        !(event.target as HTMLElement).matches(':focus-visible')
-      ) {
-        return
-      }
-      tooltip.onOpen()
-    },
-    blur: () => tooltip.onClose(),
-    click: () => {
-      if (!tooltip.disableClosingTrigger.value) tooltip.onClose()
-    },
-  }
+onBeforeUnmount(() => {
+  tooltip.triggerElement.value = undefined
 })
 </script>
 
@@ -78,7 +40,7 @@ const listeners = computed(() => {
     :aria-describedby="tooltip.open.value ? tooltip.contentId : undefined"
     :data-state="tooltip.state.value"
     :class="cn(props.class)"
-    v-on="listeners"
+    v-on="tooltip.triggerListeners"
   >
     <slot />
   </Primitive>

@@ -1,73 +1,72 @@
-/** How many open layers currently hide each node. */
-let hiddenBy = new WeakMap<Element, number>()
-/** Nodes that were already `aria-hidden` before any layer touched them. */
-let alreadyHidden = new WeakSet<Element>()
-let openLayers = 0
-
-const MARKER = 'data-aria-hidden'
-
 /**
- * Hides everything on the page except `target` from assistive technology, by
- * setting `aria-hidden="true"` on every sibling along the path from `target`
- * up to `<body>`. Returns the function that undoes it.
+ * Makes everything outside `target` invisible to assistive technology while a
+ * modal layer is open, and returns a function that undoes exactly that.
  *
- * Nested layers stack: a node hidden by two dialogs is revealed only when
- * both close. A node that was `aria-hidden` before is never un-hidden.
- * `aria-live` regions and scripts stay untouched, so toasts are still
- * announced while a dialog is open.
+ * Walking up from the target to `<body>`, every sibling at every level gets
+ * `aria-hidden="true"`, plus `data-aria-hidden` so the change can be told
+ * apart from markup that was hidden on purpose. Three things are left alone:
+ *
+ * - live regions (`aria-live`), so a toast that appears while a dialog is open
+ *   is still announced;
+ * - elements that were already `aria-hidden` before any layer opened;
+ * - `<script>`, `<style>` and `<template>`, which are never read anyway.
+ *
+ * Layers stack. Each element remembers how many open layers hid it, and only
+ * the last one to close brings it back.
  */
 export function hideOthers(target: Element): () => void {
-  const root = target.ownerDocument.body
-  const keepVisible = new Set<Element>([
-    target,
-    ...Array.from(root.querySelectorAll('[aria-live], script')),
-  ])
+  const touched: Element[] = []
 
-  const ancestors = new Set<Element>()
-  for (const el of keepVisible) {
-    let node: Element | null = el
-    while (node && !ancestors.has(node)) {
-      ancestors.add(node)
-      node = node.parentElement
+  for (
+    let node: Element = target;
+    node.parentElement && node !== document.body;
+    node = node.parentElement
+  ) {
+    for (const sibling of Array.from(node.parentElement.children)) {
+      if (sibling === node || !shouldHide(sibling)) continue
+      claim(sibling)
+      touched.push(sibling)
     }
   }
 
-  const hidden: Element[] = []
-  const walk = (parent: Element) => {
-    if (keepVisible.has(parent)) return
-    for (const node of Array.from(parent.children)) {
-      if (ancestors.has(node)) {
-        walk(node)
-        continue
-      }
-      const count = (hiddenBy.get(node) ?? 0) + 1
-      hiddenBy.set(node, count)
-      hidden.push(node)
-      if (count === 1) {
-        const attr = node.getAttribute('aria-hidden')
-        if (attr !== null && attr !== 'false') alreadyHidden.add(node)
-        else node.setAttribute('aria-hidden', 'true')
-        node.setAttribute(MARKER, 'true')
-      }
-    }
-  }
-  walk(root)
-  openLayers++
-
+  let undone = false
   return () => {
-    for (const node of hidden) {
-      const count = (hiddenBy.get(node) ?? 1) - 1
-      hiddenBy.set(node, count)
-      if (count === 0) {
-        if (!alreadyHidden.has(node)) node.removeAttribute('aria-hidden')
-        alreadyHidden.delete(node)
-        node.removeAttribute(MARKER)
-      }
-    }
-    openLayers--
-    if (openLayers === 0) {
-      hiddenBy = new WeakMap()
-      alreadyHidden = new WeakSet()
-    }
+    if (undone) return
+    undone = true
+    for (const element of touched) release(element)
   }
+}
+
+/** How many open layers currently hide each element that rowkit hid. */
+const holders = new WeakMap<Element, number>()
+
+const SKIPPED_TAGS = new Set(['SCRIPT', 'STYLE', 'TEMPLATE'])
+
+function shouldHide(element: Element): boolean {
+  if (SKIPPED_TAGS.has(element.tagName)) return false
+  if (element.hasAttribute('aria-live')) return false
+  // Hidden by rowkit already: stack another hold on it.
+  if (holders.has(element)) return true
+  // Hidden by the page itself: not ours to change, now or later.
+  return element.getAttribute('aria-hidden') !== 'true'
+}
+
+function claim(element: Element): void {
+  const count = holders.get(element) ?? 0
+  if (count === 0) {
+    element.setAttribute('aria-hidden', 'true')
+    element.setAttribute('data-aria-hidden', '')
+  }
+  holders.set(element, count + 1)
+}
+
+function release(element: Element): void {
+  const count = (holders.get(element) ?? 1) - 1
+  if (count > 0) {
+    holders.set(element, count)
+    return
+  }
+  holders.delete(element)
+  element.removeAttribute('aria-hidden')
+  element.removeAttribute('data-aria-hidden')
 }

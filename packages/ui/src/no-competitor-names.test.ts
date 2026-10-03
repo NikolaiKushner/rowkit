@@ -7,9 +7,8 @@ import { repoRoot } from '../scripts/component-api.mjs'
  * AGENTS.md rule 11: rowkit's code and docs do not name its main competitor.
  *
  * Design choices are explained on their own terms. The competitor is named in
- * AGENTS.md (for agents, as a reference to learn from), in changesets and
- * changelogs (history), and in THIRD_PARTY_NOTICES.md (the license notice for
- * code adapted from it) — nowhere else.
+ * AGENTS.md (for agents, as a reference to learn from) and in changesets and
+ * changelogs (history) — nowhere else.
  *
  * The name is assembled at runtime so this file does not trip its own check.
  */
@@ -52,7 +51,7 @@ async function* walk(dir: string): AsyncGenerator<string> {
 }
 
 describe('no competitor names in code or docs', () => {
-  it('finds none outside AGENTS.md, changesets and third-party notices', async () => {
+  it('finds none outside AGENTS.md and changesets', async () => {
     const offenders: string[] = []
     for (const dir of SCANNED) {
       for await (const file of files(join(repoRoot, dir))) {

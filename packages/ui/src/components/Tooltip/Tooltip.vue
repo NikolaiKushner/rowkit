@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { inject } from 'vue'
-import { tooltipProviderKey } from './context'
+import { tooltipGroupKey } from './context'
 import TooltipProvider from './TooltipProvider.vue'
 import TooltipRoot from './TooltipRoot.vue'
 import type { TooltipProps } from './types'
@@ -18,18 +18,19 @@ defineSlots<{
 }>()
 
 /*
- * A lone tooltip supplies its own provider. Inside a TooltipProvider it defers
- * to it rather than shadowing it, so the group's skip-delay sweep still works.
+ * A tooltip needs a group for its timing. On its own it brings one, carrying
+ * `delay`; under an app's `TooltipProvider` it joins that group instead, so
+ * the group's timing and its toolbar sweep stay intact.
  */
-const hasProvider = inject(tooltipProviderKey, null) !== null
+const inGroup = inject(tooltipGroupKey, null) !== null
 </script>
 
 <template>
-  <TooltipRoot v-if="hasProvider" :delay="props.delay" :disabled="props.disabled">
+  <TooltipRoot v-if="inGroup" :disabled="props.disabled">
     <slot />
   </TooltipRoot>
   <TooltipProvider v-else :delay-duration="props.delay">
-    <TooltipRoot :delay="props.delay" :disabled="props.disabled">
+    <TooltipRoot :disabled="props.disabled">
       <slot />
     </TooltipRoot>
   </TooltipProvider>
