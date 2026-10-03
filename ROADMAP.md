@@ -168,7 +168,7 @@ is the application's job.
 
 ## Settled decisions
 
-Do not relitigate these without new information:
+Settled for now. Revisit one when it gets in the way of a component or the design, with a reason:
 
 - **Design direction is Windows 98** — grey face, bevels, navy `#000080`
   selection, square corners, PT Sans. It replaced the earlier restrained

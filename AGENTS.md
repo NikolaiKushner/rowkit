@@ -13,6 +13,22 @@ Repository: `github.com/NikolaiKushner/rowkit`
 Package: `rowkit` on npm
 Docs: `rowkit.dev`
 
+## How to treat these rules
+
+Every rule, ban and "decision already made" in this file is a default, not a
+law. They exist to keep the library consistent, not to slow down a new
+component, a change to an existing one, or the Windows 98 design.
+
+- If a rule gets in the way of building something or of matching the Figma
+  design, depart from it. Say so in one line in the commit or PR — which rule,
+  and why it did not fit.
+- If the same rule keeps getting in the way, change the rule in this file in
+  the same PR rather than working around it again.
+- The Figma design ([rowkit × Windows 98](https://www.figma.com/design/hmDfFpjrDP6WtEary6U6SE/rowkit-%C3%97-Windows-98)) wins over older wording here. When they disagree, follow the
+  design and update the text.
+- What stays firm: do not break a published API without a changeset, and do not
+  ship something inaccessible or untested. Everything else bends.
+
 ## Read first
 
 - **[`docs/conventions.md`](./docs/conventions.md)** — before designing anything
@@ -79,11 +95,11 @@ A component is not finished until all of these are true:
 
 [Reka UI](https://reka-ui.com) is rowkit's main competitor: the headless Vue behaviour library that Nuxt UI and shadcn-vue are built on, and that rowkit itself was built on until v2. Its source (MIT) is the best reference there is for how an accessible Vue component is put together — read it when designing a part: how its focus scope, dismissable layer, presence, popper or combobox handle the edge cases.
 
-Take how it is built; build it better. rowkit's versions already differ where Reka's were weak — Escape that reaches only the toast in focus, toasts ordered newest-first in the DOM instead of hidden focus proxies, one persistent live region, a tooltip that is its own description, a select written to the WAI-ARIA combobox pattern instead of a general engine with workarounds. Before porting something, ask what it gets wrong. Never add it back as a dependency, and never name it in code (rule 11).
+Take how it is built; build it better. rowkit's versions already differ where Reka's were weak — Escape that reaches only the toast in focus, toasts ordered newest-first in the DOM instead of hidden focus proxies, one persistent live region, a tooltip that is its own description, a select written to the WAI-ARIA combobox pattern instead of a general engine with workarounds. Before porting something, ask what it gets wrong. Do not add it back as a dependency, and keep its name out of code (rule 11).
 
 ## Design decisions already made
 
-Don't re-litigate these:
+Settled for now. Revisit one when it gets in the way, with a reason — see "How to treat these rules":
 
 - **npm package, not copy-paste distribution.** shadcn-vue's model is deliberate and good, but rowkit ships as a versioned package.
 - **No behaviour library.** rowkit's primitives are its own. Nothing like Reka UI is ever added back as a dependency.
