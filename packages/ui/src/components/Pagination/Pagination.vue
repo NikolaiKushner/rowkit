@@ -1,13 +1,6 @@
 <script setup lang="ts">
-import {
-  PaginationEllipsis,
-  PaginationList,
-  PaginationListItem,
-  PaginationNext,
-  PaginationPrev,
-  PaginationRoot,
-} from 'reka-ui'
 import { computed } from 'vue'
+import { pageCount, pageItems } from '../../primitives/pagination'
 import { cn } from '../../utils/cn'
 import Field from '../Field/Field.vue'
 import Select from '../Select/Select.vue'
@@ -78,6 +71,16 @@ const pageSizeChoices = computed<SelectOption<number>[]>(() =>
 
 /** Nothing to page through, so nothing should look operable. */
 const isDisabled = computed(() => props.disabled || props.total === 0)
+
+const lastPage = computed(() => pageCount(props.total, pageSize.value))
+
+const items = computed(() =>
+  pageItems(page.value, lastPage.value, props.siblingCount, props.showEdges)
+)
+
+function goTo(target: number): void {
+  if (!isDisabled.value) page.value = target
+}
 </script>
 
 <template>
@@ -112,20 +115,13 @@ const isDisabled = computed(() => props.disabled || props.total === 0)
       </Field>
     </div>
 
-    <PaginationRoot
-      v-model:page="page"
-      as="nav"
-      :aria-label="props.label"
-      :items-per-page="pageSize"
-      :total="props.total"
-      :sibling-count="props.siblingCount"
-      :show-edges="props.showEdges"
-      :disabled="isDisabled"
-      class="flex items-center gap-1"
-    >
-      <PaginationPrev
+    <nav :aria-label="props.label" class="flex items-center gap-1">
+      <button
+        type="button"
         :aria-label="props.previousLabel"
+        :disabled="isDisabled || page === 1"
         :class="paginationItemVariants({ size: props.size })"
+        @click="goTo(page - 1)"
       >
         <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path
@@ -136,36 +132,45 @@ const isDisabled = computed(() => props.disabled || props.total === 0)
             stroke-linejoin="round"
           />
         </svg>
-      </PaginationPrev>
+      </button>
 
-      <PaginationList v-slot="{ items }" class="flex items-center gap-1">
+      <div class="flex items-center gap-1">
         <template v-for="(item, index) in items" :key="index">
-          <PaginationListItem
+          <button
             v-if="item.type === 'page'"
-            :value="item.value"
+            type="button"
+            data-type="page"
+            :aria-label="`Page ${item.value}`"
             :aria-current="item.value === page ? 'page' : undefined"
+            :data-selected="item.value === page ? 'true' : undefined"
+            :disabled="isDisabled"
             :class="paginationItemVariants({ size: props.size, active: item.value === page })"
+            @click="goTo(item.value)"
           >
             {{ item.value }}
-          </PaginationListItem>
+          </button>
           <!--
             Hidden from assistive technology: the gap is a visual device for
             keeping the row short, and the page numbers either side already say
             everything a reader needs.
           -->
-          <PaginationEllipsis
+          <div
             v-else
+            data-type="ellipsis"
             aria-hidden="true"
             :class="paginationEllipsisVariants({ size: props.size })"
           >
             …
-          </PaginationEllipsis>
+          </div>
         </template>
-      </PaginationList>
+      </div>
 
-      <PaginationNext
+      <button
+        type="button"
         :aria-label="props.nextLabel"
+        :disabled="isDisabled || page === lastPage"
         :class="paginationItemVariants({ size: props.size })"
+        @click="goTo(page + 1)"
       >
         <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path
@@ -176,7 +181,7 @@ const isDisabled = computed(() => props.disabled || props.total === 0)
             stroke-linejoin="round"
           />
         </svg>
-      </PaginationNext>
-    </PaginationRoot>
+      </button>
+    </nav>
   </div>
 </template>
