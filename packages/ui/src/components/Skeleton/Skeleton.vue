@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Primitive } from 'reka-ui'
+import { Primitive } from '../../primitives/Primitive'
 import { computed } from 'vue'
 import { cn } from '../../utils/cn'
 import { skeletonVariants } from './Skeleton.variants'

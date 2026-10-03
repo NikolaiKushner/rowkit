@@ -1,4 +1,4 @@
-import type { PrimitiveProps } from 'reka-ui'
+import type { PrimitiveProps } from '../../primitives/Primitive'
 import type { ButtonVariants } from './Button.variants'
 import type { HTMLAttributes } from 'vue'
 

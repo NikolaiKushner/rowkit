@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Primitive } from 'reka-ui'
+import { Primitive } from '../../primitives/Primitive'
 import { cn } from '../../utils/cn'
 import { badgeVariants } from './Badge.variants'
 import type { BadgeProps } from './types'
