@@ -23,7 +23,7 @@ export default create({
 
   // Type
   fontBase:
-    'WIN95FA, W95FA, Tahoma, "Microsoft Sans Serif", "MS Sans Serif", Verdana, Arial, sans-serif',
+    '"PT Sans", Tahoma, "Microsoft Sans Serif", "MS Sans Serif", Verdana, Arial, sans-serif',
   fontCode: '"Lucida Console", "Courier New", ui-monospace, monospace',
   textColor: '#1A1D21',
   textMutedColor: '#6B7280',

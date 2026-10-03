@@ -22,8 +22,8 @@ wrote in order to use rowkit. Until that has happened, the version stays on
 
 ## Design direction
 
-Windows 98. Grey face, two-pixel bevels, navy selection, square corners, a
-pixel sans — the style, not the assets. It replaces the earlier restrained look
+Windows 98. Grey face, two-pixel bevels, navy selection, square corners, PT
+Sans — the style, not the assets. It replaces the earlier restrained look
 entirely, and there is one light theme: dark mode is dropped in v2. Status is
 carried by an icon as well as a colour. Rebrand by pointing `--color-primary-*`
 at your own colour.

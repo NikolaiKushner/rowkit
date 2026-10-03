@@ -74,7 +74,7 @@ everywhere rowkit appears; dark mode is dropped.
    state, three assembled screens, and seven page templates for the docs site.
 2. Tokens change value, not name, so consumers who rebrand through
    `--color-primary-*` keep working. Radii go to zero, soft shadows give way to
-   bevels, Geist gives way to a pixel sans, and the dark values are removed.
+   bevels, Geist gives way to PT Sans, and the dark values are removed.
 3. Components are restyled against the Figma file, one at a time, through the
    usual definition of done. Any API change the new style asks for (a merged
    `Button` variant, a side label on `Field`) is its own `minor` changeset.
@@ -82,13 +82,13 @@ everywhere rowkit appears; dark mode is dropped.
    navigation lives in a Start menu and a taskbar. That needs a custom
    VitePress layout, which overrides the earlier "default theme only" choice.
 
-Settled for the redesign: the face is W95FA (OFL, Latin only — Cyrillic falls
-back to system faces; the app loads it, rowkit does not ship it). Sizes follow
+Settled for the redesign: the face is PT Sans (OFL, Latin and Cyrillic,
+regular and bold; the app loads it, rowkit does not ship it). Sizes follow
 Win98 on desktop (11px text, ~23px controls) and grow to ≥ 24px touch targets
 on touch screens. `Button` loses `outline`; hover appears only where Win98 had
 it; `background` is `#C0C0C0`, with teal `#008080` as a separate `desktop`
-token. rowkit.dev gets a VitePress theme written from scratch, in English, with
-article text in a readable system face and W95FA in the window chrome.
+token. rowkit.dev gets a VitePress theme written from scratch, in English, set
+in PT Sans throughout.
 
 ### 2. Close the visual-QA blind spot
 
@@ -171,7 +171,7 @@ is the application's job.
 Do not relitigate these without new information:
 
 - **Design direction is Windows 98** — grey face, bevels, navy `#000080`
-  selection, square corners, a pixel sans. It replaced the earlier restrained
+  selection, square corners, PT Sans. It replaced the earlier restrained
   look (ink-blue primary, Geist) entirely. The style, not the assets: no
   Microsoft logos or original icons. Status is carried by an icon as well as a
   colour. Consumers rebrand by pointing `--color-primary-*` at their own colour.

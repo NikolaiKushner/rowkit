@@ -9,19 +9,17 @@
 /**
  * Font families.
  *
- * The Windows 98 face is **W95FA**, a pixel re-creation of the Windows 95 UI
- * font (OFL, one weight). rowkit does not ship the font file: the app loads
- * it, one import from `@fontsource/win95fa`, which registers it as `WIN95FA`;
- * `W95FA` is the name the original download installs under. W95FA has no
- * Cyrillic, so those letters, and everything when the font is not loaded,
- * fall through to faces operating systems already ship. There is no pixel
- * mono yet; the mono stack is system faces only.
+ * The Windows 98 face is **PT Sans** (ParaType, OFL): the closest open match
+ * to Tahoma, which succeeded MS Sans Serif, and compact enough for dense
+ * tables. It covers Latin and Cyrillic in regular and bold. rowkit does not
+ * ship the font file: the app loads it, one import from `@fontsource/pt-sans`.
+ * Without it the stack falls through to Tahoma and the faces operating
+ * systems already ship.
  */
 export const fontFamily = {
   /** UI and body text. */
   sans: [
-    'WIN95FA',
-    'W95FA',
+    '"PT Sans"',
     'Tahoma',
     '"Microsoft Sans Serif"',
     '"MS Sans Serif"',

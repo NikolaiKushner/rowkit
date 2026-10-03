@@ -27,22 +27,23 @@ Note there is no `.css` on either subpath. The export is `rowkit/styles`.
 
 ## Typeface (recommended)
 
-rowkit's token stack leads with **W95FA**, a pixel re-creation of the Windows 95
-UI font. The library does not ship the font file — load it once in the app:
+rowkit's token stack leads with **PT Sans**, the closest open match to Tahoma,
+the Windows face that succeeded MS Sans Serif. The library does not ship the
+font file — load it once in the app:
 
 ```bash
-pnpm add @fontsource/win95fa
+pnpm add @fontsource/pt-sans
 ```
 
 ```css
-@import '@fontsource/win95fa';
+@import '@fontsource/pt-sans/400.css';
+@import '@fontsource/pt-sans/700.css';
 @import 'tailwindcss';
 @import 'rowkit/styles';
 ```
 
-W95FA covers Latin only. Cyrillic and other scripts, and all text if you skip
-the import, fall through to system faces (Tahoma, then Microsoft Sans Serif and
-Verdana). Override `--font-sans` / `--font-mono` if you want a different face.
+PT Sans covers Latin and Cyrillic. Skip the import and text falls through to
+system faces (Tahoma, then Microsoft Sans Serif and Verdana). Override `--font-sans` / `--font-mono` if you want a different face.
 
 ## One theme
 

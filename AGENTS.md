@@ -24,7 +24,7 @@ Docs: `rowkit.dev`
   New surface belongs when a product interface is awkward without it. There is
   no fixed component count.
 
-**Visual direction:** Windows 98. Grey `#C0C0C0` face, two-pixel bevels (raised, pressed, sunken), navy `#000080` selection and title-bar gradient, square corners, no soft shadows, no blur, next to no motion. W95FA replaces Geist (Latin only; Cyrillic falls back to system faces; apps load the font, rowkit does not ship it). Controls follow Win98 sizes on desktop and grow to ≥ 24px touch targets on touch screens. One light theme — there is no dark mode. The style, not the assets: no Microsoft logos, Windows flag or original system icons. Consumers still rebrand via tokens (`--color-primary-*`). The v2 redesign is in progress on `refactor/v2`; until a component is redrawn, its current look is legacy, not a reference.
+**Visual direction:** Windows 98. Grey `#C0C0C0` face, two-pixel bevels (raised, pressed, sunken), navy `#000080` selection and title-bar gradient, square corners, no soft shadows, no blur, next to no motion. PT Sans replaces Geist (OFL, Latin and Cyrillic, regular and bold; apps load the font, rowkit does not ship it). Controls follow Win98 sizes on desktop and grow to ≥ 24px touch targets on touch screens. One light theme — there is no dark mode. The style, not the assets: no Microsoft logos, Windows flag or original system icons. Consumers still rebrand via tokens (`--color-primary-*`). The v2 redesign is in progress on `refactor/v2`; until a component is redrawn, its current look is legacy, not a reference.
 
 ## Stack
 
