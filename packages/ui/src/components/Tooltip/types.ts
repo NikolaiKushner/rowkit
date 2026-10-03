@@ -1,4 +1,4 @@
-import type { PrimitiveProps } from 'reka-ui'
+import type { PrimitiveProps } from '../../primitives/Primitive'
 import type { HTMLAttributes } from 'vue'
 
 /** Where the tooltip prefers to sit. Flips automatically near a viewport edge. */

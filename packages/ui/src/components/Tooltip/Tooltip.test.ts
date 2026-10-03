@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils'
-import { TooltipProvider } from 'reka-ui'
 import { defineComponent, nextTick } from 'vue'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import Tooltip from './Tooltip.vue'
 import TooltipContent from './TooltipContent.vue'
+import TooltipProvider from './TooltipProvider.vue'
 import TooltipTrigger from './TooltipTrigger.vue'
 
 const content = 'Archive this project'
@@ -38,18 +38,16 @@ async function setup(props: Record<string, unknown> = {}) {
 const triggerEl = () => document.querySelector<HTMLElement>('button')
 
 /**
- * Reka renders two things: the styled bubble, and a visually-hidden `role=
- * "tooltip"` span inside it that `aria-describedby` points at. The split is
- * deliberate — the visible text is a plain text node, so a screen reader gets
- * the description once rather than announcing a nested tooltip as well.
+ * The bubble is the description: `role="tooltip"`, pointed at by the trigger's
+ * `aria-describedby`. One element, so the text exists once.
  */
 const description = () => {
   const id = triggerEl()?.getAttribute('aria-describedby')
   return id === null || id === undefined ? null : document.getElementById(id)
 }
 
-/** The styled, positioned bubble: the description's own parent. */
-const bubble = () => description()?.parentElement ?? null
+/** The styled, positioned bubble — the same element as the description. */
+const bubble = description
 
 /** Real focus, so `document.activeElement` assertions mean something. */
 async function focusTrigger(): Promise<void> {
@@ -121,17 +119,34 @@ describe('Tooltip', () => {
   })
 
   describe('placement', () => {
+    /** Puts the trigger somewhere specific: jsdom lays nothing out on its own. */
+    function placeTrigger(top: number, left: number) {
+      vi.spyOn(HTMLButtonElement.prototype, 'getBoundingClientRect').mockReturnValue(
+        DOMRect.fromRect({ x: left, y: top, width: 80, height: 24 })
+      )
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
     it.each(['top', 'right', 'bottom', 'left'] as const)(
-      'honours %s as a preference',
+      'honours %s as a preference when there is room',
       async (placement) => {
+        placeTrigger(300, 400)
         await setup({ placement })
         await focusTrigger()
-        // Reka records the *resolved* side, which may differ from the preference
-        // near a viewport edge — that flip is the wanted behaviour. jsdom has no
-        // layout, so nothing collides and the preference is what lands.
         expect(bubble()?.getAttribute('data-side')).toBe(placement)
       }
     )
+
+    it('flips to the opposite side when the preferred one is off screen', async () => {
+      // `placement` is a preference: a clipped tooltip is worse than a flipped one.
+      placeTrigger(0, 400)
+      await setup({ placement: 'top' })
+      await focusTrigger()
+      expect(bubble()?.getAttribute('data-side')).toBe('bottom')
+    })
   })
 
   describe('motion', () => {
@@ -189,7 +204,7 @@ describe('Tooltip', () => {
       // Shadowing the app's provider would silently drop `skipDelayDuration`,
       // which is the one behaviour a provider exists to supply.
       const el = await setupWithProvider()
-      expect(el.findAllComponents({ name: 'TooltipProvider' })).toHaveLength(1)
+      expect(el.findAllComponents({ name: 'RkTooltipProvider' })).toHaveLength(1)
     })
   })
 

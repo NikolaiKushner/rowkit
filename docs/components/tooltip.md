@@ -2,7 +2,7 @@
 
 **Stage:** 🟢 Stable
 
-A label for a control, on hover and on focus. Built on Reka UI's `Tooltip`.
+A label for a control, on hover and on focus.
 You place the trigger and the content; the portal lives inside `TooltipContent`.
 
 ```vue
@@ -54,7 +54,7 @@ keyboard user has already committed to the control by the time they reach it.
 | `Tooltip`         | Root. `delay` and `disabled`. Supplies a provider when none is above |
 | `TooltipTrigger`  | The control. `as-child` so your element becomes the trigger          |
 | `TooltipContent`  | The label, and the portal that floats it                             |
-| `TooltipProvider` | Shared timing for a toolbar. Reka's, re-exported                     |
+| `TooltipProvider` | Shared timing for a toolbar. Renders nothing                         |
 
 ## Props
 
@@ -193,11 +193,10 @@ import { TooltipProvider } from 'rowkit'
 </template>
 ```
 
-`TooltipProvider` is Reka's, re-exported unwrapped — it renders nothing, and
-wrapping it would mean a component and a props table to rename two options. It is
-**the one place rowkit's API uses Reka's prop names** (`delayDuration`,
-`skipDelayDuration`) rather than its own `delay`. A rowkit `Tooltip` inside a
-provider defers to it rather than shadowing it.
+`TooltipProvider` renders nothing. It keeps the prop names it had when it was
+Reka UI's (`delayDuration`, `skipDelayDuration`) rather than rowkit's `delay`,
+so markup written against it keeps working. A rowkit `Tooltip` inside a provider
+defers to it rather than shadowing it.
 
 ## Keyboard
 
@@ -214,14 +213,18 @@ pointer crosses a toolbar, and that problem does not exist for the keyboard.
 **Opens on focus, not hover alone.** A hover-only tooltip is invisible to
 keyboard users. Covered by an interaction test, because it is easy to lose.
 
-**`aria-describedby` links the trigger to the content.** Reka renders the text
-twice: once as the visible bubble, and once in a visually-hidden `role="tooltip"`
-span that the trigger references. That split is deliberate — the description is
-announced once rather than announcing a nested tooltip as well.
+**`aria-describedby` links the trigger to the content.** The bubble itself is the
+`role="tooltip"` element the trigger references, so the text exists once and is
+announced once.
 
 **Escape dismisses without moving focus** (WCAG 1.4.13), and the tooltip stays
-open while the pointer travels onto it — the 4px offset is bridged by Reka's
-hoverable content, so the tooltip is not snatched away mid-read.
+open while the pointer travels onto it — anywhere inside the box spanning the
+trigger and the bubble keeps it open, so the 4px gap is crossable and the tooltip
+is not snatched away mid-read.
+
+**Near a viewport edge it flips and slides.** `placement` is a preference: if the
+bubble does not fit on that side it moves to the opposite one, and it slides along
+the edge rather than being clipped.
 
 **Motion is ambient**, so it is gated behind `motion-safe:` and collapses to an
 instant show/hide under `prefers-reduced-motion`.

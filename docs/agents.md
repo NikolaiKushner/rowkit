@@ -62,7 +62,7 @@ handling.
   which never reorders its own rows. Deliberately not a prop on the component:
   a server-paged table that sorts locally reorders only the page on screen and
   looks correct.
-- `TooltipProvider` — Reka's, re-exported. Only needed to share
+- `TooltipProvider` — renders nothing. Only needed to share
   `skipDelayDuration` across a toolbar of tooltips.
 - `cn(...)` — the class merger the components use.
 - Types: `SelectOption`, `FilterChip`, `DataTableColumn`, `DataTableSort`,
@@ -500,7 +500,7 @@ handling.
 
 **Slots**
 
-- `#default` — Trigger and content.
+- `#default` —
 
 ### TooltipTrigger
 
@@ -514,7 +514,7 @@ handling.
 
 **Slots**
 
-- `#default` — The control the tooltip describes. With `as-child`, this element becomes the trigger.
+- `#default` —
 
 ### TooltipContent
 
@@ -527,4 +527,4 @@ handling.
 
 **Slots**
 
-- `#default` — The label. Plain text.
+- `#default` —

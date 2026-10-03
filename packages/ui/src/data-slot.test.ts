@@ -19,10 +19,10 @@ function kebab(name: string): string {
 
 /**
  * Roots that render no element of their own, so there is nothing to carry the
- * attribute. `Dialog` only provides state to its parts; `DialogTrigger` and
- * `DialogContent` each carry their own slot name.
+ * attribute. `Dialog` and `Tooltip` only provide state to their parts, which
+ * each carry their own slot name.
  */
-const RENDERLESS_ROOTS = new Set(['Dialog'])
+const RENDERLESS_ROOTS = new Set(['Dialog', 'Tooltip'])
 
 describe('component roots carry data-slot', () => {
   it('names the root slot after the component', async () => {

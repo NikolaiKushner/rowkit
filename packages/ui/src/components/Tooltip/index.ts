@@ -22,4 +22,4 @@ export type {
  * the one place rowkit's API surface uses Reka's prop names (`delayDuration`,
  * `skipDelayDuration`) instead of its own; `docs/components/tooltip.md` says so.
  */
-export { TooltipProvider } from 'reka-ui'
+export { default as TooltipProvider } from './TooltipProvider.vue'
