@@ -97,4 +97,18 @@ describe('Field', () => {
     expect(label.exists()).toBe(true)
     expect(label.classes()).toContain('sr-only')
   })
+
+  it('stops a double-click on the label from selecting its text', () => {
+    const label = mountField({ label: 'Email' }).find('label').element
+    const second = new MouseEvent('mousedown', { detail: 2, cancelable: true })
+    label.dispatchEvent(second)
+    expect(second.defaultPrevented).toBe(true)
+  })
+
+  it('leaves a single click on the label alone, so focus still moves', () => {
+    const label = mountField({ label: 'Email' }).find('label').element
+    const first = new MouseEvent('mousedown', { detail: 1, cancelable: true })
+    label.dispatchEvent(first)
+    expect(first.defaultPrevented).toBe(false)
+  })
 })

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Label } from 'reka-ui'
 import { computed, toRef, useId } from 'vue'
 import { cn } from '../../utils/cn'
 import { provideFieldContext } from './context'
@@ -57,11 +56,21 @@ provideFieldContext({
   required: toRef(props, 'required'),
   size: toRef(props, 'size'),
 })
+
+function onLabelMousedown(event: MouseEvent): void {
+  if (!event.defaultPrevented && event.detail > 1) event.preventDefault()
+}
 </script>
 
 <template>
   <div data-slot="field" :class="cn(fieldVariants({ size: props.size }), props.class)">
-    <Label
+    <!--
+      Double-clicking a label selects its text, which reads as a glitch next to
+      a control. Suppressing the second mousedown keeps the click (focus moves
+      to the control) and drops only the selection. Same guard Reka UI's Label
+      applies.
+    -->
+    <label
       v-if="props.label"
       data-slot="field-label"
       :for="controlId"
@@ -71,6 +80,7 @@ provideFieldContext({
           props.labelSrOnly && 'sr-only'
         )
       "
+      @mousedown="onLabelMousedown"
     >
       {{ props.label }}
       <!--
@@ -79,7 +89,7 @@ provideFieldContext({
         asterisk alone has never been a reliable signal.
       -->
       <span v-if="props.required" aria-hidden="true" class="text-danger-on-subtle">*</span>
-    </Label>
+    </label>
 
     <slot />
 
