@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { DialogTitle } from 'reka-ui'
 import { cn } from '../../utils/cn'
+import { useDialogContext } from './context'
 import { dialogTitleVariants } from './Dialog.variants'
 import type { DialogTitleProps } from './types'
 
 defineOptions({ name: 'RkDialogTitle' })
 
 const props = defineProps<DialogTitleProps>()
+
+const dialog = useDialogContext('DialogTitle')
 
 defineSlots<{
   /** The dialog's accessible name. */
@@ -15,7 +17,7 @@ defineSlots<{
 </script>
 
 <template>
-  <DialogTitle data-slot="dialog-title" :class="cn(dialogTitleVariants(), props.class)">
+  <h2 :id="dialog.titleId" data-slot="dialog-title" :class="cn(dialogTitleVariants(), props.class)">
     <slot />
-  </DialogTitle>
+  </h2>
 </template>

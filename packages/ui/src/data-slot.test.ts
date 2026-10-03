@@ -17,13 +17,20 @@ function kebab(name: string): string {
   return name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
 }
 
+/**
+ * Roots that render no element of their own, so there is nothing to carry the
+ * attribute. `Dialog` only provides state to its parts; `DialogTrigger` and
+ * `DialogContent` each carry their own slot name.
+ */
+const RENDERLESS_ROOTS = new Set(['Dialog'])
+
 describe('component roots carry data-slot', () => {
   it('names the root slot after the component', async () => {
     const entries = await readdir(componentsDir, { withFileTypes: true })
     const missing: string[] = []
 
     for (const entry of entries) {
-      if (!entry.isDirectory()) continue
+      if (!entry.isDirectory() || RENDERLESS_ROOTS.has(entry.name)) continue
       const file = join(componentsDir, entry.name, `${entry.name}.vue`)
       const content = await readFile(file, 'utf8')
       const slot = kebab(entry.name)

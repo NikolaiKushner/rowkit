@@ -50,6 +50,10 @@ export const selectContentVariants = cva([
   // Matches the trigger so the panel never renders narrower than the control
   // that opened it — a list of truncated labels is not a choice.
   'w-(--reka-combobox-trigger-width) min-w-40',
+  // An open Dialog makes the page inert by setting `pointer-events: none` on
+  // <body>, and the panel portals into <body>. Restore it here, where Reka's
+  // own style bindings cannot overwrite it.
+  'pointer-events-auto',
 ])
 
 export const selectItemVariants = cva([

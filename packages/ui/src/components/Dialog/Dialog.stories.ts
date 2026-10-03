@@ -1,9 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { ref } from 'vue'
-import { expect, userEvent, within } from 'storybook/test'
+import { ref, type ConcreteComponent } from 'vue'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
 import Button from '../Button/Button.vue'
 import Field from '../Field/Field.vue'
 import Input from '../Input/Input.vue'
+import RawSelect from '../Select/Select.vue'
+import SelectContent from '../Select/SelectContent.vue'
+import RawSelectItem from '../Select/SelectItem.vue'
+import SelectTrigger from '../Select/SelectTrigger.vue'
 import Dialog from './Dialog.vue'
 import DialogBody from './DialogBody.vue'
 import DialogContent from './DialogContent.vue'
@@ -81,6 +85,26 @@ const meta: Meta<DialogArgs> = {
     preventClose: { control: 'boolean' },
   },
   render: (args) => withTrigger(args),
+}
+
+// Generic SFCs do not fit Storybook's component map; same cast as Select's own stories.
+const Select = RawSelect as unknown as ConcreteComponent
+const SelectItem = RawSelectItem as unknown as ConcreteComponent
+
+/**
+ * Clicks a trigger that may have mounted a moment ago.
+ *
+ * Vue ignores an event whose timestamp is not later than the moment the
+ * listener was attached — a guard against a handler added during the very
+ * event that would fire it. A play function can click in the same millisecond
+ * the story mounted, and the click is then dropped. A person cannot click that
+ * fast, so this waits for the clock to move rather than for anything in the
+ * component.
+ */
+async function clickWhenListening(element: HTMLElement): Promise<void> {
+  const mountedAt = Date.now()
+  while (Date.now() === mountedAt) await new Promise((resolve) => setTimeout(resolve, 1))
+  await userEvent.click(element)
 }
 
 export default meta
@@ -255,7 +279,7 @@ export const CustomHeader: Story = {
 export const Accessibility: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Open dialog' }))
+    await clickWhenListening(canvas.getByRole('button', { name: 'Open dialog' }))
 
     const body = within(document.body)
     const dialog = await body.findByRole('dialog', { name: 'Delete project' })
@@ -325,7 +349,7 @@ export const EscapeRestoresFocus: Story = {
     const canvas = within(canvasElement)
     const trigger = canvas.getByRole('button', { name: 'Open dialog' })
 
-    await userEvent.click(trigger)
+    await clickWhenListening(trigger)
     await within(document.body).findByRole('dialog')
 
     await userEvent.keyboard('{Escape}')
@@ -348,7 +372,7 @@ export const TabIsTrapped: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const trigger = canvas.getByRole('button', { name: 'Open dialog' })
-    await userEvent.click(trigger)
+    await clickWhenListening(trigger)
 
     const body = within(document.body)
     const dialog = await body.findByRole('dialog')
@@ -374,7 +398,7 @@ export const TabIsTrapped: Story = {
 export const TabCyclesThroughControls: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Open dialog' }))
+    await clickWhenListening(canvas.getByRole('button', { name: 'Open dialog' }))
 
     const body = within(document.body)
     const dialog = await body.findByRole('dialog')
@@ -394,7 +418,7 @@ export const PreventCloseIsNotATrap: Story = {
   args: { preventClose: true },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByRole('button', { name: 'Open dialog' }))
+    await clickWhenListening(canvas.getByRole('button', { name: 'Open dialog' }))
 
     const body = within(document.body)
     await body.findByRole('dialog')
@@ -442,10 +466,66 @@ export const ScrollLock: Story = {
     const canvas = within(canvasElement)
     const widthBefore = document.documentElement.clientWidth
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Open over a long page' }))
+    await clickWhenListening(canvas.getByRole('button', { name: 'Open over a long page' }))
     await within(document.body).findByRole('dialog')
 
     // The measurable half of the check. The visual half needs a real scrollbar.
     await expect(document.documentElement.clientWidth).toBe(widthBefore)
+  },
+}
+
+/**
+ * A Select open inside a Dialog owns Escape and focus until it closes.
+ *
+ * Escape closes the listbox and leaves the dialog open; a second Escape closes
+ * the dialog. Picking an option is not a click outside the dialog.
+ */
+export const SelectInsideDialog: Story = {
+  render: () => ({
+    components: { ...parts, Field, Select, SelectContent, SelectItem, SelectTrigger },
+    setup: () => ({ open: ref(false), role: ref<string>() }),
+    template: `
+      <Dialog v-model:open="open">
+        <DialogTrigger as-child>
+          <Button>Invite teammate</Button>
+        </DialogTrigger>
+        <DialogContent size="sm">
+          <DialogHeader>
+            <DialogTitle>Invite teammate</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <Field label="Role">
+              <Select v-model="role">
+                <SelectTrigger placeholder="Choose a role" />
+                <SelectContent>
+                  <SelectItem value="admin" label="Admin" />
+                  <SelectItem value="member" label="Member" />
+                </SelectContent>
+              </Select>
+            </Field>
+          </DialogBody>
+        </DialogContent>
+      </Dialog>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await clickWhenListening(canvas.getByRole('button', { name: 'Invite teammate' }))
+    const body = within(document.body)
+    const dialog = await body.findByRole('dialog', { name: 'Invite teammate' })
+
+    await userEvent.click(within(dialog).getByRole('combobox'))
+    await body.findByRole('listbox')
+
+    await userEvent.keyboard('{Escape}')
+    await waitFor(() => expect(body.queryByRole('listbox')).toBeNull())
+    await expect(body.queryByRole('dialog')).not.toBeNull()
+
+    await userEvent.click(within(dialog).getByRole('combobox'))
+    await userEvent.click(await body.findByRole('option', { name: 'Member' }))
+    await expect(body.queryByRole('dialog')).not.toBeNull()
+
+    await userEvent.keyboard('{Escape}')
+    await waitFor(() => expect(body.queryByRole('dialog')).toBeNull())
   },
 }

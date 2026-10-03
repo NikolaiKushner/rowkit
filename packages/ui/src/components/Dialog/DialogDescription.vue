@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { DialogDescription } from 'reka-ui'
 import { inject, onBeforeUnmount, onMounted } from 'vue'
 import { cn } from '../../utils/cn'
-import { dialogHasDescriptionKey } from './context'
+import { dialogHasDescriptionKey, useDialogContext } from './context'
 import { dialogDescriptionVariants } from './Dialog.variants'
 import type { DialogDescriptionProps } from './types'
 
@@ -15,6 +14,7 @@ defineSlots<{
   default: () => unknown
 }>()
 
+const dialog = useDialogContext('DialogDescription')
 const hasDescription = inject(dialogHasDescriptionKey, null)
 
 onMounted(() => {
@@ -27,10 +27,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <DialogDescription
+  <p
+    :id="dialog.descriptionId"
     data-slot="dialog-description"
     :class="cn(dialogDescriptionVariants(), props.class)"
   >
     <slot />
-  </DialogDescription>
+  </p>
 </template>
