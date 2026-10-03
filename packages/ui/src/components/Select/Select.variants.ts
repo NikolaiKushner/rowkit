@@ -8,9 +8,8 @@ export const selectTriggerVariants = cva(
      * `has-[:focus-visible]`, not `focus-visible`.
      *
      * These classes sit on the anchor, which is a wrapper. The element that
-     * actually takes focus is the input inside it — Reka needs a real
-     * `ComboboxInput` to be the focusable combobox, and the anchor is never
-     * focused itself. A plain `focus-visible:` here therefore matched nothing,
+     * actually takes focus is the input inside it — the input is the
+     * combobox, and the anchor is never focused itself. A plain `focus-visible:` here therefore matched nothing,
      * ever: the Select had no visible focus indicator at all, while its class
      * list read exactly like every other control's.
      *
@@ -19,7 +18,7 @@ export const selectTriggerVariants = cva(
      */
     'outline-none has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3',
     'has-[:focus-visible]:ring-ring/50',
-    // Reka puts `data-disabled` on the anchor; native `disabled:` alone often
+    // `data-disabled` sits on the anchor; native `disabled:` alone often
     // never matches because the focusable input is inside, not the wrapper.
     'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
     'disabled:cursor-not-allowed disabled:opacity-50',
@@ -46,20 +45,18 @@ export const selectTriggerVariants = cva(
 )
 
 export const selectContentVariants = cva([
-  'z-dropdown overflow-hidden rounded-md border border-border bg-card shadow-md',
+  // z-popover, not z-dropdown: a select inside a dialog must paint above the
+  // dialog (z-modal), or the list opens underneath it.
+  'z-popover overflow-hidden rounded-md border border-border bg-card shadow-md',
   // Matches the trigger so the panel never renders narrower than the control
   // that opened it — a list of truncated labels is not a choice.
-  'w-(--reka-combobox-trigger-width) min-w-40',
-  // An open Dialog makes the page inert by setting `pointer-events: none` on
-  // <body>, and the panel portals into <body>. Restore it here, where Reka's
-  // own style bindings cannot overwrite it.
-  'pointer-events-auto',
+  'w-(--rk-select-trigger-width) min-w-40',
 ])
 
 export const selectItemVariants = cva([
   // `pr-8` reserves the check gutter so labels never shift when selection moves.
   'relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pr-8 pl-2 text-sm text-foreground outline-none',
-  // Reka drives highlight through data-highlighted, which follows the keyboard
+  // The highlight is data-highlighted, which follows the keyboard
   // as well as the pointer. Styling :hover instead would leave keyboard users
   // with no visible cursor.
   'data-[highlighted]:bg-accent',

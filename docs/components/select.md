@@ -2,8 +2,8 @@
 
 **Stage:** 🟢 Stable
 
-A single-value picker, optionally searchable, built on Reka UI's Combobox
-primitives. Generic over the value type, so `v-model` narrows to the values you
+A single-value picker, optionally searchable, following the WAI-ARIA combobox
+pattern. Generic over the value type, so `v-model` narrows to the values you
 actually passed.
 
 ```vue
@@ -177,25 +177,29 @@ The item slot replaces the row. It receives `{ selected }`. `SelectContent`'s
 
 ## Keyboard
 
-| Key                              | Behaviour                                 |
-| -------------------------------- | ----------------------------------------- |
-| <kbd>Tab</kbd>                   | Moves focus to the control                |
-| <kbd>↓</kbd> / <kbd>↑</kbd>      | Opens the panel, then moves the highlight |
-| <kbd>Home</kbd> / <kbd>End</kbd> | First / last option                       |
-| <kbd>Enter</kbd>                 | Selects the highlighted option            |
-| <kbd>Esc</kbd>                   | Closes without changing the value         |
-| Text keys                        | Filter, when `searchable`                 |
+| Key                              | Behaviour                                      |
+| -------------------------------- | ---------------------------------------------- |
+| <kbd>Tab</kbd>                   | Moves focus to the control                     |
+| <kbd>↓</kbd> / <kbd>↑</kbd>      | Opens the panel, then moves the highlight      |
+| <kbd>Home</kbd> / <kbd>End</kbd> | First / last option (when not `searchable`)    |
+| <kbd>Enter</kbd>                 | Selects the highlighted option                 |
+| <kbd>Esc</kbd>                   | Closes without changing the value              |
+| Text keys                        | Filter when `searchable`; else jump to a match |
 
 Disabled options are skipped by the highlight but stay visible, so the list
 does not reflow as state changes.
 
 ## Accessibility
 
-The control is an `<input role="combobox">`, not a button. Reka's trigger is
-`tabindex="-1"` and self-labels as "Show popup" on the assumption that an input
-is present to take focus — building around the bare trigger makes the control
-unreachable by keyboard and overrides the field's label. Do not restructure it
-that way.
+The control is an `<input role="combobox">`, not a button: one tab stop that
+keeps the field's label. The chevron is an extra pointer target, out of the tab
+order. Options never take focus — it stays in the control, and the list follows
+it through `aria-activedescendant`, which exists only while the list is open.
+
+- A non-searchable select supports type-ahead: typing the start of a label
+  opens the list and highlights the first match.
+- The list paints above an open dialog (`z-popover`), and flips above the
+  control when there is no room below.
 
 - A non-searchable select is a `readonly` input, so it does not raise a mobile
   keyboard but keeps the combobox semantics.
@@ -206,11 +210,3 @@ that way.
   no visible cursor.
 - Inside a `Field`, the label's `for` points at the control and the error is
   wired through `aria-describedby` with `aria-invalid`.
-
-### Known upstream issue
-
-Reka keeps its highlight after the panel closes, leaving `aria-activedescendant`
-pointing at a list item that no longer exists — an invalid ARIA reference that
-axe flags and that a screen reader cannot follow. rowkit clears the attribute
-for as long as the panel is shut. The workaround is marked in `SelectTrigger.vue` and
-should go once Reka fixes it.

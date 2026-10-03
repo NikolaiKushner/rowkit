@@ -59,8 +59,8 @@ const Harness = defineComponent({
 })
 
 /**
- * Attached to the document because Reka renders the panel through a portal —
- * it lands outside the wrapper's element, so it can only be found on the page.
+ * Attached to the document because the panel renders through a portal — it
+ * lands outside the wrapper's element, so it can only be found on the page.
  */
 function mountSelect(props: Record<string, unknown> = {}) {
   return mount(Harness, { props, attachTo: document.body }) as VueWrapper
@@ -97,7 +97,6 @@ describe('Select', () => {
   it('keeps the closed panel out of the page', () => {
     mountSelect()
     expect(document.querySelector('[role="listbox"]')).toBeNull()
-    expect(document.querySelector('[data-reka-focus-guard]')).toBeNull()
   })
 
   describe('accessibility of the closed control', () => {
@@ -268,5 +267,124 @@ describe('stale ARIA references', () => {
 
     expect(control(wrapper).attributes('aria-expanded')).toBe('false')
     expect(control(wrapper).attributes('aria-activedescendant')).toBeUndefined()
+  })
+})
+
+describe('keyboard', () => {
+  const key = async (wrapper: VueWrapper, name: string) => {
+    await control(wrapper).trigger('keydown', { key: name })
+    await nextTick()
+    await nextTick()
+  }
+  const highlighted = () =>
+    document.querySelector('[role="option"][data-highlighted]')?.textContent?.trim()
+
+  it('highlights the selected option on open, else the first', async () => {
+    const withValue = mountSelect({ modelValue: 'invited' })
+    await key(withValue, 'ArrowDown')
+    expect(highlighted()).toBe('Invited')
+    withValue.unmount()
+
+    const empty = mountSelect()
+    await key(empty, 'ArrowDown')
+    expect(highlighted()).toBe('Active')
+  })
+
+  it('skips disabled options and stops at the ends', async () => {
+    const wrapper = mountSelect()
+    await key(wrapper, 'ArrowDown')
+    await key(wrapper, 'ArrowDown')
+    await key(wrapper, 'ArrowDown')
+    // Suspended is disabled, so Invited is the last reachable option.
+    expect(highlighted()).toBe('Invited')
+    await key(wrapper, 'Home')
+    expect(highlighted()).toBe('Active')
+    await key(wrapper, 'End')
+    expect(highlighted()).toBe('Invited')
+  })
+
+  it('chooses the highlighted option on Enter and closes', async () => {
+    const wrapper = mountSelect()
+    await key(wrapper, 'ArrowDown')
+    await key(wrapper, 'ArrowDown')
+    await key(wrapper, 'Enter')
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['invited'])
+    expect(control(wrapper).attributes('aria-expanded')).toBe('false')
+  })
+
+  it('closes on Escape without changing the value', async () => {
+    const wrapper = mountSelect({ modelValue: 'active' })
+    await key(wrapper, 'ArrowDown')
+    await key(wrapper, 'ArrowDown')
+    await key(wrapper, 'Escape')
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(control(wrapper).element.value).toBe('Active')
+  })
+
+  it('jumps to an option by its first letters when not searchable', async () => {
+    const wrapper = mountSelect()
+    await key(wrapper, 'i')
+    expect(control(wrapper).attributes('aria-expanded')).toBe('true')
+    expect(highlighted()).toBe('Invited')
+  })
+})
+
+describe('searching', () => {
+  it('filters ignoring case and accents', async () => {
+    const wrapper = mountSelect({
+      searchable: true,
+      options: [
+        { label: 'Émile', value: 'emile' },
+        { label: 'Zoë', value: 'zoe' },
+      ],
+    })
+    await open(wrapper)
+    await control(wrapper).setValue('EMI')
+    await nextTick()
+    const shown = optionElements().filter((el) => el.style.display !== 'none')
+    expect(shown.map((el) => el.textContent?.trim())).toEqual(['Émile'])
+  })
+
+  it('shows the empty text when nothing matches', async () => {
+    const wrapper = mountSelect({ searchable: true })
+    await open(wrapper)
+    await control(wrapper).setValue('zzz')
+    await nextTick()
+    expect(document.body.textContent).toContain('No results')
+  })
+
+  it('puts the selected label back when the search is abandoned', async () => {
+    const wrapper = mountSelect({ searchable: true, modelValue: 'active' })
+    await open(wrapper)
+    await control(wrapper).setValue('inv')
+    await control(wrapper).trigger('keydown', { key: 'Escape' })
+    await nextTick()
+    expect(control(wrapper).element.value).toBe('Active')
+  })
+})
+
+describe('forms', () => {
+  it('submits the value under its name', async () => {
+    const wrapper = mount(
+      defineComponent({
+        components: {
+          Select: SelectComponent,
+          SelectTrigger,
+          SelectContent,
+          SelectItem: SelectItemComponent,
+        },
+        template: `
+          <Select name="status" model-value="invited">
+            <SelectTrigger />
+            <SelectContent><SelectItem value="invited" label="Invited" /></SelectContent>
+          </Select>
+        `,
+      }),
+      { attachTo: document.body }
+    )
+    await nextTick()
+    const hidden = wrapper.find('input[type="hidden"]')
+    expect(hidden.attributes('name')).toBe('status')
+    expect((hidden.element as HTMLInputElement).value).toBe('invited')
   })
 })
