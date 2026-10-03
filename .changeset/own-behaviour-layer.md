@@ -6,3 +6,4 @@ rowkit is moving off Reka UI onto its own behaviour layer, one component at a ti
 
 - `Button`, `Badge`, `Skeleton` and `EmptyState` render through rowkit's own `Primitive`; `as` and `as-child` behave exactly as before, pinned against Reka's output in the test suite.
 - `Field` renders a native `<label>`, keeping the guard that stops a double-click from selecting the label text.
+- `DataTable`'s row and select-all checkboxes use rowkit's own tri-state checkbox: same roles, `aria-checked` and `data-state` as before, Space toggles, Enter does not.

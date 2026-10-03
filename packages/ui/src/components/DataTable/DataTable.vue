@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="TRow extends DataTableRow">
-import { CheckboxIndicator, CheckboxRoot } from 'reka-ui'
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
+import Checkbox from '../../primitives/Checkbox.vue'
 import { cn } from '../../utils/cn'
 import EmptyState from '../EmptyState/EmptyState.vue'
 import Skeleton from '../Skeleton/Skeleton.vue'
@@ -336,25 +336,23 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
               Single selection has nothing to select all of, so the column is
               named in text instead. Either way the header is never empty.
             -->
-            <CheckboxRoot
+            <Checkbox
               v-if="props.selectable === 'multiple'"
               :model-value="selectAllState"
               :aria-label="props.selectAllLabel"
               :class="dataTableCheckboxVariants({ size: props.size })"
               @update:model-value="toggleAll"
             >
-              <CheckboxIndicator class="flex items-center justify-center">
-                <svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                  <path
-                    :d="selectAllState === 'indeterminate' ? 'M3 6h6' : 'm2.5 6 2.5 2.5L9.5 3.5'"
-                    stroke="currentColor"
-                    stroke-width="1.75"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </CheckboxIndicator>
-            </CheckboxRoot>
+              <svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path
+                  :d="selectAllState === 'indeterminate' ? 'M3 6h6' : 'm2.5 6 2.5 2.5L9.5 3.5'"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </Checkbox>
             <span v-else class="sr-only">{{ props.selectionLabel }}</span>
           </th>
 
@@ -481,25 +479,23 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
             v-if="props.selectable !== undefined"
             :class="dataTableSelectCellVariants({ size: props.size })"
           >
-            <CheckboxRoot
+            <Checkbox
               v-if="props.selectable === 'multiple'"
               :model-value="selectedKeys.has(row.id)"
               :aria-label="labelFor(row, index)"
               :class="dataTableCheckboxVariants({ size: props.size })"
               @update:model-value="setRowSelected(row.id, $event === true)"
             >
-              <CheckboxIndicator class="flex items-center justify-center">
-                <svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                  <path
-                    d="m2.5 6 2.5 2.5L9.5 3.5"
-                    stroke="currentColor"
-                    stroke-width="1.75"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </CheckboxIndicator>
-            </CheckboxRoot>
+              <svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path
+                  d="m2.5 6 2.5 2.5L9.5 3.5"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </Checkbox>
             <!--
               A native radio, not Reka's RadioGroup. That primitive's root owns
               the roving tabstop and would have to wrap the table, putting
