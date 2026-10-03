@@ -30,8 +30,7 @@
     "docs:agents": "node packages/ui/scripts/generate-agents.mjs",
     "docs:dev": "vitepress dev docs",
     "docs:build": "pnpm build && vitepress build docs",
-    "docs:preview": "vitepress preview docs",
-    "docs:shots": "node scripts/docs-shots.mjs"
+    "docs:preview": "vitepress preview docs"
   },
   "lint-staged": {
     "*.{ts,vue}": [

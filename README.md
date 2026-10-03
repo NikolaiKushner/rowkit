@@ -1,32 +1,40 @@
 # rowkit
 
+<!--
+  Absolute URLs on purpose. npm does not resolve relative image paths against the
+  repository, so a relative one renders here and shows nothing on the package
+  page — which is the surface these images exist for.
+-->
+
 <p align="center">
-  <img src="docs/public/logo.svg" alt="rowkit" width="200" />
+  <img src="https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero.png" alt="rowkit — a Windows 98 desktop with a «Welcome to rowkit» window, a Users table with selection and status badges, a toast and the taskbar" width="100%" />
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/rowkit"><img src="https://img.shields.io/npm/v/rowkit?color=0c335f" alt="npm" /></a>
+  <a href="https://www.npmjs.com/package/rowkit"><img src="https://img.shields.io/npm/v/rowkit?color=000080" alt="npm" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/rowkit" alt="license" /></a>
   <a href="https://bundlejs.com/?q=rowkit"><img src="https://img.shields.io/bundlejs/size/rowkit" alt="bundle size" /></a>
 </p>
 
-A professional Vue 3 toolkit — the components a product interface is built from. Built on [Reka UI](https://reka-ui.com).
+A professional Vue 3 toolkit — the components a product interface is built from.
 
 **[Documentation](https://rowkit.dev)** · **[Storybook](https://storybook.rowkit.dev)** · **[Roadmap](./ROADMAP.md)**
 
-<!--
-  Absolute URL on purpose. npm does not resolve relative image paths against the
-  repository, so a relative one renders here and shows nothing on the package
-  page — which is the surface this image exists for.
--->
-
-![rowkit docs homepage — brand, CTAs, and a live Users table](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/home.png)
-
 ## Why another component library
 
-A product interface is a set of components that have to agree: controls, overlays, tables, filters, empty and loading states. rowkit is that set, built as one toolkit — typed, on Reka UI, from one token package. What is published today is the part already finished. The rest of the set is the plan in the [roadmap](./ROADMAP.md), not a second library to go and find.
+A product interface is a set of components that have to agree: controls, overlays, tables, filters, empty and loading states. rowkit is that set, built as one toolkit — typed, with its own behaviour layer, from one token package. What is published today is the part already finished. The rest of the set is the plan in the [roadmap](./ROADMAP.md), not a second library to go and find.
 
-![A filtered, sorted Users table with selection — the rowkit money shot](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/datatable-page.png)
+![A Users window: toolbar with New, Export and Delete, a FilterBar with one chip, a sorted DataTable with two selected rows and status badges, and Pagination in the status bar](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/datatable.png)
+
+## What it looks like
+
+rowkit v2 has one theme: Windows 98. Bevels, the grey face and navy selection come from tokens, so every component agrees without extra classes.
+
+![The Components window: buttons and a toggle group, inputs and a select, badges, checkboxes and radios, pagination with a progress bar, and a field with an error](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/components.png)
+
+The docs at [rowkit.dev](https://rowkit.dev) open every page in an Explorer window — folder tree on the left, the address bar shows where you are.
+
+![rowkit.dev: an Explorer window with the docs folder tree and the DataTable page with a live example](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/docs.png)
 
 ## Install
 
@@ -88,7 +96,7 @@ The table reports the sort and renders what it is handed — it never reorders i
 ## What you get
 
 - **Columns typed against your row.** `DataTable<TRow>` constrains every column's `key` to `keyof TRow`. Sorting names a field too, so a sort referring to a column that does not exist also fails to compile.
-- **Accessibility as a build gate.** Focus traps, scroll lock, live regions and keyboard models come from Reka UI primitives. Every Storybook story is scanned by axe as part of the test run — a violation fails CI rather than filling a panel nobody opens.
+- **Accessibility as a build gate.** Focus traps, scroll lock, live regions and keyboard models are rowkit's own — platform features where they are good enough, otherwise its own primitives, each covered by interaction tests. Every Storybook story is scanned by axe as part of the test run — a violation fails CI rather than filling a panel nobody opens.
 - **Three states that agree.** `Skeleton`, `EmptyState` and the no-results case are designed together, because the bug is never one of them alone.
 - **Tokens all the way down.** Every colour, space, radius and layer lives in [`@rowkit/tokens`](./packages/tokens), installable on its own. Contrast pairings are asserted in tests, not eyeballed.
 - **State you own.** Sort, selection, page and filters are all `v-model`. Components report what happened; your application decides what follows.
