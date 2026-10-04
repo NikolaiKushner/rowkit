@@ -78,30 +78,82 @@ export const States: Story = {
   }),
 }
 
-/** Icons sit inside the border, and the input pads itself to make room. */
-export const WithIcons: Story = {
+/**
+ * What each type brings into the frame: the magnifier, the spin buttons, the
+ * drop button. Password, email and the rest are plain edit boxes.
+ */
+export const Types: Story = {
+  render: () => ({
+    components: { Field, Input },
+    setup: () => ({ query: ref('lovelace'), count: ref(25), day: ref('2026-10-03') }),
+    template: `
+      <div class="flex w-80 flex-col gap-4">
+        <Field label="Search users"><Input v-model="query" type="search" placeholder="Search users" /></Field>
+        <Field label="Max upload size (MB)"><Input v-model="count" type="number" min="1" max="100" /></Field>
+        <Field label="Start date"><Input v-model="day" type="date" /></Field>
+        <Field label="Password"><Input type="password" model-value="hunter22" /></Field>
+      </div>
+    `,
+  }),
+}
+
+/** A slot for anything else that belongs inside the frame, like a unit. */
+export const WithSlots: Story = {
   render: () => ({
     components: { Field, Input },
     template: `
-      <div class="flex w-80 flex-col gap-4">
-        <Field label="Search users" label-sr-only>
-          <Input type="search" placeholder="Search users">
-          <template #leading>
-            <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <circle cx="9" cy="9" r="5" stroke="currentColor" stroke-width="1.5" />
-              <path d="m13 13 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            </svg>
-            </template>
-          </Input>
-        </Field>
+      <div class="w-80">
         <Field label="Page size">
-          <Input model-value="12" type="number">
-            <template #trailing><span class="text-xs">rows</span></template>
+          <Input model-value="12" inputmode="numeric">
+            <template #trailing><span class="text-text-subtle">rows</span></template>
           </Input>
         </Field>
       </div>
     `,
   }),
+}
+
+/** A spin button steps the value and leaves focus in the field; held, it repeats. */
+export const SpinButtonsStep: Story = {
+  render: () => ({
+    components: { Field, Input },
+    setup: () => ({ count: ref(5) }),
+    template: `
+      <div class="w-40">
+        <Field label="Copies"><Input v-model="count" type="number" /></Field>
+        <span data-testid="echo">{{ count }}</span>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const input = canvas.getByLabelText('Copies')
+    const up = canvasElement.querySelector('[data-slot="input-spin"] > span')
+    if (!(up instanceof HTMLElement)) throw new Error('No spin button')
+    await userEvent.pointer({ keys: '[MouseLeft]', target: up })
+    await expect(canvas.getByTestId('echo')).toHaveTextContent('6')
+    // Focus stays in the field, where the arrow keys step natively.
+    await expect(input).toHaveFocus()
+  },
+}
+
+/** Escape empties a search field, and only then: an empty field lets it through. */
+export const EscapeClearsSearch: Story = {
+  render: () => ({
+    components: { Field, Input },
+    setup: () => ({ query: ref('ada') }),
+    template: `
+      <div class="w-80">
+        <Field label="Search users"><Input v-model="query" type="search" /></Field>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const input = within(canvasElement).getByLabelText('Search users')
+    await userEvent.click(input)
+    await userEvent.keyboard('{Escape}')
+    await expect(input).toHaveValue('')
+  },
 }
 
 /** Inside a `Field` the input inherits its id, description and state. */

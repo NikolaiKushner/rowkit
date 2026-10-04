@@ -90,26 +90,34 @@ Slots: `default` (the control), `hint`, `error`.
 
 <!-- @props InputProps -->
 
-| Prop          | Type                                                                                  | Default  | Description                                                                                                                   |
-| ------------- | ------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `size`        | `'sm' \| 'md' \| 'lg'`                                                                | —        | Control height and text size. Inherited from a surrounding `Field` when omitted.                                              |
-| `type`        | `'number' \| 'text' \| 'email' \| 'password' \| 'search' \| 'tel' \| 'url' \| 'date'` | `'text'` | Native input type. Deliberately excludes `checkbox`, `radio` and `file`, which need different markup and a different control. |
-| `placeholder` | `string`                                                                              | —        | Short example of the expected value. Never a substitute for a label.                                                          |
-| `disabled`    | `boolean`                                                                             | `false`  | Disables the input. A surrounding disabled `Field` also disables it.                                                          |
-| `invalid`     | `boolean`                                                                             | `false`  | Marks the value invalid. A `Field` with an `error` also sets it.                                                              |
-| `required`    | `boolean`                                                                             | `false`  | Marks the input required. A required `Field` also sets it.                                                                    |
-| `readonly`    | `boolean`                                                                             | `false`  | Makes the value read-only while keeping it focusable and selectable.                                                          |
-| `id`          | `string`                                                                              | —        | Id for the input. Inherited from a surrounding `Field` when omitted.                                                          |
-| `class`       | `string`                                                                              | —        | Additional classes, merged so a consumer's utility wins.                                                                      |
+| Prop          | Type                                                                                  | Default  | Description                                                                                                                         |
+| ------------- | ------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `size`        | `'sm' \| 'md' \| 'lg'`                                                                | —        | Control height: `sm` 21px, `md` 23px, `lg` 27px — the same as Button's `sm`, `default` and `lg`, so a field and its button line up. |
+| `type`        | `'number' \| 'text' \| 'email' \| 'password' \| 'search' \| 'tel' \| 'url' \| 'date'` | `'text'` | Native input type.                                                                                                                  |
+| `placeholder` | `string`                                                                              | —        | Short example of the expected value. Never a substitute for a label.                                                                |
+| `disabled`    | `boolean`                                                                             | `false`  | Disables the input. A surrounding disabled `Field` also disables it.                                                                |
+| `invalid`     | `boolean`                                                                             | `false`  | Marks the value invalid: `aria-invalid` and the error mark at the end of the field.                                                 |
+| `required`    | `boolean`                                                                             | `false`  | Marks the input required. A required `Field` also sets it.                                                                          |
+| `readonly`    | `boolean`                                                                             | `false`  | Makes the value read-only while keeping it focusable and selectable.                                                                |
+| `id`          | `string`                                                                              | —        | Id for the input. Inherited from a surrounding `Field` when omitted.                                                                |
+| `class`       | `string`                                                                              | —        | Additional classes for the frame — the visible box with the bevel — merged so a consumer's utility wins.                            |
 
 <!-- /@props -->
 
 `modelValue` is the `v-model`, typed `string | number`.
 
-Slots: `leading`, `trailing` — rendered inside the control's border.
+Slots: `leading`, `trailing` — rendered inside the bevel, beside the text. A
+`leading` slot replaces the magnifier of a search field.
 
-Unrecognised attributes (`autocomplete`, `name`, `inputmode`, …) land on the
-`<input>` itself, not on the positioning wrapper.
+`class` goes on the frame — the white box with the sunken bevel — so a width
+like `w-56` sizes what the user sees. Unrecognised attributes (`autocomplete`,
+`name`, `inputmode`, listeners, …) land on the `<input>` itself.
+
+The type decides what else is in the frame: `search` adds the magnifier and
+clears on Escape, `number` adds spin buttons that repeat while held, `date`
+adds a drop button that opens the browser's date picker. An invalid field
+shows the red error mark at its end and nothing else changes colour — the
+message is the Field's job.
 
 ### How state combines
 

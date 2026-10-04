@@ -120,7 +120,7 @@ const shown = computed(() =>
 
 **The presence of `error` is the error state.** There is no separate `invalid`
 flag to keep in sync, because two sources of truth for one condition is how a
-field ends up outlined in red with no message, or apologising about a value that
+field ends up showing the error mark with no message, or apologising about a value that
 is now fine. Set `error` to a string or to `undefined`; everything else follows.
 
 **Validation timing is yours, and it is the part libraries get wrong.**

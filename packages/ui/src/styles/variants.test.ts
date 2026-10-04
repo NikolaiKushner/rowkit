@@ -256,12 +256,28 @@ describe('the focus ring has something to draw', () => {
     ).toBe(true)
   })
 
-  it('does not invent outline-* focus recipes', () => {
+  /*
+   * Windows 98 marks focus with a 1px dotted rectangle, which only `outline`
+   * can draw — a ring is a box-shadow and is always solid. Any outline focus
+   * must be that rectangle: dotted, in the ring colour. A solid or coloured
+   * outline is an improvised focus style.
+   */
+  it('draws outline focus only as the dotted ring', () => {
     for (const [name, variant] of components) {
-      const outlineFocus = classesOf(variant).filter((c) =>
-        /^(?:focus-visible:)?outline(?:-\d+|-offset-\d+|-ring)?$/.test(c)
+      const classes = classesOf(variant)
+      const prefixes = new Set(
+        classes
+          .map((c) => /^(.*focus-visible(?:\/\w+)?:)outline-1$/.exec(c)?.[1])
+          .filter((p): p is string => p !== undefined)
       )
-      expect(outlineFocus, `${name} uses outline focus — prefer the ring recipe`).toEqual([])
+      for (const prefix of prefixes) {
+        expect(classes, `${name}: ${prefix}outline-1 must be dotted`).toContain(
+          `${prefix}outline-dotted`
+        )
+        expect(classes, `${name}: ${prefix}outline-1 must use the ring colour`).toContain(
+          `${prefix}outline-ring`
+        )
+      }
     }
   })
 })

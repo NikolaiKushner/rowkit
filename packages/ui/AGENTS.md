@@ -344,15 +344,15 @@ handling.
 
 **Props**
 
-- `size: 'sm' | 'md' | 'lg'`. Control height and text size. Inherited from a surrounding `Field` when omitted.
-- `type: 'number' | 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'date'` — default `'text'`. Native input type. Deliberately excludes `checkbox`, `radio` and `file`, which need different markup and a different control.
+- `size: 'sm' | 'md' | 'lg'`. Control height: `sm` 21px, `md` 23px, `lg` 27px — the same as Button's `sm`, `default` and `lg`, so a field and its button line up. Inherited from a surrounding `Field` when omitted.
+- `type: 'number' | 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'date'` — default `'text'`. Native input type.
 - `placeholder: string`. Short example of the expected value. Never a substitute for a label.
 - `disabled: boolean` — default `false`. Disables the input. A surrounding disabled `Field` also disables it.
-- `invalid: boolean` — default `false`. Marks the value invalid. A `Field` with an `error` also sets it.
+- `invalid: boolean` — default `false`. Marks the value invalid: `aria-invalid` and the error mark at the end of the field. Quiet on purpose — the message belongs in Field. A `Field` with an `error` also sets it.
 - `required: boolean` — default `false`. Marks the input required. A required `Field` also sets it.
 - `readonly: boolean` — default `false`. Makes the value read-only while keeping it focusable and selectable.
 - `id: string`. Id for the input. Inherited from a surrounding `Field` when omitted.
-- `class: string`. Additional classes, merged so a consumer's utility wins.
+- `class: string`. Additional classes for the frame — the visible box with the bevel — merged so a consumer's utility wins. Width goes here. Other attributes (`name`, `autocomplete`, listeners) go to the native `<input>`.
 
 **v-model**
 
@@ -360,8 +360,8 @@ handling.
 
 **Slots**
 
-- `#leading` — Content rendered before the input, inside the control's border.
-- `#trailing` — Content rendered after the input — a unit, a clear button, a spinner.
+- `#leading` — Content inside the frame, before the text. Replaces the magnifier of a search field.
+- `#trailing` — Content inside the frame, after the text — a unit, a clear button.
 
 ### Pagination
 
