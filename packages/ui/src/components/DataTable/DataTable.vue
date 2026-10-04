@@ -48,7 +48,7 @@ defineOptions({ name: 'RkDataTable' })
 const props = withDefaults(defineProps<DataTableProps<TRow>>(), {
   captionVisible: false,
   loading: false,
-  loadingRows: 5,
+  loadingRows: 6,
   loadingLabel: 'Loading',
   emptyTitle: 'Nothing to show',
   selectionLabel: 'Select',
@@ -247,6 +247,32 @@ const displayRows = computed(() => props.rows)
 
 const isEmpty = computed(() => !props.loading && props.rows.length === 0)
 
+/**
+ * Column widths from the moment before loading began, held until it ends.
+ *
+ * Placeholder bars have no width of their own, so without this every column
+ * resizes to them on a reload — a sort, a page, a filter — and the header jumps
+ * twice. Measured before the rows are swapped out, so it is the layout the
+ * user was looking at. A first load has nothing to hold; `width` on the
+ * columns keeps that one still.
+ */
+const heldWidths = ref<number[]>()
+
+watch(
+  () => props.loading,
+  (loading) => {
+    if (!loading) {
+      heldWidths.value = undefined
+      return
+    }
+    const cells = tableRef.value?.querySelector('thead tr')?.children
+    if (!cells || props.rows.length === 0) return
+    heldWidths.value = Array.from(cells, (cell) => cell.getBoundingClientRect().width)
+  },
+  // Before the update renders the placeholders: the rows are still on screen.
+  { flush: 'pre' }
+)
+
 function sortStateOf(
   column: DataTableColumn<TRow>
 ): 'ascending' | 'descending' | 'none' | undefined {
@@ -368,10 +394,15 @@ function pinnedStyle(column: DataTableColumn<TRow>): { left: string } | undefine
   return left === undefined ? undefined : { left: `${String(left)}px` }
 }
 
-function headerStyle(column: DataTableColumn<TRow>): Record<string, string> | undefined {
+function headerStyle(
+  column: DataTableColumn<TRow>,
+  index: number
+): Record<string, string> | undefined {
+  const held = heldWidths.value?.[index + (props.selectable === undefined ? 0 : 1)]
+  const width = held === undefined ? column.width : `${String(held)}px`
   const style = {
     ...pinnedStyle(column),
-    ...(column.width === undefined ? {} : { width: column.width }),
+    ...(width === undefined ? {} : { width }),
   }
   return Object.keys(style).length === 0 ? undefined : style
 }
@@ -464,11 +495,11 @@ function headerStyle(column: DataTableColumn<TRow>): Record<string, string> | un
               </th>
 
               <th
-                v-for="column in props.columns"
+                v-for="(column, columnIndex) in props.columns"
                 :key="columnId(column)"
                 scope="col"
                 :aria-sort="sortStateOf(column)"
-                :style="headerStyle(column)"
+                :style="headerStyle(column, columnIndex)"
                 :class="
                   cn(
                     dataTableHeaderCellVariants({

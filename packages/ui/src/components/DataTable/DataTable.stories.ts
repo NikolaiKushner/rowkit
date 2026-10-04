@@ -86,7 +86,7 @@ const meta: Meta<DataTableArgs> = {
     caption: 'Team members',
     captionVisible: false,
     loading: false,
-    loadingRows: 5,
+    loadingRows: 6,
     size: 'md',
     hoverable: false,
     emptyTitle: 'Nothing to show',
@@ -816,6 +816,37 @@ export const TenThousandRows: Story = {
  * skeleton all produce exactly the same row height. This story renders the
  * button so a regression is caught rather than reasoned about.
  */
+/**
+ * A reload — a sort, a page, a filter — keeps the header still. The columns
+ * hold the widths they had with rows in them until the new rows arrive.
+ */
+export const ReloadKeepsColumnWidths: Story = {
+  render: () => ({
+    components: { DataTable, Button },
+    setup: () => ({ users, columns, loading: ref(false) }),
+    template: `
+      <div class="flex w-full max-w-3xl flex-col items-start gap-2">
+        <Button @click="loading = !loading">{{ loading ? 'Finish' : 'Reload' }}</Button>
+        <DataTable :rows="users" :columns="columns" caption="Team members" :loading="loading" class="w-full" />
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const widths = () =>
+      canvas.getAllByRole('columnheader').map((th) => th.getBoundingClientRect().width)
+    const before = widths()
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Reload' }))
+    await canvas.findByRole('button', { name: 'Finish' })
+    await expect(widths()).toEqual(before)
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Finish' }))
+    await canvas.findByRole('button', { name: 'Reload' })
+    await expect(widths()).toEqual(before)
+  },
+}
+
 export const LoadingRowsMatchLoadedRows: Story = {
   render: () => ({
     components: { DataTable, Button },

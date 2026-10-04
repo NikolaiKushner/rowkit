@@ -77,7 +77,7 @@ describe('generated props tables', () => {
     // A regex for `withDefaults(defineProps<DataTableProps<TRow>>(), …)` closes
     // at the first `>`, which reported no defaults at all for exactly the
     // components whose props are hardest to guess.
-    expect(tables.get('DataTableProps')).toContain('`5`')
+    expect(tables.get('DataTableProps')).toContain('`6`')
     expect(tables.get('SelectTriggerProps')).toContain("`'Select…'`")
   })
 

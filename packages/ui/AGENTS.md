@@ -160,7 +160,7 @@ handling.
 - `caption: string` _(required)_. Accessible name for the table.
 - `captionVisible: boolean` — default `false`. Shows the caption. It is available to assistive technology either way.
 - `loading: boolean` — default `false`. Swaps the body for placeholder rows.
-- `loadingRows: number` — default `5`. How many placeholder rows to show while loading.
+- `loadingRows: number` — default `6`. How many placeholder rows to show while loading.
 - `loadingLabel: string` — default `'Loading'`. Announced while loading.
 - `emptyTitle: string` — default `'Nothing to show'`. Title for the built-in empty state.
 - `emptyDescription: string`. Description for the built-in empty state.

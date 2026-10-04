@@ -66,8 +66,10 @@ const rows = computed(() => (state.value === 'empty' ? [] : sorted.value))
 </DemoBox>
 
 The three body states, on one table. Loading renders placeholder rows in the
-real column layout rather than a spinner over the top, so nothing shifts when
-the data lands — the header and the column widths are already correct.
+real column layout rather than a spinner over the top. On a reload — a sort, a
+page, a filter — the columns hold the widths they had with rows in them, so the
+header stays still. A first load has no rows to measure: give the columns a
+`width` and the header is right from the start.
 
 Sort a column and switch to `loading`: the sort survives, because the table
 never owned it.
@@ -128,7 +130,7 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 | `caption`          | `string`                               | **required**        | Accessible name for the table.                                         |
 | `captionVisible`   | `boolean`                              | `false`             | Shows the caption. It is available to assistive technology either way. |
 | `loading`          | `boolean`                              | `false`             | Swaps the body for placeholder rows.                                   |
-| `loadingRows`      | `number`                               | `5`                 | How many placeholder rows to show while loading.                       |
+| `loadingRows`      | `number`                               | `6`                 | How many placeholder rows to show while loading.                       |
 | `loadingLabel`     | `string`                               | `'Loading'`         | Announced while loading.                                               |
 | `emptyTitle`       | `string`                               | `'Nothing to show'` | Title for the built-in empty state.                                    |
 | `emptyDescription` | `string`                               | —                   | Description for the built-in empty state.                              |
