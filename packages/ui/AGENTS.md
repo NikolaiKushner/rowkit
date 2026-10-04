@@ -70,9 +70,9 @@ handling.
 **Props**
 
 - `variant: 'neutral' | 'primary' | 'success' | 'warning' | 'danger'` — default `'neutral'`. Status family. `neutral` is the "no particular status" default rather than an absence of styling.
-- `appearance: 'subtle' | 'solid' | 'outline'` — default `'subtle'`. How much visual weight the badge carries. Prefer `subtle` in a table — soft tinted chip with a matching hairline, quieter than `solid` / `outline`. `solid` is for when a single badge has to carry the page.
-- `size: 'sm' | 'md'` — default `'md'`. Badge size. `sm` is intended for dense table rows.
-- `dot: boolean` — default `false`. Shows a filled dot before the label, inheriting the text colour.
+- `appearance: 'subtle' | 'solid' | 'outline'` — default `'subtle'`. How much visual weight the badge carries.
+- `size: 'sm' | 'md'` — default `'md'`. `sm` (15px) for table rows and navigation counts, `md` (17px) elsewhere.
+- `dot: boolean` — default `false`. Shows a 5×5 square before the label in the variant's colour.
 - `class: string`. Additional classes, merged with the variant classes so a consumer's utility wins over the component's own.
 - `as: string | Component` — default `'span'`. Element or component to render as.
 - `asChild: boolean` — default `false`. Merge props onto the single child element instead of rendering a wrapper.

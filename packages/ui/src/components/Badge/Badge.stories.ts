@@ -52,7 +52,7 @@ export const Matrix: Story = {
     template: `
       <div class="flex flex-col gap-4">
         <div v-for="appearance in appearances" :key="appearance" class="flex flex-col gap-2">
-          <span class="text-xs font-medium uppercase tracking-wide text-muted-foreground">{{ appearance }}</span>
+          <span class="text-ui text-text-subtle">{{ appearance }}</span>
           <div class="flex flex-wrap items-center gap-2">
             <Badge v-for="variant in variants" :key="variant" :variant="variant" :appearance="appearance">
               {{ variant }}

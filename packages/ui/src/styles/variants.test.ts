@@ -4,7 +4,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { compile } from 'tailwindcss'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { badgeVariants } from '../components/Badge/Badge.variants'
+import { badgeDotVariants, badgeVariants } from '../components/Badge/Badge.variants'
 import {
   buttonContentVariants,
   buttonFocusVariants,
@@ -141,6 +141,7 @@ function classesOf(variant: CvaFn): string[] {
 
 const components: readonly (readonly [string, CvaFn])[] = [
   ['Badge', badgeVariants],
+  ['Badge dot', badgeDotVariants],
   ['Button', buttonVariants],
   ['Button content', buttonContentVariants],
   ['Button focus ring', buttonFocusVariants],

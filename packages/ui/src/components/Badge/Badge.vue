@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Primitive } from '../../primitives/Primitive'
 import { cn } from '../../utils/cn'
-import { badgeVariants } from './Badge.variants'
+import { badgeDotVariants, badgeVariants } from './Badge.variants'
 import type { BadgeProps } from './types'
 
 defineOptions({ name: 'RkBadge' })
@@ -38,7 +38,12 @@ defineSlots<{
       and the label is always present. Hiding it from assistive tech avoids
       announcing a meaningless element before every status.
     -->
-    <span v-if="props.dot" aria-hidden="true" class="size-1.5 shrink-0 rounded-full bg-current" />
+    <span
+      v-if="props.dot"
+      aria-hidden="true"
+      data-slot="badge-dot"
+      :class="cn(badgeDotVariants({ variant: props.variant, appearance: props.appearance }))"
+    />
     <span class="truncate"><slot /></span>
   </Primitive>
 </template>

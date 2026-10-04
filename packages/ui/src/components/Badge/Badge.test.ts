@@ -48,7 +48,39 @@ describe('Badge', () => {
       '[aria-hidden]'
     )
     expect(dot.exists()).toBe(true)
-    expect(dot.classes()).toContain('rounded-full')
+    expect(dot.attributes('data-slot')).toBe('badge-dot')
+  })
+
+  it('draws the dot as a square in the variant colour', () => {
+    const dot = mount(Badge, {
+      props: { dot: true, variant: 'danger' },
+      slots: { default: 'x' },
+    }).get('[data-slot="badge-dot"]')
+    expect(dot.classes()).toEqual(expect.arrayContaining(['size-[5px]', 'bg-danger-solid']))
+    expect(dot.classes()).not.toContain('rounded-full')
+  })
+
+  it('takes the text colour on a solid badge, so it shows on the fill', () => {
+    const dot = mount(Badge, {
+      props: { dot: true, variant: 'danger', appearance: 'solid' },
+      slots: { default: 'x' },
+    }).get('[data-slot="badge-dot"]')
+    expect(dot.classes()).toContain('bg-current')
+    expect(dot.classes()).not.toContain('bg-danger-solid')
+  })
+
+  it('outlines the warning dot, which is too faint on its own', () => {
+    const dot = mount(Badge, {
+      props: { dot: true, variant: 'warning' },
+      slots: { default: 'x' },
+    }).get('[data-slot="badge-dot"]')
+    expect(dot.classes()).toEqual(expect.arrayContaining(['border', 'border-border-strong']))
+  })
+
+  it('is square-cornered, flat and set in the UI face', () => {
+    const classes = mount(Badge, { slots: { default: 'x' } }).classes()
+    expect(classes).toEqual(expect.arrayContaining(['border', 'text-ui', 'font-normal']))
+    expect(classes.some((c) => c.startsWith('rounded') || c.startsWith('shadow'))).toBe(false)
   })
 
   it('omits the dot by default', () => {

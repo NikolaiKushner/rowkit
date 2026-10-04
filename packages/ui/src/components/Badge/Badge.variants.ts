@@ -9,7 +9,10 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * correct TypeScript and produce no CSS at all.
  */
 export const badgeVariants = cva(
-  'inline-flex max-w-full items-center gap-1 border align-middle font-medium',
+  // Windows 98 has no badge. This is a flat label in the system palette: a
+  // 1px border, no bevel, square corners, the UI face at its regular weight.
+  // Not interactive — no hover, no focus.
+  'inline-flex max-w-full items-center gap-1 border align-middle font-sans text-ui font-normal',
   {
     variants: {
       /** Status family. */
@@ -26,12 +29,11 @@ export const badgeVariants = cva(
         solid: '',
         outline: 'bg-transparent',
       },
-      // `rounded-sm` — tighter than controls — so a status chip inside a row
-      // reads as a label, not a mini-button. `sm` keeps a tighter inline size
-      // for table cells, where `md`'s padding pushes the row height up.
+      // 15px and 17px tall: the 13px line plus the border, and 1px of air at
+      // `md`. `sm` fits a table row without pushing its height up.
       size: {
-        sm: 'rounded-sm px-1.5 py-0.5 text-xs',
-        md: 'rounded-sm px-2 py-0.5 text-xs',
+        sm: 'px-1 py-0',
+        md: 'px-1.5 py-px',
       },
     },
     compoundVariants: [
@@ -124,5 +126,28 @@ export const badgeVariants = cva(
     },
   }
 )
+
+/**
+ * The dot: a 5×5 square in the variant's colour. On a solid badge it takes
+ * the text colour instead, so it shows against the fill. Yellow on white or
+ * silver is too faint to see, so the warning dot gets a black outline.
+ */
+export const badgeDotVariants = cva('size-[5px] shrink-0', {
+  variants: {
+    variant: {
+      neutral: 'bg-neutral-solid',
+      primary: 'bg-primary-solid',
+      success: 'bg-success-solid',
+      warning: 'border border-border-strong bg-warning-solid',
+      danger: 'bg-danger-solid',
+    },
+    appearance: {
+      subtle: '',
+      solid: 'border-0 bg-current',
+      outline: '',
+    },
+  },
+  defaultVariants: { variant: 'neutral', appearance: 'subtle' },
+})
 
 export type BadgeVariants = VariantProps<typeof badgeVariants>
