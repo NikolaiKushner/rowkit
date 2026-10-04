@@ -69,6 +69,7 @@ import {
   selectMessageVariants,
   selectTriggerVariants,
 } from '../components/Select/Select.variants'
+import { separatorVariants } from '../components/Separator/Separator.variants'
 import { skeletonVariants } from '../components/Skeleton/Skeleton.variants'
 import {
   toastActionVariants,
@@ -165,6 +166,7 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Select trigger', selectTriggerVariants],
   ['Select content', selectContentVariants],
   ['Select item', selectItemVariants],
+  ['Separator', separatorVariants],
   ['Select input', selectInputVariants],
   ['Select button', selectButtonVariants],
   ['Select list', selectListVariants],

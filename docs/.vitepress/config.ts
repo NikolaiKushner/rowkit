@@ -117,6 +117,7 @@ export default defineConfig({
           { text: 'Tokens', link: '/foundations/tokens' },
           { text: 'Button', link: '/components/button' },
           { text: 'ButtonGroup', link: '/components/button-group' },
+          { text: 'Separator', link: '/components/separator' },
         ],
       },
       {

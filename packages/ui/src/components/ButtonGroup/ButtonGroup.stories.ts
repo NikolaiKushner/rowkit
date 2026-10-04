@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import Button from '../Button/Button.vue'
+import SearchIcon from '../../icons/SearchIcon.vue'
+import Separator from '../Separator/Separator.vue'
 import ButtonGroup from './ButtonGroup.vue'
 
 const meta: Meta = {
@@ -11,45 +13,52 @@ const meta: Meta = {
 export default meta
 type Story = StoryObj
 
-const ChevronIcon = {
-  template: `
-    <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path d="m12 5-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-    </svg>
-  `,
-}
-
-const MoreIcon = {
-  template: `
-    <svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-      <circle cx="4" cy="10" r="1.5" />
-      <circle cx="10" cy="10" r="1.5" />
-      <circle cx="16" cy="10" r="1.5" />
-    </svg>
-  `,
-}
-
-/** Matches the reference layout: icon, Archive/Report, Snooze/more. */
+/**
+ * The Figma Home toolbar: ghost buttons edge to edge, groups 4px apart with
+ * the etched Separator between them.
+ */
 export const Default: Story = {
   render: () => ({
-    components: { Button, ButtonGroup, ChevronIcon, MoreIcon },
+    components: { Button, ButtonGroup, Separator },
     template: `
       <ButtonGroup aria-label="Actions">
         <ButtonGroup>
-          <Button variant="secondary" size="icon" aria-label="Open">
-            <ChevronIcon />
-          </Button>
+          <Button variant="ghost">Export</Button>
+          <Button variant="ghost">Delete</Button>
         </ButtonGroup>
+        <Separator orientation="vertical" />
         <ButtonGroup>
-          <Button variant="secondary">Archive</Button>
-          <Button variant="secondary">Report</Button>
+          <Button variant="ghost">Archive</Button>
+          <Button variant="ghost">Report</Button>
         </ButtonGroup>
-        <ButtonGroup>
-          <Button variant="secondary">Snooze</Button>
-          <Button variant="secondary" size="icon" aria-label="More">
-            <MoreIcon />
-          </Button>
-        </ButtonGroup>
+      </ButtonGroup>
+    `,
+  }),
+}
+
+/** Icon-only toolbar buttons. Each has an accessible name. */
+export const IconToolbar: Story = {
+  render: () => ({
+    components: { Button, ButtonGroup, Separator, SearchIcon },
+    template: `
+      <ButtonGroup aria-label="Tools">
+        <Button variant="ghost" size="icon-sm" aria-label="Find"><SearchIcon /></Button>
+        <Button variant="ghost" size="icon-sm" aria-label="Find next"><SearchIcon /></Button>
+        <Separator orientation="vertical" />
+        <Button variant="ghost" size="icon-sm" aria-label="Replace"><SearchIcon /></Button>
+      </ButtonGroup>
+    `,
+  }),
+}
+
+/** Raised command buttons work the same way: edge to edge, bevels intact. */
+export const CommandButtons: Story = {
+  render: () => ({
+    components: { Button, ButtonGroup },
+    template: `
+      <ButtonGroup aria-label="Navigate">
+        <Button variant="secondary">Back</Button>
+        <Button variant="secondary">Next</Button>
       </ButtonGroup>
     `,
   }),

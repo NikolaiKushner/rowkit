@@ -118,7 +118,7 @@ handling.
 
 **Props**
 
-- `orientation: 'horizontal' | 'vertical'` — default `'horizontal'`. Layout axis.
+- `orientation: 'horizontal' | 'vertical'` — default `'horizontal'`. Layout axis. Buttons sit edge to edge along it; nested groups sit 4px apart, with a `Separator` between them when they are separate units.
 - `ariaLabel: string`. Accessible name for the group.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
 
@@ -464,6 +464,16 @@ handling.
 **Slots**
 
 - `#default` `(props: { selected: boolean })` — The row. Defaults to `label`.
+
+### Separator
+
+`import { Separator } from 'rowkit'`
+
+**Props**
+
+- `orientation: 'horizontal' | 'vertical'` — default `'horizontal'`. Direction of the line. Vertical stretches to the height of its row.
+- `decorative: boolean` — default `false`. Purely visual: hidden from assistive technology. Leave it off when the line divides groups of controls a reader should hear as separate.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
 
 ### Skeleton
 

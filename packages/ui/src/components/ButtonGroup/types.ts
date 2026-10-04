@@ -9,10 +9,8 @@ import type { HTMLAttributes } from 'vue'
  */
 export interface ButtonGroupProps {
   /**
-   * Layout axis.
-   *
-   * Horizontal merges left/right edges; vertical merges top/bottom. Nest groups
-   * to space separate units next to each other.
+   * Layout axis. Buttons sit edge to edge along it; nested groups sit 4px
+   * apart, with a `Separator` between them when they are separate units.
    */
   orientation?: NonNullable<ButtonGroupVariants['orientation']>
   /**
