@@ -187,7 +187,7 @@ handling.
 **Props**
 
 - `size: 'sm' | 'md' | 'lg'` — default `'md'`. Width preset. Height is content-driven, capped to the viewport.
-- `preventClose: boolean` — default `false`. Blocks Escape and clicking the scrim, for a flow where dismissing by accident loses work.
+- `preventClose: boolean` — default `false`. Blocks Escape and clicking outside the window, for a flow where dismissing by accident loses work.
 - `closeLabel: string` — default `'Close dialog'`. Accessible name for the close button.
 - `class: string`. Additional classes for the dialog surface, merged so a consumer's utility wins.
 

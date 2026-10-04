@@ -1,46 +1,75 @@
 import { cva, type VariantProps } from 'class-variance-authority'
+import { captionButtonClasses } from '../captionButton.variants'
 
 /**
- * The scrim. `z-overlay` sits below `z-modal` so the surface paints over its own
- * backdrop — asserted in the token package's stacking test.
- *
- * A plain 50% scrim, no blur: the design draws no backdrop effect, and this
- * is restyled with the rest of Dialog to match it.
+ * The layer behind the window. Transparent: a Windows 98 dialog draws no
+ * backdrop. It is still there to catch the click outside and to hold the
+ * scroll lock. `z-overlay` sits below `z-modal` — asserted in the token
+ * package's stacking test.
  */
-export const dialogOverlayVariants = cva([
-  'fixed inset-0 z-overlay bg-shadow/50',
-  'motion-safe:data-[state=open]:animate-overlay-in',
-  'motion-safe:data-[state=closed]:animate-overlay-out',
-])
+export const dialogOverlayVariants = cva('fixed inset-0 z-overlay')
 
+/**
+ * The window: a silver face in the window bevel, 2px of frame around the
+ * title bar and the content. It opens centred and instantly; nothing slides.
+ */
 export const dialogContentVariants = cva(
   [
     'fixed left-1/2 top-1/2 z-modal -translate-x-1/2 -translate-y-1/2',
     'flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col',
-    'rounded-lg border border-border bg-card shadow-lg',
+    'bg-card p-0.5 font-sans text-ui text-foreground shadow-window',
     'focus-visible:outline-none',
-    'motion-safe:data-[state=open]:animate-dialog-in',
-    'motion-safe:data-[state=closed]:animate-dialog-out',
   ],
   {
     variants: {
-      /** Width preset. Height is always content-driven, capped to the viewport. */
+      /**
+       * Width preset: 320, 440 or 600px, narrowed to fit a small screen.
+       * Height is always content-driven, capped to the viewport.
+       */
       size: {
-        sm: 'sm:max-w-sm',
-        md: 'sm:max-w-lg',
-        lg: 'sm:max-w-2xl',
+        sm: 'max-w-[320px]',
+        md: 'max-w-[440px]',
+        lg: 'max-w-[600px]',
       },
     },
     defaultVariants: { size: 'md' },
   }
 )
 
-/** Header, body and footer are separate rows so only the body scrolls. */
-export const dialogHeaderVariants = cva('flex shrink-0 flex-col gap-1 p-4 pb-3')
+/**
+ * The title bar: 18px of navy-to-blue gradient across the top of the window,
+ * with the close button at its right end. `DialogContent` draws it, so the
+ * bar is there whatever the consumer puts in the header; `DialogTitle` is
+ * laid over it.
+ */
+export const dialogTitleBarVariants = cva([
+  'flex h-[18px] shrink-0 items-center justify-end px-0.5',
+  'bg-linear-to-r from-titlebar-from to-titlebar-to',
+])
 
-export const dialogTitleVariants = cva('text-lg leading-none font-semibold text-foreground')
+/**
+ * The header holds what sits under the title bar — a description, an
+ * eyebrow. The title itself is lifted into the bar, so a header holding only
+ * the title takes no room, and one holding more starts 12px below the bar.
+ * Description, body and footer are 12px apart and 12px in from the frame.
+ */
+export const dialogHeaderVariants = cva(
+  'flex shrink-0 flex-col gap-1 px-3 has-[>:not([data-slot=dialog-title])]:pt-3'
+)
 
-export const dialogDescriptionVariants = cva('text-sm text-muted-foreground')
+/**
+ * The title, laid over the title bar: bold white caption text, cut off with
+ * an ellipsis 4px before the close button. Positioned against the window
+ * rather than placed inside the bar, so it stays a child of the header the
+ * consumer composed: 2px of frame plus the bar's 2px of padding on the left;
+ * on the right, the same plus the 16px button and the 4px gap.
+ */
+export const dialogTitleVariants = cva([
+  'absolute top-0.5 right-6 left-1 h-[18px] truncate',
+  'text-ui leading-[18px] font-bold text-titlebar-foreground',
+])
+
+export const dialogDescriptionVariants = cva('text-ui text-foreground')
 
 /**
  * The body is the only scrolling region. A dialog that scrolls as a whole hides
@@ -48,41 +77,30 @@ export const dialogDescriptionVariants = cva('text-sm text-muted-foreground')
  * go" comes from.
  */
 /*
- * `pt-1 pb-3`, not bare padding-inline alone.
- *
- * `overflow-y-auto` makes this a clipping boundary, and the focus ring is drawn
- * 3px *outside* the control's border box. With no vertical padding the last
- * field in a form sat flush against that boundary, so the bottom of its ring was
- * sliced off — the control looked focused on three sides and cut on the fourth.
- *
- * `pt-1` is the 4px a ring needs at the top edge; the header's own `pb-3`
- * supplies the visual gap above. `pb-3` does both jobs at the bottom, since the
- * footer's border wants clearance from the last field anyway.
+ * `pb-1`, with the footer's `pt-2` making up the 12px gap: `overflow-y-auto`
+ * makes this a clipping boundary, and a focus rectangle drawn outside the last
+ * control would otherwise be cut along its bottom edge.
  */
 export const dialogBodyVariants = cva(
-  'min-h-0 flex-1 overflow-y-auto px-4 pt-1 pb-3 text-sm text-foreground'
+  'min-h-0 flex-1 overflow-y-auto px-3 pt-3 pb-1 text-ui text-foreground'
 )
 
-/*
- * The border makes the actions a separate plane from the content they act on,
- * which matters most when the body scrolls: without it, content scrolling under
- * the footer simply runs out rather than passing behind an edge.
+/**
+ * The command buttons, right-aligned along the bottom with 6px between them,
+ * the default (OK) first, as on every Windows 98 dialog. No rule above them:
+ * the window face is one plane.
  */
 export const dialogFooterVariants = cva(
-  // Hairline above the actions — same plane separation shadcn uses so a
-  // scrolling body does not run into the buttons.
-  'flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-border bg-card px-4 py-3'
+  'flex shrink-0 flex-wrap items-center justify-end gap-1.5 bg-card px-3 pt-2 pb-3'
 )
 
+/**
+ * The ✕ caption button at the right end of the title bar. Its focus
+ * rectangle is white, since it is drawn on the navy bar.
+ */
 export const dialogCloseVariants = cva([
-  // Ghost chrome — same quiet exit as a footer Cancel, not an outlined icon tile.
-  // Solid ring (not /50): no border half to carry contrast on a borderless control.
-  'absolute right-3 top-3 inline-flex size-8 shrink-0 cursor-pointer',
-  'items-center justify-center rounded-md border-0 bg-transparent',
-  'text-muted-foreground opacity-70 hover:opacity-100',
-  'transition-colors duration-fast ease-standard',
-  'hover:bg-accent hover:text-foreground',
-  'outline-none focus-visible:ring-3 focus-visible:ring-ring',
+  ...captionButtonClasses,
+  'focus-visible:outline-titlebar-foreground',
 ])
 
 export type DialogVariants = VariantProps<typeof dialogContentVariants>

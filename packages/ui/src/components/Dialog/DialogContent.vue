@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, provide, ref, watch, type ComponentPublicInstance } from 'vue'
+import CloseGlyphIcon from '../../icons/CloseGlyphIcon.vue'
 import DismissableLayer from '../../primitives/DismissableLayer.vue'
 import type { PointerDownOutsideEvent } from '../../primitives/dismissableLayer'
 import { getActiveElement, unrefElement } from '../../primitives/dom'
@@ -8,7 +9,11 @@ import { hideOthers } from '../../primitives/hideOthers'
 import { Presence } from '../../primitives/Presence'
 import { cn } from '../../utils/cn'
 import { dialogHasDescriptionKey, useDialogContext } from './context'
-import { dialogCloseVariants, dialogContentVariants } from './Dialog.variants'
+import {
+  dialogCloseVariants,
+  dialogContentVariants,
+  dialogTitleBarVariants,
+} from './Dialog.variants'
 import DialogOverlay from './DialogOverlay.vue'
 import type { DialogContentProps } from './types'
 
@@ -115,26 +120,21 @@ const describedBy = computed(() => (hasDescription.value ? dialog.descriptionId 
           @dismiss="dialog.setOpen(false)"
         >
           <!--
-            Outside the header on purpose. Replacing the header cannot remove
-            the exit, and `preventClose` must never be able to leave the user
-            with none.
+            The title bar, drawn here rather than by the header, so replacing
+            the header cannot remove the exit, and `preventClose` can never
+            leave the user without one. `DialogTitle` is laid over the bar.
           -->
-          <button
-            type="button"
-            data-slot="dialog-close"
-            :aria-label="props.closeLabel"
-            :class="dialogCloseVariants()"
-            @click="dialog.setOpen(false)"
-          >
-            <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path
-                d="m6 6 8 8M14 6l-8 8"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-            </svg>
-          </button>
+          <div data-slot="dialog-title-bar" :class="dialogTitleBarVariants()">
+            <button
+              type="button"
+              data-slot="dialog-close"
+              :aria-label="props.closeLabel"
+              :class="dialogCloseVariants()"
+              @click="dialog.setOpen(false)"
+            >
+              <CloseGlyphIcon />
+            </button>
+          </div>
 
           <slot />
         </DismissableLayer>

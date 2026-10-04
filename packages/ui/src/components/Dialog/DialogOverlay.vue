@@ -4,7 +4,8 @@ import { useDialogContext } from './context'
 import { dialogOverlayVariants } from './Dialog.variants'
 
 /**
- * The scrim. Internal: `DialogContent` places it, the consumer never does.
+ * The outside-click layer: transparent, since a Windows 98 dialog draws no
+ * backdrop. Internal: `DialogContent` places it, the consumer never does.
  *
  * Holds the page's scroll lock for as long as it is mounted — including its
  * exit animation — and releases it on unmount.
@@ -18,8 +19,8 @@ useBodyScrollLock(true)
 <template>
   <!--
     pointer-events: auto because the open dialog sets the body to none; the
-    scrim must still receive the click that closes the dialog. A left press on
-    the scrim itself is prevented so it does not move focus out of the dialog.
+    layer must still receive the click that closes the dialog. A left press on
+    the layer itself is prevented so it does not move focus out of the dialog.
   -->
   <div
     data-slot="dialog-overlay"

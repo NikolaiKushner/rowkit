@@ -59,8 +59,8 @@ function withTrigger(args: Partial<DialogArgs>, body = 'Body copy goes here.') {
           </DialogHeader>
           <DialogBody>{{ body }}</DialogBody>
           <DialogFooter>
-            <Button variant="ghost" @click="open = false">Cancel</Button>
             <Button @click="open = false">Confirm</Button>
+            <Button variant="secondary" @click="open = false">Cancel</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -129,7 +129,7 @@ export const Open: Story = {
             </DialogHeader>
             <DialogBody>Downstream access is revoked immediately.</DialogBody>
             <DialogFooter>
-              <Button variant="ghost" @click="open = false">Cancel</Button>
+              <Button @click="open = false">Cancel</Button>
               <Button variant="destructive" @click="open = false">Delete project</Button>
             </DialogFooter>
           </DialogContent>
@@ -196,8 +196,8 @@ export const WithForm: Story = {
             </Field>
           </DialogBody>
           <DialogFooter>
-            <Button variant="ghost" @click="open = false">Cancel</Button>
             <Button @click="open = false">Save</Button>
+            <Button variant="secondary" @click="open = false">Cancel</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -228,8 +228,8 @@ export const LongContent: Story = {
             </p>
           </DialogBody>
           <DialogFooter>
-            <Button variant="ghost" @click="open = false">Decline</Button>
             <Button @click="open = false">Accept</Button>
+            <Button variant="secondary" @click="open = false">Decline</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -238,7 +238,7 @@ export const LongContent: Story = {
 }
 
 /**
- * `preventClose` blocks Escape and the scrim, for a flow where dismissing by
+ * `preventClose` blocks Escape and clicking outside, for a flow where dismissing by
  * accident loses work. **The close button stays** — a dialog with no exit is
  * hostile.
  */
@@ -259,10 +259,8 @@ export const CustomHeader: Story = {
           <Button>Open</Button>
         </DialogTrigger>
         <DialogContent>
-          <DialogHeader class="border-b border-border-subtle pb-4">
-            <span class="text-xs font-medium uppercase tracking-wide text-primary-on-subtle">
-              Billing
-            </span>
+          <DialogHeader>
+            <span class="font-bold">Billing</span>
             <DialogTitle>Upgrade plan</DialogTitle>
           </DialogHeader>
           <DialogBody>The accessible name is still "Upgrade plan", from the title.</DialogBody>
@@ -365,7 +363,7 @@ export const EscapeRestoresFocus: Story = {
  * Tab cycles inside the dialog and cannot reach the page behind it.
  *
  * A focus trap that stops trapping is invisible: the dialog still looks modal,
- * and a keyboard user simply tabs out into content the scrim says is
+ * and a keyboard user simply tabs out into content the dialog says is
  * unavailable, then operates it. Nothing about the rendered output changes when
  * this breaks, which is why it is asserted rather than assumed.
  */
@@ -390,7 +388,7 @@ export const TabIsTrapped: Story = {
       await expect(dialog.contains(document.activeElement)).toBe(true)
     }
 
-    // The trigger sits behind the scrim, so it must never take focus while open.
+    // The trigger sits behind the dialog, so it must never take focus while open.
     await expect(trigger).not.toHaveFocus()
   },
 }
@@ -453,7 +451,7 @@ export const ScrollLock: Story = {
               <DialogTitle>Scroll lock check</DialogTitle>
             </DialogHeader>
             <DialogBody>
-              Compare the page edges behind the scrim before and after opening.
+              Compare the page edges behind the dialog before and after opening.
             </DialogBody>
           </DialogContent>
         </Dialog>

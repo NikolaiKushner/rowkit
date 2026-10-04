@@ -203,29 +203,38 @@ describe('Dialog', () => {
     })
 
     it.each([
-      ['sm', 'sm:max-w-sm'],
-      ['md', 'sm:max-w-lg'],
-      ['lg', 'sm:max-w-2xl'],
+      ['sm', 'max-w-[320px]'],
+      ['md', 'max-w-[440px]'],
+      ['lg', 'max-w-[600px]'],
     ] as const)('%s maps to %s', async (size, expected) => {
       await setup({ size })
       expect(dialog()?.className).toContain(expected)
     })
   })
 
-  it('gates enter and exit behind motion-safe', async () => {
-    // Overlay transitions are ambient — they carry no information, so they
-    // collapse to instant for anyone who asked for reduced motion.
-    await setup()
-    for (const token of (dialog()?.className ?? '').split(/\s+/)) {
-      if (!token.includes('animate-')) continue
-      expect(token, 'every overlay animation is gated').toContain('motion-safe:')
-    }
+  describe('title bar', () => {
+    it('puts the close button in the title bar, outside the header', async () => {
+      await setup({ eyebrow: 'Billing' })
+      const bar = document.querySelector('[data-slot="dialog-title-bar"]')
+      expect(bar?.contains(closeButton())).toBe(true)
+      expect(bar?.closest('[data-slot="dialog-header"]')).toBeNull()
+    })
+
+    it('opens and closes instantly, over no backdrop', async () => {
+      // Windows 98 has no window animation and draws nothing behind a
+      // dialog: the layer behind it only catches clicks.
+      await setup()
+      const overlay = document.querySelector('[data-slot="dialog-overlay"]')
+      expect(dialog()?.className).not.toContain('animate-')
+      expect(overlay?.className).not.toContain('animate-')
+      expect(overlay?.className).not.toMatch(/\bbg-/)
+    })
   })
 
   it('merges a consumer class onto the surface', async () => {
-    await setup({ surfaceClass: 'sm:max-w-xs' })
+    await setup({ surfaceClass: 'max-w-[300px]' })
     const className = dialog()?.className ?? ''
-    expect(className).toContain('sm:max-w-xs')
-    expect(className).not.toContain('sm:max-w-lg')
+    expect(className).toContain('max-w-[300px]')
+    expect(className).not.toContain('max-w-[440px]')
   })
 })

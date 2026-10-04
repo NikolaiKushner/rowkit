@@ -28,6 +28,7 @@ import {
 import {
   dialogBodyVariants,
   dialogCloseVariants,
+  dialogTitleBarVariants,
   dialogContentVariants,
   dialogDescriptionVariants,
   dialogFooterVariants,
@@ -189,6 +190,7 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Dialog description', dialogDescriptionVariants],
   ['Dialog body', dialogBodyVariants],
   ['Dialog footer', dialogFooterVariants],
+  ['Dialog title bar', dialogTitleBarVariants],
   ['Dialog close', dialogCloseVariants],
   ['Tooltip content', tooltipContentVariants],
   ['Toaster viewport', toasterViewportVariants],
@@ -265,7 +267,8 @@ describe('the focus ring has something to draw', () => {
    * Windows 98 marks focus with a 1px dotted rectangle, which only `outline`
    * can draw — a ring is a box-shadow and is always solid. Any outline focus
    * must be that rectangle: dotted, in the ring colour. A solid or coloured
-   * outline is an improvised focus style.
+   * outline is an improvised focus style. The one other colour is the title
+   * bar's white, for a control drawn on the navy bar, where black would vanish.
    */
   it('draws outline focus only as the dotted ring', () => {
     for (const [name, variant] of components) {
@@ -279,9 +282,12 @@ describe('the focus ring has something to draw', () => {
         expect(classes, `${name}: ${prefix}outline-1 must be dotted`).toContain(
           `${prefix}outline-dotted`
         )
-        expect(classes, `${name}: ${prefix}outline-1 must use the ring colour`).toContain(
-          `${prefix}outline-ring`
-        )
+        expect(
+          [`${prefix}outline-ring`, `${prefix}outline-titlebar-foreground`].some((c) =>
+            classes.includes(c)
+          ),
+          `${name}: ${prefix}outline-1 must use the ring colour`
+        ).toBe(true)
       }
     }
   })

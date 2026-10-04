@@ -20,14 +20,14 @@ export interface DialogTriggerProps {
 /**
  * Props for `DialogContent`.
  *
- * The portal, the scrim, and the close button live here. They are not separate
+ * The portal, the outside-click layer, and the close button live here. They are not separate
  * parts: a dialog without them is not a dialog.
  */
 export interface DialogContentProps {
   /** Width preset. Height is content-driven, capped to the viewport. */
   size?: NonNullable<DialogVariants['size']>
   /**
-   * Blocks Escape and clicking the scrim, for a flow where dismissing by
+   * Blocks Escape and clicking outside the window, for a flow where dismissing by
    * accident loses work.
    *
    * **Never removes the close button.** A dialog with no exit is hostile; this

@@ -17,76 +17,12 @@
 @import '@rowkit/tokens/css';
 
 /*
- * Overlay enter/exit animations.
- *
- * These live here rather than in `@rowkit/tokens` because a keyframe is
- * structure, not a design value — the values it interpolates between are
- * geometry, and the timing comes from the motion tokens through `var()`. The
- * token package stays a set of scales.
- *
- * They are keyframe *animations* rather than transitions on purpose: the
- * Presence primitive decides when to unmount a closing overlay by watching for
- * a running animation. A transition alone would let the element disappear
- * before the exit finished. Where reduced motion removes the animation
- * entirely, Presence sees none and unmounts immediately, which is exactly the
- * wanted behaviour.
+ * Keyframes. Windows 98 has next to no motion: overlays, toasts and tooltips
+ * appear and go instantly, so the one animation left is the skeleton's dither.
+ * A keyframe is structure, not a design value, so it lives here rather than
+ * in `@rowkit/tokens`.
  */
 @theme {
-  --animate-overlay-in: overlay-in var(--transition-duration-fast) var(--ease-enter);
-  --animate-overlay-out: overlay-out var(--transition-duration-fast) var(--ease-exit);
-  --animate-dialog-in: dialog-in var(--transition-duration-normal) var(--ease-enter);
-  --animate-dialog-out: dialog-out var(--transition-duration-fast) var(--ease-exit);
-
-  @keyframes overlay-in {
-    from {
-      opacity: 0;
-    }
-  }
-
-  @keyframes overlay-out {
-    to {
-      opacity: 0;
-    }
-  }
-
-  /*
-   * A small rise and scale, not a slide. Large travel is what makes overlay
-   * motion feel theatrical, and it is the shape reduced-motion users object to.
-   */
-  @keyframes dialog-in {
-    from {
-      opacity: 0;
-      transform: translateY(0.5rem) scale(0.98);
-    }
-  }
-
-  @keyframes dialog-out {
-    to {
-      opacity: 0;
-      transform: translateY(0.25rem) scale(0.99);
-    }
-  }
-
-  --animate-tooltip-in: tooltip-in var(--transition-duration-fast) var(--ease-enter);
-  --animate-tooltip-out: tooltip-out var(--transition-duration-instant) var(--ease-exit);
-
-  /*
-   * Barely any travel. A tooltip appears next to the thing it labels, and
-   * motion that draws the eye away from that thing defeats the point.
-   */
-  @keyframes tooltip-in {
-    from {
-      opacity: 0;
-      transform: scale(0.96);
-    }
-  }
-
-  @keyframes tooltip-out {
-    to {
-      opacity: 0;
-    }
-  }
-
   /*
    * The skeleton's checker stepping 1px sideways and back, 400ms per frame.
    * `steps(1)` holds each keyframe's value for its whole interval: two
@@ -99,34 +35,12 @@
       background-position: 1px 0;
     }
   }
-
-  --animate-toast-in: toast-in var(--transition-duration-normal) var(--ease-enter);
-  --animate-toast-out: toast-out var(--transition-duration-fast) var(--ease-exit);
-
-  /*
-   * A toast slides in from the edge it is anchored to, which is why the travel
-   * is on X rather than Y: every position preset is horizontally anchored, and
-   * a vertical entry would read as the stack reordering itself.
-   */
-  @keyframes toast-in {
-    from {
-      opacity: 0;
-      transform: translateX(0.75rem);
-    }
-  }
-
-  @keyframes toast-out {
-    to {
-      opacity: 0;
-      transform: translateX(0.75rem);
-    }
-  }
 }
 
 /*
  * The Windows 98 dither: a 1px checker of white and silver, white in the
- * top-left pixel. A latched toolbar button, a scrollbar track and the dialog
- * backdrop are filled with it.
+ * top-left pixel. A latched toolbar button, a scrollbar track and a skeleton
+ * are filled with it.
  *
  * Drawn as a 2px conic-gradient tile rather than an image so it follows the
  * bevel tokens and stays pixel-exact at any zoom: each quadrant is one CSS

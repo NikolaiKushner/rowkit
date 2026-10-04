@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority'
+import { captionButtonVariants } from '../captionButton.variants'
 
 /**
  * The viewport. One per app, portalled to `<body>` at `z-toast` — above a modal,
@@ -50,16 +51,7 @@ export const toastMessageVariants = cva('')
 /** Space above the action button, so it does not crowd the text. */
 export const toastActionVariants = cva('pt-0.5')
 
-/**
- * The caption button: 16×14, raised, with the ✕ glyph. Held, it sinks and
- * the glyph moves 1px right and down.
- */
-export const toastCloseVariants = cva([
-  'inline-flex h-[14px] w-4 shrink-0 cursor-pointer items-center justify-center',
-  'bg-card pr-px pb-px text-foreground shadow-raised',
-  'active:pt-px active:pr-0 active:pb-0 active:pl-px active:shadow-pressed',
-  'outline-none focus-visible:outline-1 focus-visible:outline-offset-1',
-  'focus-visible:outline-dotted focus-visible:outline-ring',
-])
+/** The caption button: the same 16×14 ✕ as a dialog's title bar. */
+export const toastCloseVariants = captionButtonVariants
 
 export type ToasterVariants = VariantProps<typeof toasterViewportVariants>

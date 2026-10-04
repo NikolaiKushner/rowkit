@@ -4,7 +4,8 @@
 
 A modal dialog. Focus trap, focus restore, scroll lock and background inerting
 come from rowkit's shared primitives. You place the parts;
-the portal, the scrim, and the close button live inside `DialogContent`.
+the portal, the outside-click layer, and the close button live inside
+`DialogContent`.
 
 ```vue
 <Dialog v-model:open="open">
@@ -18,7 +19,7 @@ the portal, the scrim, and the close button live inside `DialogContent`.
     </DialogHeader>
     <DialogBody>Everything in the project goes with it.</DialogBody>
     <DialogFooter>
-      <Button variant="ghost" @click="open = false">Cancel</Button>
+      <Button @click="open = false">Cancel</Button>
       <Button variant="destructive" @click="remove">Delete</Button>
     </DialogFooter>
   </DialogContent>
@@ -53,7 +54,7 @@ function remove() {
         invite link you have shared.
       </DialogBody>
       <DialogFooter>
-        <Button variant="ghost" @click="confirmOpen = false">Cancel</Button>
+        <Button @click="confirmOpen = false">Cancel</Button>
         <Button variant="destructive" @click="remove">Delete</Button>
       </DialogFooter>
     </DialogContent>
@@ -81,8 +82,8 @@ function remove() {
 </DemoBox>
 
 Open either one and press <kbd>Tab</kbd> a few times: focus cycles inside the
-dialog and does not reach the page behind it. <kbd>Esc</kbd> closes, clicking the
-scrim closes, and focus returns to the trigger — which is the
+dialog and does not reach the page behind it. <kbd>Esc</kbd> closes, clicking
+outside closes, and focus returns to the trigger — which is the
 part that is easy to lose and very obvious to a keyboard user when it is missing.
 
 The second dialog is long on purpose. The **body is the only scrolling region**,
@@ -90,16 +91,16 @@ so the title and the actions stay reachable no matter how much content there is.
 
 ## Anatomy
 
-| Part                | Purpose                                                              |
-| ------------------- | -------------------------------------------------------------------- |
-| `Dialog`            | Root. Holds `v-model:open`. With no model, the trigger still toggles |
-| `DialogTrigger`     | Opens the dialog. `as-child` turns your button into the trigger      |
-| `DialogContent`     | Surface, plus the portal, the scrim, and the close button            |
-| `DialogHeader`      | Title row. Does not scroll                                           |
-| `DialogTitle`       | Accessible name (`aria-labelledby`)                                  |
-| `DialogDescription` | Supporting text. Omit it and nothing is announced as a description   |
-| `DialogBody`        | The only scrolling region                                            |
-| `DialogFooter`      | Actions. Cancel first, primary last                                  |
+| Part                | Purpose                                                               |
+| ------------------- | --------------------------------------------------------------------- |
+| `Dialog`            | Root. Holds `v-model:open`. With no model, the trigger still toggles  |
+| `DialogTrigger`     | Opens the dialog. `as-child` turns your button into the trigger       |
+| `DialogContent`     | Window, plus the portal, the outside-click layer, the title bar and ✕ |
+| `DialogHeader`      | What sits under the title bar: description, eyebrow. Does not scroll  |
+| `DialogTitle`       | Accessible name (`aria-labelledby`), drawn in the title bar           |
+| `DialogDescription` | Supporting text. Omit it and nothing is announced as a description    |
+| `DialogBody`        | The only scrolling region                                             |
+| `DialogFooter`      | Command buttons, right-aligned. The default button first              |
 
 ## Props
 
@@ -127,12 +128,12 @@ so the title and the actions stay reachable no matter how much content there is.
 
 <!-- @props DialogContentProps -->
 
-| Prop           | Type                   | Default          | Description                                                                               |
-| -------------- | ---------------------- | ---------------- | ----------------------------------------------------------------------------------------- |
-| `size`         | `'sm' \| 'md' \| 'lg'` | `'md'`           | Width preset. Height is content-driven, capped to the viewport.                           |
-| `preventClose` | `boolean`              | `false`          | Blocks Escape and clicking the scrim, for a flow where dismissing by accident loses work. |
-| `closeLabel`   | `string`               | `'Close dialog'` | Accessible name for the close button.                                                     |
-| `class`        | `string`               | —                | Additional classes for the dialog surface, merged so a consumer's utility wins.           |
+| Prop           | Type                   | Default          | Description                                                                                        |
+| -------------- | ---------------------- | ---------------- | -------------------------------------------------------------------------------------------------- |
+| `size`         | `'sm' \| 'md' \| 'lg'` | `'md'`           | Width preset. Height is content-driven, capped to the viewport.                                    |
+| `preventClose` | `boolean`              | `false`          | Blocks Escape and clicking outside the window, for a flow where dismissing by accident loses work. |
+| `closeLabel`   | `string`               | `'Close dialog'` | Accessible name for the close button.                                                              |
+| `class`        | `string`               | —                | Additional classes for the dialog surface, merged so a consumer's utility wins.                    |
 
 <!-- /@props -->
 
@@ -214,17 +215,24 @@ rendering a visually hidden copy; that hid the name from the person writing
 the header. Place `DialogTitle` in the tree, and hide it yourself if the
 visible heading is custom.
 
-**The portal, the scrim, and the close button live inside `DialogContent`.**
+**The portal, the outside-click layer, and the close button live inside `DialogContent`.**
 They always travel together. A consumer who composes the header cannot
 remove the exit, because the close button is not in the header.
+
+**The title sits in the title bar.** `DialogContent` draws the navy bar with
+the ✕ at its right end; `DialogTitle` stays where you place it in the header
+but is laid over the bar, bold and white, cut off with an ellipsis before the
+✕. Anything else in the header — a description, an eyebrow — starts below
+the bar.
 
 **`v-model:open` is optional.** Bind it when the page opens or closes the
 dialog — a successful submit is a one-line flip of your own ref. Leave it
 unbound and the root holds the state, so `DialogTrigger` still toggles.
 
-**`preventClose` never removes the close button.** It blocks Escape and the
-scrim, for a flow where accidental dismissal loses work. A dialog with no exit
-is hostile, so the button stays.
+**`preventClose` never removes the close button.** It blocks Escape and
+clicking outside, for a flow where accidental dismissal loses work. A dialog
+with no exit is hostile, so the ✕ stays enabled — a deliberate departure from
+the Figma file, which draws it disabled here.
 
 **Only `DialogBody` scrolls.** Header and footer are fixed rows. A dialog that
 scrolls as a whole pushes its own Save button off-screen.
@@ -255,11 +263,10 @@ two — `aria-modal` alone is inconsistently honoured by screen readers.
 set to an empty string rather than pointing at an element that was never
 rendered. Some readers announce a broken reference as a blank.
 
-**Motion is ambient here**, so enter and exit are gated behind `motion-safe:` and
-collapse to instant show/hide under `prefers-reduced-motion`. The animations are
-keyframes rather than transitions because the dialog decides when to unmount a
-closing overlay by watching for a running animation — with reduced motion there is none,
-and it unmounts immediately, which is the wanted behaviour.
+**No motion, no backdrop.** The window appears and goes instantly, as Windows
+98 drew it, so there is nothing for `prefers-reduced-motion` to remove. Nothing
+is drawn behind it either: an invisible layer catches the click outside and
+holds the scroll lock, and the page stays as it was.
 
 ## Under SSR
 
