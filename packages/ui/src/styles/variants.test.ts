@@ -91,6 +91,14 @@ import {
 } from '../components/ProgressBar/ProgressBar.variants'
 import { separatorVariants } from '../components/Separator/Separator.variants'
 import {
+  windowBodyVariants,
+  windowButtonVariants,
+  windowControlsVariants,
+  windowTitleBarVariants,
+  windowTitleVariants,
+  windowVariants,
+} from '../components/Window/Window.variants'
+import {
   statusBarSectionVariants,
   statusBarVariants,
 } from '../components/StatusBar/StatusBar.variants'
@@ -191,6 +199,12 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Select content', selectContentVariants],
   ['Select item', selectItemVariants],
   ['Separator', separatorVariants],
+  ['Window', windowVariants],
+  ['Window title bar', windowTitleBarVariants],
+  ['Window title', windowTitleVariants],
+  ['Window controls', windowControlsVariants],
+  ['Window button', windowButtonVariants],
+  ['Window body', windowBodyVariants],
   ['Checkbox', checkboxVariants],
   ['Checkbox box', checkboxBoxVariants],
   ['Checkbox label', checkboxLabelVariants],

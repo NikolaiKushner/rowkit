@@ -641,3 +641,58 @@ handling.
 **Slots**
 
 - `#default` — The label. Plain text.
+
+### Window
+
+`import { Window } from 'rowkit'`
+
+**Props**
+
+- `active: boolean` — default `true`. Whether this is the window in use. An inactive window's title bar is the grey gradient — the one behind a dialog, or beside the window with focus.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — `WindowTitleBar`, `WindowBody`, and a `StatusBar` if the window has one.
+
+### WindowTitleBar
+
+`import { WindowTitleBar } from 'rowkit'`
+
+**Props**
+
+- `title: string`. The window's title. Names the window. The default slot replaces it.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The title, for one that needs markup. Replaces `title`.
+- `#icon` — A 16px icon before the title.
+- `#controls` — `WindowButton`s: minimize, maximize or restore, close — in that order.
+
+### WindowButton
+
+`import { WindowButton } from 'rowkit'`
+
+**Props**
+
+- `glyph: 'minimize' | 'maximize' | 'restore' | 'close'` _(required)_. Which caption button: the glyph it shows.
+- `label: string` _(required)_. Accessible name. The glyph alone says nothing to a screen reader.
+- `disabled: boolean` — default `false`. Disables the button: a grey, embossed glyph.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Events**
+
+- `@click` — `[event: MouseEvent]`. The button was activated. What it does — close, minimize — is the caller's.
+
+### WindowBody
+
+`import { WindowBody } from 'rowkit'`
+
+**Props**
+
+- `class: string`. Additional classes — padding, a layout — merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The window's content.

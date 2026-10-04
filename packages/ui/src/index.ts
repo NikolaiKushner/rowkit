@@ -21,6 +21,7 @@ export * from './components/Skeleton'
 export * from './components/StatusBar'
 export * from './components/Toaster'
 export * from './components/Tooltip'
+export * from './components/Window'
 
 export { cn } from './utils/cn'
 export { useClientSort } from './composables/useClientSort'

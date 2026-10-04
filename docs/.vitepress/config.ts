@@ -119,6 +119,7 @@ export default defineConfig({
           { text: 'Button', link: '/components/button' },
           { text: 'ButtonGroup', link: '/components/button-group' },
           { text: 'Separator', link: '/components/separator' },
+          { text: 'Window', link: '/components/window' },
           { text: 'GroupBox', link: '/components/group-box' },
           { text: 'StatusBar', link: '/components/status-bar' },
           { text: 'ProgressBar', link: '/components/progress-bar' },
