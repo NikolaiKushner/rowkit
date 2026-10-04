@@ -87,10 +87,11 @@ handling.
 
 **Props**
 
-- `variant: 'outline' | 'default' | 'secondary' | 'ghost' | 'destructive' | 'link'` — default `'default'`. Visual weight and intent.
-- `size: 'sm' | 'default' | 'xs' | 'lg' | 'icon' | 'icon-xs' | 'icon-sm' | 'icon-lg'` — default `'default'`. Control height and text size.
+- `variant: 'default' | 'secondary' | 'ghost' | 'destructive' | 'link'` — default `'default'`. Visual weight and intent.
+- `size: 'sm' | 'default' | 'xs' | 'lg' | 'icon-xs' | 'icon-sm' | 'icon' | 'icon-lg'` — default `'default'`. Control height: `xs` 17px, `sm` 21px, `default` 23px (Windows 98's own), `lg` 27px. Icon sizes render a square of 20, 22, 24 or 28px — supply `aria-label` yourself.
 - `block: boolean` — default `false`. Stretches the button to fill its container.
-- `loading: boolean` — default `false`. Swaps the leading slot for a spinner and blocks activation.
+- `pressed: boolean` — default `undefined`. Makes the button a toggle and sets whether it is on (`aria-pressed`). On is drawn pressed in, over the dither. Leave unset for a plain command button; `false` still announces a toggle that is off.
+- `loading: boolean` — default `false`. Swaps the leading slot for the hourglass and blocks activation.
 - `disabled: boolean` — default `false`. Disables the button.
 - `type: 'button' | 'submit' | 'reset'` — default `'button'`. Native button type. Defaults to `button`, not `submit` — an unlabelled submit inside a form is the more damaging default.
 - `loadingLabel: string`. Announced in place of the visible label while `loading` is set. Leave unset to keep the label unchanged.
@@ -101,7 +102,7 @@ handling.
 **Slots**
 
 - `#default` — The button label.
-- `#leading` — Icon before the label. Replaced by the spinner while loading.
+- `#leading` — Icon before the label. Replaced by the hourglass while loading.
 - `#trailing` — Icon after the label.
 
 ### ButtonGroup

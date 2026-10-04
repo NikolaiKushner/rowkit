@@ -26,6 +26,9 @@ const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {
       shadow: [{ shadow: Object.keys(tokens.shadow) }],
+      // `text-ui` reads as a colour to tailwind-merge, which would then drop
+      // it in favour of `text-foreground` beside it.
+      'font-size': [{ text: Object.keys(tokens.font.size) }],
       z: [{ z: Object.keys(tokens.zIndex) }],
       duration: [{ duration: Object.keys(tokens.motion.duration) }],
       ease: [{ ease: Object.keys(tokens.motion.easing) }],

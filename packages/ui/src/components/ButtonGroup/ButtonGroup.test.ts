@@ -16,7 +16,7 @@ describe('ButtonGroup', () => {
     const classes = mount(ButtonGroup, {
       slots: {
         default: `
-          <Button variant="outline">Archive</Button>
+          <Button variant="secondary">Archive</Button>
           <Button variant="secondary">Report</Button>
         `,
       },

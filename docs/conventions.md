@@ -80,7 +80,7 @@ State ownership.
     </DialogHeader>
     <DialogBody>Everything in the project goes with it.</DialogBody>
     <DialogFooter>
-      <Button variant="outline">Cancel</Button>
+      <Button variant="secondary">Cancel</Button>
       <Button variant="destructive">Delete</Button>
     </DialogFooter>
   </DialogContent>

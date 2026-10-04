@@ -5,7 +5,12 @@ import { fileURLToPath } from 'node:url'
 import { compile } from 'tailwindcss'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { badgeVariants } from '../components/Badge/Badge.variants'
-import { buttonVariants } from '../components/Button/Button.variants'
+import {
+  buttonContentVariants,
+  buttonFocusVariants,
+  buttonPressedState,
+  buttonVariants,
+} from '../components/Button/Button.variants'
 import {
   dataTableCaptionVariants,
   dataTableCellVariants,
@@ -118,11 +123,17 @@ type CvaFn = ((props?: Record<string, string>) => string) & {
   config?: { variants?: Record<string, Record<string, unknown>> }
 }
 
+/**
+ * Group markers (`group/button`) name an element for `group-*` variants to
+ * refer to. They generate no CSS of their own, by design.
+ */
+const isMarker = (className: string) => /^(group|peer)(\/|$)/.test(className)
+
 function classesOf(variant: CvaFn): string[] {
   const seen = new Set<string>()
   for (const combo of combinations(variant.config?.variants)) {
     for (const className of variant(combo).split(/\s+/)) {
-      if (className) seen.add(className)
+      if (className && !isMarker(className)) seen.add(className)
     }
   }
   return [...seen]
@@ -131,6 +142,9 @@ function classesOf(variant: CvaFn): string[] {
 const components: readonly (readonly [string, CvaFn])[] = [
   ['Badge', badgeVariants],
   ['Button', buttonVariants],
+  ['Button content', buttonContentVariants],
+  ['Button focus ring', buttonFocusVariants],
+  ['Button pressed state', () => buttonPressedState],
   ['Field', fieldVariants],
   ['Field label', fieldLabelVariants],
   ['Field hint', fieldHintVariants],

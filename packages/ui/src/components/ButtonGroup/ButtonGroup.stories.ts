@@ -36,17 +36,17 @@ export const Default: Story = {
     template: `
       <ButtonGroup aria-label="Actions">
         <ButtonGroup>
-          <Button variant="outline" size="icon" aria-label="Open">
+          <Button variant="secondary" size="icon" aria-label="Open">
             <ChevronIcon />
           </Button>
         </ButtonGroup>
         <ButtonGroup>
-          <Button variant="outline">Archive</Button>
+          <Button variant="secondary">Archive</Button>
           <Button variant="secondary">Report</Button>
         </ButtonGroup>
         <ButtonGroup>
-          <Button variant="outline">Snooze</Button>
-          <Button variant="outline" size="icon" aria-label="More">
+          <Button variant="secondary">Snooze</Button>
+          <Button variant="secondary" size="icon" aria-label="More">
             <MoreIcon />
           </Button>
         </ButtonGroup>
@@ -60,9 +60,9 @@ export const Vertical: Story = {
     components: { Button, ButtonGroup },
     template: `
       <ButtonGroup orientation="vertical" aria-label="Stack">
-        <Button variant="outline">Top</Button>
-        <Button variant="outline">Middle</Button>
-        <Button variant="outline">Bottom</Button>
+        <Button variant="secondary">Top</Button>
+        <Button variant="secondary">Middle</Button>
+        <Button variant="secondary">Bottom</Button>
       </ButtonGroup>
     `,
   }),

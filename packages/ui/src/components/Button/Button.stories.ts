@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
+import { ref } from 'vue'
 import Button from './Button.vue'
 
-const variants = ['default', 'outline', 'secondary', 'ghost', 'destructive', 'link'] as const
+const variants = ['default', 'secondary', 'ghost', 'destructive', 'link'] as const
 const sizes = ['xs', 'sm', 'default', 'lg'] as const
 const iconSizes = ['icon-xs', 'icon-sm', 'icon', 'icon-lg'] as const
 
@@ -78,7 +79,7 @@ export const IconSizes: Story = {
           v-for="size in iconSizes"
           :key="size"
           :size="size"
-          variant="outline"
+          variant="secondary"
           :aria-label="size"
         >
           <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -103,8 +104,8 @@ export const Disabled: Story = {
 }
 
 /**
- * The label stays put and the button keeps its place in the tab order. Only
- * the leading slot is replaced, so the button does not resize mid-request.
+ * The hourglass replaces the leading slot; the label stays and the button
+ * keeps its place in the tab order. No spinner and no animation.
  */
 export const Loading: Story = {
   render: () => ({
@@ -118,12 +119,46 @@ export const Loading: Story = {
   }),
 }
 
+/**
+ * A toggle: `pressed` sets `aria-pressed`, and on is drawn pressed in over the
+ * dither. A toolbar of ghost toggles is the usual home.
+ */
+export const Toggle: Story = {
+  render: () => ({
+    components: { Button },
+    setup() {
+      const bold = ref(true)
+      const italic = ref(false)
+      return { bold, italic }
+    },
+    template: `
+      <div class="flex items-center gap-3">
+        <div class="flex">
+          <Button variant="ghost" size="icon-sm" aria-label="Bold" :pressed="bold" @click="bold = !bold">
+            <b>B</b>
+          </Button>
+          <Button variant="ghost" size="icon-sm" aria-label="Italic" :pressed="italic" @click="italic = !italic">
+            <i>I</i>
+          </Button>
+        </div>
+        <Button variant="secondary" :pressed="bold" @click="bold = !bold">Word wrap</Button>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const bold = within(canvasElement).getByRole('button', { name: 'Bold' })
+    await expect(bold).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.click(bold)
+    await expect(bold).toHaveAttribute('aria-pressed', 'false')
+  },
+}
+
 export const WithIcons: Story = {
   render: () => ({
     components: { Button },
     template: `
       <div class="flex flex-wrap items-center gap-3">
-        <Button variant="outline">
+        <Button variant="secondary">
           <template #leading>
             <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <path d="M10 5v10M5 10h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
@@ -159,9 +194,10 @@ export const AsLink: Story = {
     components: { Button },
     template: `
       <div class="flex flex-wrap items-center gap-3">
-        <Button as="a" href="#" variant="outline">Link button</Button>
-        <Button as="a" href="#" variant="outline" disabled>Disabled link</Button>
+        <Button as="a" href="#" variant="secondary">Link button</Button>
+        <Button as="a" href="#" variant="secondary" disabled>Disabled link</Button>
         <Button variant="link">Link variant</Button>
+        <Button as-child variant="secondary"><a href="#">As child</a></Button>
       </div>
     `,
   }),

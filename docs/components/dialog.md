@@ -61,7 +61,7 @@ function remove() {
 
   <Dialog v-model:open="termsOpen">
     <DialogTrigger as-child>
-      <Button variant="outline">Read the terms</Button>
+      <Button variant="secondary">Read the terms</Button>
     </DialogTrigger>
     <DialogContent size="lg">
       <DialogHeader>

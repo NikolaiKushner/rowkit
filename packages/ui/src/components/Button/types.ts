@@ -12,22 +12,28 @@ export interface ButtonProps {
   /**
    * Visual weight and intent.
    *
-   * Omit for soft-ink solid (the primary action). `outline` for bordered
-   * chrome, `secondary` for a muted fill, `ghost` for tertiary, `destructive`
-   * for soft delete-style actions, `link` for text that acts.
+   * Omit for the default button of a form or dialog — the one Enter
+   * activates, drawn with a black frame. `secondary` for every other command,
+   * `ghost` for a flat toolbar button, `destructive` for an action that opens
+   * a confirmation (maroon label), `link` for text that acts.
    */
   variant?: NonNullable<ButtonVariants['variant']>
   /**
-   * Control height and text size.
-   *
-   * `default` matches Field/Input/Select `md` (`h-8`). Icon sizes render a
-   * square — supply `aria-label` yourself.
+   * Control height: `xs` 17px, `sm` 21px, `default` 23px (Windows 98's own),
+   * `lg` 27px. Icon sizes render a square of 20, 22, 24 or 28px — supply
+   * `aria-label` yourself.
    */
   size?: NonNullable<ButtonVariants['size']>
   /** Stretches the button to fill its container. */
   block?: boolean
   /**
-   * Swaps the leading slot for a spinner and blocks activation.
+   * Makes the button a toggle and sets whether it is on (`aria-pressed`).
+   * On is drawn pressed in, over the dither. Leave unset for a plain command
+   * button; `false` still announces a toggle that is off.
+   */
+  pressed?: boolean | undefined
+  /**
+   * Swaps the leading slot for the hourglass and blocks activation.
    *
    * The button stays focusable and keeps its label, so the control does not
    * vanish from the tab order mid-request and the accessible name never

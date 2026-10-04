@@ -109,3 +109,23 @@
     }
   }
 }
+
+/*
+ * The Windows 98 dither: a 1px checker of white and silver, white in the
+ * top-left pixel. A latched toolbar button, a scrollbar track and the dialog
+ * backdrop are filled with it.
+ *
+ * Drawn as a 2px conic-gradient tile rather than an image so it follows the
+ * bevel tokens and stays pixel-exact at any zoom: each quadrant is one CSS
+ * pixel, and the hard stops leave nothing to interpolate.
+ */
+@utility bg-dither {
+  background-color: var(--color-card);
+  background-image: conic-gradient(
+    var(--color-card) 0 25%,
+    var(--color-bevel-highlight) 0 50%,
+    var(--color-card) 0 75%,
+    var(--color-bevel-highlight) 0
+  );
+  background-size: 2px 2px;
+}

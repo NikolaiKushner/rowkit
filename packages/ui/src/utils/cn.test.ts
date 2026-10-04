@@ -87,4 +87,15 @@ describe('semantic colour utilities collide within a property', () => {
   it('does not collide across properties', () => {
     expect(cn('bg-card', 'text-foreground')).toBe('bg-card text-foreground')
   })
+
+  it.each(Object.keys(tokens.font.size))('keeps text-%s beside a text colour', (size) => {
+    expect(cn(`text-${size}`, 'text-foreground')).toBe(`text-${size} text-foreground`)
+    expect(cn('text-foreground', `text-${size}`)).toBe(`text-foreground text-${size}`)
+  })
+
+  it('keeps the disabled emboss beside the disabled colour', () => {
+    expect(cn('text-text-disabled', 'text-shadow-disabled')).toBe(
+      'text-text-disabled text-shadow-disabled'
+    )
+  })
 })

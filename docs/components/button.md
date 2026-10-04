@@ -2,9 +2,10 @@
 
 **Stage:** 🟢 Stable
 
-The action control. Soft-ink default, outline / secondary / ghost chrome,
-soft `destructive`, and `link` — plus a loading state that does not move the
-furniture.
+The Windows 98 command button. A black-framed `default` for the action Enter
+takes, raised `secondary` for every other command, flat `ghost` for toolbars,
+`destructive` with a maroon label, and `link` — plus a toggle state and a
+loading state that does not move the furniture.
 
 ```vue
 <Button :loading="saving" @click="save">Save changes</Button>
@@ -23,8 +24,7 @@ function save() {
 
 <DemoBox>
   <Button :loading="saving" @click="save">Save changes</Button>
-  <Button variant="outline">Cancel</Button>
-  <Button variant="secondary">Secondary</Button>
+  <Button variant="secondary">Cancel</Button>
   <Button variant="ghost">Details</Button>
   <Button variant="destructive">Delete</Button>
   <Button variant="link">Link</Button>
@@ -35,25 +35,33 @@ sets `aria-busy` and makes the handler a no-op rather than setting `disabled`,
 so a keyboard user is not thrown back to the top of the document by their own
 action.
 
-The spinner occupies the leading slot. Give the button a leading icon and the
-width does not change at all when it starts — without one, as here, the button
-grows by the width of the spinner.
+The hourglass occupies the leading slot. Give the button a leading icon and
+the width does not change at all when it starts — without one, the hourglass
+fits inside the button's 75px minimum width for a short label like this one.
+
+Every state is a bevel. Pressed sinks the bevel and moves the label one pixel
+right and down; focus adds a dotted ring around the label (and the black frame
+on a `secondary` button); disabled greys the label and embosses it. Nothing
+fades or animates.
 
 ## Anatomy
 
-| Part          | Purpose                                                      |
-| ------------- | ------------------------------------------------------------ |
-| Leading slot  | Icon before the label. Replaced by the spinner while loading |
-| Label         | The action, phrased as a verb                                |
-| Trailing slot | Icon after the label — a chevron, an external-link mark      |
+| Part          | Purpose                                                        |
+| ------------- | -------------------------------------------------------------- |
+| Leading slot  | Icon before the label. Replaced by the hourglass while loading |
+| Label         | The action, phrased as a verb                                  |
+| Trailing slot | Icon after the label — a chevron, an external-link mark        |
 
 ## When to use
 
 - Anything that performs an action: submit, delete, retry, open a dialog.
-- Default (no `variant`) for the one action the screen is for. One per view.
-- `outline` for bordered alternatives, `secondary` for a muted fill, `ghost`
-  for tertiary actions and dialog Cancel, `destructive` for soft delete-style
-  actions, `link` when the control should read as text.
+- Default (no `variant`) for the one action the form or dialog is for — the
+  one Enter would press. One per view.
+- `secondary` for every other command, dialog Cancel included. `ghost` for a
+  flat toolbar button, `destructive` for an action that opens a confirmation,
+  `link` when the control should read as text.
+- `pressed` for a toggle that latches: bold, word wrap, a view switch. It sets
+  `aria-pressed` and draws the button pressed in over the dither.
 
 ## When not to use
 
@@ -63,8 +71,9 @@ grows by the width of the spinner.
   when it stays on the page but should look like text.
 - **More than one default solid per screen.** If two actions are equally
   important, neither is primary.
-- **As a toggle.** A button that stays pressed needs `aria-pressed` and a
-  different mental model. That is a switch or a toggle button, not this.
+- **As an on/off setting in a form.** A setting that is saved with the form
+  is a checkbox. `pressed` is for a command that latches, like a toolbar
+  button.
 - **With `type="submit"` by accident.** The default here is `type="button"`
   precisely because a button that silently submits its surrounding form is the
   more damaging default. Opt in when you mean it.
@@ -77,10 +86,11 @@ grows by the width of the spinner.
 
 | Prop           | Type                                                                                 | Default     | Description                                                                                                               |
 | -------------- | ------------------------------------------------------------------------------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `variant`      | `'outline' \| 'default' \| 'secondary' \| 'ghost' \| 'destructive' \| 'link'`        | `'default'` | Visual weight and intent.                                                                                                 |
-| `size`         | `'sm' \| 'default' \| 'xs' \| 'lg' \| 'icon' \| 'icon-xs' \| 'icon-sm' \| 'icon-lg'` | `'default'` | Control height and text size.                                                                                             |
+| `variant`      | `'default' \| 'secondary' \| 'ghost' \| 'destructive' \| 'link'`                     | `'default'` | Visual weight and intent.                                                                                                 |
+| `size`         | `'sm' \| 'default' \| 'xs' \| 'lg' \| 'icon-xs' \| 'icon-sm' \| 'icon' \| 'icon-lg'` | `'default'` | Control height: `xs` 17px, `sm` 21px, `default` 23px (Windows 98's own), `lg` 27px.                                       |
 | `block`        | `boolean`                                                                            | `false`     | Stretches the button to fill its container.                                                                               |
-| `loading`      | `boolean`                                                                            | `false`     | Swaps the leading slot for a spinner and blocks activation.                                                               |
+| `pressed`      | `boolean`                                                                            | `undefined` | Makes the button a toggle and sets whether it is on (`aria-pressed`).                                                     |
+| `loading`      | `boolean`                                                                            | `false`     | Swaps the leading slot for the hourglass and blocks activation.                                                           |
 | `disabled`     | `boolean`                                                                            | `false`     | Disables the button.                                                                                                      |
 | `type`         | `'button' \| 'submit' \| 'reset'`                                                    | `'button'`  | Native button type. Defaults to `button`, not `submit` — an unlabelled submit inside a form is the more damaging default. |
 | `loadingLabel` | `string`                                                                             | —           | Announced in place of the visible label while `loading` is set. Leave unset to keep the label unchanged.                  |

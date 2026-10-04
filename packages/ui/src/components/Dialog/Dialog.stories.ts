@@ -151,7 +151,7 @@ export const Sizes: Story = {
     setup: () => ({ sizes, openSize: ref<(typeof sizes)[number] | undefined>() }),
     template: `
       <div class="flex items-center gap-2">
-        <Button v-for="size in sizes" :key="size" variant="outline" @click="openSize = size">
+        <Button v-for="size in sizes" :key="size" variant="secondary" @click="openSize = size">
           {{ size }}
         </Button>
         <Dialog
@@ -354,7 +354,8 @@ export const EscapeRestoresFocus: Story = {
 
     await userEvent.keyboard('{Escape}')
 
-    await expect(within(document.body).queryByRole('dialog')).toBeNull()
+    // Gone once its exit animation has run.
+    await waitFor(() => expect(within(document.body).queryByRole('dialog')).toBeNull())
     // Losing the trigger on close is the classic focus bug.
     await expect(trigger).toHaveFocus()
   },
@@ -427,7 +428,7 @@ export const PreventCloseIsNotATrap: Story = {
     await expect(body.queryByRole('dialog')).not.toBeNull()
 
     await userEvent.click(body.getByRole('button', { name: 'Close dialog' }))
-    await expect(body.queryByRole('dialog')).toBeNull()
+    await waitFor(() => expect(body.queryByRole('dialog')).toBeNull())
   },
 }
 

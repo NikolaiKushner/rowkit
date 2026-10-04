@@ -171,7 +171,7 @@ export const Default: Story = {
             </p>
           </div>
           <div class="flex items-center gap-2">
-            <Button variant="outline">Export</Button>
+            <Button variant="secondary">Export</Button>
             <Button>Invite teammate</Button>
           </div>
         </header>

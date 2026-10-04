@@ -7,7 +7,7 @@ the Archive / Report / Snooze pattern.
 
 ```vue
 <ButtonGroup aria-label="Actions">
-  <Button variant="outline">Archive</Button>
+  <Button variant="secondary">Archive</Button>
   <Button variant="secondary">Report</Button>
 </ButtonGroup>
 ```
@@ -15,12 +15,12 @@ the Archive / Report / Snooze pattern.
 <DemoBox>
   <ButtonGroup aria-label="Actions">
     <ButtonGroup>
-      <Button variant="outline">Archive</Button>
+      <Button variant="secondary">Archive</Button>
       <Button variant="secondary">Report</Button>
     </ButtonGroup>
     <ButtonGroup>
-      <Button variant="outline">Snooze</Button>
-      <Button variant="outline" size="icon" aria-label="More">⋯</Button>
+      <Button variant="secondary">Snooze</Button>
+      <Button variant="secondary" size="icon" aria-label="More">⋯</Button>
     </ButtonGroup>
   </ButtonGroup>
 </DemoBox>
