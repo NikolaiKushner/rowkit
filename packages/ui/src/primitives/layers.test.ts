@@ -42,6 +42,15 @@ describe('hideOthers', () => {
     expect(document.getElementById('already')?.getAttribute('aria-hidden')).toBe('true')
   })
 
+  it('never hides what it is told to keep, such as a layer open above it', () => {
+    const above = document.createElement('div')
+    above.innerHTML = '<div id="above"></div>'
+    document.body.append(above)
+    hideOthers(page(), [document.getElementById('above') as HTMLElement])
+    expect(above.hasAttribute('aria-hidden')).toBe(false)
+    expect(document.getElementById('app')?.getAttribute('aria-hidden')).toBe('true')
+  })
+
   it('keeps a node hidden until every layer that hid it has closed', () => {
     const first = page()
     const second = document.createElement('div')

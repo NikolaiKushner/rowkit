@@ -12,9 +12,11 @@
  * - `<script>`, `<style>` and `<template>`, which are never read anyway.
  *
  * Layers stack. Each element remembers how many open layers hid it, and only
- * the last one to close brings it back.
+ * the last one to close brings it back. `keep` lists elements that must stay
+ * visible — the layers already open above this one, which a dialog opening
+ * in the same tick as its own nested dialog would otherwise hide.
  */
-export function hideOthers(target: Element): () => void {
+export function hideOthers(target: Element, keep: readonly Element[] = []): () => void {
   const touched: Element[] = []
 
   for (
@@ -24,6 +26,7 @@ export function hideOthers(target: Element): () => void {
   ) {
     for (const sibling of Array.from(node.parentElement.children)) {
       if (sibling === node || !shouldHide(sibling)) continue
+      if (keep.some((element) => sibling.contains(element))) continue
       claim(sibling)
       touched.push(sibling)
     }

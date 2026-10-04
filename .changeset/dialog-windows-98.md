@@ -11,4 +11,6 @@ Breaking, on 0.x so marked minor:
 - **Fixed widths.** `size` is now 320 (`sm`), 440 (`md`) or 600px (`lg`), narrowed to fit small screens, instead of `max-w-sm` / `max-w-lg` / `max-w-2xl` from the `sm` breakpoint up. A `class` that set `sm:max-w-*` on `DialogContent` should set `max-w-*` instead.
 - **No enter or exit animation.** The `animate-overlay-*`, `animate-dialog-*`, `animate-toast-*` and `animate-tooltip-*` utilities are removed from `rowkit/styles`; no component used them any more.
 
+Focus now opens on the first control after the title bar — the first field, or the default button that leads the footer — instead of the close button. A dialog opened from a dialog turns the one underneath inactive (grey title bar) until it closes.
+
 `preventClose` still leaves the ✕ working (the Figma file draws it disabled): a dialog never traps the user.

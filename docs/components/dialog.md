@@ -248,6 +248,15 @@ set in `ROADMAP.md`, not built.
 | <kbd>Tab</kbd>       | Cycles within the dialog; nothing behind is reachable |
 | <kbd>Shift+Tab</kbd> | Cycles backwards, same containment                    |
 
+Focus opens on **the first control after the title bar**: the first field of a
+form, or the default button, which leads the footer. The ✕ takes it only when
+the dialog has nothing else to focus.
+
+**A dialog opened from a dialog** turns the one underneath inactive: its title
+bar goes grey until the one on top closes, as a Windows 98 owner window does.
+A Select or Tooltip opened from the dialog does not — a window stays active
+while its own drop-down list is open.
+
 Focus moves into the dialog on open and **returns to the trigger on close** —
 both covered by interaction tests, because losing the trigger is
 the classic bug. The trigger has to be `DialogTrigger` for that return to have

@@ -474,6 +474,56 @@ export const ScrollLock: Story = {
 }
 
 /**
+ * A dialog opened from a dialog. The one underneath turns inactive — grey title
+ * bar — until the one on top closes, as a Windows 98 owner window does.
+ */
+export const Nested: Story = {
+  render: () => ({
+    components: parts,
+    setup: () => ({ open: ref(true), confirm: ref(true) }),
+    template: `
+      <Dialog v-model:open="open">
+        <DialogTrigger as-child>
+          <Button>Open settings</Button>
+        </DialogTrigger>
+        <DialogContent size="lg">
+          <DialogHeader>
+            <DialogTitle>Project settings</DialogTitle>
+          </DialogHeader>
+          <DialogBody>Deleting the project asks again in a dialog of its own.</DialogBody>
+          <DialogFooter>
+            <Dialog v-model:open="confirm">
+              <DialogTrigger as-child>
+                <Button variant="destructive">Delete project…</Button>
+              </DialogTrigger>
+              <DialogContent size="sm">
+                <DialogHeader>
+                  <DialogTitle>Delete project</DialogTitle>
+                  <DialogDescription>This cannot be undone.</DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button @click="confirm = false">Cancel</Button>
+                  <Button variant="destructive" @click="confirm = false">Delete</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Button variant="secondary" @click="open = false">Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    `,
+  }),
+  play: async () => {
+    const body = within(document.body)
+    await body.findByRole('dialog', { name: 'Delete project' })
+    // The dialog on top hides everything else from assistive technology, the
+    // one underneath included, so that one is found by its title text.
+    const outer = body.getByText('Project settings').closest('[role="dialog"]')
+    await waitFor(() => expect(outer).toHaveAttribute('data-inactive'))
+  },
+}
+
+/**
  * A Select open inside a Dialog owns Escape and focus until it closes.
  *
  * Escape closes the listbox and leaves the dialog open; a second Escape closes

@@ -71,6 +71,9 @@ watch(
   }
 )
 
+/** The layer's place in the stack, for a surface that styles itself by it. */
+defineExpose({ layer })
+
 /** The page is inert while a modal layer is open; this layer opts back in when it may. */
 const style = computed(() =>
   receivesPointer(layer) ? { pointerEvents: 'auto' as const } : undefined

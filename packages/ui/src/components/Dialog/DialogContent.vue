@@ -2,8 +2,14 @@
 import { computed, onMounted, provide, ref, watch, type ComponentPublicInstance } from 'vue'
 import CloseGlyphIcon from '../../icons/CloseGlyphIcon.vue'
 import DismissableLayer from '../../primitives/DismissableLayer.vue'
-import type { PointerDownOutsideEvent } from '../../primitives/dismissableLayer'
+import {
+  elementsAbove,
+  isCovered,
+  type Layer,
+  type PointerDownOutsideEvent,
+} from '../../primitives/dismissableLayer'
 import { getActiveElement, unrefElement } from '../../primitives/dom'
+import { moveFocus, tabbables } from '../../primitives/focus'
 import FocusScope from '../../primitives/FocusScope.vue'
 import { hideOthers } from '../../primitives/hideOthers'
 import { Presence } from '../../primitives/Presence'
@@ -45,21 +51,59 @@ onMounted(() => {
 })
 
 /* The rest of the page is hidden from assistive technology while open. */
-const layer = ref<ComponentPublicInstance | null>(null)
+const layer = ref<(ComponentPublicInstance & { layer?: Layer }) | null>(null)
 watch(
   () => unrefElement(layer.value),
-  (el, _, onCleanup) => {
+  (el) => {
     if (!el) return
     // Opened by script rather than the trigger: return focus to what had it.
     const active = getActiveElement()
     if (active instanceof HTMLElement && active !== document.body) {
       dialog.triggerElement.value = active
     }
-    const undo = hideOthers(el)
-    onCleanup(undo)
   },
   { flush: 'post' }
 )
+
+/*
+ * Re-run whenever the layers above change. A nested dialog opening in the
+ * same tick teleports after this one has already hidden the page, and must
+ * not stay hidden by it.
+ */
+watch(
+  () => {
+    const own = layer.value?.layer
+    return { el: unrefElement(layer.value), above: own ? elementsAbove(own) : [] }
+  },
+  ({ el, above }, _, onCleanup) => {
+    if (!el) return
+    onCleanup(hideOthers(el, above))
+  },
+  { flush: 'post' }
+)
+
+/**
+ * Focus opens on the first control after the title bar — the first field of a
+ * form, or the default button, which leads the footer — as a Windows 98
+ * dialog does. The ✕ takes it only when there is nothing else.
+ */
+function onMountAutoFocus(event: Event): void {
+  const el = unrefElement(layer.value)
+  if (!el) return
+  const first = tabbables(el).find((node) => !node.closest('[data-slot="dialog-title-bar"]'))
+  if (!first) return
+  event.preventDefault()
+  moveFocus(first, { select: true })
+}
+
+/**
+ * Inactive while another modal dialog is open above this one: the title bar
+ * turns grey, as a Windows 98 owner window does under its dialog.
+ */
+const inactive = computed(() => {
+  const own = layer.value?.layer
+  return own ? isCovered(own) : false
+})
 
 /** Focus returns to the trigger, not merely to whatever had it last. */
 function onUnmountAutoFocus(event: Event): void {
@@ -102,7 +146,12 @@ const describedBy = computed(() => (hasDescription.value ? dialog.descriptionId 
       never a reason to dismiss.
     -->
     <Presence :present="dialog.open.value">
-      <FocusScope loop :trapped="dialog.open.value" @unmount-auto-focus="onUnmountAutoFocus">
+      <FocusScope
+        loop
+        :trapped="dialog.open.value"
+        @mount-auto-focus="onMountAutoFocus"
+        @unmount-auto-focus="onUnmountAutoFocus"
+      >
         <DismissableLayer
           :id="dialog.contentId"
           ref="layer"
@@ -112,6 +161,7 @@ const describedBy = computed(() => (hasDescription.value ? dialog.descriptionId 
           :aria-describedby="describedBy"
           :data-state="dialog.open.value ? 'open' : 'closed'"
           data-slot="dialog-content"
+          :data-inactive="inactive || undefined"
           disable-outside-pointer-events
           :class="cn(dialogContentVariants({ size: props.size }), props.class)"
           @escape-key-down="onEscapeKeyDown"

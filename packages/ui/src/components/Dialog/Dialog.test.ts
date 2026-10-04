@@ -212,12 +212,72 @@ describe('Dialog', () => {
     })
   })
 
+  describe('focus on open', () => {
+    it('goes to the first control after the title bar, not the close button', async () => {
+      await setup({}, { default: '<input aria-label="Name" />' })
+      await nextTick()
+      expect(document.activeElement?.getAttribute('aria-label')).toBe('Name')
+    })
+
+    it('goes to the default button when the footer leads with it', async () => {
+      await setup({}, { footer: '<button>OK</button><button>Cancel</button>' })
+      await nextTick()
+      expect(document.activeElement?.textContent).toBe('OK')
+    })
+
+    it('falls back to the close button when there is nothing else', async () => {
+      await setup()
+      await nextTick()
+      expect(document.activeElement).toBe(closeButton())
+    })
+  })
+
   describe('title bar', () => {
     it('puts the close button in the title bar, outside the header', async () => {
       await setup({ eyebrow: 'Billing' })
       const bar = document.querySelector('[data-slot="dialog-title-bar"]')
       expect(bar?.contains(closeButton())).toBe(true)
       expect(bar?.closest('[data-slot="dialog-header"]')).toBeNull()
+    })
+
+    it('turns inactive while another dialog is open above it', async () => {
+      const Nested = defineComponent({
+        components: { Dialog, DialogContent, DialogHeader, DialogTitle },
+        props: { inner: { type: Boolean, default: false } },
+        // Opened in the same tick as the outer dialog, the inner one must
+        // still not be hidden from assistive technology by it.
+        template: `
+          <Dialog :open="true">
+            <DialogContent data-testid="outer">
+              <DialogHeader><DialogTitle>Outer</DialogTitle></DialogHeader>
+              <Dialog :open="inner">
+                <DialogContent data-testid="inner">
+                  <DialogHeader><DialogTitle>Inner</DialogTitle></DialogHeader>
+                </DialogContent>
+              </Dialog>
+            </DialogContent>
+          </Dialog>
+        `,
+      })
+      const el = mount(Nested, { attachTo: document.body })
+      const outer = () => document.querySelector('[data-testid="outer"]')
+      const inner = () => document.querySelector('[data-testid="inner"]')
+      await nextTick()
+      await nextTick()
+      expect(outer()?.hasAttribute('data-inactive')).toBe(false)
+
+      await el.setProps({ inner: true })
+      await nextTick()
+      await nextTick()
+      expect(outer()?.hasAttribute('data-inactive')).toBe(true)
+      expect(inner()?.hasAttribute('data-inactive')).toBe(false)
+      expect(inner()?.closest('[aria-hidden="true"]')).toBeNull()
+
+      await el.setProps({ inner: false })
+      await nextTick()
+      await nextTick()
+      expect(outer()?.hasAttribute('data-inactive')).toBe(false)
+      el.unmount()
     })
 
     it('opens and closes instantly, over no backdrop', async () => {

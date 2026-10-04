@@ -70,6 +70,26 @@ export function receivesPointer(layer: Layer): boolean {
   return index !== -1 && stack.slice(0, index + 1).some((each) => each.blocking)
 }
 
+/**
+ * Whether a modal layer is open above this one: a dialog opened from a
+ * dialog. A listbox or tooltip opened from it does not count — a Windows 98
+ * window stays active while its own drop-down list is open.
+ */
+export function isCovered(layer: Layer): boolean {
+  const index = stack.indexOf(layer)
+  return index !== -1 && stack.slice(index + 1).some((each) => each.blocking)
+}
+
+/** The elements of the layers open above this one, top last. */
+export function elementsAbove(layer: Layer): HTMLElement[] {
+  const index = stack.indexOf(layer)
+  if (index === -1) return []
+  return stack
+    .slice(index + 1)
+    .map((each) => each.element)
+    .filter((element): element is HTMLElement => element !== undefined)
+}
+
 /** The page's own `pointer-events` before a blocking layer replaced it. */
 let pageBefore: string | undefined
 
