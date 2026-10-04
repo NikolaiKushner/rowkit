@@ -471,7 +471,8 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
             <tr v-else-if="isEmpty">
               <td :colspan="columnCount">
                 <slot name="empty">
-                  <EmptyState v-bind="emptyStateProps" />
+                  <!-- Centred in the body with 16px above and below, as the Figma table draws it. -->
+                  <EmptyState v-bind="emptyStateProps" class="mx-auto my-4" />
                 </slot>
               </td>
             </tr>

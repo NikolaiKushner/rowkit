@@ -21,7 +21,7 @@ interface EmptyStateArgs {
 
 /** A plain box icon. Decorative, so it is hidden from assistive technology. */
 const boxIcon = `
-  <svg viewBox="0 0 24 24" fill="none" class="size-full" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="none" class="size-8" aria-hidden="true">
     <path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5v-9Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
     <path d="m3 7.5 9 4.5m0 0 9-4.5M12 12v9" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
   </svg>
@@ -49,11 +49,10 @@ const meta: Meta<EmptyStateArgs> = {
   },
   render: (args) => ({
     components: { EmptyState, Button },
-    setup: () => ({ args, boxIcon }),
+    setup: () => ({ args }),
     template: `
-      <div class="w-full max-w-lg rounded-lg border border-border bg-card">
+      <div class="w-full max-w-lg bg-input p-0.5 shadow-sunken">
         <EmptyState v-bind="args">
-          <template #icon><span v-html="boxIcon" /></template>
           <template #actions><Button size="sm">Create a project</Button></template>
         </EmptyState>
       </div>
@@ -74,29 +73,26 @@ export const Default: Story = {}
 export const Reasons: Story = {
   render: () => ({
     components: { EmptyState, Button },
-    setup: () => ({ boxIcon }),
+
     template: `
       <div class="flex w-full max-w-lg flex-col gap-4">
-        <div class="rounded-lg border border-border bg-card">
+        <div class="bg-input p-0.5 shadow-sunken">
           <EmptyState
             reason="no-data"
             title="No projects yet"
             description="Projects group your work and control who can see it."
           >
-            <template #icon><span v-html="boxIcon" /></template>
-            <template #actions><Button size="sm">Create a project</Button></template>
+            <template #actions><Button>Create a project</Button></template>
           </EmptyState>
         </div>
-        <div class="rounded-lg border border-border bg-card">
+        <div class="bg-input p-0.5 shadow-sunken">
           <EmptyState announce reason="no-results" title="No projects match those filters">
-            <template #icon><span v-html="boxIcon" /></template>
-            <template #actions><Button variant="ghost" size="sm">Clear filters</Button></template>
+            <template #actions><Button variant="secondary">Clear filters</Button></template>
           </EmptyState>
         </div>
-        <div class="rounded-lg border border-border bg-card">
+        <div class="bg-input p-0.5 shadow-sunken">
           <EmptyState announce reason="error" title="Could not load projects">
-            <template #icon><span v-html="boxIcon" /></template>
-            <template #actions><Button variant="ghost" size="sm">Try again</Button></template>
+            <template #actions><Button variant="secondary">Try again</Button></template>
           </EmptyState>
         </div>
       </div>
@@ -115,7 +111,7 @@ export const DefaultCopy: Story = {
     components: { EmptyState },
     setup: () => ({ args }),
     template: `
-      <div class="w-full max-w-lg rounded-lg border border-border bg-card">
+      <div class="w-full max-w-lg bg-input p-0.5 shadow-sunken">
         <EmptyState v-bind="args" />
       </div>
     `,
@@ -133,19 +129,23 @@ export const TitleOnly: Story = {
   render: () => ({
     components: { EmptyState },
     template: `
-      <div class="w-full max-w-lg rounded-lg border border-border bg-card">
+      <div class="w-full max-w-lg bg-input p-0.5 shadow-sunken">
         <EmptyState title="No projects yet" />
       </div>
     `,
   }),
 }
 
-export const WithIcon: Story = {
+/**
+ * `#icon` replaces the icon the reason picks. Keep it 32×32 and decorative;
+ * the title says what it means.
+ */
+export const CustomIcon: Story = {
   render: (args) => ({
     components: { EmptyState },
     setup: () => ({ args, boxIcon }),
     template: `
-      <div class="w-full max-w-lg rounded-lg border border-border bg-card">
+      <div class="w-full max-w-lg bg-input p-0.5 shadow-sunken">
         <EmptyState v-bind="args">
           <template #icon><span v-html="boxIcon" /></template>
         </EmptyState>
@@ -161,17 +161,16 @@ export const WithIcon: Story = {
 export const FirstRun: Story = {
   render: () => ({
     components: { EmptyState, Button },
-    setup: () => ({ boxIcon }),
+
     template: `
-      <div class="w-full max-w-lg rounded-lg border border-border bg-card">
+      <div class="w-full max-w-lg bg-input p-0.5 shadow-sunken">
         <EmptyState
           title="No projects yet"
           description="Projects group your work and control who can see it."
         >
-          <template #icon><span v-html="boxIcon" /></template>
           <template #actions>
             <Button>Create a project</Button>
-            <Button variant="ghost">Learn more</Button>
+            <Button variant="secondary">Learn more</Button>
           </template>
         </EmptyState>
       </div>
@@ -190,14 +189,14 @@ export const NoResults: Story = {
   render: () => ({
     components: { EmptyState, Button },
     template: `
-      <div class="w-full max-w-lg rounded-lg border border-border bg-card">
+      <div class="w-full max-w-lg bg-input p-0.5 shadow-sunken">
         <EmptyState
           announce
           title="No users match those filters"
           description="Try removing a filter or searching for a different name."
         >
           <template #actions>
-            <Button variant="ghost">Clear filters</Button>
+            <Button variant="secondary">Clear filters</Button>
           </template>
         </EmptyState>
       </div>
@@ -210,17 +209,17 @@ export const InATable: Story = {
   render: () => ({
     components: { EmptyState, Button },
     template: `
-      <table class="w-full max-w-lg border-collapse rounded-lg text-sm">
+      <table class="w-full max-w-lg border-collapse bg-input text-ui shadow-sunken">
         <thead>
-          <tr class="border-b border-border text-left">
-            <th class="p-2 font-medium text-muted-foreground">User</th>
-            <th class="p-2 font-medium text-muted-foreground">Role</th>
-            <th class="p-2 font-medium text-muted-foreground">Status</th>
+          <tr class="text-left">
+            <th class="bg-card px-1 font-normal shadow-raised">User</th>
+            <th class="bg-card px-1 font-normal shadow-raised">Role</th>
+            <th class="bg-card px-1 font-normal shadow-raised">Status</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td colspan="3">
+            <td colspan="3" class="p-0.5">
               <EmptyState
                 size="sm"
                 :level="3"
@@ -245,7 +244,7 @@ export const Sizes: Story = {
     setup: () => ({ sizes }),
     template: `
       <div class="flex w-full max-w-lg flex-col gap-4">
-        <div v-for="size in sizes" :key="size" class="rounded-lg border border-border bg-card">
+        <div v-for="size in sizes" :key="size" class="bg-input p-0.5 shadow-sunken">
           <EmptyState :size="size" :title="size" description="Every part scales together." />
         </div>
       </div>
@@ -263,12 +262,12 @@ export const AgainstLoading: Story = {
     components: { EmptyState, Skeleton },
     template: `
       <div class="flex w-full max-w-lg flex-col gap-4">
-        <div class="rounded-lg border border-border bg-card p-4">
+        <div class="bg-input p-0.5 shadow-sunken p-4">
           <div role="status" aria-busy="true" aria-label="Loading projects" class="flex flex-col gap-3">
             <Skeleton v-for="row in 3" :key="row" />
           </div>
         </div>
-        <div class="rounded-lg border border-border bg-card">
+        <div class="bg-input p-0.5 shadow-sunken">
           <EmptyState title="No projects yet" description="Projects group your work." />
         </div>
       </div>

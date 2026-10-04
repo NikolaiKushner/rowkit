@@ -269,7 +269,7 @@ handling.
 - `title: string` _(required)_. What is empty, in a few words.
 - `description: string`. One sentence on what to do next. This is the part that turns a dead end into a starting point, and the part most empty states leave out.
 - `reason: 'no-data' | 'no-results' | 'error'` — default `'no-data'`. Why the view is empty.
-- `size: 'sm' | 'md' | 'lg'` — default `'md'`. Scales every part together. `sm` fits inside a table body.
+- `size: 'sm' | 'md' | 'lg'` — default `'md'`. Scales every part together. `sm` fits inside a table body; `md` and `lg` fill a panel. Pair `sm` with `size="sm"` buttons.
 - `level: 1 | 2 | 3 | 4 | 5 | 6` — default `2`. Heading level for the title.
 - `announce: boolean` — default `false`. Announces the empty state when it appears.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
@@ -278,7 +278,7 @@ handling.
 
 **Slots**
 
-- `#icon` — Illustration or icon above the title. Decorative — mark it `aria-hidden` unless it carries meaning the title does not.
+- `#icon` — Replaces the 32px icon the `reason` picks. Keep it 32×32 and decorative — mark it `aria-hidden` unless it carries meaning the title does not.
 - `#description` — Replaces the `description` text, for explanations that need markup.
 - `#actions` — Buttons. Keep it to one primary action, optionally with one secondary — an empty state offering four choices is a menu, not a next step.
 

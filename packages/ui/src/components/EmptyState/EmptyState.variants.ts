@@ -1,45 +1,37 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
- * One `size` axis drives every part, so a small empty state inside a table cell
- * and a large one filling a page are the same component rather than two.
+ * A Windows 98 system message, as in the Figma file: the 32px icon on the
+ * left, then the bold title, the explanation and the buttons stacked beside
+ * it. It sits on whatever holds it — the white body of a table, or a panel.
+ *
+ * One `size` axis drives every part: `sm` fits inside a table body, `md` and
+ * `lg` fill a panel. Each caps the line length at the width drawn in Figma.
  */
-export const emptyStateVariants = cva('flex flex-col items-center justify-center text-center', {
+export const emptyStateVariants = cva('flex w-full items-start font-sans text-ui text-foreground', {
   variants: {
     size: {
-      sm: 'gap-2 px-3 py-4',
-      md: 'gap-3 px-4 py-8',
-      lg: 'gap-4 px-4 py-12',
+      sm: 'max-w-[280px] gap-3 p-3',
+      md: 'max-w-[360px] gap-4 p-6',
+      lg: 'max-w-[440px] gap-4 p-6',
     },
   },
   defaultVariants: { size: 'md' },
 })
 
-/**
- * Muted rather than full-strength: the illustration is supporting material. If
- * it competes with the title for attention, the user reads the picture and
- * misses the sentence telling them what to do.
- */
-export const emptyStateIconVariants = cva(
-  'flex shrink-0 items-center justify-center text-muted-foreground',
-  {
-    variants: {
-      size: {
-        sm: 'size-8',
-        md: 'size-10',
-        lg: 'size-12',
-      },
-    },
-    defaultVariants: { size: 'md' },
-  }
-)
+/** The 32×32 icon, at its own size: pixel art is never scaled. */
+export const emptyStateIconVariants = cva('flex size-8 shrink-0 items-center justify-center')
 
-export const emptyStateTitleVariants = cva('font-medium tracking-tight text-foreground', {
+/** The title, the explanation and the buttons, 6px apart. */
+export const emptyStateBodyVariants = cva('flex min-w-0 flex-1 flex-col items-start gap-1.5')
+
+/** Bold: 13/16 at `sm` and `md`, 14/18 at `lg`. */
+export const emptyStateTitleVariants = cva('font-bold text-foreground', {
   variants: {
     size: {
-      sm: 'text-sm',
-      md: 'text-base',
-      lg: 'text-lg',
+      sm: 'text-heading',
+      md: 'text-heading',
+      lg: 'text-doc-h3',
     },
   },
   defaultVariants: { size: 'md' },
@@ -52,35 +44,33 @@ export const emptyStateTitleVariants = cva('font-medium tracking-tight text-fore
 export type EmptyStateReason = 'no-data' | 'no-results' | 'error'
 
 /**
- * Width-capped on purpose. An explanation that runs the full width of a table
- * is a paragraph nobody reads; the limit keeps it to a couple of lines.
- *
- * `reason` tints the explanation rather than the title. A red heading reads as
- * an alert and pulls the eye away from the sentence that says what to do; the
- * failure needs to be legible, not loud.
+ * The explanation, in the UI face and in black for every reason. The icon
+ * says "error"; red text would shout it a second time and make the sentence
+ * that says what to do harder to read.
  */
-export const emptyStateDescriptionVariants = cva('text-balance', {
+export const emptyStateDescriptionVariants = cva('text-ui text-foreground', {
   variants: {
     size: {
-      sm: 'max-w-xs text-xs',
-      md: 'max-w-sm text-sm',
-      lg: 'max-w-md text-sm',
+      sm: '',
+      md: '',
+      lg: '',
     },
     reason: {
-      'no-data': 'text-muted-foreground',
-      'no-results': 'text-muted-foreground',
-      error: 'text-danger-on-subtle',
+      'no-data': '',
+      'no-results': '',
+      error: '',
     },
   },
   defaultVariants: { size: 'md', reason: 'no-data' },
 })
 
-export const emptyStateActionsVariants = cva('flex flex-wrap items-center justify-center', {
+/** The buttons, 4px below the text and 6px apart, as in a Windows 98 dialog. */
+export const emptyStateActionsVariants = cva('flex flex-wrap items-center gap-1.5 pt-1', {
   variants: {
     size: {
-      sm: 'gap-2 pt-1',
-      md: 'gap-2 pt-1',
-      lg: 'gap-3 pt-2',
+      sm: '',
+      md: '',
+      lg: '',
     },
   },
   defaultVariants: { size: 'md' },

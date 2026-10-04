@@ -2,8 +2,12 @@
 import { Primitive } from '../../primitives/Primitive'
 import { computed } from 'vue'
 import { cn } from '../../utils/cn'
+import Error32Icon from '../../icons/Error32Icon.vue'
+import FolderEmpty32Icon from '../../icons/FolderEmpty32Icon.vue'
+import Search32Icon from '../../icons/Search32Icon.vue'
 import {
   emptyStateActionsVariants,
+  emptyStateBodyVariants,
   emptyStateDescriptionVariants,
   emptyStateIconVariants,
   emptyStateTitleVariants,
@@ -26,8 +30,8 @@ const props = withDefaults(defineProps<EmptyStateProps>(), {
 
 defineSlots<{
   /**
-   * Illustration or icon above the title. Decorative — mark it `aria-hidden`
-   * unless it carries meaning the title does not.
+   * Replaces the 32px icon the `reason` picks. Keep it 32×32 and decorative —
+   * mark it `aria-hidden` unless it carries meaning the title does not.
    */
   icon: () => unknown
   /** Replaces the `description` text, for explanations that need markup. */
@@ -68,26 +72,33 @@ const liveAttrs = computed(() => (props.announce ? ({ role: 'status' } as const)
     :as="props.as"
     :as-child="props.asChild"
     data-slot="empty-state"
+    :data-reason="props.reason"
     v-bind="liveAttrs"
     :class="cn(emptyStateVariants({ size: props.size }), props.class)"
   >
-    <div v-if="$slots.icon" :class="emptyStateIconVariants({ size: props.size })">
-      <slot name="icon" />
+    <div data-slot="empty-state-icon" :class="emptyStateIconVariants()">
+      <slot name="icon">
+        <Error32Icon v-if="props.reason === 'error'" />
+        <Search32Icon v-else-if="props.reason === 'no-results'" />
+        <FolderEmpty32Icon v-else />
+      </slot>
     </div>
 
-    <component :is="headingTag" :class="emptyStateTitleVariants({ size: props.size })">
-      {{ props.title }}
-    </component>
+    <div :class="emptyStateBodyVariants()">
+      <component :is="headingTag" :class="emptyStateTitleVariants({ size: props.size })">
+        {{ props.title }}
+      </component>
 
-    <p
-      v-if="resolvedDescription !== undefined || $slots.description"
-      :class="emptyStateDescriptionVariants({ size: props.size, reason: props.reason })"
-    >
-      <slot name="description">{{ resolvedDescription }}</slot>
-    </p>
+      <p
+        v-if="resolvedDescription !== undefined || $slots.description"
+        :class="emptyStateDescriptionVariants({ size: props.size, reason: props.reason })"
+      >
+        <slot name="description">{{ resolvedDescription }}</slot>
+      </p>
 
-    <div v-if="$slots.actions" :class="emptyStateActionsVariants({ size: props.size })">
-      <slot name="actions" />
+      <div v-if="$slots.actions" :class="emptyStateActionsVariants({ size: props.size })">
+        <slot name="actions" />
+      </div>
     </div>
   </Primitive>
 </template>

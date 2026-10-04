@@ -38,6 +38,7 @@ import {
 } from '../components/Dialog/Dialog.variants'
 import {
   emptyStateActionsVariants,
+  emptyStateBodyVariants,
   emptyStateDescriptionVariants,
   emptyStateIconVariants,
   emptyStateTitleVariants,
@@ -173,6 +174,7 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Select message', selectMessageVariants],
   ['Skeleton', skeletonVariants],
   ['EmptyState', emptyStateVariants],
+  ['EmptyState body', emptyStateBodyVariants],
   ['EmptyState icon', emptyStateIconVariants],
   ['EmptyState title', emptyStateTitleVariants],
   ['EmptyState description', emptyStateDescriptionVariants],

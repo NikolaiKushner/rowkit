@@ -31,7 +31,7 @@ const copy = {
       v-for="value in ['no-data', 'no-results', 'error']"
       :key="value"
       size="sm"
-      :variant="reason === value ? 'primary' : 'secondary'"
+      :variant="reason === value ? 'default' : 'secondary'"
       @click="reason = value"
     >{{ value }}</Button>
   </div>
@@ -61,31 +61,41 @@ it. Getting that wrong is not theoretical — axe caught this exact block at
 `level="3"`, which skips a level and breaks heading navigation for anyone
 moving through the page by structure.
 
+## Look
+
+A Windows 98 system message, as drawn in the Figma file: the 32px icon on the
+left, then a bold title, the explanation and the buttons stacked beside it. At
+`sm` it fits inside a table body (12px padding, a 13px title, `size="sm"`
+buttons); `md` and `lg` fill a panel (24px padding, a 13px or 14px title).
+Each size caps the line length at the width drawn in Figma — 280, 360 and
+440px. It sits on whatever holds it: the white body of a table, or a panel.
+
 ## Anatomy
 
-| Part        | Purpose                                                         |
-| ----------- | --------------------------------------------------------------- |
-| Icon        | Optional illustration. Decorative, muted so it does not compete |
-| Title       | A real heading, at a level you choose                           |
-| Description | One sentence on what to do next. Width-capped for readability   |
-| Actions     | One primary action, optionally one secondary                    |
+| Part        | Purpose                                                   |
+| ----------- | --------------------------------------------------------- |
+| Icon        | 32px, picked by `reason`; `#icon` replaces it. Decorative |
+| Title       | A real heading, at a level you choose                     |
+| Description | One sentence on what to do next, in the UI face           |
+| Actions     | One primary action, optionally one secondary              |
 
 ## The three empties
 
 They look similar and mean completely different things. Getting this wrong is
 the most common failure — so it is a prop, not just advice.
 
-`reason` drives the tone and supplies the explanation where that copy is
-generic. It never selects an icon: rowkit ships none, and bundling SVGs to serve
-one prop would cross the scope line. Pass your own through `#icon`.
+`reason` picks the 32px icon from the Figma set — an empty folder for
+`no-data`, a magnifier for `no-results`, the red error mark for `error` — and
+supplies the explanation where that copy is generic. `#icon` replaces the icon
+when your domain has a better one; keep it 32×32.
 
 `no-data` supplies **no** default description, because what to do when nothing
 exists yet depends entirely on your domain — a library guessing at it would
 write worse copy than silence. `no-results` and `error` do supply one, and an
 explicit `description` always wins.
 
-An `error` tints the explanation, not the heading: a red heading reads as an
-alert and pulls the eye away from the sentence that says what to do.
+Nothing turns red for an `error`: the red error mark already says it, and red
+text would make the sentence that says what to do harder to read.
 
 | Situation               | Title names…            | The action is…            | `announce` |
 | ----------------------- | ----------------------- | ------------------------- | ---------- |
@@ -126,7 +136,7 @@ to someone who has fifty projects and a bad filter is worse than saying nothing.
 | `title`       | `string`                               | **required** | What is empty, in a few words.                                                                                                           |
 | `description` | `string`                               | —            | One sentence on what to do next. This is the part that turns a dead end into a starting point, and the part most empty states leave out. |
 | `reason`      | `'no-data' \| 'no-results' \| 'error'` | `'no-data'`  | Why the view is empty.                                                                                                                   |
-| `size`        | `'sm' \| 'md' \| 'lg'`                 | `'md'`       | Scales every part together. `sm` fits inside a table body.                                                                               |
+| `size`        | `'sm' \| 'md' \| 'lg'`                 | `'md'`       | Scales every part together. `sm` fits inside a table body; `md` and `lg` fill a panel. Pair `sm` with `size="sm"` buttons.               |
 | `level`       | `1 \| 2 \| 3 \| 4 \| 5 \| 6`           | `2`          | Heading level for the title.                                                                                                             |
 | `announce`    | `boolean`                              | `false`      | Announces the empty state when it appears.                                                                                               |
 | `class`       | `string`                               | —            | Additional classes, merged so a consumer's utility wins.                                                                                 |

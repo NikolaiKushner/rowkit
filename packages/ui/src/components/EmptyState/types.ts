@@ -32,15 +32,17 @@ export interface EmptyStateProps {
    * failure this prop exists to prevent. `error` is a request that failed, and
    * must not read as "this worked and there is nothing here".
    *
-   * Drives tone and the default description. It never selects an icon: rowkit
-   * ships none, and bundling SVGs to serve one prop would cross the scope
-   * line. Pass your own through `#icon`.
+   * Picks the 32px icon — an empty folder, a magnifier, the red error mark —
+   * and the default description. `#icon` replaces the icon.
    *
    * `no-results` and `error` normally want `announce` as well, since both
    * replace content that was there a moment ago.
    */
   reason?: EmptyStateReason
-  /** Scales every part together. `sm` fits inside a table body. */
+  /**
+   * Scales every part together. `sm` fits inside a table body; `md` and `lg`
+   * fill a panel. Pair `sm` with `size="sm"` buttons.
+   */
   size?: NonNullable<EmptyStateVariants['size']>
   /**
    * Heading level for the title.
