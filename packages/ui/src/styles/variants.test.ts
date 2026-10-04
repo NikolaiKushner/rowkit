@@ -52,9 +52,11 @@ import {
   filterBarVariants,
 } from '../components/FilterBar/FilterBar.variants'
 import {
+  fieldControlVariants,
   fieldErrorVariants,
   fieldHintVariants,
   fieldLabelVariants,
+  fieldRequiredVariants,
   fieldVariants,
 } from '../components/Field/Field.variants'
 import { inputVariants } from '../components/Input/Input.variants'
@@ -157,6 +159,8 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Field label', fieldLabelVariants],
   ['Field hint', fieldHintVariants],
   ['Field error', fieldErrorVariants],
+  ['Field control', fieldControlVariants],
+  ['Field required', fieldRequiredVariants],
   ['Input', inputVariants],
   ['Select trigger', selectTriggerVariants],
   ['Select content', selectContentVariants],

@@ -22,6 +22,7 @@ interface FieldArgs {
   required: boolean
   disabled: boolean
   size: 'sm' | 'md' | 'lg'
+  layout: 'top' | 'left'
   labelSrOnly: boolean
 }
 
@@ -34,10 +35,12 @@ const meta: Meta<FieldArgs> = {
     required: false,
     disabled: false,
     size: 'md',
+    layout: 'top',
     labelSrOnly: false,
   },
   argTypes: {
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    layout: { control: 'inline-radio', options: ['top', 'left'] },
   },
   render: (args) => ({
     components: { Field, Input },
@@ -86,6 +89,48 @@ export const Sizes: Story = {
       <div class="flex w-80 flex-col gap-5">
         <Field v-for="size in sizes" :key="size" :size="size" :label="size" hint="Help text">
           <Input :size="size" placeholder="ada@example.com" />
+        </Field>
+      </div>
+    `,
+  }),
+}
+
+/**
+ * `layout="left"`: the Windows 98 property-dialog arrangement. The label sits
+ * beside the control, level with its text; hint and error go under the
+ * control. `--rk-field-label-width` on the container lines the labels up.
+ */
+export const LabelOnTheLeft: Story = {
+  render: () => ({
+    components: { Field, Input },
+    template: `
+      <div class="flex w-96 flex-col gap-2 [--rk-field-label-width:5rem]">
+        <Field layout="left" label="Name" required>
+          <Input model-value="Ada Lovelace" />
+        </Field>
+        <Field layout="left" label="Email" hint="Used for billing receipts.">
+          <Input model-value="ada@analytical.io" />
+        </Field>
+        <Field layout="left" label="Username" error="Use letters, digits and dashes only">
+          <Input model-value="ada lovelace" />
+        </Field>
+        <Field layout="left" label="Team" disabled>
+          <Input model-value="Platform" />
+        </Field>
+      </div>
+    `,
+  }),
+}
+
+/** Left labels at every size: the label's text stays level with the control's. */
+export const LabelOnTheLeftSizes: Story = {
+  render: () => ({
+    components: { Field, Input },
+    setup: () => ({ sizes: ['sm', 'md', 'lg'] as const }),
+    template: `
+      <div class="flex w-96 flex-col gap-3">
+        <Field v-for="size in sizes" :key="size" layout="left" :size="size" :label="size">
+          <Input :size="size" model-value="Ada Lovelace" />
         </Field>
       </div>
     `,

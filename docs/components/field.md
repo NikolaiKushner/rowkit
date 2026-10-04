@@ -36,6 +36,26 @@ swaps the hint out for the error.
 The second field is disabled at the `Field`, not the `Input`. The state flows
 down to whatever control is inside.
 
+## Look
+
+As drawn in the Figma file: the label in the regular UI face with a maroon
+asterisk when required, the control, then the hint in subtle grey or the error
+— the 16px error icon and the message in maroon. The gaps follow the control:
+4px at `sm`, 6px at `md`, 8px at `lg`. Disabled, the label turns grey and
+embossed like the control's text.
+
+`layout="left"` is the Windows 98 property-dialog arrangement: the label beside
+the control, 8px from it, its text level with the control's, and the hint or
+error under the control. Set `--rk-field-label-width` on a container to line
+up a column of labels:
+
+```vue
+<div class="[--rk-field-label-width:5rem]">
+  <Field layout="left" label="Name"><Input v-model="name" /></Field>
+  <Field layout="left" label="Email"><Input v-model="email" /></Field>
+</div>
+```
+
 ## Anatomy
 
 | Part    | Purpose                                                                     |
@@ -78,6 +98,7 @@ down to whatever control is inside.
 | `required`    | `boolean`              | `false` | Marks the control required and shows the required indicator.                                                                                |
 | `disabled`    | `boolean`              | `false` | Disables the control inside.                                                                                                                |
 | `size`        | `'sm' \| 'md' \| 'lg'` | `'md'`  | Sizes the label, hint, error and — via field context — the nested control when that control omits its own `size`.                           |
+| `layout`      | `'top' \| 'left'`      | `'top'` | Where the label sits.                                                                                                                       |
 | `id`          | `string`               | —       | Id for the control. Generated when omitted — supply one only when something outside the field needs to reference it.                        |
 | `labelSrOnly` | `boolean`              | `false` | Hides the label visually while leaving it available to screen readers. For a search box in a toolbar whose purpose is obvious from context. |
 | `class`       | `string`               | —       | Additional classes, merged so a consumer's utility wins.                                                                                    |

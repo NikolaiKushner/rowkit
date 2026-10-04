@@ -87,7 +87,7 @@ keyboard user has already committed to the control by the time they reach it.
 
 | Prop        | Type                                     | Default | Description                                                             |
 | ----------- | ---------------------------------------- | ------- | ----------------------------------------------------------------------- |
-| `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'top'` | Preferred side. Flips automatically on collision.                       |
+| `placement` | `'top' \| 'left' \| 'right' \| 'bottom'` | `'top'` | Preferred side. Flips automatically on collision.                       |
 | `class`     | `string`                                 | —       | Additional classes for the bubble, merged so a consumer's utility wins. |
 
 <!-- /@props -->

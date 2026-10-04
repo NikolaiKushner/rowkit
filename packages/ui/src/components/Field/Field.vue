@@ -2,10 +2,13 @@
 import { computed, toRef, useId } from 'vue'
 import { cn } from '../../utils/cn'
 import { provideFieldContext } from './context'
+import ErrorIcon from '../../icons/ErrorIcon.vue'
 import {
+  fieldControlVariants,
   fieldErrorVariants,
   fieldHintVariants,
   fieldLabelVariants,
+  fieldRequiredVariants,
   fieldVariants,
 } from './Field.variants'
 
@@ -17,6 +20,7 @@ const props = withDefaults(defineProps<FieldProps>(), {
   required: false,
   disabled: false,
   size: 'md',
+  layout: 'top',
   labelSrOnly: false,
 })
 
@@ -63,7 +67,10 @@ function onLabelMousedown(event: MouseEvent): void {
 </script>
 
 <template>
-  <div data-slot="field" :class="cn(fieldVariants({ size: props.size }), props.class)">
+  <div
+    data-slot="field"
+    :class="cn(fieldVariants({ size: props.size, layout: props.layout }), props.class)"
+  >
     <!--
       Double-clicking a label selects its text, which reads as a glitch next to
       a control. Suppressing the second mousedown keeps the click (focus moves
@@ -75,7 +82,7 @@ function onLabelMousedown(event: MouseEvent): void {
       :for="controlId"
       :class="
         cn(
-          fieldLabelVariants({ size: props.size, disabled: props.disabled }),
+          fieldLabelVariants({ size: props.size, layout: props.layout, disabled: props.disabled }),
           props.labelSrOnly && 'sr-only'
         )
       "
@@ -87,32 +94,42 @@ function onLabelMousedown(event: MouseEvent): void {
         screen reader announcing "required" twice per field is noise, and the
         asterisk alone has never been a reliable signal.
       -->
-      <span v-if="props.required" aria-hidden="true" class="text-danger-on-subtle">*</span>
+      <span
+        v-if="props.required"
+        aria-hidden="true"
+        :class="fieldRequiredVariants({ disabled: props.disabled })"
+        >*</span
+      >
     </label>
 
-    <slot />
+    <div :class="fieldControlVariants({ size: props.size, layout: props.layout })">
+      <slot />
 
-    <p
-      v-if="hasHint || $slots.hint"
-      :id="hintId"
-      data-slot="field-hint"
-      :class="fieldHintVariants({ size: props.size })"
-    >
-      <slot name="hint">{{ props.hint }}</slot>
-    </p>
+      <p
+        v-if="hasHint || $slots.hint"
+        :id="hintId"
+        data-slot="field-hint"
+        :class="fieldHintVariants()"
+      >
+        <slot name="hint">{{ props.hint }}</slot>
+      </p>
 
-    <!--
-      role="alert" so a validation message that appears after submit is
-      announced without the user having to go looking for it.
-    -->
-    <p
-      v-if="hasError || $slots.error"
-      :id="errorId"
-      data-slot="field-error"
-      role="alert"
-      :class="fieldErrorVariants({ size: props.size })"
-    >
-      <slot name="error">{{ props.error }}</slot>
-    </p>
+      <!--
+        role="alert" so a validation message that appears after submit is
+        announced without the user having to go looking for it.
+      -->
+      <p
+        v-if="hasError || $slots.error"
+        :id="errorId"
+        data-slot="field-error"
+        role="alert"
+        :class="fieldErrorVariants()"
+      >
+        <ErrorIcon class="shrink-0" />
+        <span
+          ><slot name="error">{{ props.error }}</slot></span
+        >
+      </p>
+    </div>
   </div>
 </template>

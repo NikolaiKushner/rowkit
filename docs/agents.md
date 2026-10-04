@@ -301,6 +301,7 @@ handling.
 - `required: boolean` — default `false`. Marks the control required and shows the required indicator.
 - `disabled: boolean` — default `false`. Disables the control inside.
 - `size: 'sm' | 'md' | 'lg'` — default `'md'`. Sizes the label, hint, error and — via field context — the nested control when that control omits its own `size`.
+- `layout: 'top' | 'left'` — default `'top'`. Where the label sits. `top` stacks it above the control; `left` puts it beside the control, the Windows 98 property-dialog arrangement. Set `--rk-field-label-width` on a container to line up a column of left labels.
 - `id: string`. Id for the control. Generated when omitted — supply one only when something outside the field needs to reference it.
 - `labelSrOnly: boolean` — default `false`. Hides the label visually while leaving it available to screen readers. For a search box in a toolbar whose purpose is obvious from context.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
@@ -523,7 +524,7 @@ handling.
 
 **Props**
 
-- `placement: 'top' | 'right' | 'bottom' | 'left'` — default `'top'`. Preferred side. Flips automatically on collision.
+- `placement: 'top' | 'left' | 'right' | 'bottom'` — default `'top'`. Preferred side. Flips automatically on collision.
 - `class: string`. Additional classes for the bubble, merged so a consumer's utility wins.
 
 **Slots**
