@@ -116,6 +116,7 @@ export default defineConfig({
         items: [
           { text: 'Tokens', link: '/foundations/tokens' },
           { text: 'Icons', link: '/foundations/icons' },
+          { text: 'Scrollbar', link: '/foundations/scrollbar' },
           { text: 'Button', link: '/components/button' },
           { text: 'ButtonGroup', link: '/components/button-group' },
           { text: 'Separator', link: '/components/separator' },

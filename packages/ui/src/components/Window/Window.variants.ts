@@ -52,6 +52,6 @@ export const windowButtonVariants = cva([
  * `flex-auto`, not `flex-1`: a zero basis would ignore a height given with
  * `class` in a window that has no height of its own, and collapse the body.
  */
-export const windowBodyVariants = cva('min-h-0 flex-auto')
+export const windowBodyVariants = cva('scrollbar-win98 min-h-0 flex-auto')
 
 export type WindowVariants = VariantProps<typeof windowVariants>

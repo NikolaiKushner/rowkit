@@ -32,7 +32,9 @@ export default defineConfig({
           browser: {
             enabled: true,
             headless: true,
-            provider: playwright(),
+            // Playwright hides scroll bars by default. Showing them lets the
+            // stories measure the Windows 98 bar and the layout shift it causes.
+            provider: playwright({ launchOptions: { ignoreDefaultArgs: ['--hide-scrollbars'] } }),
             instances: [{ browser: 'chromium' }],
           },
         },

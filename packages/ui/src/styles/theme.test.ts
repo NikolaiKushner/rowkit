@@ -151,6 +151,30 @@ describe('the radius scale resolves', () => {
   })
 })
 
+describe('the scroll bar', () => {
+  it('draws every part from tokens', async () => {
+    const css = await build('scrollbar-win98')
+    expect(css, 'scrollbar-win98 generated no rule').toContain('.scrollbar-win98 {')
+    for (const part of ['', '-track', '-thumb', '-corner', '-button:single-button']) {
+      expect(css).toContain(`&::-webkit-scrollbar${part} {`)
+    }
+    expect(css).toContain('box-shadow: var(--shadow-raised)')
+    expect(css).toContain('var(--color-foreground)')
+    const rule = css.slice(css.indexOf('.scrollbar-win98 {'))
+    expect(rule, 'a hex colour bypasses the tokens').not.toMatch(/#[0-9a-f]{3,6}\b/i)
+  })
+
+  it('resets the standard properties that would switch the webkit parts off', async () => {
+    // Chromium drops every ::-webkit-scrollbar rule once an element has a
+    // standard scrollbar-color or scrollbar-width — and scrollbar-color
+    // inherits, so one app-wide rule would silently restore the native bar.
+    const css = await build('scrollbar-win98')
+    expect(css).toContain('scrollbar-color: auto')
+    expect(css).toContain('scrollbar-width: auto')
+    expect(css).toMatch(/@supports not selector\(::-webkit-scrollbar\)\s*{\s*scrollbar-color:/)
+  })
+})
+
 describe('shadows', () => {
   it('draws the sticky header rule as an inset shadow that keeps its token', async () => {
     // A border cannot do this job: under `border-collapse` it belongs to the

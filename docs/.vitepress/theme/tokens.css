@@ -26,6 +26,7 @@
 @source '../../../packages/ui/src';
 @source './components';
 @source '../../components';
+@source '../../foundations';
 @source '../../*.md';
 
 /*

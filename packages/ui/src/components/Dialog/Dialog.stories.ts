@@ -463,13 +463,17 @@ export const ScrollLock: Story = {
   }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const widthBefore = document.documentElement.clientWidth
+    // The page's content, not the viewport: the viewport widens by the bar's
+    // width whenever the bar goes, and the lock pads the body by the same
+    // amount so the lines under the dialog stay put.
+    const line = canvas.getByText(/^Page line 1 /)
+    const widthBefore = line.getBoundingClientRect().width
 
     await clickWhenListening(canvas.getByRole('button', { name: 'Open over a long page' }))
     await within(document.body).findByRole('dialog')
 
-    // The measurable half of the check. The visual half needs a real scrollbar.
-    await expect(document.documentElement.clientWidth).toBe(widthBefore)
+    await expect(document.body.style.overflow).toBe('hidden')
+    await expect(line.getBoundingClientRect().width).toBe(widthBefore)
   },
 }
 

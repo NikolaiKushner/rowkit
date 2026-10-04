@@ -79,7 +79,7 @@ export const selectContentVariants = cva([
 /**
  * The scrolling list inside the frame: eight 16px rows, then it scrolls.
  */
-export const selectListVariants = cva('max-h-32 overflow-y-auto')
+export const selectListVariants = cva('scrollbar-win98 max-h-32 overflow-y-auto')
 
 /**
  * One option: a 16px row with the text where the field's text sits.

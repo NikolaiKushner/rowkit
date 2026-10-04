@@ -23,7 +23,7 @@ export const dataTableFrameVariants = cva(
  * pushing the page sideways, which is what makes a sticky column meaningful.
  */
 export const dataTableWrapperVariants = cva([
-  'relative min-h-0 w-full flex-1 overflow-auto',
+  'scrollbar-win98 relative min-h-0 w-full flex-1 overflow-auto',
   // Focusable when it actually scrolls, so focus has to be visible.
   'outline-none focus-visible:outline-1 focus-visible:-outline-offset-1',
   'focus-visible:outline-dotted focus-visible:outline-ring',

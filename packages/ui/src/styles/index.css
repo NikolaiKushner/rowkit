@@ -56,3 +56,157 @@
   );
   background-size: 2px 2px;
 }
+
+/*
+ * The Windows 98 scroll bar, 16px thick: raised arrow buttons, a dithered
+ * track and a raised thumb whose length is the visible share. Put it on the
+ * element that scrolls. rowkit's own scrolling regions (DataTable, the Dialog
+ * body, the Select list, WindowBody) already carry it.
+ *
+ * It restyles the browser's scroll bar rather than drawing a new one, so wheel,
+ * touch, keyboard and assistive technology scroll exactly as they always do.
+ * Chromium and Safari draw every part. Firefox can only colour a scroll bar,
+ * so it gets a silver thumb on a white track and its own arrows, if any.
+ *
+ * Each arrow is four 1px gradient strips — the rows of the 8px triangle icons —
+ * so it follows the foreground token and greys out without an image. A held
+ * arrow goes flat with a grey frame and its triangle steps 1px down and right,
+ * as Windows 98 drew it.
+ */
+@utility scrollbar-win98 {
+  /*
+   * Chromium ignores every `::-webkit-scrollbar` rule on an element with a
+   * standard `scrollbar-color` or `scrollbar-width`, and `scrollbar-color`
+   * inherits. Reset both here so an app-wide setting cannot switch this off;
+   * Firefox gets its colours in the `@supports` block below.
+   */
+  scrollbar-color: auto;
+  scrollbar-width: auto;
+
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-color: var(--color-card) var(--color-bevel-highlight);
+  }
+
+  &::-webkit-scrollbar {
+    width: --spacing(4);
+    height: --spacing(4);
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: var(--color-card);
+    background-image: conic-gradient(
+      var(--color-card) 0 25%,
+      var(--color-bevel-highlight) 0 50%,
+      var(--color-card) 0 75%,
+      var(--color-bevel-highlight) 0
+    );
+    background-size: 2px 2px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-card);
+    box-shadow: var(--shadow-raised);
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: var(--color-card);
+  }
+
+  /* One arrow at each end: no doubled buttons, no track pieces drawn as buttons. */
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-button:single-button {
+    --rk-arrow: var(--color-foreground);
+    --rk-arrow-x: 0px;
+    --rk-arrow-y: 0px;
+    display: block;
+    width: --spacing(4);
+    height: --spacing(4);
+    background-color: var(--color-card);
+    background-repeat: no-repeat;
+    box-shadow: var(--shadow-raised);
+  }
+
+  &::-webkit-scrollbar-button:single-button:active {
+    --rk-arrow-x: 1px;
+    --rk-arrow-y: 1px;
+    box-shadow: inset 0 0 0 1px var(--color-bevel-shadow);
+  }
+
+  &::-webkit-scrollbar-button:single-button:disabled {
+    --rk-arrow: var(--color-bevel-shadow);
+    --rk-arrow-x: 0px;
+    --rk-arrow-y: 0px;
+    box-shadow: var(--shadow-raised);
+  }
+
+  /*
+   * The triangles, row by row (column by column for left and right), in the
+   * button's own pixels: `icon/8/triangle-*` centred in the 16px button.
+   */
+  &::-webkit-scrollbar-button:single-button:vertical:decrement {
+    background-image:
+      linear-gradient(var(--rk-arrow) 0 0), linear-gradient(var(--rk-arrow) 0 0),
+      linear-gradient(var(--rk-arrow) 0 0), linear-gradient(var(--rk-arrow) 0 0);
+    background-size:
+      1px 1px,
+      3px 1px,
+      5px 1px,
+      7px 1px;
+    background-position:
+      calc(8px + var(--rk-arrow-x)) calc(6px + var(--rk-arrow-y)),
+      calc(7px + var(--rk-arrow-x)) calc(7px + var(--rk-arrow-y)),
+      calc(6px + var(--rk-arrow-x)) calc(8px + var(--rk-arrow-y)),
+      calc(5px + var(--rk-arrow-x)) calc(9px + var(--rk-arrow-y));
+  }
+
+  &::-webkit-scrollbar-button:single-button:vertical:increment {
+    background-image:
+      linear-gradient(var(--rk-arrow) 0 0), linear-gradient(var(--rk-arrow) 0 0),
+      linear-gradient(var(--rk-arrow) 0 0), linear-gradient(var(--rk-arrow) 0 0);
+    background-size:
+      7px 1px,
+      5px 1px,
+      3px 1px,
+      1px 1px;
+    background-position:
+      calc(5px + var(--rk-arrow-x)) calc(6px + var(--rk-arrow-y)),
+      calc(6px + var(--rk-arrow-x)) calc(7px + var(--rk-arrow-y)),
+      calc(7px + var(--rk-arrow-x)) calc(8px + var(--rk-arrow-y)),
+      calc(8px + var(--rk-arrow-x)) calc(9px + var(--rk-arrow-y));
+  }
+
+  &::-webkit-scrollbar-button:single-button:horizontal:decrement {
+    background-image:
+      linear-gradient(var(--rk-arrow) 0 0), linear-gradient(var(--rk-arrow) 0 0),
+      linear-gradient(var(--rk-arrow) 0 0), linear-gradient(var(--rk-arrow) 0 0);
+    background-size:
+      1px 1px,
+      1px 3px,
+      1px 5px,
+      1px 7px;
+    background-position:
+      calc(5px + var(--rk-arrow-x)) calc(8px + var(--rk-arrow-y)),
+      calc(6px + var(--rk-arrow-x)) calc(7px + var(--rk-arrow-y)),
+      calc(7px + var(--rk-arrow-x)) calc(6px + var(--rk-arrow-y)),
+      calc(8px + var(--rk-arrow-x)) calc(5px + var(--rk-arrow-y));
+  }
+
+  &::-webkit-scrollbar-button:single-button:horizontal:increment {
+    background-image:
+      linear-gradient(var(--rk-arrow) 0 0), linear-gradient(var(--rk-arrow) 0 0),
+      linear-gradient(var(--rk-arrow) 0 0), linear-gradient(var(--rk-arrow) 0 0);
+    background-size:
+      1px 7px,
+      1px 5px,
+      1px 3px,
+      1px 1px;
+    background-position:
+      calc(7px + var(--rk-arrow-x)) calc(5px + var(--rk-arrow-y)),
+      calc(8px + var(--rk-arrow-x)) calc(6px + var(--rk-arrow-y)),
+      calc(9px + var(--rk-arrow-x)) calc(7px + var(--rk-arrow-y)),
+      calc(10px + var(--rk-arrow-x)) calc(8px + var(--rk-arrow-y));
+  }
+}
