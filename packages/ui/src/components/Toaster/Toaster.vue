@@ -9,11 +9,19 @@ import {
   type ComponentPublicInstance,
 } from 'vue'
 import { useToast, type ToastItem } from '../../composables/useToast'
+import CloseGlyphIcon from '../../icons/CloseGlyphIcon.vue'
+import ErrorIcon from '../../icons/ErrorIcon.vue'
+import InfoIcon from '../../icons/InfoIcon.vue'
+import SuccessIcon from '../../icons/SuccessIcon.vue'
+import WarningIcon from '../../icons/WarningIcon.vue'
 import { getActiveElement, unrefElement } from '../../primitives/dom'
 import { moveFocus } from '../../primitives/focus'
 import { cn } from '../../utils/cn'
+import Button from '../Button/Button.vue'
 import {
   toastActionVariants,
+  toastBodyVariants,
+  toastTitleVariants,
   toastCloseVariants,
   toasterViewportVariants,
   toastMessageVariants,
@@ -260,7 +268,13 @@ function announce(items: readonly ToastItem[]): void {
   if (items.length === 0) return
   // Toasts arriving together are read together, rather than the last one
   // overwriting the rest before the reader gets to them.
-  pendingAnnouncements.push(...items.map((item) => `${props.label}: ${item.message}`))
+  pendingAnnouncements.push(
+    ...items.map((item) =>
+      item.title === undefined
+        ? `${props.label}: ${item.message}`
+        : `${props.label}: ${item.title}. ${item.message}`
+    )
+  )
   announcement.value = ''
   cancelAnnouncement?.()
   cancelAnnouncement = afterFrame(() => {
@@ -427,7 +441,8 @@ onBeforeUnmount(() => {
           data-swipe-direction="right"
           tabindex="0"
           :inert="closing"
-          :class="toastVariants({ variant: item.variant })"
+          :data-variant="item.variant"
+          :class="toastVariants()"
           style="user-select: none; touch-action: none"
           @pointerenter="hold(item.id, 'pointer')"
           @pointerleave="release(item.id, 'pointer')"
@@ -439,16 +454,31 @@ onBeforeUnmount(() => {
           @pointerup="onPointerUp"
           @pointercancel="onPointerCancel"
         >
-          <span :class="toastMessageVariants()">{{ item.message }}</span>
+          <!-- The face is the same for every variant; the icon carries the status. -->
+          <SuccessIcon v-if="item.variant === 'success'" data-slot="toast-icon" class="shrink-0" />
+          <WarningIcon
+            v-else-if="item.variant === 'warning'"
+            data-slot="toast-icon"
+            class="shrink-0"
+          />
+          <ErrorIcon
+            v-else-if="item.variant === 'danger'"
+            data-slot="toast-icon"
+            class="shrink-0"
+          />
+          <InfoIcon v-else data-slot="toast-icon" class="shrink-0" />
 
-          <button
-            v-if="item.action"
-            type="button"
-            :class="toastActionVariants()"
-            @click="runAction(item)"
-          >
-            {{ item.action.label }}
-          </button>
+          <div :class="toastBodyVariants()">
+            <span v-if="item.title" data-slot="toast-title" :class="toastTitleVariants()">
+              {{ item.title }}
+            </span>
+            <span :class="toastMessageVariants()">{{ item.message }}</span>
+            <div v-if="item.action" :class="toastActionVariants()">
+              <Button variant="secondary" size="sm" @click="runAction(item)">
+                {{ item.action.label }}
+              </Button>
+            </div>
+          </div>
 
           <button
             type="button"
@@ -456,14 +486,7 @@ onBeforeUnmount(() => {
             :class="toastCloseVariants()"
             @click="dismiss(item.id)"
           >
-            <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <path
-                d="m4 4 6 6M10 4l-6 6"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-            </svg>
+            <CloseGlyphIcon />
           </button>
         </li>
       </ol>

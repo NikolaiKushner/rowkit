@@ -64,7 +64,7 @@ keyboard user has already committed to the control by the time they reach it.
 
 | Prop       | Type      | Default | Description                                           |
 | ---------- | --------- | ------- | ----------------------------------------------------- |
-| `delay`    | `number`  | `300`   | Delay before opening, in milliseconds.                |
+| `delay`    | `number`  | `500`   | Delay before opening, in milliseconds.                |
 | `disabled` | `boolean` | `false` | Turns the tooltip off without unwrapping the trigger. |
 
 <!-- /@props -->

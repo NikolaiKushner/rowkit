@@ -489,7 +489,7 @@ handling.
 
 **Props**
 
-- `delay: number` — default `300`. Delay before opening, in milliseconds.
+- `delay: number` — default `500`. Delay before opening, in milliseconds.
 - `disabled: boolean` — default `false`. Turns the tooltip off without unwrapping the trigger.
 
 **Slots**

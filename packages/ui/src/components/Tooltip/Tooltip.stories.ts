@@ -28,7 +28,7 @@ const meta: Meta<TooltipArgs> = {
   args: {
     content: 'Archive this project',
     placement: 'top',
-    delay: 300,
+    delay: 500,
     disabled: false,
   },
   argTypes: {

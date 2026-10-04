@@ -29,7 +29,7 @@ const props = withDefaults(
     ignoreNonKeyboardFocus?: boolean
   }>(),
   {
-    delayDuration: 700,
+    delayDuration: 500,
     skipDelayDuration: 300,
     disableHoverableContent: false,
     disableClosingTrigger: false,

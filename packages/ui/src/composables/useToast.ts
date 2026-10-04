@@ -10,10 +10,17 @@ export interface ToastAction {
 }
 
 export interface ToastOptions {
-  /** Tone. */
+  /** Tone. Shown by the toast's icon; the face is the same silver for all four. */
   variant?: ToastVariant
   /**
+   * A bold first line above the message — what happened, in a few words
+   * ("Export started"), with the message saying the rest.
+   */
+  title?: string
+  /**
    * Auto-dismiss delay in milliseconds. `0` never dismisses on its own.
+   * Defaults to 5000, and to `0` for `danger`: an error stays until it is
+   * closed or acted on.
    *
    * The countdown itself runs in `Toaster`, which also pauses it while the
    * pointer or focus is on the stack — this value is passed through.
@@ -29,6 +36,8 @@ export interface ToastOptions {
 /** A toast in the queue. */
 export interface ToastItem {
   id: string
+  /** The bold first line, when there is one. */
+  title?: string
   message: string
   variant: ToastVariant
   duration: number
@@ -90,8 +99,9 @@ function add(message: string, options: ToastOptions = {}): string {
     id,
     message,
     variant: options.variant ?? 'neutral',
-    duration: options.duration ?? DEFAULT_DURATION,
+    duration: options.duration ?? (options.variant === 'danger' ? 0 : DEFAULT_DURATION),
     createdAt: now,
+    ...(options.title === undefined ? {} : { title: options.title }),
     ...(options.action === undefined ? {} : { action: options.action }),
   }
 

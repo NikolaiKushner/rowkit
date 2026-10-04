@@ -65,6 +65,8 @@ import {
 import { skeletonVariants } from '../components/Skeleton/Skeleton.variants'
 import {
   toastActionVariants,
+  toastBodyVariants,
+  toastTitleVariants,
   toastCloseVariants,
   toasterViewportVariants,
   toastMessageVariants,
@@ -193,6 +195,8 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Toast', toastVariants],
   ['Toast message', toastMessageVariants],
   ['Toast action', toastActionVariants],
+  ['Toast body', toastBodyVariants],
+  ['Toast title', toastTitleVariants],
   ['Toast close', toastCloseVariants],
   ['DataTable sort button', dataTableSortButtonVariants],
   ['DataTable sort icon', dataTableSortIconVariants],

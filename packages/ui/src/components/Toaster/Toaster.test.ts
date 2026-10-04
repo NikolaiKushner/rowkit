@@ -108,14 +108,37 @@ describe('Toaster', () => {
 
   describe('tone', () => {
     it.each([
-      ['success', 'bg-success-subtle'],
-      ['warning', 'bg-warning-subtle'],
-      ['danger', 'bg-danger-subtle'],
-    ] as const)('%s uses the %s token', async (variant, expected) => {
-      await setup()
-      api[variant]('Message')
+      ['toast', 'RkInfoIcon'],
+      ['success', 'RkSuccessIcon'],
+      ['warning', 'RkWarningIcon'],
+      ['danger', 'RkErrorIcon'],
+    ] as const)('%s shows its icon on the shared silver face', async (method, icon) => {
+      const wrapper = await setup()
+      api[method]('Message')
       await nextTick()
-      expect(document.body.innerHTML).toContain(expected)
+      expect(wrapper.findComponent({ name: icon }).exists()).toBe(true)
+      const toast = document.querySelector('[data-slot="toast"]')
+      expect(toast?.classList.contains('bg-card')).toBe(true)
+      expect(toast?.classList.contains('shadow-window')).toBe(true)
+    })
+
+    it('shows a bold title above the message', async () => {
+      await setup()
+      api.toast("We'll email you when the CSV is ready.", { title: 'Export started' })
+      await nextTick()
+      const title = document.querySelector('[data-slot="toast-title"]')
+      expect(title?.textContent?.trim()).toBe('Export started')
+      expect(title?.classList.contains('font-bold')).toBe(true)
+    })
+
+    it('keeps a danger toast until it is closed', () => {
+      api.danger('Could not save')
+      expect(api.items.value.at(-1)?.duration).toBe(0)
+    })
+
+    it('still lets a danger toast set its own duration', () => {
+      api.danger('Could not save', { duration: 4000 })
+      expect(api.items.value.at(-1)?.duration).toBe(4000)
     })
   })
 
@@ -170,6 +193,10 @@ describe('Toaster', () => {
       await setup()
       api.toast('Deleted', { duration: 0, action: { label: 'Undo', onClick } })
       await nextTick()
+      // Vue ignores an event in the same millisecond its listener was attached,
+      // and the action is a Button rendered a moment ago. No person clicks that
+      // fast; a test does.
+      await new Promise((resolve) => setTimeout(resolve, 2))
 
       const action = [...document.querySelectorAll('button')].find(
         (button) => button.textContent?.trim() === 'Undo'

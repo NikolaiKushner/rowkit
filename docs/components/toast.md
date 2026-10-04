@@ -82,11 +82,12 @@ in a provide/inject tree. Rendering stays in one place so stacking is coherent.
 
 ### `ToastOptions`
 
-| Option     | Type                                              | Default     | Description              |
-| ---------- | ------------------------------------------------- | ----------- | ------------------------ |
-| `variant`  | `'neutral' \| 'success' \| 'warning' \| 'danger'` | `'neutral'` | Tone                     |
-| `duration` | `number`                                          | `5000`      | `0` never auto-dismisses |
-| `action`   | `{ label, onClick }`                              | —           | One action, not several  |
+| Option     | Type                                              | Default                  | Description              |
+| ---------- | ------------------------------------------------- | ------------------------ | ------------------------ |
+| `variant`  | `'neutral' \| 'success' \| 'warning' \| 'danger'` | `'neutral'`              | Tone, shown by the icon  |
+| `title`    | `string`                                          | —                        | Bold first line          |
+| `duration` | `number`                                          | `5000`, `0` for `danger` | `0` never auto-dismisses |
+| `action`   | `{ label, onClick }`                              | —                        | One action, not several  |
 
 ## `<Toaster />`
 

@@ -8,7 +8,7 @@ import type { TooltipProps } from './types'
 defineOptions({ name: 'RkTooltip' })
 
 const props = withDefaults(defineProps<TooltipProps>(), {
-  delay: 300,
+  delay: 500,
   disabled: false,
 })
 

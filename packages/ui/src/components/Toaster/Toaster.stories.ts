@@ -62,15 +62,18 @@ type Story = StoryObj<ToasterArgs>
 
 export const Default: Story = {}
 
-/** All four tones. Danger is styled loudly and still announced politely. */
+/**
+ * All four tones on the same silver face: the icon says which. Danger stays
+ * until it is closed, and is still announced politely.
+ */
 export const Variants: Story = {
   render: () =>
     scene(`
       <div class="flex flex-wrap gap-2 p-8">
-        <Button variant="secondary" @click="toast('Nothing special happened')">Neutral</Button>
-        <Button variant="secondary" @click="success('Project archived')">Success</Button>
-        <Button variant="secondary" @click="warning('Two seats left')">Warning</Button>
-        <Button variant="secondary" @click="danger('Could not save')">Danger</Button>
+        <Button variant="secondary" @click="toast('We\\'ll email you when the CSV is ready.', { title: 'Export started' })">Neutral</Button>
+        <Button variant="secondary" @click="success('ada@analytical.io will get an email in a minute.', { title: 'User invited' })">Success</Button>
+        <Button variant="secondary" @click="warning('9.6 of 10 GB used. Old exports are deleted after 30 days.', { title: 'Storage almost full', action: { label: 'View', onClick: () => {} } })">Warning</Button>
+        <Button variant="secondary" @click="danger('Check your connection and try again.', { title: 'Could not save' })">Danger</Button>
         <Toaster />
       </div>
     `),
