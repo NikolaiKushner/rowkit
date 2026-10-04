@@ -339,6 +339,21 @@ handling.
 - `#chip` `(props: { chip: FilterChip })` — Replaces a chip's text.
 - `#summary` `(props: { count: number })` — Replaces the result count.
 
+### GroupBox
+
+`import { GroupBox } from 'rowkit'`
+
+**Props**
+
+- `legend: string`. The text on the frame's top line. Names the group for assistive technology.
+- `as: 'fieldset' | 'section' | 'div'` — default `'fieldset'`. The element. `fieldset` — the default — groups form controls, and the browser names the group from its legend. `section` or `div` frame anything else; the group is then `role="group"`, named by the legend.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The grouped content.
+- `#legend` — Replaces the `legend` text, for a legend that needs markup.
+
 ### Input
 
 `import { Input } from 'rowkit'`
@@ -392,6 +407,16 @@ handling.
 **Slots**
 
 - `#summary` `(props: { from: number; to: number; total: number })` — Replaces the range summary.
+
+### ProgressBar
+
+`import { ProgressBar } from 'rowkit'`
+
+**Props**
+
+- `value: number` _(required)_. How far along, from 0 to `max`. Values outside are clamped.
+- `max: number` — default `100`. The value that means done.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
 
 ### Select
 
@@ -481,6 +506,30 @@ handling.
 - `class: string`. Additional classes, merged with the variant classes so a consumer's utility wins over the component's own.
 - `as: string | Component` — default `'div'`. Element or component to render as.
 - `asChild: boolean` — default `false`. Merge props onto the single child element instead of rendering a wrapper.
+
+### StatusBar
+
+`import { StatusBar } from 'rowkit'`
+
+**Props**
+
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — `StatusBarSection`s. The first fills the width the others leave.
+
+### StatusBarSection
+
+`import { StatusBarSection } from 'rowkit'`
+
+**Props**
+
+- `class: string`. Additional classes — a width, for every section but the first.
+
+**Slots**
+
+- `#default` — A short line of text, an icon and text, or a small control.
 
 ### Toaster
 

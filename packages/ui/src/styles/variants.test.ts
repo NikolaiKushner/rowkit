@@ -70,7 +70,20 @@ import {
   selectMessageVariants,
   selectTriggerVariants,
 } from '../components/Select/Select.variants'
+import {
+  groupBoxFrameVariants,
+  groupBoxLegendVariants,
+  groupBoxVariants,
+} from '../components/GroupBox/GroupBox.variants'
+import {
+  progressBarFillVariants,
+  progressBarVariants,
+} from '../components/ProgressBar/ProgressBar.variants'
 import { separatorVariants } from '../components/Separator/Separator.variants'
+import {
+  statusBarSectionVariants,
+  statusBarVariants,
+} from '../components/StatusBar/StatusBar.variants'
 import { skeletonVariants } from '../components/Skeleton/Skeleton.variants'
 import {
   toastActionVariants,
@@ -168,6 +181,13 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Select content', selectContentVariants],
   ['Select item', selectItemVariants],
   ['Separator', separatorVariants],
+  ['StatusBar', statusBarVariants],
+  ['StatusBar section', statusBarSectionVariants],
+  ['GroupBox', groupBoxVariants],
+  ['GroupBox frame', groupBoxFrameVariants],
+  ['GroupBox legend', groupBoxLegendVariants],
+  ['ProgressBar', progressBarVariants],
+  ['ProgressBar fill', progressBarFillVariants],
   ['Select input', selectInputVariants],
   ['Select button', selectButtonVariants],
   ['Select list', selectListVariants],
