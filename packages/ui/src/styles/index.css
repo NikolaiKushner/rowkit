@@ -87,6 +87,19 @@
     }
   }
 
+  /*
+   * The skeleton's checker stepping 1px sideways and back, 400ms per frame.
+   * `steps(1)` holds each keyframe's value for its whole interval: two
+   * frames, no tween, as a 1998 screen would have drawn it.
+   */
+  --animate-dither: dither 800ms steps(1) infinite;
+
+  @keyframes dither {
+    50% {
+      background-position: 1px 0;
+    }
+  }
+
   --animate-toast-in: toast-in var(--transition-duration-normal) var(--ease-enter);
   --animate-toast-out: toast-out var(--transition-duration-fast) var(--ease-exit);
 

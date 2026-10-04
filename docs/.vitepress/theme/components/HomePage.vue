@@ -16,7 +16,7 @@ const columns: DataTableColumn<User>[] = [
   { key: 'email', header: 'Email' },
   { key: 'role', header: 'Role', sortable: true },
   { key: 'status', header: 'Status' },
-  { key: 'seats', header: 'Seats', sortable: true, align: 'end' },
+  { key: 'seats', header: 'Seats', sortable: true, numeric: true },
   { key: 'lastActive', header: 'Last active' },
 ]
 

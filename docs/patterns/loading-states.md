@@ -11,7 +11,7 @@ const columns = [
   { key: 'name', header: 'Name', sortable: true, width: '14rem' },
   { key: 'role', header: 'Role', width: '9rem' },
   { key: 'status', header: 'Status', width: '9rem' },
-  { key: 'seats', header: 'Seats', align: 'end', width: '7rem' },
+  { key: 'seats', header: 'Seats', numeric: true, width: '7rem' },
 ]
 
 const users = [

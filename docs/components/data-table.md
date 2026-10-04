@@ -24,7 +24,7 @@ const columns = [
   { key: 'name', header: 'Name', sortable: true, sticky: true },
   { key: 'role', header: 'Role', sortable: true },
   { key: 'status', header: 'Status' },
-  { key: 'seats', header: 'Seats', sortable: true, align: 'end' },
+  { key: 'seats', header: 'Seats', sortable: true, numeric: true },
 ]
 
 const users = [
@@ -93,7 +93,7 @@ VitePress's navbar.
 ```ts
 const columns: DataTableColumn<User>[] = [
   { key: 'name', header: 'Name', sticky: true },
-  { key: 'seats', header: 'Seats', align: 'end' },
+  { key: 'seats', header: 'Seats', numeric: true },
   { id: 'actions', header: 'Actions', headerSrOnly: true },
 ]
 ```
@@ -110,7 +110,8 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 | `headerSrOnly` | `boolean`                      | Hide the heading visually, keep it for screen readers |
 | `sortable`     | `boolean`                      | Makes the header a sort control                       |
 | `sortValue`    | `(row: TRow) => Sortable`      | What to compare, when the displayed text sorts badly  |
-| `align`        | `'start' \| 'center' \| 'end'` | Use `end` for numbers                                 |
+| `numeric`      | `boolean`                      | Figures: mono face, aligned to the end                |
+| `align`        | `'start' \| 'center' \| 'end'` | Overrides the alignment                               |
 | `width`        | `string`                       | A CSS width                                           |
 | `sticky`       | `boolean`                      | Pin the column to the start edge while scrolling      |
 | `headerClass`  | `string`                       | Extra classes for the header cell                     |
@@ -120,25 +121,25 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 
 <!-- @props DataTableProps -->
 
-| Prop               | Type                                   | Default             | Description                                                                       |
-| ------------------ | -------------------------------------- | ------------------- | --------------------------------------------------------------------------------- |
-| `rows`             | `TRow[]`                               | **required**        | The rows to render.                                                               |
-| `columns`          | `DataTableColumn<TRow>[]`              | **required**        | Column definitions, in display order.                                             |
-| `caption`          | `string`                               | **required**        | Accessible name for the table.                                                    |
-| `captionVisible`   | `boolean`                              | `false`             | Shows the caption. It is available to assistive technology either way.            |
-| `loading`          | `boolean`                              | `false`             | Swaps the body for placeholder rows.                                              |
-| `loadingRows`      | `number`                               | `5`                 | How many placeholder rows to show while loading.                                  |
-| `loadingLabel`     | `string`                               | `'Loading'`         | Announced while loading.                                                          |
-| `emptyTitle`       | `string`                               | `'Nothing to show'` | Title for the built-in empty state.                                               |
-| `emptyDescription` | `string`                               | —                   | Description for the built-in empty state.                                         |
-| `emptyReason`      | `'no-data' \| 'no-results' \| 'error'` | —                   | Why the built-in empty state is empty.                                            |
-| `selectable`       | `'single' \| 'multiple'`               | —                   | Adds a selection column.                                                          |
-| `rowLabel`         | `(row: TRow, index: number) => string` | —                   | Accessible name for each row's selection control.                                 |
-| `selectionLabel`   | `string`                               | `'Select'`          | Accessible name for the selection column.                                         |
-| `selectAllLabel`   | `string`                               | `'Select all rows'` | Accessible name for the select-all control.                                       |
-| `size`             | `'sm' \| 'md'`                         | `'md'`              | Row height and text size.                                                         |
-| `hoverable`        | `boolean`                              | `false`             | Highlights rows on hover. Only turn this on when a row does something.            |
-| `class`            | `string`                               | —                   | Additional classes for the scroll container, merged so a consumer's utility wins. |
+| Prop               | Type                                   | Default             | Description                                                            |
+| ------------------ | -------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
+| `rows`             | `TRow[]`                               | **required**        | The rows to render.                                                    |
+| `columns`          | `DataTableColumn<TRow>[]`              | **required**        | Column definitions, in display order.                                  |
+| `caption`          | `string`                               | **required**        | Accessible name for the table.                                         |
+| `captionVisible`   | `boolean`                              | `false`             | Shows the caption. It is available to assistive technology either way. |
+| `loading`          | `boolean`                              | `false`             | Swaps the body for placeholder rows.                                   |
+| `loadingRows`      | `number`                               | `5`                 | How many placeholder rows to show while loading.                       |
+| `loadingLabel`     | `string`                               | `'Loading'`         | Announced while loading.                                               |
+| `emptyTitle`       | `string`                               | `'Nothing to show'` | Title for the built-in empty state.                                    |
+| `emptyDescription` | `string`                               | —                   | Description for the built-in empty state.                              |
+| `emptyReason`      | `'no-data' \| 'no-results' \| 'error'` | —                   | Why the built-in empty state is empty.                                 |
+| `selectable`       | `'single' \| 'multiple'`               | —                   | Adds a selection column.                                               |
+| `rowLabel`         | `(row: TRow, index: number) => string` | —                   | Accessible name for each row's selection control.                      |
+| `selectionLabel`   | `string`                               | `'Select'`          | Accessible name for the selection column.                              |
+| `selectAllLabel`   | `string`                               | `'Select all rows'` | Accessible name for the select-all control.                            |
+| `size`             | `'sm' \| 'md'`                         | `'md'`              | Row height: `sm` 18px for dense lists and logs, `md` 22px.             |
+| `hoverable`        | `boolean`                              | `false`             | Kept for compatibility; has no visible effect.                         |
+| `class`            | `string`                               | —                   | Additional classes for the root, merged so a consumer's utility wins.  |
 
 <!-- /@props -->
 
@@ -299,13 +300,13 @@ nothing focusable inside cannot be scrolled by keyboard at all. It gets
 there is actually overflow, measured with a `ResizeObserver`, so a table that
 fits adds no pointless tab stop.
 
-**The sticky header needs a height on the container.** `position: sticky`
+**The sticky header needs a height on the table.** `position: sticky`
 resolves against the nearest scrolling ancestor, which is the component's own
-wrapper. Put the height there: `<DataTable class="max-h-96" />`. An outer
-scrolling div will not work.
+scroll area inside the frame. Put the height on the component:
+`<DataTable class="max-h-96" />`. An outer scrolling div will not work.
 
-**A pinned column grows a shadow only once something is behind it**, using the
-`shadow-scroll-x` token. Without the cue, a user scrolled to the right has no
+**A pinned column grows a hard 1px edge only once something is behind it**,
+using the `shadow-scroll-x` token. Without the cue, a user scrolled to the right has no
 signal that the table continues past the pinned edge.
 
 ## Clickable rows

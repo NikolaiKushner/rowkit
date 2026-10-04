@@ -32,7 +32,7 @@ const columns: DataTableColumn<DemoUser>[] = [
   { key: 'email', header: 'Email', sortable: true, width: '16rem' },
   { key: 'role', header: 'Role', sortable: true, width: '8rem' },
   { key: 'status', header: 'Status', sortable: true, width: '9rem' },
-  { key: 'seats', header: 'Seats', sortable: true, align: 'end', width: '6rem' },
+  { key: 'seats', header: 'Seats', sortable: true, numeric: true, width: '6rem' },
   { key: 'lastActive', header: 'Last active', sortable: true, width: '9rem' },
   { id: 'actions', header: 'Actions', headerSrOnly: true, align: 'end', width: '5rem' },
 ]

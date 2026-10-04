@@ -57,6 +57,11 @@ interface DataTableColumnBase {
    * compared down the page, a left-aligned one cannot.
    */
   align?: DataTableAlign
+  /**
+   * The column holds figures: its cells use the mono face so digits line up,
+   * and it aligns to the end unless `align` says otherwise.
+   */
+  numeric?: boolean
   /** A CSS width, applied to the column. Omit to let the content size it. */
   width?: string
   /**
@@ -237,15 +242,17 @@ export interface DataTableProps<TRow> {
   selectionLabel?: string
   /** Accessible name for the select-all control. */
   selectAllLabel?: string
-  /** Row height and text size. */
+  /** Row height: `sm` 18px for dense lists and logs, `md` 22px. */
   size?: NonNullable<DataTableVariants['size']>
   /**
-   * Highlights rows on hover. Only turn this on when a row does something.
-   *
-   * Implied by a `row:click` listener, since a row that responds to a click
-   * should look like it will.
+   * Kept for compatibility; has no visible effect. Windows 98 list rows have
+   * no hover, so a row that does something shows it through the cursor, the
+   * dotted focus rectangle and selection instead.
    */
   hoverable?: boolean
-  /** Additional classes for the scroll container, merged so a consumer's utility wins. */
+  /**
+   * Additional classes for the root, merged so a consumer's utility wins. A
+   * height (`max-h-96`) bounds the table; the body scrolls inside the frame.
+   */
   class?: HTMLAttributes['class']
 }

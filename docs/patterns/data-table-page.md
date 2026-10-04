@@ -50,7 +50,7 @@ const columns = [
     width: '9rem',
     sortValue: (row) => ({ active: 0, invited: 1, suspended: 2 })[row.status],
   },
-  { key: 'seats', header: 'Seats', sortable: true, align: 'end', width: '7rem' },
+  { key: 'seats', header: 'Seats', sortable: true, numeric: true, width: '7rem' },
 ]
 
 const tone = { active: 'success', invited: 'warning', suspended: 'danger' }
@@ -185,7 +185,7 @@ const columns: DataTableColumn<User>[] = [
     width: '9rem',
     sortValue: (row) => ({ active: 0, invited: 1, suspended: 2 })[row.status],
   },
-  { key: 'seats', header: 'Seats', sortable: true, align: 'end', width: '7rem' },
+  { key: 'seats', header: 'Seats', sortable: true, numeric: true, width: '7rem' },
 ]
 
 // Whatever your data source is, it answers these four questions.

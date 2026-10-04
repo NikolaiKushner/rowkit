@@ -24,8 +24,11 @@ An avatar, two lines of prose and a thumbnail — assembled from the three
 primitives rather than configured through a prop. The last line of the stack is
 shortened because real paragraphs do not end flush with the margin.
 
-The pulse is behind `motion-safe:`. Turn on "Reduce motion" in your OS and
-reload: the shapes stay, the animation goes, and nothing else changes.
+Each shape is a dithered plate — the white-and-silver checker Windows 98 used
+for things not yet there — and the checker steps one pixel sideways every
+400ms instead of pulsing. That step is behind `motion-safe:`. Turn on "Reduce
+motion" in your OS and reload: the plates stay, the step goes, and nothing else
+changes.
 
 ## Anatomy
 
@@ -63,15 +66,15 @@ reload: the shapes stay, the animation goes, and nothing else changes.
 
 <!-- @props SkeletonProps -->
 
-| Prop       | Type                           | Default  | Description                                                                                                |
-| ---------- | ------------------------------ | -------- | ---------------------------------------------------------------------------------------------------------- |
-| `variant`  | `'text' \| 'circle' \| 'rect'` | `'text'` | Geometry preset.                                                                                           |
-| `lines`    | `number`                       | `1`      | Number of stacked bars. Only meaningful for `text`.                                                        |
-| `animated` | `boolean`                      | `true`   | Whether the placeholder pulses. Suppressed automatically for anyone with `prefers-reduced-motion`.         |
-| `label`    | `string`                       | —        | Announces this placeholder to assistive technology as a busy region.                                       |
-| `class`    | `string`                       | —        | Additional classes, merged with the variant classes so a consumer's utility wins over the component's own. |
-| `as`       | `string \| Component`          | `'div'`  | Element or component to render as.                                                                         |
-| `asChild`  | `boolean`                      | `false`  | Merge props onto the single child element instead of rendering a wrapper.                                  |
+| Prop       | Type                           | Default  | Description                                                                                                                           |
+| ---------- | ------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `variant`  | `'text' \| 'circle' \| 'rect'` | `'text'` | Geometry preset.                                                                                                                      |
+| `lines`    | `number`                       | `1`      | Number of stacked bars. Only meaningful for `text`.                                                                                   |
+| `animated` | `boolean`                      | `true`   | Whether the dither steps 1px every 400ms. Windows 98 never pulses. Suppressed automatically for anyone with `prefers-reduced-motion`. |
+| `label`    | `string`                       | —        | Announces this placeholder to assistive technology as a busy region.                                                                  |
+| `class`    | `string`                       | —        | Additional classes, merged with the variant classes so a consumer's utility wins over the component's own.                            |
+| `as`       | `string \| Component`          | `'div'`  | Element or component to render as.                                                                                                    |
+| `asChild`  | `boolean`                      | `false`  | Merge props onto the single child element instead of rendering a wrapper.                                                             |
 
 <!-- /@props -->
 
@@ -102,16 +105,17 @@ standing for the whole area, or wrap the group yourself:
 `label` produces `role="status"` with `aria-busy="true"` — the role makes it a
 live region, and `aria-busy` is what states the content is still arriving.
 
-**Motion.** The pulse is `motion-safe:` only, so it never renders for anyone who
+**Motion.** The step is `motion-safe:` only, so it never renders for anyone who
 has asked for reduced motion. A looping animation is the kind that triggers
 vestibular symptoms, and it carries no information the static shape does not.
 `animated: false` turns it off for everyone.
 
-**Contrast.** The `skeleton` token is exempt from contrast requirements. The
+**Contrast.** The dither is exempt from contrast requirements. The
 placeholder is decorative and hidden from assistive technology, so there is no
 content to perceive — WCAG 1.4.11 applies to UI component boundaries and
 meaningful graphics, and this is neither.
 
 **Animation timing** does not come from the motion tokens. Those cap at 320ms
 because they describe interaction feedback, where anything slower reads as lag.
-An ambient loop is a different thing and runs at Tailwind's 2s `animate-pulse`.
+An ambient loop is a different thing: two frames of 400ms, held with
+`steps(1)` so nothing tweens between them.

@@ -61,7 +61,7 @@ const columns: DataTableColumn<User>[] = [
   { key: 'email', header: 'Email' },
   { key: 'role', header: 'Role' },
   { key: 'status', header: 'Status' },
-  { key: 'seats', header: 'Seats', align: 'end' },
+  { key: 'seats', header: 'Seats', numeric: true },
 ]
 
 /**
@@ -125,7 +125,7 @@ export const Default: Story = {
         { key: 'email', header: 'Email' },
         { key: 'role', header: 'Role' },
         { key: 'status', header: 'Status', sortable: true },
-        { key: 'seats', header: 'Seats', align: 'end', sortable: true },
+        { key: 'seats', header: 'Seats', numeric: true, sortable: true },
         { id: 'actions', header: 'Actions', headerSrOnly: true, align: 'end' },
       ] satisfies DataTableColumn<User>[],
       sort: ref<DataTableSort<User>>({ key: 'name', direction: 'asc' }),
@@ -251,8 +251,8 @@ export const ComputedColumn: Story = {
       users,
       columns: [
         { key: 'name', header: 'Name' },
-        { key: 'seats', header: 'Seats', align: 'end' },
-        { id: 'cost', header: 'Monthly', align: 'end' },
+        { key: 'seats', header: 'Seats', numeric: true },
+        { id: 'cost', header: 'Monthly', numeric: true },
       ],
     }),
     template: `
@@ -282,7 +282,7 @@ export const StickyColumn: Story = {
         { key: 'email', header: 'Email', width: '16rem' },
         { key: 'role', header: 'Role', width: '10rem' },
         { key: 'status', header: 'Status', width: '10rem' },
-        { key: 'seats', header: 'Seats', align: 'end', width: '10rem' },
+        { key: 'seats', header: 'Seats', numeric: true, width: '10rem' },
         { id: 'notes', header: 'Notes', width: '20rem' },
       ],
     }),
@@ -360,7 +360,7 @@ const sortableColumns: DataTableColumn<User>[] = [
   { key: 'name', header: 'Name', sortable: true },
   { key: 'email', header: 'Email' },
   { key: 'role', header: 'Role', sortable: true },
-  { key: 'seats', header: 'Seats', sortable: true, align: 'end' },
+  { key: 'seats', header: 'Seats', sortable: true, numeric: true },
 ]
 
 /** Sorting handled locally. Fine for a table that holds all its rows. */

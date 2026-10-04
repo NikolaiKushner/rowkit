@@ -233,8 +233,19 @@ describe('DataTable', () => {
       expect(caption.classes()).toContain('sr-only')
     })
 
-    it('can be shown', () => {
-      expect(setup({ captionVisible: true }).find('caption').classes()).not.toContain('sr-only')
+    it('can be shown, above the frame', () => {
+      const el = setup({ captionVisible: true })
+      const visible = (el.element as HTMLElement).firstElementChild
+      expect(visible?.textContent?.trim()).toBe(el.find('caption').text())
+      // The table's own caption still names it for assistive technology, so
+      // the visible copy stays out of the accessibility tree.
+      expect(visible?.getAttribute('aria-hidden')).toBe('true')
+      expect(el.find('caption').classes()).toContain('sr-only')
+    })
+
+    it('shows no visible copy unless asked', () => {
+      const root = setup().element as HTMLElement
+      expect(root.firstElementChild?.getAttribute('data-slot')).toBe('data-table-frame')
     })
   })
 
@@ -279,7 +290,7 @@ describe('DataTable', () => {
       // states are not painted over by the pinned column.
       const el = setup({ columns: [{ key: 'name', header: 'Name', sticky: true }] })
       expect(el.find('tbody td').classes()).toContain('bg-inherit')
-      expect(el.find('tbody tr').classes()).toContain('bg-card')
+      expect(el.find('tbody tr').classes()).toContain('bg-input')
     })
 
     it('lets a selected row show through its pinned cell', () => {
@@ -305,9 +316,52 @@ describe('DataTable', () => {
     expect(el.attributes('role')).toBeUndefined()
   })
 
-  it('does not highlight rows on hover unless they do something', () => {
-    expect(setup().find('tbody tr').classes()).not.toContain('hover:bg-accent')
-    expect(setup({ hoverable: true }).find('tbody tr').classes()).toContain('hover:bg-accent')
+  it('never highlights rows on hover — Windows 98 rows have none', () => {
+    for (const el of [setup(), setup({ hoverable: true })]) {
+      expect(
+        el
+          .find('tbody tr')
+          .classes()
+          .some((c) => c.startsWith('hover:'))
+      ).toBe(false)
+    }
+  })
+
+  it('draws the frame as a sunken white well, outside the scroll container', () => {
+    const el = setup()
+    const frame = el.get('[data-slot="data-table-frame"]')
+    expect(frame.classes()).toEqual(expect.arrayContaining(['bg-input', 'shadow-sunken']))
+    expect(frame.find('[data-slot="data-table-scroll"]').exists()).toBe(true)
+    expect(el.get('[data-slot="data-table-scroll"]').classes()).not.toContain('shadow-sunken')
+  })
+
+  it('has no grid lines between rows', () => {
+    const cells = setup().findAll('tbody td')
+    expect(cells.every((td) => !td.classes().some((c) => c.startsWith('border')))).toBe(true)
+  })
+
+  describe('numeric columns', () => {
+    const numeric = () =>
+      setup({
+        columns: [
+          { key: 'name', header: 'Name' },
+          { key: 'id', header: 'Logins', numeric: true },
+        ],
+      })
+
+    it('set figures in the mono face, aligned to the end', () => {
+      const cell = numeric().findAll('tbody tr')[0]?.findAll('td')[1]
+      expect(cell?.classes()).toEqual(expect.arrayContaining(['font-mono', 'text-end']))
+    })
+
+    it('align the header with the figures', () => {
+      expect(numeric().findAll('th')[1]?.classes()).toContain('text-end')
+    })
+
+    it('still let align override the end alignment', () => {
+      const el = setup({ columns: [{ key: 'id', header: 'Id', numeric: true, align: 'start' }] })
+      expect(el.find('tbody td').classes()).toContain('text-start')
+    })
   })
 
   describe('column identity', () => {
@@ -511,13 +565,13 @@ describe('DataTable', () => {
       expect(el.emitted('row:click')).toBeUndefined()
     })
 
-    it('shows a hover affordance once rows respond to a click', () => {
-      expect(clickable().find('tbody tr').classes()).toContain('hover:bg-accent')
+    it('shows the dotted focus rectangle on a clickable row', () => {
+      expect(clickable().find('tbody tr').classes()).toContain('focus-visible:outline-dotted')
     })
   })
 
   describe('class forwarding', () => {
-    it('merges a consumer class onto the scroll container', () => {
+    it('merges a consumer class onto the root', () => {
       expect(setup({ class: 'rounded-none' }).classes()).toContain('rounded-none')
     })
 

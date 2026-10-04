@@ -117,7 +117,7 @@ const columns: DataTableColumn<User>[] = [
     // by accident; this is the order that means something.
     sortValue: (row) => ({ active: 0, invited: 1, suspended: 2 })[row.status],
   },
-  { key: 'seats', header: 'Seats', sortable: true, align: 'end', width: '7rem' },
+  { key: 'seats', header: 'Seats', sortable: true, numeric: true, width: '7rem' },
   {
     key: 'lastActive',
     header: 'Last active',

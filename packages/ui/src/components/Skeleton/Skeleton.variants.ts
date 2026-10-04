@@ -1,35 +1,33 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
- * A skeleton is a shape, not a colour — every variant shares one fill and
- * differs only in geometry.
+ * A skeleton is a dithered plate — the white-and-silver checker Windows 98
+ * used for things not yet there — and every variant shares that fill,
+ * differing only in geometry.
  *
  * Each variant carries a default height and width so a bare `<Skeleton />`
  * renders something visible. A placeholder that collapses to zero height is
  * worse than no placeholder: the layout still jumps when the data lands, which
  * is the one thing a skeleton exists to prevent.
  */
-export const skeletonVariants = cva('block shrink-0 bg-skeleton', {
+export const skeletonVariants = cva('block shrink-0 bg-dither', {
   variants: {
-    /** Geometry preset. */
+    /** Geometry preset. Square corners, as everything in Windows 98 but the round controls. */
     variant: {
-      // The reference design's Skeleton is a single `rounded-md` shape. rowkit keeps the
-      // geometry presets, but the corner is the reference design's at every one of them.
-      /** A line of text. Height tracks the `sm`/`base` line box. */
-      text: 'h-4 w-full rounded-md',
-      /** Avatars and icon buttons. */
+      /** A line of text: 9px, so it sits on the 13px line like the letters it stands in for. */
+      text: 'h-[9px] w-full',
+      /** Avatars. Besides the option button, the one round shape in the system. */
       circle: 'size-10 rounded-full',
-      /** Thumbnails, cards, table cells. */
-      rect: 'h-4 w-full rounded-md',
+      /** Thumbnails, cards, controls. */
+      rect: 'h-4 w-full',
     },
     /**
-     * `motion-safe:` rather than a bare `animate-pulse`, so the pulse is absent
-     * for anyone who has asked for reduced motion. A looping animation is
-     * exactly the kind that triggers vestibular symptoms, and it conveys no
-     * information the static shape does not.
+     * Windows 98 never pulses. Animated, the checker steps 1px sideways every
+     * 400ms — two frames, no easing — and `motion-safe:` keeps it still for
+     * anyone who has asked for reduced motion.
      */
     animated: {
-      true: 'motion-safe:animate-pulse',
+      true: 'motion-safe:animate-dither',
       false: '',
     },
   },

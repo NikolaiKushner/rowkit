@@ -3,20 +3,17 @@ import { describe, expect, it } from 'vitest'
 import Skeleton from './Skeleton.vue'
 
 describe('Skeleton', () => {
-  it('renders a text bar by default', () => {
+  it('renders a 9px dithered text bar by default', () => {
     const el = mount(Skeleton)
-    expect(el.classes()).toContain('bg-skeleton')
-    expect(el.classes()).toContain('rounded-md')
+    expect(el.classes()).toEqual(expect.arrayContaining(['bg-dither', 'h-[9px]']))
   })
 
-  // The reference design's Skeleton is one `rounded-md` shape. The presets keep their
-  // geometry, but no longer their own corner radii.
-  it.each([
-    ['text', 'rounded-md'],
-    ['circle', 'rounded-full'],
-    ['rect', 'rounded-md'],
-  ] as const)('%s uses the %s radius token', (variant, expected) => {
-    expect(mount(Skeleton, { props: { variant } }).classes()).toContain(expected)
+  it('has square corners, except the circle', () => {
+    for (const variant of ['text', 'rect'] as const) {
+      const classes = mount(Skeleton, { props: { variant } }).classes()
+      expect(classes.some((c) => c.startsWith('rounded'))).toBe(false)
+    }
+    expect(mount(Skeleton, { props: { variant: 'circle' } }).classes()).toContain('rounded-full')
   })
 
   it('every variant carries a visible default size', () => {
@@ -32,16 +29,17 @@ describe('Skeleton', () => {
   })
 
   describe('motion', () => {
-    it('pulses only when motion is safe', () => {
-      // A bare `animate-pulse` would loop regardless of the user's setting.
+    it('steps the dither only when motion is safe, and never pulses', () => {
+      // A bare `animate-dither` would loop regardless of the user's setting.
       const classes = mount(Skeleton).classes()
-      expect(classes).toContain('motion-safe:animate-pulse')
-      expect(classes).not.toContain('animate-pulse')
+      expect(classes).toContain('motion-safe:animate-dither')
+      expect(classes).not.toContain('animate-dither')
+      expect(classes.some((c) => c.includes('pulse'))).toBe(false)
     })
 
     it('drops the animation entirely when disabled', () => {
       expect(mount(Skeleton, { props: { animated: false } }).classes()).not.toContain(
-        'motion-safe:animate-pulse'
+        'motion-safe:animate-dither'
       )
     })
   })
@@ -79,13 +77,13 @@ describe('Skeleton', () => {
     it('makes the root a container rather than a bar', () => {
       const el = mount(Skeleton, { props: { lines: 2 } })
       expect(el.classes()).toContain('flex')
-      expect(el.classes()).not.toContain('bg-skeleton')
+      expect(el.classes()).not.toContain('bg-dither')
     })
 
     it('stays a single bar at one line', () => {
       const el = mount(Skeleton, { props: { lines: 1 } })
       expect(el.findAll('span')).toHaveLength(0)
-      expect(el.classes()).toContain('bg-skeleton')
+      expect(el.classes()).toContain('bg-dither')
     })
 
     it('ignores lines for non-text variants', () => {

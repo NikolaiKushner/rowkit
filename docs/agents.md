@@ -146,9 +146,9 @@ handling.
 - `rowLabel: (row: TRow, index: number) => string`. Accessible name for each row's selection control.
 - `selectionLabel: string` — default `'Select'`. Accessible name for the selection column.
 - `selectAllLabel: string` — default `'Select all rows'`. Accessible name for the select-all control.
-- `size: 'sm' | 'md'` — default `'md'`. Row height and text size.
-- `hoverable: boolean` — default `false`. Highlights rows on hover. Only turn this on when a row does something.
-- `class: string`. Additional classes for the scroll container, merged so a consumer's utility wins.
+- `size: 'sm' | 'md'` — default `'md'`. Row height: `sm` 18px for dense lists and logs, `md` 22px.
+- `hoverable: boolean` — default `false`. Kept for compatibility; has no visible effect. Windows 98 list rows have no hover, so a row that does something shows it through the cursor, the dotted focus rectangle and selection instead.
+- `class: string`. Additional classes for the root, merged so a consumer's utility wins. A height (`max-h-96`) bounds the table; the body scrolls inside the frame.
 
 **v-model**
 
@@ -472,7 +472,7 @@ handling.
 
 - `variant: 'text' | 'circle' | 'rect'` — default `'text'`. Geometry preset.
 - `lines: number` — default `1`. Number of stacked bars. Only meaningful for `text`.
-- `animated: boolean` — default `true`. Whether the placeholder pulses. Suppressed automatically for anyone with `prefers-reduced-motion`.
+- `animated: boolean` — default `true`. Whether the dither steps 1px every 400ms. Windows 98 never pulses. Suppressed automatically for anyone with `prefers-reduced-motion`.
 - `label: string`. Announces this placeholder to assistive technology as a busy region.
 - `class: string`. Additional classes, merged with the variant classes so a consumer's utility wins over the component's own.
 - `as: string | Component` — default `'div'`. Element or component to render as.
