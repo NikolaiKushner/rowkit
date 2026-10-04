@@ -323,7 +323,7 @@ handling.
 - `searchable: boolean` — default `true`. Shows the search box.
 - `searchPlaceholder: string` — default `'Search…'`. Placeholder for the search box.
 - `searchLabel: string` — default `'Search'`. Accessible name for the search box. Visually hidden.
-- `clearLabel: string` — default `'Clear all'`. Label for the clear-all control.
+- `clearLabel: string` — default `'Clear filters'`. Label of the button that clears every filter.
 - `removeLabel: string` — default `'Remove {filter} filter'`. Accessible name for the chip's remove control. `{filter}` is replaced with the chip's text.
 - `label: string` — default `'Filters'`. Accessible name for the region.
 - `size: 'sm' | 'md'` — default `'md'`. Control height and text size.

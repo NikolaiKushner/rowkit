@@ -1,92 +1,71 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
-export const filterBarVariants = cva('flex flex-col', {
-  variants: {
-    size: {
-      sm: 'gap-2',
-      md: 'gap-3',
-    },
-  },
-  defaultVariants: { size: 'md' },
-})
-
-/** The row holding the search box, the consumer's controls and the actions. */
-export const filterBarControlsVariants = cva('flex flex-wrap items-center', {
-  variants: {
-    size: {
-      sm: 'gap-1.5',
-      md: 'gap-2',
-    },
-  },
-  defaultVariants: { size: 'md' },
-})
-
-/** The applied-filter row. Only rendered when something is applied. */
-export const filterBarChipsVariants = cva('flex flex-wrap items-center', {
-  variants: {
-    size: {
-      sm: 'gap-1.5',
-      md: 'gap-2',
-    },
-  },
-  defaultVariants: { size: 'md' },
-})
-
 /**
- * Deliberately quieter than `Badge`.
- *
- * A chip states a condition the user set themselves; it is not a status that
- * needs to catch the eye. A row of coloured chips above a table competes with
- * the data for attention and makes the filters look like alerts.
+ * The toolbar above a table, as in the Figma file: one row on the silver face
+ * with 4px of padding and 4px between items, wrapping onto the next line when
+ * the chips run out of room. Search, the consumer's controls, the chips, the
+ * result count and «Clear filters» all sit in it.
  */
-export const filterBarChipVariants = cva(
-  'inline-flex max-w-full items-center border border-neutral-border bg-neutral-subtle font-medium text-neutral-on-subtle',
+export const filterBarVariants = cva(
+  'flex flex-wrap items-center gap-1 bg-card p-1 font-sans text-ui text-foreground',
   {
     variants: {
       size: {
-        // Match Badge's tighter radius so chips and status labels speak one
-        // language above and inside the table.
-        sm: 'gap-1 rounded-sm py-0.5 pl-1.5 text-xs',
-        md: 'gap-1 rounded-sm py-0.5 pl-2 text-xs',
-      },
-      /** A chip the user cannot clear keeps the trailing padding the button would occupy. */
-      removable: {
-        true: '',
-        false: 'pr-2',
-      },
-    },
-    defaultVariants: { size: 'md', removable: true },
-  }
-)
-
-export const filterBarChipRemoveVariants = cva(
-  [
-    'inline-flex shrink-0 cursor-pointer items-center justify-center rounded-xs',
-    'text-muted-foreground transition-colors duration-fast ease-standard',
-    'hover:bg-surface-active hover:text-foreground',
-    // Borderless control — solid ring, same recipe as Dialog close / sort button.
-    'outline-none focus-visible:ring-3 focus-visible:ring-ring',
-    'disabled:pointer-events-none disabled:opacity-50',
-  ],
-  {
-    variants: {
-      size: {
-        sm: 'mr-0.5 size-3.5',
-        md: 'mr-1 size-4',
+        sm: '',
+        md: '',
       },
     },
     defaultVariants: { size: 'md' },
   }
 )
 
-export const filterBarSummaryVariants = cva('text-muted-foreground tabular-nums', {
-  variants: {
-    size: {
-      sm: 'text-xs',
-      md: 'text-sm',
+/**
+ * Kept for compatibility: the search box and the consumer's controls are now
+ * items of the one toolbar row, so this wrapper is transparent to layout.
+ */
+export const filterBarControlsVariants = cva('contents')
+
+/** The chips: also items of the toolbar row. */
+export const filterBarChipsVariants = cva('contents')
+
+/**
+ * A flat filter chip: white face, 1px grey border, no bevel — quieter than a
+ * Badge, because it states a condition the user set rather than a status.
+ * 19px tall at `sm`, 21px at `md`. Disabled, its text is grey and embossed.
+ */
+export const filterBarChipVariants = cva(
+  [
+    'inline-flex max-w-full items-center gap-1 border border-border bg-input pl-1.5',
+    'data-disabled:text-text-disabled data-disabled:text-shadow-disabled',
+  ],
+  {
+    variants: {
+      size: {
+        sm: 'h-[19px]',
+        md: 'h-[21px]',
+      },
+      /** A chip the user cannot clear is padded evenly, with no ✕. */
+      removable: {
+        true: 'pr-0.5',
+        false: 'pr-1.5',
+      },
     },
-  },
-  defaultVariants: { size: 'md' },
-})
+    defaultVariants: { size: 'md', removable: true },
+  }
+)
+
+/**
+ * The chip's ✕: a flat 13px target with the 8×7 glyph. Focus is the dotted
+ * ring around it; disabled, the glyph turns grey.
+ */
+export const filterBarChipRemoveVariants = cva([
+  'inline-flex size-[13px] shrink-0 cursor-default items-center justify-center text-foreground',
+  'outline-none focus-visible:outline-1 focus-visible:-outline-offset-1',
+  'focus-visible:outline-dotted focus-visible:outline-ring',
+  'disabled:text-text-disabled',
+])
+
+/** The result count, with digits that do not shift as it changes. */
+export const filterBarSummaryVariants = cva('tabular-nums')
 
 export type FilterBarVariants = VariantProps<typeof filterBarVariants>

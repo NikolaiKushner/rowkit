@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
+import CloseGlyphIcon from '../../icons/CloseGlyphIcon.vue'
 import { cn } from '../../utils/cn'
 import Button from '../Button/Button.vue'
 import Field from '../Field/Field.vue'
@@ -23,7 +24,7 @@ const props = withDefaults(defineProps<FilterBarProps>(), {
   searchable: true,
   searchPlaceholder: 'Search…',
   searchLabel: 'Search',
-  clearLabel: 'Clear all',
+  clearLabel: 'Clear filters',
   removeLabel: 'Remove {filter} filter',
   label: 'Filters',
   size: 'md',
@@ -136,7 +137,7 @@ watch(
     tabindex="-1"
     :class="cn(filterBarVariants({ size: props.size }), 'outline-none', props.class)"
   >
-    <div :class="filterBarControlsVariants({ size: props.size })">
+    <div :class="filterBarControlsVariants()">
       <Field
         v-if="props.searchable"
         :label="props.searchLabel"
@@ -149,71 +150,62 @@ watch(
           type="search"
           :placeholder="props.searchPlaceholder"
           :size="props.size"
-          class="w-56"
+          class="w-[200px]"
         />
       </Field>
 
       <slot name="controls" />
-
-      <div v-if="$slots.actions" class="ms-auto flex items-center gap-2">
-        <slot name="actions" />
-      </div>
     </div>
 
-    <div
-      v-if="hasChips || hasCount"
-      class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2"
-    >
-      <div v-if="hasChips" :class="filterBarChipsVariants({ size: props.size })">
-        <span
-          v-for="(chip, index) in props.filters"
-          :key="chip.id"
-          :class="filterBarChipVariants({ size: props.size, removable: isRemovable(chip) })"
-        >
-          <span class="truncate">
-            <slot name="chip" :chip="chip">{{ chipText(chip) }}</slot>
-          </span>
-          <button
-            v-if="isRemovable(chip)"
-            type="button"
-            data-rk-chip-remove
-            :disabled="props.disabled"
-            :aria-label="removeLabelFor(chip)"
-            :class="filterBarChipRemoveVariants({ size: props.size })"
-            @click="requestRemove(chip, index)"
-          >
-            <svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path
-                d="m3 3 6 6M9 3l-6 6"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-            </svg>
-          </button>
+    <div v-if="hasChips" :class="filterBarChipsVariants()">
+      <span
+        v-for="(chip, index) in props.filters"
+        :key="chip.id"
+        data-slot="filter-bar-chip"
+        :data-disabled="props.disabled ? '' : undefined"
+        :class="filterBarChipVariants({ size: props.size, removable: isRemovable(chip) })"
+      >
+        <span class="truncate">
+          <slot name="chip" :chip="chip">{{ chipText(chip) }}</slot>
         </span>
-
-        <Button
-          v-if="hasChips"
-          variant="ghost"
-          :size="props.size === 'sm' ? 'sm' : 'default'"
-          class="text-muted-foreground hover:text-foreground"
+        <button
+          v-if="isRemovable(chip)"
+          type="button"
+          data-rk-chip-remove
           :disabled="props.disabled"
-          @click="requestClear"
+          :aria-label="removeLabelFor(chip)"
+          :class="filterBarChipRemoveVariants()"
+          @click="requestRemove(chip, index)"
+          @keydown.backspace.prevent="requestRemove(chip, index)"
+          @keydown.delete.prevent="requestRemove(chip, index)"
         >
-          {{ props.clearLabel }}
-        </Button>
-      </div>
+          <CloseGlyphIcon />
+        </button>
+      </span>
+    </div>
 
-      <!--
-        A live region, always present while a count is shown. Live regions
-        announce changes rather than their initial content, so this is silent
-        on first render and speaks only when filtering actually changes the
-        result — which is the one thing a sighted user sees for free.
-      -->
-      <p v-if="hasCount" role="status" :class="filterBarSummaryVariants({ size: props.size })">
-        <slot name="summary" :count="props.resultCount ?? 0">{{ resultText }}</slot>
-      </p>
+    <!--
+      A live region, always present while a count is shown. Live regions
+      announce changes rather than their initial content, so this is silent
+      on first render and speaks only when filtering actually changes the
+      result — which is the one thing a sighted user sees for free.
+    -->
+    <p v-if="hasCount" role="status" :class="filterBarSummaryVariants()">
+      <slot name="summary" :count="props.resultCount ?? 0">{{ resultText }}</slot>
+    </p>
+
+    <Button
+      v-if="hasChips"
+      variant="secondary"
+      :size="props.size === 'sm' ? 'sm' : 'default'"
+      :disabled="props.disabled"
+      @click="requestClear"
+    >
+      {{ props.clearLabel }}
+    </Button>
+
+    <div v-if="$slots.actions" class="ms-auto flex items-center gap-1">
+      <slot name="actions" />
     </div>
   </div>
 </template>

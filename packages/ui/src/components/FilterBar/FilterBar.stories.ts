@@ -233,10 +233,10 @@ export const ClearingEverything: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Clear all' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Clear filters' }))
 
     await expect(canvas.queryByText('Role: Admin')).toBeNull()
-    await expect(canvas.queryByRole('button', { name: 'Clear all' })).toBeNull()
+    await expect(canvas.queryByRole('button', { name: 'Clear filters' })).toBeNull()
     await expect(canvas.getByRole('searchbox')).toHaveFocus()
   },
 }

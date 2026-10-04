@@ -96,12 +96,12 @@ function reset() {
       </Field>
     </template>
   </FilterBar>
-  <ul class="!my-0 !pl-5 text-sm text-muted-foreground">
+  <ul class="!my-0 !pl-5 text-ui">
     <li v-for="person in results" :key="person.name">{{ person.name }}</li>
   </ul>
 </DemoBox>
 
-Type a name or pick a role. A chip appears for each applied filter, "Clear all"
+Type a name or pick a role. A chip appears for each applied filter, "Clear filters"
 appears only once something is applied, and the result count updates in a live
 region — which is the only feedback a screen reader user gets that the filter
 did anything at all.
@@ -110,6 +110,15 @@ Remove a chip with the keyboard and watch where focus lands: the next chip, or
 the bar itself when the last one goes. Focus never falls back to the top of the
 document, which is the usual outcome when the focused element is destroyed.
 
+## Look
+
+As drawn in the Figma file: a toolbar on the silver face, 4px of padding and
+4px between items, everything in one row that wraps when the chips run out of
+room — search field, your controls, the chips, the result count, then «Clear
+filters» as a command button. A chip is flat: white, a 1px grey border, no
+bevel, 19px tall at `sm` and 21px at `md`. Its ✕ is a flat 13px target with a
+dotted focus ring.
+
 ## Anatomy
 
 | Part         | Purpose                                            |
@@ -117,7 +126,7 @@ document, which is the usual outcome when the focused element is destroyed.
 | Search box   | Free-text search, `v-model:search`                 |
 | Controls     | Your filter controls, in the `controls` slot       |
 | Chips        | One per applied filter, each with a remove control |
-| Clear all    | Appears only while something is applied            |
+| Clear        | «Clear filters», only while something is applied   |
 | Result count | A live region, so filtering announces its effect   |
 
 ## It displays state, it does not own it
@@ -158,7 +167,7 @@ not `'role-admin'`. The value changes; the identity should not.
 | `searchable`        | `boolean`      | `true`                     | Shows the search box.                                                                       |
 | `searchPlaceholder` | `string`       | `'Search…'`                | Placeholder for the search box.                                                             |
 | `searchLabel`       | `string`       | `'Search'`                 | Accessible name for the search box. Visually hidden.                                        |
-| `clearLabel`        | `string`       | `'Clear all'`              | Label for the clear-all control.                                                            |
+| `clearLabel`        | `string`       | `'Clear filters'`          | Label of the button that clears every filter.                                               |
 | `removeLabel`       | `string`       | `'Remove {filter} filter'` | Accessible name for the chip's remove control. `{filter}` is replaced with the chip's text. |
 | `label`             | `string`       | `'Filters'`                | Accessible name for the region.                                                             |
 | `size`              | `'sm' \| 'md'` | `'md'`                     | Control height and text size.                                                               |
@@ -182,7 +191,7 @@ not `'role-admin'`. The value changes; the identity should not.
 | ---------------- | ----- | ---------------------------------------------- |
 | `v-model:search` | model | The search term                                |
 | `@remove`        | event | Payload is the chip's `id`                     |
-| `@clear`         | event | Clear-all was activated                        |
+| `@clear`         | event | «Clear filters» was activated                  |
 | `#controls`      | slot  | Your filter controls                           |
 | `#actions`       | slot  | Trailing actions, pushed to the end of the row |
 | `#chip`          | slot  | Replaces a chip's text. Scoped: `{ chip }`     |
@@ -208,10 +217,11 @@ render, because live regions announce changes rather than initial content.
 
 ## Keyboard
 
-| Key                                 | Action                                                        |
-| ----------------------------------- | ------------------------------------------------------------- |
-| <kbd>Tab</kbd>                      | Moves through search, controls, each chip's remove, clear all |
-| <kbd>Enter</kbd> / <kbd>Space</kbd> | Activates the focused control                                 |
+| Key                                      | Action                                                    |
+| ---------------------------------------- | --------------------------------------------------------- |
+| <kbd>Tab</kbd>                           | Moves through search, controls, each chip's remove, clear |
+| <kbd>Enter</kbd> / <kbd>Space</kbd>      | Activates the focused control                             |
+| <kbd>Backspace</kbd> / <kbd>Delete</kbd> | On a chip's ✕, removes that chip                          |
 
 There is no roving tabstop across the chips. Each remove control is a button in
 document order, so <kbd>Tab</kbd> reaches every one of them — the same reasoning
