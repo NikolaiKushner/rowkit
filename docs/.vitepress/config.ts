@@ -128,6 +128,8 @@ export default defineConfig({
         items: [
           { text: 'Field', link: '/components/field' },
           { text: 'Select', link: '/components/select' },
+          { text: 'Checkbox', link: '/components/checkbox' },
+          { text: 'Radio', link: '/components/radio' },
           { text: 'Badge', link: '/components/badge' },
         ],
       },

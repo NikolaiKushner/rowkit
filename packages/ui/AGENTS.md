@@ -119,6 +119,29 @@ handling.
 
 - `#default` — Buttons (or nested groups) to join.
 
+### Checkbox
+
+`import { Checkbox } from 'rowkit'`
+
+**Props**
+
+- `label: string`. The label beside the box. The default slot replaces it.
+- `indeterminate: boolean` — default `false`. Partly checked: some of a group, not all. Shows the bar and is announced as "mixed". Checking it clears this; owning that is the caller's.
+- `disabled: boolean` — default `false`. Disables the control: a silver box and a grey, embossed label.
+- `name: string`. Name submitted with a native form.
+- `value: string`. Value submitted with a native form while checked.
+- `required: boolean` — default `false`. Marks the control required for native form validation.
+- `id: string`. Id for the input. Generated when omitted.
+- `class: string`. Additional classes for the row, merged so a consumer's utility wins.
+
+**v-model**
+
+- `v-model` — `boolean`. Whether the box is checked.
+
+**Slots**
+
+- `#default` — The label, for one that needs markup. Replaces `label`.
+
 ### DataTable
 
 `import { DataTable } from 'rowkit'`
@@ -417,6 +440,28 @@ handling.
 - `value: number` _(required)_. How far along, from 0 to `max`. Values outside are clamped.
 - `max: number` — default `100`. The value that means done.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
+
+### Radio
+
+`import { Radio } from 'rowkit'`
+
+**Props**
+
+- `value: T` _(required)_. This option's value. `v-model` equals it while this option is chosen.
+- `name: string`. The group's name. Options sharing it are one group: one choice, and the arrow keys move between them.
+- `label: string`. The label beside the well. The default slot replaces it.
+- `disabled: boolean` — default `false`. Disables this option: a silver well and a grey, embossed label.
+- `required: boolean` — default `false`. Marks the group required for native form validation.
+- `id: string`. Id for the input. Generated when omitted.
+- `class: string`. Additional classes for the row, merged so a consumer's utility wins.
+
+**v-model**
+
+- `v-model` — `T | undefined`. The chosen value of the group. Bind the same ref on every option in it.
+
+**Slots**
+
+- `#default` — The label, for one that needs markup. Replaces `label`.
 
 ### Select
 

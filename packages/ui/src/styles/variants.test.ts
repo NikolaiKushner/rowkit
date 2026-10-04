@@ -71,6 +71,16 @@ import {
   selectTriggerVariants,
 } from '../components/Select/Select.variants'
 import {
+  checkboxBoxVariants,
+  checkboxLabelVariants,
+  checkboxVariants,
+} from '../components/Checkbox/Checkbox.variants'
+import {
+  radioLabelVariants,
+  radioMarkVariants,
+  radioVariants,
+} from '../components/Radio/Radio.variants'
+import {
   groupBoxFrameVariants,
   groupBoxLegendVariants,
   groupBoxVariants,
@@ -181,6 +191,12 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Select content', selectContentVariants],
   ['Select item', selectItemVariants],
   ['Separator', separatorVariants],
+  ['Checkbox', checkboxVariants],
+  ['Checkbox box', checkboxBoxVariants],
+  ['Checkbox label', checkboxLabelVariants],
+  ['Radio', radioVariants],
+  ['Radio mark', radioMarkVariants],
+  ['Radio label', radioLabelVariants],
   ['StatusBar', statusBarVariants],
   ['StatusBar section', statusBarSectionVariants],
   ['GroupBox', groupBoxVariants],

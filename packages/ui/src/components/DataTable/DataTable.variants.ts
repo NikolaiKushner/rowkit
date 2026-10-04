@@ -287,8 +287,12 @@ export const dataTableCheckboxVariants = cva(
   }
 )
 
-/** The 7×2 bar of a partly checked box. */
-export const dataTableCheckboxBarClass = 'block h-[2px] w-[7px] bg-current'
+/**
+ * The 7×2 bar of a partly checked box, 5px from the top as drawn. Centred
+ * alone in the 13px box it would sit on a half pixel; the 1px margin below
+ * makes the centring whole.
+ */
+export const dataTableCheckboxBarClass = 'mb-px block h-[2px] w-[7px] bg-current'
 
 /**
  * The Windows 98 option button around a native radio. The input covers the
