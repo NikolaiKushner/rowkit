@@ -1,5 +1,6 @@
 import { version as pkgVersion } from '../package.json' with { type: 'json' }
 
+export * from './icons'
 export * from './components/Badge'
 export * from './components/Button'
 export * from './components/ButtonGroup'

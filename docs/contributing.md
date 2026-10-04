@@ -119,12 +119,14 @@ perfectly good bug report, and a screenshot beats a description.
 
 ## What is unlikely to be accepted
 
-- A new component. Twelve is a decision; see [the roadmap](/roadmap).
+- A component outside the professional set in [the roadmap](/roadmap). There is
+  no fixed count, but each one has to earn its place in a product interface.
 - A new dependency, unless it replaces more code than it adds.
 - A prop that lets a component make a multi-step decision for the consumer —
   auto-resetting the page, auto-sorting a server-paged table. Those belong in
   the application, and there is usually a composable answer instead.
-- Icons. rowkit ships none, on purpose; icon slots take whatever you use.
+- Icons that are not in the Figma set, or not drawn as pixel art on the
+  integer grid. Icon slots take your own icons for anything else.
 
 None of these are hard "no"s if the argument is good. Open an issue before
 writing the code, though — it is a poor trade to review a pull request into a

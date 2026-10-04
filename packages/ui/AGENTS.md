@@ -45,7 +45,9 @@ handling.
   (`Badge` and `DataTable` stop at `sm | md`) but never rename the steps.
 - **Variants are strings, never booleans.** `variant="danger"`, not `danger`.
 - **Identity payloads are stable ids**, never array indices or object references.
-- **No component ships an icon.** Icon slots take whatever the application uses.
+- **Icons are pixel art.** Show each at its own size (8, 16 or 32px) or a
+  whole multiple, never scaled in between. Icon slots take rowkit's icons or
+  your own.
 
 ## Also exported
 
@@ -57,6 +59,11 @@ handling.
   looks correct.
 - `TooltipProvider` — renders nothing. Only needed to share
   `skipDelayDuration` across a toolbar of tooltips.
+- Icons: the Windows 98 pixel set from the design — `PlusIcon`, `CopyIcon`,
+  `TrashIcon`, `FilterIcon`, `EditIcon`, `FolderIcon`, `DocumentIcon`,
+  `UserIcon` and the rest at 16px; `Error32Icon`, `Info32Icon`,
+  `Warning32Icon` and others at 32px for system messages; 8px glyphs such as
+  `TriangleDownIcon` and `CloseGlyphIcon`. All decorative (`aria-hidden`).
 - `cn(...)` — the class merger the components use.
 - Types: `SelectOption`, `FilterChip`, `DataTableColumn`, `DataTableSort`,
   `ToastOptions`, and a `*Props` type per component.

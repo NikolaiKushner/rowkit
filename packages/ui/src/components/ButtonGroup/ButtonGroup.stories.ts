@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import Button from '../Button/Button.vue'
-import SearchIcon from '../../icons/SearchIcon.vue'
+import CopyIcon from '../../icons/CopyIcon.vue'
+import FilterIcon from '../../icons/FilterIcon.vue'
+import PlusIcon from '../../icons/PlusIcon.vue'
+import TrashIcon from '../../icons/TrashIcon.vue'
 import Separator from '../Separator/Separator.vue'
 import ButtonGroup from './ButtonGroup.vue'
 
@@ -19,12 +22,12 @@ type Story = StoryObj
  */
 export const Default: Story = {
   render: () => ({
-    components: { Button, ButtonGroup, Separator },
+    components: { Button, ButtonGroup, Separator, CopyIcon, TrashIcon },
     template: `
       <ButtonGroup aria-label="Actions">
         <ButtonGroup>
-          <Button variant="ghost">Export</Button>
-          <Button variant="ghost">Delete</Button>
+          <Button variant="ghost"><template #leading><CopyIcon /></template>Export</Button>
+          <Button variant="ghost"><template #leading><TrashIcon /></template>Delete</Button>
         </ButtonGroup>
         <Separator orientation="vertical" />
         <ButtonGroup>
@@ -36,16 +39,20 @@ export const Default: Story = {
   }),
 }
 
-/** Icon-only toolbar buttons. Each has an accessible name. */
+/**
+ * The Figma "Toolbar with labels" example: icon and label while there is room,
+ * an icon-only button — with an accessible name — after the separator.
+ */
 export const IconToolbar: Story = {
   render: () => ({
-    components: { Button, ButtonGroup, Separator, SearchIcon },
+    components: { Button, ButtonGroup, Separator, PlusIcon, CopyIcon, TrashIcon, FilterIcon },
     template: `
       <ButtonGroup aria-label="Tools">
-        <Button variant="ghost" size="icon-sm" aria-label="Find"><SearchIcon /></Button>
-        <Button variant="ghost" size="icon-sm" aria-label="Find next"><SearchIcon /></Button>
+        <Button variant="ghost"><template #leading><PlusIcon /></template>New</Button>
+        <Button variant="ghost"><template #leading><CopyIcon /></template>Copy</Button>
+        <Button variant="ghost"><template #leading><TrashIcon /></template>Delete</Button>
         <Separator orientation="vertical" />
-        <Button variant="ghost" size="icon-sm" aria-label="Replace"><SearchIcon /></Button>
+        <Button variant="ghost" size="icon-sm" aria-label="Filter"><FilterIcon /></Button>
       </ButtonGroup>
     `,
   }),
