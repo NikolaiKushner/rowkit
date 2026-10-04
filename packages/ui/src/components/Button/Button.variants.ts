@@ -103,12 +103,17 @@ export const buttonVariants = cva(
 /**
  * The toggled state (`aria-pressed="true"`): the pressed bevel over the
  * white-and-silver dither, the way Windows 98 drew a latched toolbar button.
+ * `aria-current="page"` — the current page in a pager — is pressed in too,
+ * without the dither.
  *
  * Kept out of the variant matrix because it is an ARIA state, not a prop
  * value: it applies whenever the attribute is there, whoever set it.
  */
-export const buttonPressedState =
-  'aria-pressed:bg-dither aria-pressed:shadow-pressed aria-pressed:hover:shadow-pressed'
+export const buttonPressedState = [
+  'aria-pressed:bg-dither aria-pressed:shadow-pressed aria-pressed:hover:shadow-pressed',
+  // The current page of a pager: pressed in, but not latched — no dither.
+  'aria-[current=page]:shadow-pressed aria-[current=page]:hover:shadow-pressed',
+].join(' ')
 
 /** The 1px that moves when the button is held down. */
 export const buttonContentVariants = cva(
@@ -116,6 +121,8 @@ export const buttonContentVariants = cva(
     'flex min-w-0 items-center pr-px pb-px',
     'group-active/button:pt-px group-active/button:pr-0 group-active/button:pb-0 group-active/button:pl-px',
     'group-aria-pressed/button:pt-px group-aria-pressed/button:pr-0 group-aria-pressed/button:pb-0 group-aria-pressed/button:pl-px',
+    'group-aria-[current=page]/button:pt-px group-aria-[current=page]/button:pr-0',
+    'group-aria-[current=page]/button:pb-0 group-aria-[current=page]/button:pl-px',
   ],
   {
     variants: {

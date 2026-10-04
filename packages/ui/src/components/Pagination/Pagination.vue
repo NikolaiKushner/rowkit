@@ -8,9 +8,14 @@ import SelectContent from '../Select/SelectContent.vue'
 import SelectItem from '../Select/SelectItem.vue'
 import SelectTrigger from '../Select/SelectTrigger.vue'
 import type { SelectOption } from '../Select/types'
+import TriangleLeftIcon from '../../icons/TriangleLeftIcon.vue'
+import TriangleRightIcon from '../../icons/TriangleRightIcon.vue'
+import Button from '../Button/Button.vue'
 import {
   paginationEllipsisVariants,
   paginationItemVariants,
+  paginationNavVariants,
+  paginationStepVariants,
   paginationSummaryVariants,
   paginationVariants,
 } from './Pagination.variants'
@@ -27,8 +32,8 @@ const props = withDefaults(defineProps<PaginationProps>(), {
   hideSummary: false,
   pageSizeLabel: 'Rows per page',
   label: 'Pagination',
-  previousLabel: 'Previous page',
-  nextLabel: 'Next page',
+  previousLabel: 'Back',
+  nextLabel: 'Next',
   size: 'md',
   disabled: false,
 })
@@ -78,6 +83,9 @@ const items = computed(() =>
   pageItems(page.value, lastPage.value, props.siblingCount, props.showEdges)
 )
 
+/** The page buttons are Button at its two smallest sizes: 17px and 21px. */
+const buttonSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
+
 function goTo(target: number): void {
   if (!isDisabled.value) page.value = target
 }
@@ -86,7 +94,7 @@ function goTo(target: number): void {
 <template>
   <div data-slot="pagination" :class="cn(paginationVariants({ size: props.size }), props.class)">
     <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <p v-if="!props.hideSummary" :class="paginationSummaryVariants({ size: props.size })">
+      <p v-if="!props.hideSummary" :class="paginationSummaryVariants()">
         <slot name="summary" :from="from" :to="to" :total="props.total">
           <!-- Reads "0 of 0" when empty rather than the nonsensical "1–0 of 0". -->
           <template v-if="props.total === 0">0 of 0</template>
@@ -96,13 +104,14 @@ function goTo(target: number): void {
 
       <Field
         v-if="!props.hidePageSize"
+        layout="left"
         :label="props.pageSizeLabel"
         :size="props.size"
         :disabled="isDisabled"
-        class="flex-row items-center gap-2 [&>label]:whitespace-nowrap"
+        class="[&>label]:whitespace-nowrap"
       >
         <Select v-model="pageSize">
-          <SelectTrigger :size="props.size" class="w-20" />
+          <SelectTrigger :size="props.size" class="w-16" />
           <SelectContent>
             <SelectItem
               v-for="option in pageSizeChoices"
@@ -115,73 +124,61 @@ function goTo(target: number): void {
       </Field>
     </div>
 
-    <nav :aria-label="props.label" class="flex items-center gap-1">
-      <button
-        type="button"
-        :aria-label="props.previousLabel"
+    <nav :aria-label="props.label" :class="paginationNavVariants()">
+      <!-- The visible label is the accessible name: "Back", not an unseen "Previous page". -->
+      <Button
+        variant="secondary"
+        :size="buttonSize"
+        data-type="previous"
         :disabled="isDisabled || page === 1"
-        :class="paginationItemVariants({ size: props.size })"
+        :class="paginationStepVariants()"
         @click="goTo(page - 1)"
       >
-        <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path
-            d="m12 5-5 5 5 5"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </button>
+        <template #leading><TriangleLeftIcon /></template>
+        {{ props.previousLabel }}
+      </Button>
 
-      <div class="flex items-center gap-1">
-        <template v-for="(item, index) in items" :key="index">
-          <button
-            v-if="item.type === 'page'"
-            type="button"
-            data-type="page"
-            :aria-label="`Page ${item.value}`"
-            :aria-current="item.value === page ? 'page' : undefined"
-            :data-selected="item.value === page ? 'true' : undefined"
-            :disabled="isDisabled"
-            :class="paginationItemVariants({ size: props.size, active: item.value === page })"
-            @click="goTo(item.value)"
-          >
-            {{ item.value }}
-          </button>
-          <!--
-            Hidden from assistive technology: the gap is a visual device for
-            keeping the row short, and the page numbers either side already say
-            everything a reader needs.
-          -->
-          <div
-            v-else
-            data-type="ellipsis"
-            aria-hidden="true"
-            :class="paginationEllipsisVariants({ size: props.size })"
-          >
-            …
-          </div>
-        </template>
-      </div>
+      <template v-for="(item, index) in items" :key="index">
+        <Button
+          v-if="item.type === 'page'"
+          variant="secondary"
+          :size="buttonSize"
+          data-type="page"
+          :aria-label="`Page ${item.value}`"
+          :aria-current="item.value === page ? 'page' : undefined"
+          :data-selected="item.value === page ? 'true' : undefined"
+          :disabled="isDisabled"
+          :class="paginationItemVariants({ size: props.size })"
+          @click="goTo(item.value)"
+        >
+          {{ item.value }}
+        </Button>
+        <!--
+          Hidden from assistive technology: the gap is a visual device for
+          keeping the row short, and the page numbers either side already say
+          everything a reader needs.
+        -->
+        <div
+          v-else
+          data-type="ellipsis"
+          aria-hidden="true"
+          :class="paginationEllipsisVariants({ size: props.size })"
+        >
+          …
+        </div>
+      </template>
 
-      <button
-        type="button"
-        :aria-label="props.nextLabel"
+      <Button
+        variant="secondary"
+        :size="buttonSize"
+        data-type="next"
         :disabled="isDisabled || page === lastPage"
-        :class="paginationItemVariants({ size: props.size })"
+        :class="paginationStepVariants()"
         @click="goTo(page + 1)"
       >
-        <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path
-            d="m8 5 5 5-5 5"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </button>
+        {{ props.nextLabel }}
+        <template #trailing><TriangleRightIcon /></template>
+      </Button>
     </nav>
   </div>
 </template>

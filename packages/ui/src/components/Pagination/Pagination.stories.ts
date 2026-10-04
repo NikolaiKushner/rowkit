@@ -147,7 +147,7 @@ export const PagingForward: Story = {
 
     await expect(canvas.getByText('1–10 of 247')).toBeInTheDocument()
 
-    await userEvent.click(canvas.getByLabelText('Next page'))
+    await userEvent.click(canvas.getByRole('button', { name: 'Next' }))
 
     await expect(canvas.getByText('11–20 of 247')).toBeInTheDocument()
     await expect(canvas.getByRole('button', { current: 'page' })).toHaveTextContent('2')

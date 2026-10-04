@@ -23,7 +23,7 @@ const pageSize = ref(10)
     :total="247"
     label="Example pagination"
   />
-  <p class="!my-0 text-sm text-muted-foreground">
+  <p class="!my-0 text-ui">
     page {{ page }} · {{ pageSize }} per page
   </p>
 </DemoBox>
@@ -34,6 +34,15 @@ so. The component reports both changes and lets the application decide what
 follows, because the right answer differs between "reset to page 1" and "keep
 the user near the row they were reading", and a component cannot know which one
 you meant.
+
+## Look
+
+As drawn in the Figma Home template's status bar: Windows 98 command buttons
+2px apart — 17px tall at `sm`, 21px at `md`, page numbers square at their
+narrowest. «◀ Back» and «Next ▶» carry their label beside an 8px triangle and
+go grey and embossed on the first and last page. The current page is pressed
+in, its number shifted 1px. Focus is the button's dotted ring and black frame.
+Nothing animates.
 
 ## Anatomy
 
@@ -65,21 +74,21 @@ you meant.
 
 <!-- @props PaginationProps -->
 
-| Prop              | Type           | Default                   | Description                                                    |
-| ----------------- | -------------- | ------------------------- | -------------------------------------------------------------- |
-| `total`           | `number`       | **required**              | Total number of rows across all pages.                         |
-| `pageSizeOptions` | `number[]`     | `() => [10, 25, 50, 100]` | Choices offered in the rows-per-page control.                  |
-| `siblingCount`    | `number`       | `1`                       | How many page numbers to show on each side of the current one. |
-| `showEdges`       | `boolean`      | `true`                    | Always show the first and last page, with ellipses between.    |
-| `hidePageSize`    | `boolean`      | `false`                   | Hides the rows-per-page control.                               |
-| `hideSummary`     | `boolean`      | `false`                   | Hides the "1–10 of 247" summary.                               |
-| `pageSizeLabel`   | `string`       | `'Rows per page'`         | Label for the rows-per-page control.                           |
-| `label`           | `string`       | `'Pagination'`            | Accessible name for the navigation region.                     |
-| `previousLabel`   | `string`       | `'Previous page'`         | Accessible name for the previous-page control.                 |
-| `nextLabel`       | `string`       | `'Next page'`             | Accessible name for the next-page control.                     |
-| `size`            | `'sm' \| 'md'` | `'md'`                    | Control height and text size.                                  |
-| `disabled`        | `boolean`      | `false`                   | Disables every control.                                        |
-| `class`           | `string`       | —                         | Additional classes, merged so a consumer's utility wins.       |
+| Prop              | Type           | Default                   | Description                                                                 |
+| ----------------- | -------------- | ------------------------- | --------------------------------------------------------------------------- |
+| `total`           | `number`       | **required**              | Total number of rows across all pages.                                      |
+| `pageSizeOptions` | `number[]`     | `() => [10, 25, 50, 100]` | Choices offered in the rows-per-page control.                               |
+| `siblingCount`    | `number`       | `1`                       | How many page numbers to show on each side of the current one.              |
+| `showEdges`       | `boolean`      | `true`                    | Always show the first and last page, with ellipses between.                 |
+| `hidePageSize`    | `boolean`      | `false`                   | Hides the rows-per-page control.                                            |
+| `hideSummary`     | `boolean`      | `false`                   | Hides the "1–10 of 247" summary.                                            |
+| `pageSizeLabel`   | `string`       | `'Rows per page'`         | Label for the rows-per-page control.                                        |
+| `label`           | `string`       | `'Pagination'`            | Accessible name for the navigation region.                                  |
+| `previousLabel`   | `string`       | `'Back'`                  | Label of the previous-page button, shown beside its ◀ and used as its name. |
+| `nextLabel`       | `string`       | `'Next'`                  | Label of the next-page button, shown beside its ▶ and used as its name.     |
+| `size`            | `'sm' \| 'md'` | `'md'`                    | Button height: 17px at `sm`, 21px at `md`.                                  |
+| `disabled`        | `boolean`      | `false`                   | Disables every control.                                                     |
+| `class`           | `string`       | —                         | Additional classes, merged so a consumer's utility wins.                    |
 
 <!-- /@props -->
 
@@ -150,9 +159,14 @@ entries and cannot tell them apart.
 <Pagination label="Users pagination (bottom)" … />
 ```
 
-**The current page carries `aria-current="page"`**, and is filled rather than
-merely bolder. Weight alone is not enough to find your place in a row of
-numbers, and it fails entirely for anyone who cannot perceive the difference.
+**The current page carries `aria-current="page"`**, and is drawn pressed in
+rather than merely bolder. Weight alone is not enough to find your place in a
+row of numbers. The look comes from the attribute itself, so the state a
+screen reader hears and the one you see cannot disagree.
+
+**Back and Next are named by their visible labels.** `previousLabel` and
+`nextLabel` are the text on the buttons and their accessible names at once, so
+what a voice-control user reads is what they can say.
 
 **The ellipsis is `aria-hidden`.** It is a device for keeping the row short; the
 page numbers either side already convey the gap.

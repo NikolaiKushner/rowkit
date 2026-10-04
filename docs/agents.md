@@ -385,9 +385,9 @@ handling.
 - `hideSummary: boolean` — default `false`. Hides the "1–10 of 247" summary.
 - `pageSizeLabel: string` — default `'Rows per page'`. Label for the rows-per-page control.
 - `label: string` — default `'Pagination'`. Accessible name for the navigation region.
-- `previousLabel: string` — default `'Previous page'`. Accessible name for the previous-page control.
-- `nextLabel: string` — default `'Next page'`. Accessible name for the next-page control.
-- `size: 'sm' | 'md'` — default `'md'`. Control height and text size.
+- `previousLabel: string` — default `'Back'`. Label of the previous-page button, shown beside its ◀ and used as its name.
+- `nextLabel: string` — default `'Next'`. Label of the next-page button, shown beside its ▶ and used as its name.
+- `size: 'sm' | 'md'` — default `'md'`. Button height: 17px at `sm`, 21px at `md`.
 - `disabled: boolean` — default `false`. Disables every control.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
 

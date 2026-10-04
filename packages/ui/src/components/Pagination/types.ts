@@ -31,11 +31,11 @@ export interface PaginationProps {
   pageSizeLabel?: string
   /** Accessible name for the navigation region. */
   label?: string
-  /** Accessible name for the previous-page control. */
+  /** Label of the previous-page button, shown beside its ◀ and used as its name. */
   previousLabel?: string
-  /** Accessible name for the next-page control. */
+  /** Label of the next-page button, shown beside its ▶ and used as its name. */
   nextLabel?: string
-  /** Control height and text size. */
+  /** Button height: 17px at `sm`, 21px at `md`. */
   size?: NonNullable<PaginationVariants['size']>
   /** Disables every control. */
   disabled?: boolean
