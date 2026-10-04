@@ -477,6 +477,20 @@ handling.
 
 - `#default` — The label, for one that needs markup. Replaces `label`.
 
+### ScrollArea
+
+`import { ScrollArea } from 'rowkit'`
+
+**Props**
+
+- `label: string`. Accessible name for the scrolling region. The region takes focus so the keyboard can scroll it; give it a name whenever nothing inside is focusable, so a screen reader can say what it is.
+- `scrollbars: 'auto' | 'always'` — default `'auto'`. When the bars show. `auto` draws a bar only on an axis whose content does not fit. `always` draws both, and a bar with nothing to scroll greys its arrows and has no thumb.
+- `class: string`. Additional classes for the root — its size goes here — merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The content that scrolls.
+
 ### Select
 
 `import { Select } from 'rowkit'`

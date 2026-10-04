@@ -89,6 +89,18 @@ import {
   progressBarFillVariants,
   progressBarVariants,
 } from '../components/ProgressBar/ProgressBar.variants'
+import {
+  scrollAreaButtonVariants,
+  scrollAreaContentVariants,
+  scrollAreaCornerVariants,
+  scrollAreaFootVariants,
+  scrollAreaMainVariants,
+  scrollAreaScrollbarVariants,
+  scrollAreaThumbVariants,
+  scrollAreaTrackVariants,
+  scrollAreaVariants,
+  scrollAreaViewportVariants,
+} from '../components/ScrollArea/ScrollArea.variants'
 import { separatorVariants } from '../components/Separator/Separator.variants'
 import {
   windowBodyVariants,
@@ -198,6 +210,16 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Select trigger', selectTriggerVariants],
   ['Select content', selectContentVariants],
   ['Select item', selectItemVariants],
+  ['ScrollArea', scrollAreaVariants],
+  ['ScrollArea main', scrollAreaMainVariants],
+  ['ScrollArea viewport', scrollAreaViewportVariants],
+  ['ScrollArea content', scrollAreaContentVariants],
+  ['ScrollArea scrollbar', scrollAreaScrollbarVariants],
+  ['ScrollArea foot', scrollAreaFootVariants],
+  ['ScrollArea button', scrollAreaButtonVariants],
+  ['ScrollArea track', scrollAreaTrackVariants],
+  ['ScrollArea thumb', scrollAreaThumbVariants],
+  ['ScrollArea corner', scrollAreaCornerVariants],
   ['Separator', separatorVariants],
   ['Window', windowVariants],
   ['Window title bar', windowTitleBarVariants],
