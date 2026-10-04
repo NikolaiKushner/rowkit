@@ -22,10 +22,7 @@ defineOptions({ name: 'RkTriangleDownIcon' })
     xmlns="http://www.w3.org/2000/svg"
   >
     <g>
-      <path
-        d="M1 2H2V3H1V2ZM2 2H3V3H2V2ZM3 2H4V3H3V2ZM4 2H5V3H4V2ZM5 2H6V3H5V2ZM6 2H7V3H6V2ZM7 2H8V3H7V2ZM2 3H3V4H2V3ZM3 3H4V4H3V3ZM4 3H5V4H4V3ZM5 3H6V4H5V3ZM6 3H7V4H6V3ZM3 4H4V5H3V4ZM4 4H5V5H4V4ZM5 4H6V5H5V4ZM4 5H5V6H4V5Z"
-        fill="currentColor"
-      />
+      <path d="M1 2h7v1h-7zM2 3h5v1h-5zM3 4h3v1h-3zM4 5h1v1h-1z" fill="currentColor" />
     </g>
   </svg>
 </template>
