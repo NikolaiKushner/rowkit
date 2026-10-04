@@ -116,10 +116,40 @@ function onScroll(): void {
  */
 const scrollable = ref(false)
 
+/**
+ * Pinned columns stack from the start edge: each one's `left` is the width of
+ * the pinned cells before it, the selection column included. A shared
+ * `left: 0` would pile them on top of each other.
+ */
+const hasPinned = computed(() => props.columns.some((column) => column.sticky === true))
+const selectionPinned = computed(() => props.selectable !== undefined && hasPinned.value)
+const pinnedLeft = ref<Record<string, number>>({})
+
+const lastPinnedId = computed(() => {
+  const pinned = props.columns.filter((column) => column.sticky === true)
+  const last = pinned[pinned.length - 1]
+  return last === undefined ? undefined : columnId(last)
+})
+
+function measurePinned(): void {
+  const cells = tableRef.value?.querySelector('thead tr')?.children
+  if (!cells || !hasPinned.value) return
+  const offsets: Record<string, number> = {}
+  const first = props.selectable === undefined ? 0 : 1
+  let left = first === 1 ? (cells[0]?.getBoundingClientRect().width ?? 0) : 0
+  props.columns.forEach((column, index) => {
+    if (column.sticky !== true) return
+    offsets[columnId(column)] = left
+    left += cells[first + index]?.getBoundingClientRect().width ?? 0
+  })
+  pinnedLeft.value = offsets
+}
+
 function measure(): void {
   const el = wrapperRef.value
   if (!el) return
   scrollable.value = el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight
+  measurePinned()
 }
 
 let resizeObserver: ResizeObserver | undefined
@@ -136,7 +166,11 @@ onMounted(() => {
 onBeforeUnmount(() => resizeObserver?.disconnect())
 
 // Row and column changes alter the table's size without resizing the box.
-watch(() => [props.rows.length, props.columns.length, props.loading], measure, { flush: 'post' })
+watch(
+  () => [props.rows.length, props.columns.length, props.loading, props.selectable, hasPinned.value],
+  measure,
+  { flush: 'post' }
+)
 
 /**
  * Rows are only interactive when someone is listening. Without a `row:click`
@@ -299,7 +333,20 @@ const emptyStateProps = computed(() => ({
 }))
 
 function pinnedClass(column: DataTableColumn<TRow>): string | false {
-  return (column.sticky ?? false) && scrolledFromStart.value && dataTablePinnedShadow
+  return columnId(column) === lastPinnedId.value && scrolledFromStart.value && dataTablePinnedShadow
+}
+
+function pinnedStyle(column: DataTableColumn<TRow>): { left: string } | undefined {
+  const left = column.sticky === true ? pinnedLeft.value[columnId(column)] : undefined
+  return left === undefined ? undefined : { left: `${String(left)}px` }
+}
+
+function headerStyle(column: DataTableColumn<TRow>): Record<string, string> | undefined {
+  const style = {
+    ...pinnedStyle(column),
+    ...(column.width === undefined ? {} : { width: column.width }),
+  }
+  return Object.keys(style).length === 0 ? undefined : style
 }
 </script>
 
@@ -349,7 +396,11 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
                 scope="col"
                 :class="
                   cn(
-                    dataTableHeaderCellVariants({ size: props.size, sticky: true }),
+                    dataTableHeaderCellVariants({
+                      size: props.size,
+                      sticky: true,
+                      pinned: selectionPinned,
+                    }),
                     dataTableSelectCellVariants({ size: props.size, header: true })
                   )
                 "
@@ -379,7 +430,7 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
                 :key="columnId(column)"
                 scope="col"
                 :aria-sort="sortStateOf(column)"
-                :style="column.width === undefined ? undefined : { width: column.width }"
+                :style="headerStyle(column)"
                 :class="
                   cn(
                     dataTableHeaderCellVariants({
@@ -442,13 +493,16 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
                 <tr v-for="row in props.loadingRows" :key="`skeleton-${row}`">
                   <td
                     v-if="props.selectable !== undefined"
-                    :class="dataTableSelectCellVariants({ size: props.size })"
+                    :class="
+                      dataTableSelectCellVariants({ size: props.size, pinned: selectionPinned })
+                    "
                   >
                     <!-- Empty while loading: there is nothing to select yet. -->
                   </td>
                   <td
                     v-for="column in props.columns"
                     :key="columnId(column)"
+                    :style="pinnedStyle(column)"
                     :class="
                       cn(
                         dataTableCellVariants({
@@ -499,7 +553,7 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
           -->
               <td
                 v-if="props.selectable !== undefined"
-                :class="dataTableSelectCellVariants({ size: props.size })"
+                :class="dataTableSelectCellVariants({ size: props.size, pinned: selectionPinned })"
               >
                 <Checkbox
                   v-if="props.selectable === 'multiple'"
@@ -532,6 +586,7 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
               <td
                 v-for="column in props.columns"
                 :key="columnId(column)"
+                :style="pinnedStyle(column)"
                 :class="
                   cn(
                     dataTableCellVariants({

@@ -113,7 +113,7 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 | `numeric`      | `boolean`                      | Figures: mono face, aligned to the end                |
 | `align`        | `'start' \| 'center' \| 'end'` | Overrides the alignment                               |
 | `width`        | `string`                       | A CSS width                                           |
-| `sticky`       | `boolean`                      | Pin the column to the start edge while scrolling      |
+| `sticky`       | `boolean`                      | Pin the column to the start edge; several stack       |
 | `headerClass`  | `string`                       | Extra classes for the header cell                     |
 | `cellClass`    | `string`                       | Extra classes for this column's body cells            |
 
@@ -305,9 +305,18 @@ resolves against the nearest scrolling ancestor, which is the component's own
 scroll area inside the frame. Put the height on the component:
 `<DataTable class="max-h-96" />`. An outer scrolling div will not work.
 
-**A pinned column grows a hard 1px edge only once something is behind it**,
-using the `shadow-scroll-x` token. Without the cue, a user scrolled to the right has no
-signal that the table continues past the pinned edge.
+**Pinned columns stack.** Several `sticky` columns sit side by side in column
+order, and the selection column pins with them, so the check boxes stay beside
+the rows they select. The header stays over all of them while the body
+scrolls both ways.
+
+**The last pinned column grows a hard 1px edge only once something is behind
+it**, using the `shadow-scroll-x` token. Without the cue, a user scrolled to
+the right has no signal that the table continues past the pinned edge.
+
+**Cells never wrap.** As in a Windows 98 list, every row keeps its height and
+a column keeps its `width`. Columns that do not fit the frame scroll sideways
+rather than squeezing; a table narrower than the frame still fills it.
 
 ## Clickable rows
 

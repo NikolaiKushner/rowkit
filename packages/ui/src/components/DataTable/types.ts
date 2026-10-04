@@ -66,6 +66,8 @@ interface DataTableColumnBase {
   width?: string
   /**
    * Pins the column to the start edge while the table scrolls sideways.
+   * Several pinned columns sit side by side in column order, and the
+   * selection column pins with them. Pinned cells stay under the sticky header.
    *
    * For the column that identifies the row — a name or an id. Without it, a
    * user scrolled to the right has no idea which row they are reading.

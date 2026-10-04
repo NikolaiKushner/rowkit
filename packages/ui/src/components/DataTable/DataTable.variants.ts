@@ -32,7 +32,11 @@ export const dataTableWrapperVariants = cva([
 export const dataTableVariants = cva(
   [
     // Report view: no grid lines between rows or columns.
-    'w-full border-collapse text-left font-sans text-ui text-foreground',
+    'border-collapse text-left font-sans text-ui text-foreground',
+    // As wide as its columns want, and never narrower than the frame. A table
+    // squeezed to the frame ignores every column's width and wraps its cells;
+    // this one keeps the widths and scrolls sideways instead.
+    'w-max min-w-full',
   ],
   {
     variants: {
@@ -165,7 +169,11 @@ export const dataTableSortLabelVariants = cva([
 export const dataTableSortIconVariants = cva('shrink-0')
 
 /** A body cell. No borders: a Windows 98 report view has no grid lines. */
-export const dataTableCellVariants = cva('px-1.5 py-0 align-middle', {
+/*
+ * `whitespace-nowrap`: a Windows 98 list never wraps a cell. A wrapped cell
+ * breaks the fixed row height, and the row beside it no longer lines up.
+ */
+export const dataTableCellVariants = cva('px-1.5 py-0 align-middle whitespace-nowrap', {
   variants: {
     size: {
       sm: 'h-[18px]',
@@ -254,8 +262,16 @@ export const dataTableSelectCellVariants = cva('w-7 min-w-7 px-0 text-center ali
       true: '',
       false: '',
     },
+    /**
+     * Pinned with the columns after it whenever the table has a pinned column,
+     * so the check boxes stay beside the rows they select.
+     */
+    pinned: {
+      true: 'sticky left-0 bg-inherit',
+      false: '',
+    },
   },
-  defaultVariants: { size: 'md', header: false },
+  defaultVariants: { size: 'md', header: false, pinned: false },
 })
 
 /**
@@ -322,7 +338,10 @@ export const dataTableRadioMarkClass = [
   'peer-focus-visible:outline-dotted peer-focus-visible:outline-ring',
 ].join(' ')
 
-/** Applied to pinned cells once the table is scrolled away from the start. */
+/**
+ * Applied to the last pinned column once the table is scrolled away from the
+ * start: the edge the scrolled columns pass under.
+ */
 export const dataTablePinnedShadow = 'shadow-scroll-x'
 
 export type DataTableVariants = VariantProps<typeof dataTableVariants>

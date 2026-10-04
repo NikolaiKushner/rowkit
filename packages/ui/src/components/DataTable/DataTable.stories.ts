@@ -356,6 +356,76 @@ export const StickyHeader: Story = {
   },
 }
 
+/**
+ * Both at once: scroll down and sideways. The header stays at the top; the
+ * selection, ID and name columns stay at the start, side by side; and the
+ * corner where they meet stays over both.
+ */
+export const StickyHeaderAndColumn: Story = {
+  render: () => ({
+    components: { DataTable },
+    setup: () => ({
+      rows: Array.from({ length: 40 }, (_, i) => ({
+        id: i + 1,
+        name: `Person ${String(i + 1)}`,
+        email: `person${String(i + 1)}@example.com`,
+        role: i % 3 === 0 ? 'Admin' : 'Member',
+        status: 'active',
+        seats: i % 7,
+      })),
+      columns: [
+        { key: 'id', header: 'ID', sticky: true, numeric: true, width: '3rem' },
+        { key: 'name', header: 'Name', sticky: true, width: '10rem' },
+        { key: 'email', header: 'Email', width: '16rem' },
+        { key: 'role', header: 'Role', width: '10rem' },
+        { key: 'status', header: 'Status', width: '10rem' },
+        { key: 'seats', header: 'Seats', numeric: true, width: '10rem' },
+      ],
+      selected: ref<number[]>([2]),
+    }),
+    template: `
+      <div class="w-full max-w-md">
+        <DataTable
+          v-model:selected="selected"
+          :rows="rows"
+          :columns="columns"
+          selectable="multiple"
+          :row-label="(row) => row.name"
+          caption="Team members"
+          class="max-h-80"
+        />
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const region = canvasElement.querySelector<HTMLElement>('[data-slot="data-table-scroll"]')
+    if (!region) throw new Error('no scroll container')
+    const [select, id, name] = canvas.getAllByRole('columnheader')
+    if (!select || !id || !name) throw new Error('missing header cells')
+    const cell = canvas.getByText('Person 10').closest('td')
+    if (!cell) throw new Error('no body cell')
+
+    region.scrollTop = 120
+    region.scrollLeft = 150
+    await new Promise((r) => requestAnimationFrame(() => r(null)))
+
+    const box = region.getBoundingClientRect()
+    const edge = (el: Element) => el.getBoundingClientRect()
+    // The header is still at the top, the pinned columns at the start,
+    // each one starting where the one before it ends.
+    await expect(Math.abs(edge(select).top - box.top)).toBeLessThanOrEqual(2)
+    await expect(Math.abs(edge(select).left - box.left)).toBeLessThanOrEqual(2)
+    await expect(edge(id).left).toBeCloseTo(edge(select).right, 0)
+    await expect(edge(name).left).toBeCloseTo(edge(id).right, 0)
+    // The body's pinned cell lines up under its header, not under the column
+    // before it.
+    await expect(edge(cell).left).toBeCloseTo(edge(name).left, 0)
+    // No wrapping: the row keeps its 22px.
+    await expect(edge(cell).height).toBe(22)
+  },
+}
+
 const sortableColumns: DataTableColumn<User>[] = [
   { key: 'name', header: 'Name', sortable: true },
   { key: 'email', header: 'Email' },
