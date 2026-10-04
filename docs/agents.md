@@ -178,6 +178,7 @@ handling.
 - `selectAllLabel: string` — default `'Select all rows'`. Accessible name for the select-all control.
 - `size: 'sm' | 'md'` — default `'md'`. Row height: `sm` 18px for dense lists and logs, `md` 22px.
 - `hoverable: boolean` — default `false`. Kept for compatibility; has no visible effect. Windows 98 list rows have no hover, so a row that does something shows it through the cursor, the dotted focus rectangle and selection instead.
+- `scrollbars: 'native' | 'drawn'` — default `'native'`. Which scroll bars the body uses.
 - `class: string`. Additional classes for the root, merged so a consumer's utility wins. A height (`max-h-96`) bounds the table; the body scrolls inside the frame.
 
 **v-model**

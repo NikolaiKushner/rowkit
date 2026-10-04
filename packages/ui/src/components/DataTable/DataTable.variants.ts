@@ -29,6 +29,12 @@ export const dataTableWrapperVariants = cva([
   'focus-visible:outline-dotted focus-visible:outline-ring',
 ])
 
+/**
+ * The scroll container with drawn bars (`scrollbars="drawn"`): a ScrollArea in
+ * the same place, filling the frame the same way.
+ */
+export const dataTableScrollAreaVariants = cva('min-h-0 w-full flex-1')
+
 export const dataTableVariants = cva(
   [
     // Report view: no grid lines between rows or columns.

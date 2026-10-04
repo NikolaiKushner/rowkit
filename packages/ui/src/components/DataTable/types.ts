@@ -253,6 +253,14 @@ export interface DataTableProps<TRow> {
    */
   hoverable?: boolean
   /**
+   * Which scroll bars the body uses. `native` restyles the browser's own as
+   * Windows 98 — exact in Chromium and Safari, colours only in Firefox.
+   * `drawn` puts the body in a `ScrollArea`, whose bars rowkit draws and which
+   * look the same everywhere. The sticky header and pinned columns work with
+   * either.
+   */
+  scrollbars?: 'native' | 'drawn'
+  /**
    * Additional classes for the root, merged so a consumer's utility wins. A
    * height (`max-h-96`) bounds the table; the body scrolls inside the frame.
    */

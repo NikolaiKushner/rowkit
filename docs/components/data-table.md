@@ -139,6 +139,7 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 | `selectAllLabel`   | `string`                               | `'Select all rows'` | Accessible name for the select-all control.                            |
 | `size`             | `'sm' \| 'md'`                         | `'md'`              | Row height: `sm` 18px for dense lists and logs, `md` 22px.             |
 | `hoverable`        | `boolean`                              | `false`             | Kept for compatibility; has no visible effect.                         |
+| `scrollbars`       | `'native' \| 'drawn'`                  | `'native'`          | Which scroll bars the body uses.                                       |
 | `class`            | `string`                               | —                   | Additional classes for the root, merged so a consumer's utility wins.  |
 
 <!-- /@props -->
@@ -317,6 +318,13 @@ the right has no signal that the table continues past the pinned edge.
 **Cells never wrap.** As in a Windows 98 list, every row keeps its height and
 a column keeps its `width`. Columns that do not fit the frame scroll sideways
 rather than squeezing; a table narrower than the frame still fills it.
+
+**Two kinds of scroll bar.** By default the body uses the browser's own bar,
+restyled as Windows 98 by `scrollbar-win98`: exact in Chromium and Safari,
+colours only in Firefox. `scrollbars="drawn"` puts the body in a
+[`ScrollArea`](/components/scroll-area) instead, whose bars rowkit draws and
+which look the same everywhere. Either way the bars sit beside the cells,
+never over them, and the sticky header and pinned columns behave the same.
 
 ## Clickable rows
 

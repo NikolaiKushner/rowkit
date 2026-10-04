@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="TRow extends DataTableRow">
-import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
+import { computed, getCurrentInstance, onBeforeUnmount, ref, useId, watch } from 'vue'
 import CheckGlyphIcon from '../../icons/CheckGlyphIcon.vue'
 import RadioMark from '../../icons/RadioMark.vue'
 import TriangleDownIcon from '../../icons/TriangleDownIcon.vue'
@@ -7,6 +7,7 @@ import TriangleUpIcon from '../../icons/TriangleUpIcon.vue'
 import Checkbox from '../../primitives/Checkbox.vue'
 import { cn } from '../../utils/cn'
 import EmptyState from '../EmptyState/EmptyState.vue'
+import ScrollArea from '../ScrollArea/ScrollArea.vue'
 import Skeleton from '../Skeleton/Skeleton.vue'
 import {
   dataTableCaptionVariants,
@@ -22,6 +23,7 @@ import {
   dataTableRadioVariants,
   dataTableRootVariants,
   dataTableRowVariants,
+  dataTableScrollAreaVariants,
   dataTableSelectCellVariants,
   dataTableSortButtonVariants,
   dataTableSortContentVariants,
@@ -53,6 +55,7 @@ const props = withDefaults(defineProps<DataTableProps<TRow>>(), {
   selectAllLabel: 'Select all rows',
   size: 'md',
   hoverable: false,
+  scrollbars: 'native',
 })
 
 /** The sorted column and direction. `undefined` is unsorted. */
@@ -93,7 +96,18 @@ defineSlots<
   } & Record<`cell:${string}`, ((props: CellSlotProps) => unknown) | undefined>
 >()
 
-const wrapperRef = ref<HTMLElement>()
+/**
+ * The scroll container: a plain element with the browser's bar restyled, or a
+ * `ScrollArea` whose viewport scrolls. Either way the sticky header and the
+ * pinned columns stick to whatever element actually scrolls.
+ */
+const scrollerRef = ref<HTMLElement | { viewport?: HTMLElement }>()
+const drawn = computed(() => props.scrollbars === 'drawn')
+const wrapperRef = computed<HTMLElement | undefined>(() => {
+  const scroller = scrollerRef.value
+  if (scroller === undefined || scroller instanceof HTMLElement) return scroller
+  return scroller.viewport
+})
 const tableRef = ref<HTMLElement>()
 
 /**
@@ -154,16 +168,29 @@ function measure(): void {
 
 let resizeObserver: ResizeObserver | undefined
 
-onMounted(() => {
-  measure()
-  if (typeof ResizeObserver === 'undefined') return
-  resizeObserver = new ResizeObserver(measure)
-  // Both: the box can change size, and so can the table inside it.
-  if (wrapperRef.value) resizeObserver.observe(wrapperRef.value)
-  if (tableRef.value) resizeObserver.observe(tableRef.value)
-})
+// Rebound whenever the scroll container is swapped, `scrollbars` included.
+watch(
+  wrapperRef,
+  (el, previous) => {
+    previous?.removeEventListener('scroll', onScroll)
+    resizeObserver?.disconnect()
+    if (!el) return
+    if (resizeObserver === undefined && typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(measure)
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    // Both: the box can change size, and so can the table inside it.
+    resizeObserver?.observe(el)
+    if (tableRef.value) resizeObserver?.observe(tableRef.value)
+    measure()
+  },
+  { flush: 'post' }
+)
 
-onBeforeUnmount(() => resizeObserver?.disconnect())
+onBeforeUnmount(() => {
+  wrapperRef.value?.removeEventListener('scroll', onScroll)
+  resizeObserver?.disconnect()
+})
 
 // Row and column changes alter the table's size without resizing the box.
 watch(
@@ -366,14 +393,25 @@ function headerStyle(column: DataTableColumn<TRow>): Record<string, string> | un
     </p>
 
     <div data-slot="data-table-frame" :class="dataTableFrameVariants()">
-      <div
-        ref="wrapperRef"
+      <!--
+        Drawn bars: a ScrollArea, which makes its own viewport the focusable,
+        named region. Native: this element is the region, focusable only while
+        it overflows.
+      -->
+      <component
+        :is="drawn ? ScrollArea : 'div'"
+        ref="scrollerRef"
         data-slot="data-table-scroll"
-        :tabindex="scrollable ? 0 : undefined"
-        :role="scrollable ? 'region' : undefined"
-        :aria-label="scrollable ? props.caption : undefined"
-        :class="dataTableWrapperVariants()"
-        @scroll.passive="onScroll"
+        v-bind="
+          drawn
+            ? { label: props.caption, class: dataTableScrollAreaVariants() }
+            : {
+                tabindex: scrollable ? 0 : undefined,
+                role: scrollable ? 'region' : undefined,
+                'aria-label': scrollable ? props.caption : undefined,
+                class: dataTableWrapperVariants(),
+              }
+        "
       >
         <!--
       A persistent live region. Rendering one only while loading is unreliable:
@@ -626,7 +664,7 @@ function headerStyle(column: DataTableColumn<TRow>): Record<string, string> | un
             </tr>
           </tbody>
         </table>
-      </div>
+      </component>
     </div>
   </div>
 </template>

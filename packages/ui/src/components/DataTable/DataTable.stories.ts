@@ -356,13 +356,9 @@ export const StickyHeader: Story = {
   },
 }
 
-/**
- * Both at once: scroll down and sideways. The header stays at the top; the
- * selection, ID and name columns stay at the start, side by side; and the
- * corner where they meet stays over both.
- */
-export const StickyHeaderAndColumn: Story = {
-  render: () => ({
+/** A table taller and wider than its frame, with selection and two pinned columns. */
+function stickyBoth(scrollbars: 'native' | 'drawn') {
+  return {
     components: { DataTable },
     setup: () => ({
       rows: Array.from({ length: 40 }, (_, i) => ({
@@ -392,37 +388,78 @@ export const StickyHeaderAndColumn: Story = {
           selectable="multiple"
           :row-label="(row) => row.name"
           caption="Team members"
+          scrollbars="${scrollbars}"
           class="max-h-80"
         />
       </div>
     `,
-  }),
+  }
+}
+
+/** The element that scrolls: the table's own, or a ScrollArea's viewport. */
+function scroller(canvasElement: HTMLElement): HTMLElement {
+  const region =
+    canvasElement.querySelector<HTMLElement>('[data-slot="scroll-area-viewport"]') ??
+    canvasElement.querySelector<HTMLElement>('[data-slot="data-table-scroll"]')
+  if (!region) throw new Error('no scroll container')
+  return region
+}
+
+async function checkStickyBoth(canvasElement: HTMLElement) {
+  const canvas = within(canvasElement)
+  const region = scroller(canvasElement)
+  const [select, id, name] = canvas.getAllByRole('columnheader')
+  if (!select || !id || !name) throw new Error('missing header cells')
+  const cell = canvas.getByText('Person 10').closest('td')
+  if (!cell) throw new Error('no body cell')
+
+  region.scrollTop = 120
+  region.scrollLeft = 150
+  await new Promise((r) => requestAnimationFrame(() => r(null)))
+
+  const box = region.getBoundingClientRect()
+  const edge = (el: Element) => el.getBoundingClientRect()
+  // The header is still at the top, the pinned columns at the start,
+  // each one starting where the one before it ends.
+  await expect(Math.abs(edge(select).top - box.top)).toBeLessThanOrEqual(2)
+  await expect(Math.abs(edge(select).left - box.left)).toBeLessThanOrEqual(2)
+  await expect(edge(id).left).toBeCloseTo(edge(select).right, 0)
+  await expect(edge(name).left).toBeCloseTo(edge(id).right, 0)
+  // The body's pinned cell lines up under its header, not under the column
+  // before it.
+  await expect(edge(cell).left).toBeCloseTo(edge(name).left, 0)
+  // No wrapping: the row keeps its 22px.
+  await expect(edge(cell).height).toBe(22)
+}
+
+/**
+ * Both at once: scroll down and sideways. The header stays at the top; the
+ * selection, ID and name columns stay at the start, side by side; and the
+ * corner where they meet stays over both.
+ */
+export const StickyHeaderAndColumn: Story = {
+  render: () => stickyBoth('native'),
+  play: ({ canvasElement }) => checkStickyBoth(canvasElement),
+}
+
+/**
+ * The same table with `scrollbars="drawn"`: the bars are rowkit's own, the
+ * same in every browser, and they sit beside the cells, never over them.
+ */
+export const DrawnScrollbars: Story = {
+  render: () => stickyBoth('drawn'),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const region = canvasElement.querySelector<HTMLElement>('[data-slot="data-table-scroll"]')
-    if (!region) throw new Error('no scroll container')
-    const [select, id, name] = canvas.getAllByRole('columnheader')
-    if (!select || !id || !name) throw new Error('missing header cells')
-    const cell = canvas.getByText('Person 10').closest('td')
-    if (!cell) throw new Error('no body cell')
-
-    region.scrollTop = 120
-    region.scrollLeft = 150
-    await new Promise((r) => requestAnimationFrame(() => r(null)))
-
-    const box = region.getBoundingClientRect()
-    const edge = (el: Element) => el.getBoundingClientRect()
-    // The header is still at the top, the pinned columns at the start,
-    // each one starting where the one before it ends.
-    await expect(Math.abs(edge(select).top - box.top)).toBeLessThanOrEqual(2)
-    await expect(Math.abs(edge(select).left - box.left)).toBeLessThanOrEqual(2)
-    await expect(edge(id).left).toBeCloseTo(edge(select).right, 0)
-    await expect(edge(name).left).toBeCloseTo(edge(id).right, 0)
-    // The body's pinned cell lines up under its header, not under the column
-    // before it.
-    await expect(edge(cell).left).toBeCloseTo(edge(name).left, 0)
-    // No wrapping: the row keeps its 22px.
-    await expect(edge(cell).height).toBe(22)
+    await checkStickyBoth(canvasElement)
+    const region = scroller(canvasElement)
+    const bar = canvasElement.querySelector(
+      '[data-slot="scroll-area-scrollbar"][data-orientation="vertical"]'
+    )
+    if (!bar) throw new Error('no drawn bar')
+    await expect(region.getBoundingClientRect().right).toBeLessThanOrEqual(
+      bar.getBoundingClientRect().left
+    )
+    // The body is the named region, from the caption.
+    await expect(region).toHaveAccessibleName('Team members')
   },
 }
 
