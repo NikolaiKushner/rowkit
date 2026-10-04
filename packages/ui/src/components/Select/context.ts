@@ -37,6 +37,12 @@ export interface SelectContext {
   anchor: Ref<HTMLElement | undefined>
 
   setOpen: (open: boolean) => void
+  /**
+   * True from a mouse press that opened the list until that button is
+   * released: releasing over an option chooses it.
+   */
+  dragging: Ref<boolean>
+  startDrag: () => void
   choose: (value: string | number) => void
   /** Moves the highlight to the first, last, next or previous enabled option. */
   move: (to: 'first' | 'last' | 'next' | 'previous') => void

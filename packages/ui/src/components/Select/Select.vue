@@ -130,6 +130,13 @@ watch(visibleItems, () => {
   if (!enabled().some((item) => item.value === highlighted.value)) move('first')
 })
 
+const dragging = ref(false)
+
+function startDrag(): void {
+  dragging.value = true
+  window.addEventListener('pointerup', () => (dragging.value = false), { once: true })
+}
+
 function choose(value: string | number): void {
   const item = items.find((entry) => entry.value === value)
   if (!item || item.disabled) return
@@ -160,6 +167,8 @@ provide(selectContextKey, {
   listboxId,
   anchor: ref<HTMLElement>(),
   setOpen,
+  dragging,
+  startDrag,
   choose,
   move,
 })

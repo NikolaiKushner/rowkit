@@ -421,7 +421,7 @@ handling.
 **Props**
 
 - `placeholder: string` — default `'Select…'`. Text shown while nothing is selected.
-- `togglerLabel: string` — default `'Show options'`. Accessible name for the open/close chevron.
+- `togglerLabel: string` — default `'Show options'`. Accessible name for the drop button that opens and closes the list.
 - `size: 'sm' | 'md' | 'lg'`. Control height and text size. Inherited from a surrounding `Field` when omitted.
 - `id: string`. Id for the combobox input. Inherited from a surrounding `Field` when omitted.
 - `class: string`. Additional classes for the control, merged so a consumer's utility wins.

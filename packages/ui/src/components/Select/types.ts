@@ -50,7 +50,7 @@ export interface SelectProps {
 export interface SelectTriggerProps {
   /** Text shown while nothing is selected. */
   placeholder?: string
-  /** Accessible name for the open/close chevron. */
+  /** Accessible name for the drop button that opens and closes the list. */
   togglerLabel?: string
   /** Control height and text size. Inherited from a surrounding `Field` when omitted. */
   size?: NonNullable<SelectVariants['size']>

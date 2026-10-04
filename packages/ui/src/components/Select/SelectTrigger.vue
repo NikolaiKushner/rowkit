@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, useId, watch } from 'vue'
+import ErrorIcon from '../../icons/ErrorIcon.vue'
+import TriangleDownIcon from '../../icons/TriangleDownIcon.vue'
 import { cn } from '../../utils/cn'
 import { useFieldContext } from '../Field/context'
 import { useSelectContext } from './context'
-import { selectTriggerVariants } from './Select.variants'
+import { selectButtonVariants, selectInputVariants, selectTriggerVariants } from './Select.variants'
 import type { SelectTriggerProps } from './types'
 
 defineOptions({ name: 'RkSelectTrigger', inheritAttrs: false })
@@ -125,23 +127,64 @@ function toggle(): void {
   select.setOpen(!select.open.value)
 }
 
-/* The chevron opens the list and hands focus to the control, as a native select would. */
-function onChevron(): void {
-  toggle()
+/*
+ * A mouse opens the list on press, as Windows 98 does, so the user can drag
+ * straight onto an option and release to choose it. Touch and pen keep the
+ * tap: a press that opens a list under a finger mid-scroll is a misfire.
+ */
+let lastPointer = ''
+
+function onPointerDown(event: PointerEvent): void {
+  lastPointer = event.pointerType
+  if (event.pointerType !== 'mouse' || event.button !== 0 || select.isDisabled.value) return
+  // Focus stays where the user pressed, and nothing selects text in the box.
+  event.preventDefault()
   input.value?.focus()
+  const opening = !select.open.value
+  toggle()
+  if (opening) select.startDrag()
+}
+
+function onClick(): void {
+  if (lastPointer !== 'mouse') toggle()
+  lastPointer = ''
+}
+
+/* The drop button opens the list and hands focus to the control, as a native select would. */
+const pressed = ref(false)
+
+function onButtonDown(event: PointerEvent): void {
+  if (event.button !== 0 || select.isDisabled.value) return
+  pressed.value = true
+  window.addEventListener('pointerup', () => (pressed.value = false), { once: true })
+  onPointerDown(event)
+  if (event.pointerType !== 'mouse') {
+    event.preventDefault()
+    input.value?.focus()
+    toggle()
+  }
+}
+
+/* A click with no press before it — from script or assistive technology. */
+function onButtonClick(): void {
+  if (lastPointer === '') {
+    toggle()
+    input.value?.focus()
+  }
+  lastPointer = ''
 }
 </script>
 
 <template>
   <!--
-    The input is the combobox; the chevron is an extra pointer target, kept out
-    of the tab order so the control is one stop and keeps the field's label.
+    The input is the combobox; the drop button is an extra pointer target, kept
+    out of the tab order so the control is one stop and keeps the field's label.
   -->
   <div
     ref="anchor"
     data-slot="select-trigger"
     :data-disabled="select.isDisabled.value ? '' : undefined"
-    :class="cn(selectTriggerVariants({ size, invalid: select.isInvalid.value }), props.class)"
+    :class="cn(selectTriggerVariants({ size }), props.class)"
   >
     <input
       v-bind="$attrs"
@@ -162,40 +205,25 @@ function onChevron(): void {
       :placeholder="props.placeholder"
       :readonly="!select.searchable.value"
       :disabled="select.isDisabled.value"
-      :class="
-        cn(
-          'min-w-0 flex-1 truncate bg-transparent text-inherit outline-none',
-          'placeholder:text-muted-foreground disabled:cursor-not-allowed',
-          !select.searchable.value && 'cursor-pointer'
-        )
-      "
+      :class="selectInputVariants()"
       @input="onInput"
       @keydown="onKeyDown"
-      @click="toggle"
+      @pointerdown="onPointerDown"
+      @click="onClick"
     />
+    <ErrorIcon v-if="select.isInvalid.value" data-slot="select-error-icon" class="shrink-0" />
     <button
       type="button"
       tabindex="-1"
-      class="flex shrink-0 cursor-pointer items-center text-muted-foreground"
+      data-slot="select-button"
+      :class="selectButtonVariants()"
+      :data-pressed="pressed ? '' : undefined"
       :aria-label="props.togglerLabel"
       :disabled="select.isDisabled.value"
-      @click="onChevron"
+      @pointerdown="onButtonDown"
+      @click="onButtonClick"
     >
-      <svg
-        class="size-4 transition-transform duration-fast ease-standard"
-        :class="select.open.value && 'rotate-180'"
-        viewBox="0 0 20 20"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path
-          d="m6 8 4 4 4-4"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
+      <TriangleDownIcon />
     </button>
   </div>
 </template>

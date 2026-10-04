@@ -66,7 +66,7 @@ function mountSelect(props: Record<string, unknown> = {}) {
   return mount(Harness, { props, attachTo: document.body }) as VueWrapper
 }
 
-/** The combobox itself: the input, not the chevron button. */
+/** The combobox itself: the input, not the drop button. */
 function control(wrapper: VueWrapper) {
   return wrapper.find('input')
 }
@@ -110,7 +110,7 @@ describe('Select', () => {
       expect(control(mountSelect()).attributes('tabindex')).not.toBe('-1')
     })
 
-    it('does not let the chevron steal the accessible name', () => {
+    it('does not let the drop button steal the accessible name', () => {
       const wrapper = mountSelect()
       expect(control(wrapper).attributes('aria-label')).toBeUndefined()
       expect(wrapper.find('button').attributes('aria-label')).toBe('Show options')
@@ -386,5 +386,75 @@ describe('forms', () => {
     const hidden = wrapper.find('input[type="hidden"]')
     expect(hidden.attributes('name')).toBe('status')
     expect((hidden.element as HTMLInputElement).value).toBe('invited')
+  })
+})
+
+describe('pointer', () => {
+  const press = (target: Element, pointerType = 'mouse') =>
+    target.dispatchEvent(
+      Object.assign(new MouseEvent('pointerdown', { bubbles: true, cancelable: true, button: 0 }), {
+        pointerType,
+      })
+    )
+  const release = (target: Element) =>
+    target.dispatchEvent(new MouseEvent('pointerup', { bubbles: true, button: 0 }))
+
+  it('opens on a mouse press, before the button comes up', async () => {
+    const wrapper = mountSelect()
+    press(control(wrapper).element)
+    await nextTick()
+    await nextTick()
+    expect(optionElements()).toHaveLength(3)
+    wrapper.unmount()
+  })
+
+  it('chooses the option a press on the field is dragged to and released over', async () => {
+    const wrapper = mountSelect()
+    press(control(wrapper).element)
+    await nextTick()
+    await nextTick()
+    const invited = optionElements()[1]
+    if (!invited) throw new Error('no option rendered')
+    release(invited)
+    await nextTick()
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['invited'])
+    wrapper.unmount()
+  })
+
+  it('does not choose on a release that did not start on the field', async () => {
+    const wrapper = mountSelect()
+    await open(wrapper)
+    const invited = optionElements()[1]
+    if (!invited) throw new Error('no option rendered')
+    release(invited)
+    await nextTick()
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    wrapper.unmount()
+  })
+
+  it('opens from the drop button and keeps focus on the combobox', async () => {
+    const wrapper = mountSelect()
+    const button = wrapper.find('[data-slot="select-button"]')
+    press(button.element)
+    await nextTick()
+    await nextTick()
+    expect(optionElements()).toHaveLength(3)
+    expect(document.activeElement).toBe(control(wrapper).element)
+    wrapper.unmount()
+  })
+})
+
+describe('invalid', () => {
+  it('shows the quiet error mark and nothing red', () => {
+    const wrapper = mount(
+      defineComponent({
+        components: { Select: SelectComponent, SelectTrigger, SelectContent },
+        template: `<Select invalid><SelectTrigger /><SelectContent /></Select>`,
+      }),
+      { attachTo: document.body }
+    )
+    expect(wrapper.find('[data-slot="select-error-icon"]').exists()).toBe(true)
+    expect(wrapper.find('[data-slot="select-trigger"]').classes().join(' ')).not.toMatch(/danger/)
+    wrapper.unmount()
   })
 })

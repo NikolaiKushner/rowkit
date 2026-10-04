@@ -77,12 +77,12 @@ typing filters when searchable, <kbd>Esc</kbd> closes without committing.
 
 ## Anatomy
 
-| Part            | Purpose                                                           |
-| --------------- | ----------------------------------------------------------------- |
-| `Select`        | Root. Holds `v-model` and, when searching, `v-model:searchTerm`   |
-| `SelectTrigger` | The combobox input and the chevron. Read-only unless `searchable` |
-| `SelectContent` | Portalled listbox, width-matched to the control                   |
-| `SelectItem`    | One option. `label` is what the closed trigger shows              |
+| Part            | Purpose                                                               |
+| --------------- | --------------------------------------------------------------------- |
+| `Select`        | Root. Holds `v-model` and, when searching, `v-model:searchTerm`       |
+| `SelectTrigger` | The combobox input and the drop button. Read-only unless `searchable` |
+| `SelectContent` | Portalled listbox, width-matched to the control                       |
+| `SelectItem`    | One option. `label` is what the closed trigger shows                  |
 
 ## Props
 
@@ -108,7 +108,7 @@ typing filters when searchable, <kbd>Esc</kbd> closes without committing.
 | Prop           | Type                   | Default          | Description                                                                      |
 | -------------- | ---------------------- | ---------------- | -------------------------------------------------------------------------------- |
 | `placeholder`  | `string`               | `'Select…'`      | Text shown while nothing is selected.                                            |
-| `togglerLabel` | `string`               | `'Show options'` | Accessible name for the open/close chevron.                                      |
+| `togglerLabel` | `string`               | `'Show options'` | Accessible name for the drop button that opens and closes the list.              |
 | `size`         | `'sm' \| 'md' \| 'lg'` | —                | Control height and text size. Inherited from a surrounding `Field` when omitted. |
 | `id`           | `string`               | —                | Id for the combobox input. Inherited from a surrounding `Field` when omitted.    |
 | `class`        | `string`               | —                | Additional classes for the control, merged so a consumer's utility wins.         |
@@ -189,10 +189,29 @@ The item slot replaces the row. It receives `{ selected }`. `SelectContent`'s
 Disabled options are skipped by the highlight but stay visible, so the list
 does not reflow as state changes.
 
+## Pointer
+
+A mouse press opens the list straight away, as a Windows 98 drop-down list
+does. Keep the button down, drag onto an option and release to choose it, or
+release first and click an option. Touch and pen open the list on a tap, so a
+finger scrolling past does not open it by accident. The drop button behaves
+the same and leaves focus in the control.
+
+## Look
+
+The Windows 98 drop-down list. The control is Input's white well in a sunken
+bevel, with the raised drop button at its end: a form of inputs and selects
+lines up to the pixel. With focus and a value, the value shows in navy with
+white text. The list hangs directly under the control, as wide as it: white,
+in a 1px black frame, 16px rows, eight before it scrolls. The highlighted
+option is navy; there is no check mark, because the highlight opens on the
+selected option. Invalid is quiet, as on Input: the error mark in the control,
+nothing red. Nothing animates.
+
 ## Accessibility
 
 The control is an `<input role="combobox">`, not a button: one tab stop that
-keeps the field's label. The chevron is an extra pointer target, out of the tab
+keeps the field's label. The drop button is an extra pointer target, out of the tab
 order. Options never take focus — it stays in the control, and the list follows
 it through `aria-activedescendant`, which exists only while the list is open.
 

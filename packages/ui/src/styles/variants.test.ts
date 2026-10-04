@@ -59,8 +59,12 @@ import {
 } from '../components/Field/Field.variants'
 import { inputVariants } from '../components/Input/Input.variants'
 import {
+  selectButtonVariants,
   selectContentVariants,
+  selectInputVariants,
   selectItemVariants,
+  selectListVariants,
+  selectMessageVariants,
   selectTriggerVariants,
 } from '../components/Select/Select.variants'
 import { skeletonVariants } from '../components/Skeleton/Skeleton.variants'
@@ -157,6 +161,10 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Select trigger', selectTriggerVariants],
   ['Select content', selectContentVariants],
   ['Select item', selectItemVariants],
+  ['Select input', selectInputVariants],
+  ['Select button', selectButtonVariants],
+  ['Select list', selectListVariants],
+  ['Select message', selectMessageVariants],
   ['Skeleton', skeletonVariants],
   ['EmptyState', emptyStateVariants],
   ['EmptyState icon', emptyStateIconVariants],

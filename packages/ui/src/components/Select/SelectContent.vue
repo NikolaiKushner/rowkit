@@ -6,7 +6,7 @@ import { unrefElement } from '../../primitives/dom'
 import { useFloating } from '../../primitives/position'
 import { cn } from '../../utils/cn'
 import { useSelectContext } from './context'
-import { selectContentVariants } from './Select.variants'
+import { selectContentVariants, selectListVariants, selectMessageVariants } from './Select.variants'
 import type { SelectContentProps } from './types'
 
 defineOptions({ name: 'RkSelectContent' })
@@ -37,7 +37,7 @@ const panel = computed(() => unrefElement(layer.value))
 /* Below the control, or above it when there is no room below. */
 const { style } = useFloating(select.anchor, panel, () => ({
   side: 'bottom',
-  offset: 4,
+  offset: 0,
   padding: 8,
 }))
 
@@ -102,18 +102,13 @@ const isEmpty = computed(() => select.visibleItems.value.length === 0)
         follows it through aria-activedescendant. A press on an option is
         prevented so the control does not blur mid-choice.
       -->
-      <div
-        :id="select.listboxId"
-        role="listbox"
-        class="max-h-64 overflow-y-auto p-1"
-        @pointerdown.prevent
-      >
-        <div v-if="props.loading" class="px-2 py-1.5 text-sm text-muted-foreground" role="status">
+      <div :id="select.listboxId" role="listbox" :class="selectListVariants()" @pointerdown.prevent>
+        <div v-if="props.loading" :class="selectMessageVariants()" role="status">
           {{ props.loadingText }}
         </div>
 
         <template v-else>
-          <div v-if="isEmpty" class="px-2 py-1.5 text-sm text-muted-foreground">
+          <div v-if="isEmpty" :class="selectMessageVariants()">
             <slot name="empty">{{ props.emptyText }}</slot>
           </div>
 

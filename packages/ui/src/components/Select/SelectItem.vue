@@ -57,6 +57,11 @@ const visible = computed(() => select.visibleItems.value.some((item) => item.id 
 function onPointerMove(): void {
   if (!props.disabled) select.highlighted.value = props.value
 }
+
+/* Pressed on the field, dragged here, released: that is a choice too. */
+function onPointerUp(): void {
+  if (select.dragging.value) select.choose(props.value)
+}
 </script>
 
 <template>
@@ -72,25 +77,11 @@ function onPointerMove(): void {
     :data-state="selected ? 'checked' : 'unchecked'"
     :class="cn(selectItemVariants(), props.class)"
     @pointermove="onPointerMove"
+    @pointerup="onPointerUp"
     @click="select.choose(props.value)"
   >
     <slot :selected="selected">
       <span class="truncate">{{ props.label }}</span>
     </slot>
-    <!--
-      Check on the trailing edge — shadcn's recipe. Reserving a fixed
-      gutter means labels do not shift when the selection moves.
-    -->
-    <span class="pointer-events-none absolute right-2 flex size-3.5 items-center justify-center">
-      <svg v-if="selected" class="size-3.5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-        <path
-          d="m5 10 3.5 3.5L15 7"
-          stroke="currentColor"
-          stroke-width="1.75"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </span>
   </div>
 </template>
