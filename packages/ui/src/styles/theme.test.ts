@@ -52,27 +52,29 @@ async function build(...candidates: string[]): Promise<string> {
 
 /** [utility, the custom property its declaration must reference] */
 const utilities: readonly (readonly [string, string])[] = [
-  ['bg-primary-600', '--color-primary-600'],
-  ['bg-neutral-50', '--color-neutral-50'],
+  ['bg-vga-navy', '--color-vga-navy'],
+  ['bg-win98-info', '--color-win98-info'],
+  ['bg-desktop', '--color-desktop'],
+  ['bg-surface-selected', '--color-surface-selected'],
+  ['text-on-selected', '--color-on-selected'],
   ['bg-card', '--color-card'],
   ['bg-accent', '--color-accent'],
   ['text-muted-foreground', '--color-muted-foreground'],
   ['text-danger-on-solid', '--color-danger-on-solid'],
-  ['border-input', '--color-input'],
-  ['ring-ring', '--color-ring'],
-  // The dialog scrim. Without a utility behind it the overlay renders fully
-  // transparent — the dialog still opens, and nothing looks wrong until you
-  // notice the page behind is not dimmed.
+  ['bg-input', '--color-input'],
+  ['outline-ring', '--color-ring'],
   ['bg-shadow', '--color-shadow'],
   ['p-4', '--spacing-4'],
   ['gap-2', '--spacing-2'],
-  ['text-sm', '--text-sm'],
-  ['font-medium', '--font-weight-medium'],
+  ['text-ui', '--text-ui'],
+  ['text-heading', '--text-heading'],
+  ['text-doc-h1', '--text-doc-h1'],
+  ['font-bold', '--font-weight-bold'],
   ['font-mono', '--font-mono'],
-  ['tracking-wide', '--tracking-wide'],
+  ['tracking-normal', '--tracking-normal'],
   ['leading-snug', '--leading-snug'],
   ['rounded-md', '--radius-md'],
-  ['backdrop-blur-overlay', '--blur-overlay'],
+  ['text-shadow-disabled', '--color-text-disabled-emboss'],
   ['z-modal', '--z-index-modal'],
   ['duration-fast', '--transition-duration-fast'],
   ['ease-standard', '--ease-standard'],
@@ -131,7 +133,7 @@ describe('the radius scale resolves', () => {
   it('declares --radius, so the calc() has something to multiply', async () => {
     const css = await build('rounded-md')
     expect(css, '--radius vanished — every rounded-* utility now computes to 0').toMatch(
-      /--radius:\s*0\.5rem/
+      /--radius:\s*0rem/
     )
   })
 
@@ -161,27 +163,27 @@ describe('shadows', () => {
     expect(css).toContain('var(--color-border)')
   })
 
-  it.each(['shadow-xs', 'shadow-md', 'shadow-scroll-x'])('%s is generated', async (utility) => {
+  it.each([
+    'shadow-raised',
+    'shadow-window',
+    'shadow-raised-default',
+    'shadow-pressed',
+    'shadow-sunken',
+    'shadow-status',
+    'shadow-etched',
+    'shadow-raised-thin',
+    'shadow-scroll-x',
+  ])('%s is generated', async (utility) => {
     expect(await build(utility)).toContain(`.${utility} {`)
   })
 
-  it('carries the geometry from the token', async () => {
+  it('draws a bevel from hard inset lines in the bevel colours', async () => {
     // Shadows are the one scale Tailwind inlines rather than referencing, so
-    // the assertion is on the value instead of on a var().
-    expect(await build('shadow-scroll-x')).toContain('12px 0 16px -8px')
-  })
-
-  it('keeps the shadow colour a variable, so a rebrand repoints it', async () => {
-    // Worth pinning, because the first thing Tailwind emits looks like it
-    // breaks the theming model: it resolves --color-shadow to a literal for an
-    // sRGB fallback. The live declaration sits in the @supports block below it
-    // and keeps the var() intact, so a browser that can do color-mix — which
-    // is every browser that can read these oklch tokens — still follows the
-    // token.
-    const css = await build('shadow-md')
-    const rule = css.slice(css.indexOf('.shadow-md {'))
-    const supports = rule.slice(rule.indexOf('@supports'))
-    expect(supports).toContain('var(--color-shadow)')
+    // the assertion is on the value. Every edge has to keep its var(), or a
+    // theme that repoints a bevel colour would leave the bevels behind.
+    const css = await build('shadow-raised')
+    expect(css).toContain('inset -1px -1px var(--tw-shadow-color, var(--color-bevel-dark))')
+    expect(css).toContain('inset 2px 2px var(--tw-shadow-color, var(--color-bevel-light))')
   })
 })
 

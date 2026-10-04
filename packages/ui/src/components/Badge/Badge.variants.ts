@@ -48,7 +48,7 @@ export const badgeVariants = cva(
       {
         variant: 'neutral',
         appearance: 'outline',
-        class: 'border-neutral-border text-neutral-on-subtle',
+        class: 'border-neutral-border text-foreground',
       },
 
       // Soft chip: tinted fill + matching hairline. Same recipe as neutral —
@@ -66,7 +66,7 @@ export const badgeVariants = cva(
       {
         variant: 'primary',
         appearance: 'outline',
-        class: 'border-primary-border text-primary-on-subtle',
+        class: 'border-primary-border text-foreground',
       },
 
       {
@@ -82,7 +82,7 @@ export const badgeVariants = cva(
       {
         variant: 'success',
         appearance: 'outline',
-        class: 'border-success-border text-success-on-subtle',
+        class: 'border-success-border text-foreground',
       },
 
       {
@@ -98,7 +98,7 @@ export const badgeVariants = cva(
       {
         variant: 'warning',
         appearance: 'outline',
-        class: 'border-warning-border text-warning-on-subtle',
+        class: 'border-warning-border text-foreground',
       },
 
       {
@@ -114,7 +114,7 @@ export const badgeVariants = cva(
       {
         variant: 'danger',
         appearance: 'outline',
-        class: 'border-danger-border text-danger-on-subtle',
+        class: 'border-danger-border text-foreground',
       },
     ],
     defaultVariants: {

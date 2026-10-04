@@ -43,6 +43,7 @@
     "@changesets/cli": "^2.31.1",
     "@eslint/js": "^10.0.1",
     "@fontsource/pt-sans": "^5.3.0",
+    "@fontsource/vt323": "^5.3.0",
     "@rowkit/tokens": "workspace:*",
     "@size-limit/preset-small-lib": "^13.0.1",
     "@storybook/addon-a11y": "^10.5.5",

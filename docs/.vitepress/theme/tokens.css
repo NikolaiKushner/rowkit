@@ -336,10 +336,10 @@
   --vp-font-family-base: var(--font-sans);
   --vp-font-family-mono: var(--font-mono);
 
-  --vp-c-brand-1: var(--color-primary-700);
-  --vp-c-brand-2: var(--color-primary-600);
-  --vp-c-brand-3: var(--color-primary-500);
-  --vp-c-brand-soft: var(--color-primary-100);
+  --vp-c-brand-1: var(--color-primary-solid);
+  --vp-c-brand-2: var(--color-link);
+  --vp-c-brand-3: var(--color-titlebar-to);
+  --vp-c-brand-soft: var(--color-border-subtle);
 
   --vp-c-bg: var(--color-background);
   --vp-c-bg-alt: var(--color-muted);

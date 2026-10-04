@@ -9,7 +9,7 @@
  * @example Typed access to a primitive
  * ```ts
  * import { tokens } from '@rowkit/tokens'
- * tokens.color.primary[800] // 'oklch(0.32 0.09 255)' — ink blue
+ * tokens.color.vga.silver // '#c0c0c0' — the face of every window
  * ```
  *
  * @example The stylesheet
@@ -20,45 +20,16 @@
  */
 
 import { version as pkgVersion } from '../package.json' with { type: 'json' }
-import { blur } from './blur'
-import {
-  amber,
-  colorPrimitives,
-  danger,
-  gray,
-  green,
-  neutral,
-  primary,
-  red,
-  semanticColor,
-  success,
-  warning,
-} from './color'
+import { colorPrimitives, semanticColor, vga, win98 } from './color'
 import { duration, easing } from './motion'
 import { radius, radiusBase } from './radius'
-import { shadow } from './shadow'
+import { shadow, textShadow } from './shadow'
 import { spacing, spacingBase } from './spacing'
 import { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
 import { zIndex } from './z-index'
 
-export {
-  amber,
-  colorPrimitives,
-  colorSteps,
-  danger,
-  gray,
-  green,
-  neutral,
-  primary,
-  red,
-  semanticColor,
-  success,
-  warning,
-} from './color'
-export type { ColorRef, ColorStep, SemanticColorName } from './color'
-
-export { blur } from './blur'
-export type { BlurName } from './blur'
+export { colorPrimitives, semanticColor, vga, win98 } from './color'
+export type { ColorRef, SemanticColorName } from './color'
 
 export { duration, easing } from './motion'
 export type { DurationName, EasingName } from './motion'
@@ -66,8 +37,8 @@ export type { DurationName, EasingName } from './motion'
 export { radius, radiusBase } from './radius'
 export type { RadiusName } from './radius'
 
-export { shadow } from './shadow'
-export type { ShadowName } from './shadow'
+export { shadow, textShadow } from './shadow'
+export type { ShadowName, TextShadowName } from './shadow'
 
 export { spacing, spacingBase } from './spacing'
 export type { SpacingName } from './spacing'
@@ -83,20 +54,15 @@ export { buildThemeCss } from './css'
 /**
  * Every rowkit token in one object.
  *
- * Grouped by scale rather than flattened, so `tokens.color.primary[600]`
- * narrows to its literal type and autocompletes each level.
+ * Grouped by scale rather than flattened, so `tokens.color.vga.navy` narrows
+ * to its literal type and autocompletes each level.
  */
 export const tokens = {
   color: {
-    gray,
-    green,
-    amber,
-    neutral,
-    primary,
-    red,
-    success,
-    warning,
-    danger,
+    /** The VGA palette Windows 98 is drawn in. */
+    vga,
+    /** The system colours Windows 98 added to it. */
+    win98,
     /** Flat map of every primitive, keyed by CSS custom property suffix. */
     primitives: colorPrimitives,
     /** Semantic tokens, which reference primitives via `var()`. */
@@ -113,8 +79,8 @@ export const tokens = {
   },
   radius,
   radiusBase,
-  blur,
   shadow,
+  textShadow,
   zIndex,
   motion: {
     duration,

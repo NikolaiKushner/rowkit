@@ -17,6 +17,9 @@ importers:
       '@fontsource/pt-sans':
         specifier: ^5.3.0
         version: 5.3.0
+      '@fontsource/vt323':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@rowkit/tokens':
         specifier: workspace:*
         version: link:packages/tokens
@@ -160,6 +163,9 @@ importers:
         version: link:../packages/ui
     devDependencies:
       '@fontsource/pt-sans':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/vt323':
         specifier: ^5.3.0
         version: 5.3.0
       '@tailwindcss/vite':
@@ -956,6 +962,9 @@ packages:
 
   '@fontsource/pt-sans@5.3.0':
     resolution: {integrity: sha512-qisFKuquwSWlELeuQHQldOa4oSxDAOFpak2hj3FjFcdo4eCUGV0trhIBk3qt+Py50L8JKWHKnnL7/JPxRH0TPw==}
+
+  '@fontsource/vt323@5.3.0':
+    resolution: {integrity: sha512-3w33Rg/0+R1587HQfz4t7Q7e0GGeCqr3wmzIwqdGInUnrGEwMA5eX39GP4Z9wpTQnwfhVOhYuxuRwRUeIcicbw==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -6942,6 +6951,8 @@ snapshots:
   '@exodus/bytes@1.15.1': {}
 
   '@fontsource/pt-sans@5.3.0': {}
+
+  '@fontsource/vt323@5.3.0': {}
 
   '@humanfs/core@0.19.2':
     dependencies:

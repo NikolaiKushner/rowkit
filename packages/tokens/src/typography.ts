@@ -1,20 +1,27 @@
 /**
- * Typography scale.
+ * Typography.
  *
- * Weighted toward the small end: a dashboard spends most of its type budget
- * between 12px and 16px, and the sizes above `xl` exist for empty states and
- * page titles rather than for data.
+ * Two registers, as in the design: the interface at Windows 98's own 11px —
+ * 8pt, the size every dialog, menu and button was set in — and long text for
+ * documentation at a size meant for reading paragraphs. The sizes are named
+ * after the Figma text styles (`ui/body` is `text-ui`, `doc/h1` is
+ * `text-doc-h1`), so a style picked in the design maps to one utility.
+ *
+ * Sizes are in `rem`, so a reader who raised their browser's base size gets
+ * larger text; at the default 16px base they land on the design's pixels.
  */
 
 /**
  * Font families.
  *
- * The Windows 98 face is **PT Sans** (ParaType, OFL): the closest open match
+ * The interface face is **PT Sans** (ParaType, OFL): the closest open match
  * to Tahoma, which succeeded MS Sans Serif, and compact enough for dense
- * tables. It covers Latin and Cyrillic in regular and bold. rowkit does not
- * ship the font file: the app loads it, one import from `@fontsource/pt-sans`.
- * Without it the stack falls through to Tahoma and the faces operating
- * systems already ship.
+ * tables. It covers Latin and Cyrillic in regular and bold. The fixed-width
+ * face is **VT323** (OFL), drawn after the Fixedsys terminal font.
+ *
+ * rowkit does not ship either font file: the app loads them, one import each
+ * from `@fontsource/pt-sans` and `@fontsource/vt323`. Without them the stacks
+ * fall through to Tahoma and the faces operating systems already ship.
  */
 export const fontFamily = {
   /** UI and body text. */
@@ -27,52 +34,52 @@ export const fontFamily = {
     'Arial',
     'sans-serif',
   ].join(', '),
-  /** IDs, hashes, numeric columns that must align vertically. */
-  mono: ['"Lucida Console"', '"Courier New"', 'ui-monospace', 'monospace'].join(', '),
+  /** Code, IDs and numbers that must align in a column. */
+  mono: ['VT323', '"Lucida Console"', '"Courier New"', 'ui-monospace', 'monospace'].join(', '),
 } as const
 
 /**
- * Font sizes, each paired with the line height it should almost always use.
+ * Font sizes, each paired with the line height the design sets it in.
  *
  * Pairing them prevents the most common typographic bug in a dense table:
- * shrinking the font without shrinking leading, so rows stay tall and the
- * density gain evaporates.
+ * changing the size without the leading, so rows stay tall and the density
+ * the size was meant to buy evaporates.
  */
 export const fontSize = {
-  /** 12px — table metadata, badges, column headers. */
-  xs: { size: '0.75rem', lineHeight: '1rem' },
-  /** 14px — the default for table cells and form controls. */
-  sm: { size: '0.875rem', lineHeight: '1.25rem' },
-  /** 16px — body copy outside of data views. */
-  base: { size: '1rem', lineHeight: '1.5rem' },
-  /** 18px — card titles. */
-  lg: { size: '1.125rem', lineHeight: '1.75rem' },
-  /** 20px — section headings. */
-  xl: { size: '1.25rem', lineHeight: '1.75rem' },
-  /** 24px — page titles, empty-state headings. */
-  '2xl': { size: '1.5rem', lineHeight: '2rem' },
-  /** 30px — the largest size rowkit ships. */
-  '3xl': { size: '1.875rem', lineHeight: '2.25rem' },
+  /** 11/13 — every control, label, menu and table cell. Bold for titles and the default button. */
+  ui: { size: '0.6875rem', lineHeight: '0.8125rem' },
+  /** 13/16, bold — the heading of an empty state or a group. */
+  heading: { size: '0.8125rem', lineHeight: '1rem' },
+  /**
+   * 16/16 — the fixed-width face. VT323 is drawn small for its size, so it
+   * sits at 16px to match the x-height of 11px PT Sans beside it.
+   */
+  mono: { size: '1rem', lineHeight: '1rem' },
+  /** 15/24 — documentation paragraphs, about seventy characters to a line. */
+  doc: { size: '0.9375rem', lineHeight: '1.5rem' },
+  /** 24/28, bold — a documentation page title. */
+  'doc-h1': { size: '1.5rem', lineHeight: '1.75rem' },
+  /** 18/22, bold — a documentation section. */
+  'doc-h2': { size: '1.125rem', lineHeight: '1.375rem' },
+  /** 14/18, bold — a documentation subsection. */
+  'doc-h3': { size: '0.875rem', lineHeight: '1.125rem' },
 } as const
 
-/** Font weights. */
+/**
+ * Font weights. Two, because PT Sans has two: anything in between would be
+ * synthesised by the browser, and a faked weight is blurrier than either real
+ * one.
+ */
 export const fontWeight = {
   /** Body text. */
   normal: '400',
-  /** Buttons, labels, card titles — prefer this over semibold in dense UI. */
-  medium: '500',
-  /** Page titles and dialog headings. */
-  semibold: '600',
-  /** Display only. Rarely needed in data views. */
+  /** Window titles, headings, the default button. */
   bold: '700',
 } as const
 
-/** Letter spacing. Tightening only pays off at display sizes. */
+/** Letter spacing. Windows 98 sets every size at the face's own spacing. */
 export const letterSpacing = {
-  tight: '-0.015em',
   normal: '0em',
-  /** For uppercase micro-labels, which need air to stay readable. */
-  wide: '0.04em',
 } as const
 
 /** Standalone line heights, for when text is not using a paired {@link fontSize}. */

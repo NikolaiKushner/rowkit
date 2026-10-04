@@ -194,9 +194,14 @@ export const dataTableRowVariants = cva(
         true: 'hover:bg-accent',
         false: '',
       },
-      /** Selected wins over hover — losing the highlight on hover hides the state. */
+      /**
+       * Selected wins over hover — losing the highlight on hover hides the state.
+       * Navy with white text, as a Windows 98 list draws it: the cells, and text
+       * a cell colours with a text token, turn white too, or they would be
+       * black on navy.
+       */
       selected: {
-        true: 'bg-surface-selected hover:bg-surface-selected',
+        true: 'bg-surface-selected text-on-selected hover:bg-surface-selected *:text-on-selected [&_:is(.text-foreground,.text-muted-foreground)]:text-on-selected',
         false: '',
       },
     },

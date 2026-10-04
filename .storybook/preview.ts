@@ -1,8 +1,9 @@
 import type { Preview } from '@storybook/vue3-vite'
 import theme from './theme'
-// The Windows 98 face, loaded the way an app is told to load it.
+// The Windows 98 faces, loaded the way an app is told to load them.
 import '@fontsource/pt-sans/400.css'
 import '@fontsource/pt-sans/700.css'
+import '@fontsource/vt323/400.css'
 import './preview.css'
 
 const preview: Preview = {

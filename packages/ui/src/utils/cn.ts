@@ -8,7 +8,7 @@ import { extendTailwindMerge } from 'tailwind-merge'
  * those groups from Tailwind's default theme, which knows nothing about
  * rowkit's scales.
  *
- * The failure is silent and one-directional: `shadow-sm shadow-scroll-x`,
+ * The failure is silent and one-directional: `shadow-raised shadow-pressed`,
  * `z-dropdown z-modal`, `duration-fast duration-slow` and
  * `ease-standard ease-enter` all survive as *both* classes, and which one
  * actually applies then comes down to stylesheet order rather than to the
@@ -16,7 +16,7 @@ import { extendTailwindMerge } from 'tailwind-merge'
  * able to override the component's.
  *
  * Colour and spacing utilities need no help: `tailwind-merge` groups
- * `bg-*`/`text-*`/`border-*` by shape, so `bg-card` and `bg-primary-600`
+ * `bg-*`/`text-*`/`border-*` by shape, so `bg-card` and `bg-vga-navy`
  * already collide correctly.
  *
  * The scale names are read from the token package rather than listed here, so a

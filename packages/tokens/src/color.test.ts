@@ -1,39 +1,26 @@
 import { describe, expect, it } from 'vitest'
-import {
-  colorPrimitives,
-  colorSteps,
-  danger,
-  neutral,
-  primary,
-  semanticColor,
-  success,
-  warning,
-} from './color'
-import { isInSrgbGamut, oklchToLinearRgb, parseOklch } from '../test/oklch'
-
-const families = { neutral, primary, success, warning, danger }
+import { colorPrimitives, semanticColor, vga, win98 } from './color'
+import { parseHex } from '../test/color'
 
 describe('colour primitives', () => {
-  it.each(Object.entries(families))('%s has all eleven steps', (_name, scale) => {
-    expect(Object.keys(scale).map(Number)).toEqual([...colorSteps])
+  it.each(Object.entries(colorPrimitives))('%s is a #rrggbb value', (_name, value) => {
+    expect(() => parseHex(value)).not.toThrow()
   })
 
-  it.each(Object.entries(colorPrimitives))('%s is a parseable oklch() value', (_name, value) => {
-    expect(() => parseOklch(value)).not.toThrow()
+  // The palette is the design's, value for value. A typo here would shift a
+  // colour every component paints, so the canonical ones are pinned.
+  it('keeps the VGA and Windows 98 values exact', () => {
+    expect(vga.silver).toBe('#c0c0c0')
+    expect(vga.gray).toBe('#808080')
+    expect(vga.navy).toBe('#000080')
+    expect(vga.teal).toBe('#008080')
+    expect(win98.light).toBe('#dfdfdf')
+    expect(win98['title-blue']).toBe('#1084d0')
+    expect(win98.info).toBe('#ffffe1')
   })
 
-  // OKLCH can express colours sRGB cannot. Browsers gamut-map those by their
-  // own rules, so an unclamped token renders differently on a P3 display than
-  // on an sRGB one. Every rowkit primitive is clamped to fit.
-  it.each(Object.entries(colorPrimitives))('%s is inside the sRGB gamut', (_name, value) => {
-    const { l, c, h } = parseOklch(value)
-    expect(isInSrgbGamut(oklchToLinearRgb(l, c, h))).toBe(true)
-  })
-
-  it.each(Object.entries(families))('%s gets monotonically darker', (_name, scale) => {
-    const lightness = colorSteps.map((step) => parseOklch(scale[step]).l)
-    const descending = [...lightness].sort((a, b) => b - a)
-    expect(lightness).toEqual(descending)
+  it('names every primitive by its family', () => {
+    for (const name of Object.keys(colorPrimitives)) expect(name).toMatch(/^(vga|win98)-[a-z-]+$/)
   })
 })
 

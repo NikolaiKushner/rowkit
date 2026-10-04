@@ -7,9 +7,10 @@ import DemoBox from './components/DemoBox.vue'
 import DocsLayout from './components/DocsLayout.vue'
 import NpmVersion from './components/NpmVersion.vue'
 import TokenGrid from './components/TokenGrid.vue'
-// The Windows 98 face, loaded the way an app is told to load it.
+// The Windows 98 faces, loaded the way an app is told to load them.
 import '@fontsource/pt-sans/400.css'
 import '@fontsource/pt-sans/700.css'
+import '@fontsource/vt323/400.css'
 import './tokens.css'
 
 /**

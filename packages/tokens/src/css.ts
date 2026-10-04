@@ -1,8 +1,7 @@
-import { blur } from './blur'
 import { colorPrimitives, semanticColor } from './color'
 import { duration, easing } from './motion'
 import { radiusBase, radiusCss } from './radius'
-import { shadow } from './shadow'
+import { shadow, textShadow } from './shadow'
 import { spacing, spacingBase } from './spacing'
 import { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
 import { zIndex } from './z-index'
@@ -44,11 +43,9 @@ export function buildThemeCss(): string {
     section('radii — multiples of --radius, declared in :root below'),
     ...entries(radiusCss, (k) => `--radius-${k}`),
     '',
-    section('blur'),
-    ...entries(blur, (k) => `--blur-${k}`),
-    '',
-    section('shadows'),
+    section('bevels — box shadows'),
     ...entries(shadow, (k) => `--shadow-${k}`),
+    ...entries(textShadow, (k) => `--text-shadow-${k}`),
     '',
     section('motion'),
     // Tailwind v4's namespaces are `--transition-duration-*` and `--ease-*`.

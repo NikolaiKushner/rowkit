@@ -28,22 +28,25 @@ Note there is no `.css` on either subpath. The export is `rowkit/styles`.
 ## Typeface (recommended)
 
 rowkit's token stack leads with **PT Sans**, the closest open match to Tahoma,
-the Windows face that succeeded MS Sans Serif. The library does not ship the
-font file — load it once in the app:
+the Windows face that succeeded MS Sans Serif, and sets code and fixed-width
+numbers in **VT323**, drawn after the Fixedsys terminal font. The library does
+not ship the font files — load them once in the app:
 
 ```bash
-pnpm add @fontsource/pt-sans
+pnpm add @fontsource/pt-sans @fontsource/vt323
 ```
 
 ```css
 @import '@fontsource/pt-sans/400.css';
 @import '@fontsource/pt-sans/700.css';
+@import '@fontsource/vt323/400.css';
 @import 'tailwindcss';
 @import 'rowkit/styles';
 ```
 
-PT Sans covers Latin and Cyrillic. Skip the import and text falls through to
-system faces (Tahoma, then Microsoft Sans Serif and Verdana). Override `--font-sans` / `--font-mono` if you want a different face.
+PT Sans covers Latin and Cyrillic. Skip the imports and text falls through to
+system faces (Tahoma, then Microsoft Sans Serif and Verdana; Lucida Console for
+code). Override `--font-sans` / `--font-mono` if you want a different face.
 
 ## One theme
 

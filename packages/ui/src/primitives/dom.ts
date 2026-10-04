@@ -27,6 +27,8 @@ export function getActiveElement(): Element | null {
 export function unrefElement(
   value: Element | ComponentPublicInstance | null | undefined
 ): HTMLElement | undefined {
-  const candidate: unknown = value && '$el' in value ? value.$el : value
+  // Nothing mounted yet — and on the server, where `HTMLElement` does not exist.
+  if (!value) return undefined
+  const candidate: unknown = '$el' in value ? value.$el : value
   return candidate instanceof HTMLElement ? candidate : undefined
 }

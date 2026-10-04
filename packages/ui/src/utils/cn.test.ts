@@ -60,7 +60,10 @@ const stockScales = [
   ['spacing', 'p', Object.keys(tokens.spacing)],
 ] as const
 
-describe.each(stockScales)('%s tokens collide with each other', (_scale, prefix, names) => {
+// A scale of one token has nothing to collide with.
+const collidingScales = stockScales.filter(([, , names]) => names.length > 1)
+
+describe.each(collidingScales)('%s tokens collide with each other', (_scale, prefix, names) => {
   it.each(names.flatMap((a) => names.filter((b) => b !== a).map((b) => [a, b] as const)))(
     `${prefix}-%s then ${prefix}-%s resolves to the second`,
     (first, second) => {

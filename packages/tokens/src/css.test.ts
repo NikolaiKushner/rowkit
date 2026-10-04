@@ -3,7 +3,7 @@ import { colorPrimitives, semanticColor } from './color'
 import { buildThemeCss } from './css'
 import { duration, easing } from './motion'
 import { radius } from './radius'
-import { shadow } from './shadow'
+import { shadow, textShadow } from './shadow'
 import { spacing } from './spacing'
 import { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
 import { zIndex } from './z-index'
@@ -41,6 +41,7 @@ describe('every token reaches the stylesheet', () => {
     ['line heights', lineHeight, '--leading-'],
     ['radii', radius, '--radius-'],
     ['shadows', shadow, '--shadow-'],
+    ['text shadows', textShadow, '--text-shadow-'],
     // These prefixes are Tailwind v4 theme namespaces, not free-form names —
     // see the note in css.ts. packages/ui/src/styles/theme.test.ts compiles
     // them for real and is what catches a wrong one.
