@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
 import { Separator, version } from 'rowkit'
+import StartMenu from './StartMenu.vue'
 
 /**
  * The taskbar along the bottom of the screen: Start, the page on screen as
  * the one task, and the tray — the version (to the changelog), GitHub and a
  * clock. 28px, raised, the Win98 way round: light outer edge on top.
+ *
+ * Start opens the Start menu and stays pressed while it is open. Opened from
+ * the keyboard, the menu starts on its first item; by the pointer, on none.
  */
 defineProps<{
   /** The task's label: the page title. */
@@ -38,17 +42,40 @@ onMounted(() => {
   timer = setInterval(tick, 10_000)
 })
 onBeforeUnmount(() => clearInterval(timer))
+
+const start = ref<HTMLButtonElement>()
+const menu = ref<{ focusFirst: () => void; focusPanel: () => void }>()
+const startOpen = ref(false)
+
+function toggleStart(event: MouseEvent): void {
+  startOpen.value = !startOpen.value
+  if (!startOpen.value) return
+  // A click from Enter or Space has no pointer position.
+  const fromKeyboard = event.detail === 0
+  void nextTick(() => (fromKeyboard ? menu.value?.focusFirst() : menu.value?.focusPanel()))
+}
+
+function closeStart(focusStart: boolean): void {
+  startOpen.value = false
+  if (focusStart) start.value?.focus()
+}
 </script>
 
 <template>
   <footer class="rk-taskbar flex h-7 shrink-0 items-center gap-1 bg-card p-0.5">
-    <a
-      :href="withBase('/')"
-      class="flex h-[22px] shrink-0 items-center gap-1 pr-1.5 pl-0.5 font-bold text-ui text-foreground no-underline shadow-raised outline-none active:shadow-pressed [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
+    <button
+      ref="start"
+      type="button"
+      aria-haspopup="menu"
+      :aria-expanded="startOpen"
+      class="flex h-[22px] shrink-0 items-center gap-1 pr-1.5 pl-0.5 font-bold text-ui text-foreground outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
+      :class="startOpen ? 'pt-px pl-[3px] shadow-pressed' : 'shadow-raised active:shadow-pressed'"
+      @click="toggleStart"
     >
       <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" />
       <span class="px-px">Start</span>
-    </a>
+    </button>
+    <StartMenu v-if="startOpen" ref="menu" :anchor="start" @close="closeStart" />
     <Separator orientation="vertical" decorative class="h-[22px] self-center" />
     <!--
       The one task: this page. Active, so pressed in over the dither. Two

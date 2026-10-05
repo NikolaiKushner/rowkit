@@ -1,13 +1,5 @@
 <script setup lang="ts">
-import {
-  computed,
-  defineAsyncComponent,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Content, useData, useRoute, useRouter, withBase, type DefaultTheme } from 'vitepress'
 import {
   ArrowLeft32Icon,
@@ -24,6 +16,7 @@ import {
   WindowTitleBar,
 } from 'rowkit'
 import FolderTree from './FolderTree.vue'
+import { openFind } from './useFind'
 import PageHeader from './PageHeader.vue'
 import PageOutline from './PageOutline.vue'
 import SiteAddressBar from './SiteAddressBar.vue'
@@ -103,15 +96,6 @@ onBeforeUnmount(() => {
 const toDesktop = () => void router.go(withBase('/'))
 const goBack = () => history.back()
 const goForward = () => history.forward()
-
-/*
- * Find opens VitePress's own local search until the Find window from the
- * design replaces it. Loaded on demand: the index is only fetched when used.
- */
-const VPLocalSearchBox = defineAsyncComponent(
-  () => import('vitepress/dist/client/theme-default/components/VPLocalSearchBox.vue')
-)
-const searching = ref(false)
 </script>
 
 <template>
@@ -146,7 +130,7 @@ const searching = ref(false)
           <ArrowUp32Icon />
         </SiteToolbarButton>
         <Separator orientation="vertical" decorative class="mt-1 h-11 self-start" />
-        <SiteToolbarButton label="Find" @click="searching = true">
+        <SiteToolbarButton label="Find" @click="openFind">
           <Search32Icon />
         </SiteToolbarButton>
       </div>
@@ -205,6 +189,5 @@ const searching = ref(false)
       </StatusBar>
     </Window>
     <SiteTaskbar :task="windowTitle" />
-    <VPLocalSearchBox v-if="searching" @close="searching = false" />
   </div>
 </template>
