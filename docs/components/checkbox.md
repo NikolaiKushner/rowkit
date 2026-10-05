@@ -6,25 +6,80 @@ The Windows 98 check box: a 13×13 sunken box beside its label. A native
 `<input type="checkbox">` underneath, so it submits with a form, answers
 <kbd>Space</kbd>, and is announced as a check box with no extra work.
 
-```vue
-<Checkbox v-model="remember" label="Remember me" />
-```
-
 <script setup>
-import { ref } from 'vue'
-const remember = ref(true)
-const email = ref(true)
-const sms = ref(false)
+import CheckboxBasic from '../examples/checkbox/CheckboxBasic.vue'
+import CheckboxStates from '../examples/checkbox/CheckboxStates.vue'
+import CheckboxSelectAll from '../examples/checkbox/CheckboxSelectAll.vue'
+import CheckboxDependent from '../examples/checkbox/CheckboxDependent.vue'
+import CheckboxConsent from '../examples/checkbox/CheckboxConsent.vue'
+import CheckboxForm from '../examples/checkbox/CheckboxForm.vue'
 </script>
 
-<DemoBox layout="stack">
-  <Checkbox v-model="remember" label="Remember me" />
-  <GroupBox legend="Notify me by" class="w-[220px]">
-    <Checkbox v-model="email" label="Email" />
-    <Checkbox v-model="sms" label="Text message" />
-    <Checkbox label="Everything" :indeterminate="email !== sms" :model-value="email && sms" @update:model-value="(v) => { email = v; sms = v }" />
-  </GroupBox>
+<DemoBox>
+  <CheckboxBasic />
 </DemoBox>
+
+<<< @/examples/checkbox/CheckboxBasic.vue
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### States
+
+Unchecked, checked, indeterminate — the 7×2 bar for «some of these» — and
+disabled, which greys the box to silver and embosses the label.
+
+<DemoBox>
+  <CheckboxStates />
+</DemoBox>
+
+<<< @/examples/checkbox/CheckboxStates.vue
+
+### Select all
+
+A parent box over a group: checked when every child is, indeterminate when
+some are, and a click sets them all.
+
+<DemoBox>
+  <CheckboxSelectAll />
+</DemoBox>
+
+<<< @/examples/checkbox/CheckboxSelectAll.vue
+
+### Options that depend on another
+
+A sub-option that means nothing while its parent is off is disabled, not
+hidden — the person can see what turning the parent on would offer.
+
+<DemoBox>
+  <CheckboxDependent />
+</DemoBox>
+
+<<< @/examples/checkbox/CheckboxDependent.vue
+
+### Agreeing to terms
+
+The default slot takes markup, so the label can hold a link. The submit button
+waits for the box.
+
+<DemoBox>
+  <CheckboxConsent />
+</DemoBox>
+
+<<< @/examples/checkbox/CheckboxConsent.vue
+
+### In a native form
+
+A real `<input type="checkbox">` underneath: with a `name` and `value`, checked
+boxes submit with the form and unchecked ones send nothing.
+
+<DemoBox>
+  <CheckboxForm />
+</DemoBox>
+
+<<< @/examples/checkbox/CheckboxForm.vue
 
 ## Look
 

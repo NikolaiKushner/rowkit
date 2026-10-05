@@ -6,23 +6,76 @@ The Windows 98 option button: a 12×12 round well beside its label. One choice
 from a few. Native `<input type="radio">`s sharing a `name`, so the arrow keys
 move the choice and the browser keeps it to one.
 
-```vue
-<Radio v-model="plan" name="plan" value="free" label="Free" />
-<Radio v-model="plan" name="plan" value="pro" label="Pro" />
-```
-
 <script setup>
-import { ref } from 'vue'
-const plan = ref('free')
+import RadioBasic from '../examples/radio/RadioBasic.vue'
+import RadioDescriptions from '../examples/radio/RadioDescriptions.vue'
+import RadioInline from '../examples/radio/RadioInline.vue'
+import RadioReveal from '../examples/radio/RadioReveal.vue'
+import RadioNumbers from '../examples/radio/RadioNumbers.vue'
+import RadioStates from '../examples/radio/RadioStates.vue'
 </script>
 
 <DemoBox>
-  <GroupBox legend="Plan" class="w-[200px]">
-    <Radio v-model="plan" name="docs-plan" value="free" label="Free" />
-    <Radio v-model="plan" name="docs-plan" value="pro" label="Pro" />
-    <Radio v-model="plan" name="docs-plan" value="team" label="Team" disabled />
-  </GroupBox>
+  <RadioBasic />
 </DemoBox>
+
+<<< @/examples/radio/RadioBasic.vue
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### With a description
+
+The default slot takes markup: a bold title, a line of detail, a price.
+
+<DemoBox>
+  <RadioDescriptions />
+</DemoBox>
+
+<<< @/examples/radio/RadioDescriptions.vue
+
+### Side by side
+
+Short choices — alignment, orientation — sit in a row inside their group box.
+
+<DemoBox>
+  <RadioInline />
+</DemoBox>
+
+<<< @/examples/radio/RadioInline.vue
+
+### A choice that needs more
+
+The last option enables its own field; the others leave it disabled.
+
+<DemoBox>
+  <RadioReveal />
+</DemoBox>
+
+<<< @/examples/radio/RadioReveal.vue
+
+### Number values
+
+Values do not have to be strings: with numbers, `v-model` stays a number.
+
+<DemoBox>
+  <RadioNumbers />
+</DemoBox>
+
+<<< @/examples/radio/RadioNumbers.vue
+
+### Required, with no default
+
+Nothing is picked until the person picks; `required` makes the browser ask
+before the form submits. A sold-out option stays visible but disabled.
+
+<DemoBox>
+  <RadioStates />
+</DemoBox>
+
+<<< @/examples/radio/RadioStates.vue
 
 ## Look
 

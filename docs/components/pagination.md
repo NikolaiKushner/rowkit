@@ -5,35 +5,86 @@
 Page controls for a table: a range summary, a rows-per-page control, and page
 numbers.
 
-```vue
-<Pagination v-model:page="page" v-model:page-size="pageSize" :total="247" />
-```
-
 <script setup>
-import { ref } from 'vue'
-
-const page = ref(1)
-const pageSize = ref(10)
+import PaginationBasic from '../examples/pagination/PaginationBasic.vue'
+import PaginationTable from '../examples/pagination/PaginationTable.vue'
+import PaginationStatusBar from '../examples/pagination/PaginationStatusBar.vue'
+import PaginationSummary from '../examples/pagination/PaginationSummary.vue'
+import PaginationSiblings from '../examples/pagination/PaginationSiblings.vue'
+import PaginationLoading from '../examples/pagination/PaginationLoading.vue'
 </script>
 
 <DemoBox layout="stack">
-  <Pagination
-    v-model:page="page"
-    v-model:page-size="pageSize"
-    :total="247"
-    label="Example pagination"
-  />
-  <p class="!my-0 text-ui">
-    page {{ page }} · {{ pageSize }} per page
-  </p>
+  <PaginationBasic />
 </DemoBox>
 
+<<< @/examples/pagination/PaginationBasic.vue
+
 Go to page 3 — rows 21–30 — then switch to 50 per page. You stay on page 3 and
-the summary reads 101–150: a completely different set of rows, and deliberately
-so. The component reports both changes and lets the application decide what
-follows, because the right answer differs between "reset to page 1" and "keep
-the user near the row they were reading", and a component cannot know which one
-you meant.
+the summary reads 101–150: a different set of rows, and deliberately so. The
+component reports both changes and lets the application decide what follows,
+because «reset to page 1» and «keep the person near the row they were reading»
+are both right somewhere, and a component cannot know which one you meant.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Paging a table
+
+Slice the rows you hold by `page` and `pageSize`. The component reports a new
+page size and leaves the page alone — here a watcher starts again at page 1.
+
+<DemoBox layout="stack">
+  <PaginationTable />
+</DemoBox>
+
+<<< @/examples/pagination/PaginationTable.vue
+
+### In a status bar
+
+`size="sm"` with `hide-page-size` and `hide-summary` fits a window's status
+bar, the range in the section beside it.
+
+<DemoBox layout="stack">
+  <PaginationStatusBar />
+</DemoBox>
+
+<<< @/examples/pagination/PaginationStatusBar.vue
+
+### Your own summary
+
+The `summary` slot gets `from`, `to` and `total`: word it your way and format
+the numbers.
+
+<DemoBox layout="stack">
+  <PaginationSummary />
+</DemoBox>
+
+<<< @/examples/pagination/PaginationSummary.vue
+
+### How many pages to show
+
+`sibling-count` sets how many pages show either side of the current one — `0`
+for the narrowest space, `1` by default. The first and last pages always show,
+so the extent of the list is never hidden.
+
+<DemoBox layout="stack">
+  <PaginationSiblings />
+</DemoBox>
+
+<<< @/examples/pagination/PaginationSiblings.vue
+
+### While a page loads
+
+`disabled` while the next page loads, so clicks do not pile up requests.
+
+<DemoBox layout="stack">
+  <PaginationLoading />
+</DemoBox>
+
+<<< @/examples/pagination/PaginationLoading.vue
 
 ## Look
 
