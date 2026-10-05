@@ -37,6 +37,13 @@ export interface PaginationProps {
   nextLabel?: string
   /** Button height: 17px at `sm`, 21px at `md`. */
   size?: NonNullable<PaginationVariants['size']>
+  /**
+   * Draws «Back» and «Next» as arrows alone, so the row fits a phone. The
+   * words stay as the buttons' accessible names. `auto` does it below 640px,
+   * in CSS — nothing shifts on load; `true` always, for a narrow panel;
+   * `false` never.
+   */
+  compact?: boolean | 'auto'
   /** Disables every control. */
   disabled?: boolean
   /** Additional classes, merged so a consumer's utility wins. */

@@ -16,6 +16,7 @@ interface PaginationArgs {
   hidePageSize: boolean
   hideSummary: boolean
   size: (typeof sizes)[number]
+  compact: boolean | 'auto'
   disabled: boolean
 }
 
@@ -43,6 +44,7 @@ const meta: Meta<PaginationArgs> = {
     hidePageSize: false,
     hideSummary: false,
     size: 'md',
+    compact: 'auto',
     disabled: false,
   },
   argTypes: {
@@ -52,6 +54,7 @@ const meta: Meta<PaginationArgs> = {
     hidePageSize: { control: 'boolean' },
     hideSummary: { control: 'boolean' },
     size: { control: 'inline-radio', options: sizes },
+    compact: { control: 'inline-radio', options: ['auto', true, false] },
     disabled: { control: 'boolean' },
   },
   render: (args) => stateful(args),
@@ -110,6 +113,16 @@ export const Sizes: Story = {
       </div>
     `,
   }),
+}
+
+/**
+ * Back and Next as arrows alone, mid-list, so the row fits a phone or a
+ * narrow panel. The words stay as the buttons' names. `compact: 'auto'`, the
+ * default, does this below 640px.
+ */
+export const Compact: Story = {
+  args: { compact: true, hidePageSize: true },
+  render: (args) => stateful(args, 12),
 }
 
 /** Numbers only, for a compact toolbar. */

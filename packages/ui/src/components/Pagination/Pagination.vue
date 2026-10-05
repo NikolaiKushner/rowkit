@@ -17,6 +17,7 @@ import {
   paginationNavVariants,
   paginationStepVariants,
   paginationSummaryVariants,
+  paginationStepLabelVariants,
   paginationVariants,
 } from './Pagination.variants'
 
@@ -35,6 +36,7 @@ const props = withDefaults(defineProps<PaginationProps>(), {
   previousLabel: 'Back',
   nextLabel: 'Next',
   size: 'md',
+  compact: 'auto',
   disabled: false,
 })
 
@@ -81,6 +83,11 @@ const lastPage = computed(() => pageCount(props.total, pageSize.value))
 
 const items = computed(() =>
   pageItems(page.value, lastPage.value, props.siblingCount, props.showEdges)
+)
+
+/** `compact` as a variant key: below 640px, always, or never. */
+const compactKey = computed(() =>
+  props.compact === 'auto' ? 'auto' : props.compact ? 'always' : 'never'
 )
 
 /** The page buttons are Button at its two smallest sizes: 17px and 21px. */
@@ -131,11 +138,13 @@ function goTo(target: number): void {
         :size="buttonSize"
         data-type="previous"
         :disabled="isDisabled || page === 1"
-        :class="paginationStepVariants()"
+        :class="paginationStepVariants({ compact: compactKey })"
         @click="goTo(page - 1)"
       >
         <template #leading><TriangleLeftIcon /></template>
-        {{ props.previousLabel }}
+        <span :class="paginationStepLabelVariants({ compact: compactKey })">{{
+          props.previousLabel
+        }}</span>
       </Button>
 
       <template v-for="(item, index) in items" :key="index">
@@ -173,10 +182,12 @@ function goTo(target: number): void {
         :size="buttonSize"
         data-type="next"
         :disabled="isDisabled || page === lastPage"
-        :class="paginationStepVariants()"
+        :class="paginationStepVariants({ compact: compactKey })"
         @click="goTo(page + 1)"
       >
-        {{ props.nextLabel }}
+        <span :class="paginationStepLabelVariants({ compact: compactKey })">{{
+          props.nextLabel
+        }}</span>
         <template #trailing><TriangleRightIcon /></template>
       </Button>
     </nav>

@@ -36,8 +36,33 @@ export const paginationItemVariants = cva('px-1', {
   defaultVariants: { size: 'md' },
 })
 
-/** «◀ Back» and «Next ▶»: as wide as their label, 8px in from each side. */
-export const paginationStepVariants = cva('min-w-0 px-2')
+/**
+ * «◀ Back» and «Next ▶»: as wide as their label, 8px in from each side.
+ * Compact, the label is read but not drawn, and the arrow sits in a button
+ * as narrow as a page number's.
+ */
+export const paginationStepVariants = cva('min-w-0', {
+  variants: {
+    compact: {
+      auto: 'px-2 max-sm:px-1',
+      always: 'px-1',
+      never: 'px-2',
+    },
+  },
+  defaultVariants: { compact: 'auto' },
+})
+
+/** The words «Back» and «Next», hidden but still read when compact. */
+export const paginationStepLabelVariants = cva('', {
+  variants: {
+    compact: {
+      auto: 'max-sm:sr-only',
+      always: 'sr-only',
+      never: '',
+    },
+  },
+  defaultVariants: { compact: 'auto' },
+})
 
 /** The gap in a long run of pages: an ellipsis in a page-button-sized box. */
 export const paginationEllipsisVariants = cva(

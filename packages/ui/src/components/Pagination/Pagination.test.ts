@@ -170,6 +170,28 @@ describe('Pagination', () => {
     })
   })
 
+  describe('compact', () => {
+    const step = (el: ReturnType<typeof setup>, type: string) => el.find(`[data-type="${type}"]`)
+
+    it('hides the words below 640px by default, in CSS', () => {
+      const el = setup()
+      expect(step(el, 'previous').find('span.max-sm\\:sr-only').text()).toBe('Back')
+      expect(step(el, 'next').find('span.max-sm\\:sr-only').text()).toBe('Next')
+    })
+
+    it('always draws arrows alone when true, keeping the words as names', () => {
+      const el = setup({ compact: true })
+      expect(step(el, 'previous').find('span.sr-only').text()).toBe('Back')
+      expect(step(el, 'previous').text()).toBe('Back')
+    })
+
+    it('never hides the words when false', () => {
+      const el = setup({ compact: false })
+      expect(step(el, 'next').find('span').classes()).not.toContain('sr-only')
+      expect(step(el, 'next').find('span').classes()).not.toContain('max-sm:sr-only')
+    })
+  })
+
   describe('class forwarding', () => {
     it('merges a consumer class onto the root', () => {
       expect(setup({ class: 'gap-8' }).classes()).toContain('gap-8')

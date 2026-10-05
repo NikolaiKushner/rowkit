@@ -26,6 +26,11 @@ component reports both changes and lets the application decide what follows,
 because «reset to page 1» and «keep the person near the row they were reading»
 are both right somewhere, and a component cannot know which one you meant.
 
+On a screen narrower than 640px, «Back» and «Next» become arrows alone, so the
+row fits a phone; the words stay as the buttons' names. `compact` sets it —
+`true` for a narrow side panel on a wide screen, `false` to keep the words
+everywhere.
+
 ## Examples
 
 Each example below is the whole component: copy it into a `.vue` file and it
@@ -125,21 +130,22 @@ Nothing animates.
 
 <!-- @props PaginationProps -->
 
-| Prop              | Type           | Default                   | Description                                                                 |
-| ----------------- | -------------- | ------------------------- | --------------------------------------------------------------------------- |
-| `total`           | `number`       | **required**              | Total number of rows across all pages.                                      |
-| `pageSizeOptions` | `number[]`     | `() => [10, 25, 50, 100]` | Choices offered in the rows-per-page control.                               |
-| `siblingCount`    | `number`       | `1`                       | How many page numbers to show on each side of the current one.              |
-| `showEdges`       | `boolean`      | `true`                    | Always show the first and last page, with ellipses between.                 |
-| `hidePageSize`    | `boolean`      | `false`                   | Hides the rows-per-page control.                                            |
-| `hideSummary`     | `boolean`      | `false`                   | Hides the "1–10 of 247" summary.                                            |
-| `pageSizeLabel`   | `string`       | `'Rows per page'`         | Label for the rows-per-page control.                                        |
-| `label`           | `string`       | `'Pagination'`            | Accessible name for the navigation region.                                  |
-| `previousLabel`   | `string`       | `'Back'`                  | Label of the previous-page button, shown beside its ◀ and used as its name. |
-| `nextLabel`       | `string`       | `'Next'`                  | Label of the next-page button, shown beside its ▶ and used as its name.     |
-| `size`            | `'sm' \| 'md'` | `'md'`                    | Button height: 17px at `sm`, 21px at `md`.                                  |
-| `disabled`        | `boolean`      | `false`                   | Disables every control.                                                     |
-| `class`           | `string`       | —                         | Additional classes, merged so a consumer's utility wins.                    |
+| Prop              | Type                | Default                   | Description                                                                 |
+| ----------------- | ------------------- | ------------------------- | --------------------------------------------------------------------------- |
+| `total`           | `number`            | **required**              | Total number of rows across all pages.                                      |
+| `pageSizeOptions` | `number[]`          | `() => [10, 25, 50, 100]` | Choices offered in the rows-per-page control.                               |
+| `siblingCount`    | `number`            | `1`                       | How many page numbers to show on each side of the current one.              |
+| `showEdges`       | `boolean`           | `true`                    | Always show the first and last page, with ellipses between.                 |
+| `hidePageSize`    | `boolean`           | `false`                   | Hides the rows-per-page control.                                            |
+| `hideSummary`     | `boolean`           | `false`                   | Hides the "1–10 of 247" summary.                                            |
+| `pageSizeLabel`   | `string`            | `'Rows per page'`         | Label for the rows-per-page control.                                        |
+| `label`           | `string`            | `'Pagination'`            | Accessible name for the navigation region.                                  |
+| `previousLabel`   | `string`            | `'Back'`                  | Label of the previous-page button, shown beside its ◀ and used as its name. |
+| `nextLabel`       | `string`            | `'Next'`                  | Label of the next-page button, shown beside its ▶ and used as its name.     |
+| `size`            | `'sm' \| 'md'`      | `'md'`                    | Button height: 17px at `sm`, 21px at `md`.                                  |
+| `compact`         | `boolean \| 'auto'` | `'auto'`                  | Draws «Back» and «Next» as arrows alone, so the row fits a phone.           |
+| `disabled`        | `boolean`           | `false`                   | Disables every control.                                                     |
+| `class`           | `string`            | —                         | Additional classes, merged so a consumer's utility wins.                    |
 
 <!-- /@props -->
 

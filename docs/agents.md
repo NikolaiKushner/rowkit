@@ -436,6 +436,7 @@ handling.
 - `previousLabel: string` — default `'Back'`. Label of the previous-page button, shown beside its ◀ and used as its name.
 - `nextLabel: string` — default `'Next'`. Label of the next-page button, shown beside its ▶ and used as its name.
 - `size: 'sm' | 'md'` — default `'md'`. Button height: 17px at `sm`, 21px at `md`.
+- `compact: boolean | 'auto'` — default `'auto'`. Draws «Back» and «Next» as arrows alone, so the row fits a phone. The words stay as the buttons' accessible names. `auto` does it below 640px, in CSS — nothing shifts on load; `true` always, for a narrow panel; `false` never.
 - `disabled: boolean` — default `false`. Disables every control.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
 
