@@ -25,6 +25,78 @@
     margin: 16px 0 0;
   }
 
+  /*
+   * Inside a live demo, VitePress's article styles step back. Its `.vp-doc`
+   * rules give every <p> 16px margins and a 28px line, underline and recolour
+   * every <a>, frame every table cell — and a component that leaves one of
+   * those properties unset would inherit it: a Field's hint drifting 30px
+   * below its input, a Button rendered as a link underlined. This layer sits
+   * after VitePress's and before the components' own utilities, so it
+   * clears the leak without overriding anything a component sets.
+   */
+  .rk-page .rk-demo :where(p, blockquote, h1, h2, h3, h4, h5, h6, ul, ol, hr, summary) {
+    margin: 0;
+  }
+
+  .rk-page .rk-demo :where(p, blockquote) {
+    line-height: inherit;
+  }
+
+  .rk-page .rk-demo :where(h1, h2, h3, h4, h5, h6) {
+    padding: 0;
+    border: 0;
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  .rk-page .rk-demo :where(a) {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: none;
+  }
+
+  .rk-page .rk-demo :where(strong) {
+    font-weight: 700;
+  }
+
+  .rk-page .rk-demo :where(ul, ol) {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .rk-page .rk-demo :where(li + li) {
+    margin-top: 0;
+  }
+
+  .rk-page .rk-demo :where(table) {
+    display: table;
+    margin: 0;
+    overflow: visible;
+  }
+
+  .rk-page .rk-demo :where(tr, th, td) {
+    border: 0;
+    background: none;
+  }
+
+  .rk-page .rk-demo :where(th, td) {
+    padding: 0;
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+    color: inherit;
+  }
+
+  .rk-page .rk-demo :where(:not(pre) > code) {
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    font-size: inherit;
+    color: inherit;
+  }
+
   /* The page's own h1 is the header above the content. */
   .rk-page h1:not(.rk-demo *) {
     display: none;
