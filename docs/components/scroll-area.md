@@ -7,22 +7,50 @@ buttons, a dithered track and a raised thumb, identical in every browser. The
 content scrolls natively (wheel, touchpad, touch, keyboard); only the bars are
 drawn. They sit beside and below the content, never over it.
 
-```vue
-<ScrollArea label="Event log" class="h-64 w-80">
-  <p v-for="entry in log" :key="entry.id">{{ entry.text }}</p>
-</ScrollArea>
-```
+<script setup>
+import ScrollAreaBasic from '../examples/scroll-area/ScrollAreaBasic.vue'
+import ScrollAreaHorizontal from '../examples/scroll-area/ScrollAreaHorizontal.vue'
+import ScrollAreaListBox from '../examples/scroll-area/ScrollAreaListBox.vue'
+</script>
 
 <DemoBox>
-  <ScrollArea label="Example" class="h-40 w-80 bg-input p-0.5 text-ui shadow-sunken">
-    <p v-for="n in 20" :key="n" class="m-0 px-1">Line {{ n }} of a long list.</p>
-  </ScrollArea>
+  <ScrollAreaBasic />
 </DemoBox>
 
+<<< @/examples/scroll-area/ScrollAreaBasic.vue
+
 Give the root a size — `h-*`, `max-h-*`, `w-*` — through `class`. The bars
-appear on whichever axis the content outgrows. To draw them even when nothing
-overflows, as a fixed list box does, set `scrollbars="always"`: a bar with
-nothing to scroll greys its arrows and has no thumb.
+appear on whichever axis the content outgrows; the content scrolls natively,
+by wheel, touchpad, touch and keyboard, and only the bars are drawn.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Sideways
+
+Content wider than its box gets a bar along the bottom, below the content —
+never over it.
+
+<DemoBox>
+  <ScrollAreaHorizontal />
+</DemoBox>
+
+<<< @/examples/scroll-area/ScrollAreaHorizontal.vue
+
+### A list box
+
+A list longer than its box gets the vertical bar only. To draw the bars even
+when nothing overflows, as a fixed Windows 98 list box does, set
+`scrollbars="always"`: with nothing to scroll, the arrows grey and there is no
+thumb.
+
+<DemoBox>
+  <ScrollAreaListBox />
+</DemoBox>
+
+<<< @/examples/scroll-area/ScrollAreaListBox.vue
 
 ## How the bars behave
 

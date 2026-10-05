@@ -5,37 +5,60 @@
 A Windows 98 toolbar group: related buttons edge to edge, each keeping its own
 bevel. Ghost buttons are the toolbar look — flat until hovered.
 
-```vue
-<ButtonGroup aria-label="Selection">
-  <ButtonGroup>
-    <Button variant="ghost">Export</Button>
-    <Button variant="ghost">Delete</Button>
-  </ButtonGroup>
-  <Separator orientation="vertical" />
-  <ButtonGroup>
-    <Button variant="ghost">Archive</Button>
-    <Button variant="ghost">Report</Button>
-  </ButtonGroup>
-</ButtonGroup>
-```
+<script setup>
+import ButtonGroupBasic from '../examples/button-group/ButtonGroupBasic.vue'
+import ButtonGroupZoom from '../examples/button-group/ButtonGroupZoom.vue'
+import ButtonGroupVertical from '../examples/button-group/ButtonGroupVertical.vue'
+import ButtonGroupDialog from '../examples/button-group/ButtonGroupDialog.vue'
+</script>
 
 <DemoBox>
-  <ButtonGroup aria-label="Selection">
-    <ButtonGroup>
-      <Button variant="ghost">Export</Button>
-      <Button variant="ghost">Delete</Button>
-    </ButtonGroup>
-    <Separator orientation="vertical" />
-    <ButtonGroup>
-      <Button variant="ghost">Archive</Button>
-      <Button variant="ghost">Report</Button>
-    </ButtonGroup>
-  </ButtonGroup>
+  <ButtonGroupBasic />
 </DemoBox>
+
+<<< @/examples/button-group/ButtonGroupBasic.vue
 
 Nest groups to show separate units: they sit 4px apart, and a vertical
 [`Separator`](./separator.md) between them draws the etched line of the Figma
 toolbars. Children keep their own `variant` and `size`; nothing is merged.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Raised buttons, edge to edge
+
+Secondary buttons in a group keep their own bevels: zoom out, the level —
+which resets it — and zoom in.
+
+<DemoBox>
+  <ButtonGroupZoom />
+</DemoBox>
+
+<<< @/examples/button-group/ButtonGroupZoom.vue
+
+### Vertical
+
+`orientation="vertical"` stacks the buttons, each the full width — a tool
+palette down the side of a window.
+
+<DemoBox>
+  <ButtonGroupVertical />
+</DemoBox>
+
+<<< @/examples/button-group/ButtonGroupVertical.vue
+
+### A dialog's command row
+
+OK, Cancel, Apply: the default first, as Windows 98 orders them, 6px
+apart.
+
+<DemoBox>
+  <ButtonGroupDialog />
+</DemoBox>
+
+<<< @/examples/button-group/ButtonGroupDialog.vue
 
 ## When to use
 

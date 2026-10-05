@@ -5,19 +5,44 @@
 The Windows 98 group box: an etched frame with its legend sitting on the top
 line. It groups the controls of one part of a form, or frames an example.
 
-```vue
-<GroupBox legend="Shipping address">
-  <Field layout="left" label="Street"><Input v-model="street" /></Field>
-  <Field layout="left" label="City"><Input v-model="city" /></Field>
-</GroupBox>
-```
+<script setup>
+import GroupBoxBasic from '../examples/group-box/GroupBoxBasic.vue'
+import GroupBoxSettings from '../examples/group-box/GroupBoxSettings.vue'
+import GroupBoxSection from '../examples/group-box/GroupBoxSection.vue'
+</script>
 
 <DemoBox>
-  <GroupBox legend="Shipping address" class="w-[320px] [--rk-field-label-width:4rem]">
-    <Field layout="left" label="Street"><Input model-value="12 Analytical Row" /></Field>
-    <Field layout="left" label="City"><Input model-value="London" /></Field>
-  </GroupBox>
+  <GroupBoxBasic />
 </DemoBox>
+
+<<< @/examples/group-box/GroupBoxBasic.vue
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### A settings page
+
+Groups side by side, each with its own legend: option buttons in one,
+check boxes in the other, as Windows 98 Display Properties lays them out.
+
+<DemoBox>
+  <GroupBoxSettings />
+</DemoBox>
+
+<<< @/examples/group-box/GroupBoxSettings.vue
+
+### Framing content that is not a form
+
+`as="section"` frames read-only content — a summary, a definition list —
+named by its legend. The default `fieldset` is for controls.
+
+<DemoBox>
+  <GroupBoxSection />
+</DemoBox>
+
+<<< @/examples/group-box/GroupBoxSection.vue
 
 ## Look
 

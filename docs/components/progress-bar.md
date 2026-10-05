@@ -6,15 +6,56 @@ The Windows 98 block progress bar: navy blocks filling a sunken track, whole
 blocks only. For a task whose progress you can measure — an upload, an
 import, a long copy.
 
-```vue
-<ProgressBar :value="uploaded" :max="total" aria-label="Uploading report.pdf" />
-```
+<script setup>
+import ProgressBarBasic from '../examples/progress-bar/ProgressBarBasic.vue'
+import ProgressBarUpload from '../examples/progress-bar/ProgressBarUpload.vue'
+import ProgressBarSteps from '../examples/progress-bar/ProgressBarSteps.vue'
+import ProgressBarStatusBar from '../examples/progress-bar/ProgressBarStatusBar.vue'
+</script>
 
-<DemoBox layout="stack">
-  <ProgressBar :value="25" aria-label="25 percent" class="w-[200px]" />
-  <ProgressBar :value="60" aria-label="60 percent" class="w-[200px]" />
-  <ProgressBar :value="100" aria-label="Done" class="w-[200px]" />
+<DemoBox>
+  <ProgressBarBasic />
 </DemoBox>
+
+<<< @/examples/progress-bar/ProgressBarBasic.vue
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### An upload you can cancel
+
+`max` in the task's own unit — kilobytes here — and the numbers beside the
+bar, because blocks alone do not say how long is left.
+
+<DemoBox>
+  <ProgressBarUpload />
+</DemoBox>
+
+<<< @/examples/progress-bar/ProgressBarUpload.vue
+
+### Counted steps
+
+Progress through a count rather than a size: 3 of 12 files. The accessible
+name says the count, too.
+
+<DemoBox>
+  <ProgressBarSteps />
+</DemoBox>
+
+<<< @/examples/progress-bar/ProgressBarSteps.vue
+
+### In a status bar
+
+Beside the words for what is happening, in a section of a window's status
+bar.
+
+<DemoBox>
+  <ProgressBarStatusBar />
+</DemoBox>
+
+<<< @/examples/progress-bar/ProgressBarStatusBar.vue
 
 ## Look
 

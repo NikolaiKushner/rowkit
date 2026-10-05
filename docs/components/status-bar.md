@@ -6,21 +6,44 @@ The strip along the bottom of a Windows 98 window: sunken cells on the silver
 face, each holding a line of status. The first cell takes the width the others
 leave; give the rest a width.
 
-```vue
-<StatusBar>
-  <StatusBarSection>Users 1–25 of 312</StatusBarSection>
-  <StatusBarSection class="w-[100px]">3 selected</StatusBarSection>
-  <StatusBarSection class="w-[100px]">Page 1 of 13</StatusBarSection>
-</StatusBar>
-```
+<script setup>
+import StatusBarBasic from '../examples/status-bar/StatusBarBasic.vue'
+import StatusBarEditor from '../examples/status-bar/StatusBarEditor.vue'
+import StatusBarIcons from '../examples/status-bar/StatusBarIcons.vue'
+</script>
 
-<DemoBox>
-  <StatusBar>
-    <StatusBarSection>Users 1–25 of 312</StatusBarSection>
-    <StatusBarSection class="w-[100px]">3 selected</StatusBarSection>
-    <StatusBarSection class="w-[100px]">Page 1 of 13</StatusBarSection>
-  </StatusBar>
+<DemoBox layout="stack">
+  <StatusBarBasic />
 </DemoBox>
+
+<<< @/examples/status-bar/StatusBarBasic.vue
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Following what the person does
+
+An editor's status bar: the word count, the caret's line and column, the
+encoding — each in its own sunken section, updated as you type or click.
+
+<DemoBox layout="stack">
+  <StatusBarEditor />
+</DemoBox>
+
+<<< @/examples/status-bar/StatusBarEditor.vue
+
+### Icons and live status
+
+A section can hold an icon beside its text, or a link. `aria-live` on the
+section reads a change out — «Saving…», then «All changes saved».
+
+<DemoBox layout="stack">
+  <StatusBarIcons />
+</DemoBox>
+
+<<< @/examples/status-bar/StatusBarIcons.vue
 
 ## Look
 

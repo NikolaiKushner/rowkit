@@ -6,29 +6,62 @@ A loading placeholder shaped like the content it stands in for. Built to be
 composed — the primitives are a bar, a circle and a block, and you arrange them
 into the layout that is arriving.
 
-```vue
-<Skeleton :lines="3" />
-```
+<script setup>
+import SkeletonBasic from '../examples/skeleton/SkeletonBasic.vue'
+import SkeletonCard from '../examples/skeleton/SkeletonCard.vue'
+import SkeletonSwap from '../examples/skeleton/SkeletonSwap.vue'
+import SkeletonStill from '../examples/skeleton/SkeletonStill.vue'
+</script>
 
-<DemoBox layout="stack">
-  <div class="flex items-center gap-4">
-    <Skeleton variant="circle" />
-    <div class="flex-1">
-      <Skeleton :lines="2" />
-    </div>
-  </div>
-  <Skeleton variant="rect" class="h-24" />
+<DemoBox>
+  <SkeletonBasic />
 </DemoBox>
 
-An avatar, two lines of prose and a thumbnail — assembled from the three
-primitives rather than configured through a prop. The last line of the stack is
-shortened because real paragraphs do not end flush with the margin.
+<<< @/examples/skeleton/SkeletonBasic.vue
 
 Each shape is a dithered plate — the white-and-silver checker Windows 98 used
 for things not yet there — and the checker steps one pixel sideways every
-400ms instead of pulsing. That step is behind `motion-safe:`. Turn on "Reduce
-motion" in your OS and reload: the plates stay, the step goes, and nothing else
-changes.
+400ms instead of pulsing. That step is behind `motion-safe:`: with «Reduce
+motion» on in the OS, the plates stay and the step goes.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Composing a shape
+
+The primitives are a bar, a circle and a block; arrange them into the layout
+that is arriving — here an avatar, a name and role, and a thumbnail.
+
+<DemoBox>
+  <SkeletonCard />
+</DemoBox>
+
+<<< @/examples/skeleton/SkeletonCard.vue
+
+### Swapping in the content
+
+The placeholder holds the content's size, so nothing jumps when it arrives.
+One `label` on the element that stands for the region — a reader hears
+«Loading the profile» once, not once per bar. Press Reload.
+
+<DemoBox>
+  <SkeletonSwap />
+</DemoBox>
+
+<<< @/examples/skeleton/SkeletonSwap.vue
+
+### Without the step
+
+`:animated="false"` keeps the dither still, for a placeholder that sits a
+while.
+
+<DemoBox>
+  <SkeletonStill />
+</DemoBox>
+
+<<< @/examples/skeleton/SkeletonStill.vue
 
 ## Anatomy
 

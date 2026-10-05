@@ -7,31 +7,44 @@ as a groove cut into the silver face. Horizontal, it divides menu groups and
 dialog sections; vertical, it divides toolbar groups and stretches to their
 height.
 
-```vue
-<ButtonGroup aria-label="Edit">
-  <ButtonGroup>
-    <Button variant="ghost">Cut</Button>
-    <Button variant="ghost">Copy</Button>
-  </ButtonGroup>
-  <Separator orientation="vertical" />
-  <ButtonGroup>
-    <Button variant="ghost">Undo</Button>
-  </ButtonGroup>
-</ButtonGroup>
-```
+<script setup>
+import SeparatorBasic from '../examples/separator/SeparatorBasic.vue'
+import SeparatorSections from '../examples/separator/SeparatorSections.vue'
+import SeparatorInline from '../examples/separator/SeparatorInline.vue'
+</script>
 
 <DemoBox>
-  <ButtonGroup aria-label="Edit">
-    <ButtonGroup>
-      <Button variant="ghost">Cut</Button>
-      <Button variant="ghost">Copy</Button>
-    </ButtonGroup>
-    <Separator orientation="vertical" />
-    <ButtonGroup>
-      <Button variant="ghost">Undo</Button>
-    </ButtonGroup>
-  </ButtonGroup>
+  <SeparatorBasic />
 </DemoBox>
+
+<<< @/examples/separator/SeparatorBasic.vue
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Between sections
+
+Horizontal, between the parts of a panel or a dialog: options in one group,
+a setting apart from them, the command row.
+
+<DemoBox>
+  <SeparatorSections />
+</DemoBox>
+
+<<< @/examples/separator/SeparatorSections.vue
+
+### Between items of text
+
+Vertical in a row of text, as a status line divides its facts. `decorative`
+keeps it from screen readers, which have the words already.
+
+<DemoBox>
+  <SeparatorInline />
+</DemoBox>
+
+<<< @/examples/separator/SeparatorInline.vue
 
 ## When to use
 
