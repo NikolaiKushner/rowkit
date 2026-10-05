@@ -6,35 +6,110 @@
 is the text control. They are documented together because `Field` exists to
 make `Input` — and `Select` — correct without the consumer doing the work.
 
-```vue
-<Field label="Work email" hint="Used for billing receipts." :error="errors.email" required>
-  <Input v-model="email" type="email" placeholder="ada@example.com" />
-</Field>
-```
-
 <script setup>
-import { computed, ref } from 'vue'
-
-const email = ref('ada@')
-const error = computed(() => (/^[^@\s]+@[^@\s.]+\.\S+$/.test(email.value) ? undefined : 'Enter a valid email address.'))
+import FieldBasic from '../examples/field/FieldBasic.vue'
+import FieldValidation from '../examples/field/FieldValidation.vue'
+import FieldTypes from '../examples/field/FieldTypes.vue'
+import FieldSizes from '../examples/field/FieldSizes.vue'
+import FieldAdornments from '../examples/field/FieldAdornments.vue'
+import FieldStates from '../examples/field/FieldStates.vue'
+import FieldPropertySheet from '../examples/field/FieldPropertySheet.vue'
+import FieldSignUp from '../examples/field/FieldSignUp.vue'
 </script>
 
 <DemoBox layout="stack">
-  <Field label="Work email" hint="Used for billing receipts." :error="error" required>
-    <Input v-model="email" type="email" placeholder="ada@example.com" />
-  </Field>
-  <Field label="Team" hint="Everyone here inherits this team's permissions." disabled>
-    <Input model-value="Platform" />
-  </Field>
+  <FieldBasic />
 </DemoBox>
 
-Type a valid address and the error goes; the hint stays throughout. Both are
-referenced by `aria-describedby` at once, so fixing a mistake never costs you
-the guidance that would have prevented it — which is what happens when a field
-swaps the hint out for the error.
+<<< @/examples/field/FieldBasic.vue
 
-The second field is disabled at the `Field`, not the `Input`. The state flows
-down to whatever control is inside.
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Validation
+
+Click into the field and leave it: the error appears once the person has
+moved on, not on their first keystroke. The hint stays while the error shows —
+both are referenced by `aria-describedby`, so fixing a mistake never costs the
+guidance that would have prevented it.
+
+<DemoBox layout="stack">
+  <FieldValidation />
+</DemoBox>
+
+<<< @/examples/field/FieldValidation.vue
+
+### Input types
+
+`number` draws the Windows 98 spin buttons, and ↑ ↓ step it from the
+keyboard; `date` gets a calendar button. Passwords, phone numbers and URLs keep
+the browser's own keyboard and autofill.
+
+<DemoBox layout="stack">
+  <FieldTypes />
+</DemoBox>
+
+<<< @/examples/field/FieldTypes.vue
+
+### Sizes
+
+`size` on the `Field` reaches the control inside and sets the gaps: 4px at
+`sm`, 6px at `md`, 8px at `lg`.
+
+<DemoBox>
+  <FieldSizes />
+</DemoBox>
+
+<<< @/examples/field/FieldSizes.vue
+
+### Icons, units and a clear button
+
+The `leading` and `trailing` slots sit inside the field's frame: a search
+icon, a unit after a number, a button that clears the text.
+
+<DemoBox>
+  <FieldAdornments />
+</DemoBox>
+
+<<< @/examples/field/FieldAdornments.vue
+
+### Disabled, read-only, invalid, required
+
+Disabled at the `Field` greys the label and reaches the control. Read-only
+text can still be selected and copied. An `error` marks the control invalid; a
+`required` field draws a maroon asterisk.
+
+<DemoBox layout="stack">
+  <FieldStates />
+</DemoBox>
+
+<<< @/examples/field/FieldStates.vue
+
+### Labels beside the controls
+
+`layout="left"` is the Windows 98 property-sheet arrangement: the label beside
+the control, the hint or error under it. `--rk-field-label-width` on a
+container lines up a column of labels.
+
+<DemoBox layout="stack">
+  <FieldPropertySheet />
+</DemoBox>
+
+<<< @/examples/field/FieldPropertySheet.vue
+
+### A sign-up form
+
+Errors appear after the first submit and then follow the typing; a failed
+submit moves focus to the first invalid field, so a keyboard or screen reader
+user lands on the problem rather than hunting for it.
+
+<DemoBox layout="stack">
+  <FieldSignUp />
+</DemoBox>
+
+<<< @/examples/field/FieldSignUp.vue
 
 ## Look
 

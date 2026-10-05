@@ -6,74 +6,100 @@ A single-value picker, optionally searchable, following the WAI-ARIA combobox
 pattern. Generic over the value type, so `v-model` narrows to the values you
 actually passed.
 
-```vue
-<Select v-model="role">
-  <SelectTrigger placeholder="Choose a role" />
-  <SelectContent>
-    <SelectItem v-for="option in roles" :key="option.value" :value="option.value" :label="option.label" />
-  </SelectContent>
-</Select>
-```
-
-```ts
-const roles: SelectOption<'owner' | 'admin'>[] = [
-  { label: 'Owner', value: 'owner' },
-  { label: 'Admin', value: 'admin' },
-]
-// role is 'owner' | 'admin' | undefined
-```
-
 <script setup>
-import { ref } from 'vue'
-
-const role = ref()
-const timezone = ref()
-
-const roles = [
-  { label: 'Owner', value: 'owner' },
-  { label: 'Admin', value: 'admin' },
-  { label: 'Member', value: 'member' },
-  { label: 'Billing', value: 'billing', disabled: true },
-]
-
-const timezones = [
-  'Europe/London', 'Europe/Berlin', 'Europe/Kyiv', 'America/New_York',
-  'America/Los_Angeles', 'Asia/Tokyo', 'Asia/Singapore', 'Australia/Sydney',
-].map((value) => ({ label: value, value }))
+import SelectBasic from '../examples/select/SelectBasic.vue'
+import SelectSearchable from '../examples/select/SelectSearchable.vue'
+import SelectStates from '../examples/select/SelectStates.vue'
+import SelectNumbers from '../examples/select/SelectNumbers.vue'
+import SelectDependent from '../examples/select/SelectDependent.vue'
+import SelectAsync from '../examples/select/SelectAsync.vue'
+import SelectSizes from '../examples/select/SelectSizes.vue'
 </script>
 
-<DemoBox align="end">
-  <Field label="Role" class="min-w-52">
-    <Select v-model="role">
-      <SelectTrigger placeholder="Choose a role" />
-      <SelectContent>
-        <SelectItem
-          v-for="option in roles"
-          :key="option.value"
-          :value="option.value"
-          :label="option.label"
-          :disabled="option.disabled"
-        />
-      </SelectContent>
-    </Select>
-  </Field>
-  <Field label="Timezone" class="min-w-52">
-    <Select v-model="timezone" searchable>
-      <SelectTrigger placeholder="Choose a timezone" />
-      <SelectContent>
-        <SelectItem v-for="option in timezones" :key="option.value" :value="option.value" :label="option.label" />
-      </SelectContent>
-    </Select>
-  </Field>
+<DemoBox>
+  <SelectBasic />
 </DemoBox>
 
-The first is a plain picker; the second is `searchable`, which is worth turning
-on somewhere around twenty options and costs a keystroke below that. Both are
-wrapped in `Field`, so the label, the generated id and the disabled state come
-from one place.
+<<< @/examples/select/SelectBasic.vue
 
-Open either with the keyboard: <kbd>Enter</kbd> or <kbd>↓</kbd> opens the panel,
-typing filters when searchable, <kbd>Esc</kbd> closes without committing.
+Generic over the value type, so `v-model` narrows to the values you actually
+passed — here `Role | undefined`. Open it with the keyboard: <kbd>Enter</kbd>
+or <kbd>↓</kbd> opens the panel, <kbd>Esc</kbd> closes without committing.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Searchable
+
+`searchable` lets the trigger take text and filters the list. Worth turning on
+somewhere around twenty options; below that it costs a keystroke and saves
+nothing.
+
+<DemoBox>
+  <SelectSearchable />
+</DemoBox>
+
+<<< @/examples/select/SelectSearchable.vue
+
+### Disabled options, errors and disabled
+
+An option can be unavailable without leaving the list. A `Field` with an
+`error` marks the select invalid, and a disabled `Field` disables it.
+
+<DemoBox>
+  <SelectStates />
+</DemoBox>
+
+<<< @/examples/select/SelectStates.vue
+
+### Number values
+
+Values do not have to be strings: with numbers, `v-model` stays a number. A
+plain `<label for>` names the trigger when there is no `Field`.
+
+<DemoBox>
+  <SelectNumbers />
+</DemoBox>
+
+<<< @/examples/select/SelectNumbers.vue
+
+### One choice narrows the next
+
+The city list follows the country. Changing the country clears the city —
+it may not exist there — and the city stays disabled until a country is
+chosen.
+
+<DemoBox>
+  <SelectDependent />
+</DemoBox>
+
+<<< @/examples/select/SelectDependent.vue
+
+### Searching a server
+
+Bind `v-model:search-term`, fetch per keystroke, and set `manual-filter` — the
+list is already the server's answer, so filtering it again locally would hide
+results that matched on a field the label does not show, like the email here.
+`loading` shows while a request is in flight, and an answer that arrives after
+a newer question is ignored.
+
+<DemoBox>
+  <SelectAsync />
+</DemoBox>
+
+<<< @/examples/select/SelectAsync.vue
+
+### Sizes
+
+`size` on the `SelectTrigger`: `sm`, `md` (Windows 98's 23px) and `lg`.
+
+<DemoBox>
+  <SelectSizes />
+</DemoBox>
+
+<<< @/examples/select/SelectSizes.vue
 
 ## Anatomy
 
