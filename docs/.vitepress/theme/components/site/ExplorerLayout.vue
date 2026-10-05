@@ -112,8 +112,9 @@ const goForward = () => history.forward()
         </template>
       </WindowTitleBar>
 
-      <SiteMenuBar />
-      <Separator decorative />
+      <!-- On a phone the Start menu is the navigation, as Figma's 390px templates draw it. -->
+      <SiteMenuBar class="max-md:hidden" />
+      <Separator decorative class="max-md:hidden" />
 
       <div
         role="toolbar"
@@ -123,10 +124,15 @@ const goForward = () => history.forward()
         <SiteToolbarButton label="Back" :disabled="!canGoBack" @click="goBack">
           <ArrowLeft32Icon />
         </SiteToolbarButton>
-        <SiteToolbarButton label="Forward" :disabled="!canGoForward" @click="goForward">
+        <SiteToolbarButton
+          label="Forward"
+          :disabled="!canGoForward"
+          class="max-md:hidden"
+          @click="goForward"
+        >
           <ArrowRight32Icon />
         </SiteToolbarButton>
-        <SiteToolbarButton label="Up" @click="router.go(withBase(up))">
+        <SiteToolbarButton label="Up" class="max-md:hidden" @click="router.go(withBase(up))">
           <ArrowUp32Icon />
         </SiteToolbarButton>
         <Separator orientation="vertical" decorative class="mt-1 h-11 self-start" />
@@ -155,10 +161,13 @@ const goForward = () => history.forward()
 
             The header spans the page; under it, the text and «On this page»,
             868px and 200px with 32px between at full width, as in Figma.
+            Narrower, «On this page» is a drop-down under the header, and on
+            a phone the page sits 12px in, as the 390px templates draw it.
           -->
-          <div class="max-w-[1100px] p-6 contain-inline-size">
+          <div class="max-w-[1100px] px-3 pt-3 pb-6 contain-inline-size md:p-6">
             <PageHeader :title="title" :current="current" />
-            <div class="mt-6 grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1fr)_200px]">
+            <PageOutline as="select" :scroller="contentArea?.viewport" class="mt-4 xl:hidden" />
+            <div class="grid xl:mt-6 grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1fr)_200px]">
               <main class="vp-doc rk-page min-w-0">
                 <Content />
               </main>
@@ -182,7 +191,7 @@ const goForward = () => history.forward()
             {{ theme.editLink?.text ?? 'Edit this page' }}
           </a>
         </StatusBarSection>
-        <StatusBarSection v-if="lastUpdated" class="w-[130px]">
+        <StatusBarSection v-if="lastUpdated" class="w-[130px] max-md:hidden">
           Last updated: {{ lastUpdated }}
         </StatusBarSection>
         <StatusBarSection>MIT</StatusBarSection>

@@ -1,16 +1,25 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { onContentUpdated } from 'vitepress'
+import { Select, SelectContent, SelectItem, SelectTrigger } from 'rowkit'
 
 /**
  * «On this page»: the page's sections in a sunken white list, the one in view
  * highlighted navy, as a list box's selected row. Built from the h2s once the
  * page renders; follows the pane as it scrolls.
+ *
+ * On a narrow screen, where there is no room beside the text, it is a
+ * drop-down list above it instead — «On this page: Example» — and choosing a
+ * section scrolls to it.
  */
-const props = defineProps<{
-  /** The element that scrolls the page. */
-  scroller: HTMLElement | undefined
-}>()
+const props = withDefaults(
+  defineProps<{
+    /** The element that scrolls the page. */
+    scroller: HTMLElement | undefined
+    as?: 'list' | 'select'
+  }>(),
+  { as: 'list' }
+)
 
 interface Section {
   id: string
@@ -43,6 +52,15 @@ function track(): void {
   active.value = current
 }
 
+const chosen = computed({
+  get: () => active.value,
+  set: (id) => {
+    if (id === undefined) return
+    document.getElementById(id)?.scrollIntoView({ block: 'start' })
+    history.replaceState(history.state, '', `#${id}`)
+  },
+})
+
 onContentUpdated(collect)
 
 // Client only: the headings exist in the DOM, not in the server render.
@@ -64,7 +82,24 @@ onBeforeUnmount(() => props.scroller?.removeEventListener('scroll', track))
 </script>
 
 <template>
-  <nav v-if="sections.length > 0" aria-labelledby="rk-outline-title" class="flex flex-col gap-1.5">
+  <Select v-if="as === 'select' && sections.length > 0" v-model="chosen" class="w-full">
+    <SelectTrigger placeholder="On this page" size="lg" class="w-full" />
+    <SelectContent>
+      <SelectItem
+        v-for="section in sections"
+        :key="section.id"
+        :value="section.id"
+        :label="`On this page: ${section.text}`"
+      >
+        {{ section.text }}
+      </SelectItem>
+    </SelectContent>
+  </Select>
+  <nav
+    v-else-if="sections.length > 0"
+    aria-labelledby="rk-outline-title"
+    class="flex flex-col gap-1.5"
+  >
     <p id="rk-outline-title" class="m-0 font-bold text-ui text-foreground">On this page</p>
     <ul class="m-0 list-none bg-input p-0.5 shadow-sunken">
       <li v-for="section in sections" :key="section.id">

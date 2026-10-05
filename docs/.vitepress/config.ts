@@ -1,6 +1,7 @@
 import { createRequire } from 'node:module'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vitepress'
+import { tables } from './tables'
 
 /**
  * rowkit.dev as a Windows 98 desktop, from the Figma Site page: the home page
@@ -27,6 +28,7 @@ export default defineConfig({
       dangerLabel: 'Danger',
       detailsLabel: 'Details',
     },
+    config: (md) => md.use(tables),
   },
 
   // rowkit has one theme. This removes VitePress's light/dark switch and its

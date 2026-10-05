@@ -19,7 +19,7 @@
 
   /* One rhythm: 16px between blocks, headings included. */
   .rk-page
-    :where(h2, h3, h4, p, ul, ol, table, div[class*='language-'], .custom-block, hr):not(
+    :where(h2, h3, h4, p, ul, ol, .rk-table, div[class*='language-'], .custom-block, hr):not(
       .rk-demo *
     ) {
     margin: 16px 0 0;
@@ -113,8 +113,13 @@
 
   .rk-page div[class*='language-'] pre {
     @apply scrollbar-win98;
-    margin: 0;
-    padding: 8px 88px 8px 12px;
+    /*
+     * The code scrolls in its own column, which stops short of Copy — 75px
+     * and 4px in, 8px between, as Figma lays them side by side — so a long
+     * line scrolls beside the button rather than under it.
+     */
+    margin: 0 87px 0 0;
+    padding: 8px 0 8px 12px;
     background: none;
   }
 
@@ -237,9 +242,15 @@
    * Markdown tables as DataTables: a sunken white frame, raised 22px header
    * cells, 11px text, no grid lines.
    */
+  .rk-page .rk-table:not(.rk-demo *) {
+    @apply scrollbar-win98;
+    overflow-x: auto;
+  }
+
   .rk-page table:not(.rk-demo *) {
     display: table;
     width: 100%;
+    margin: 0;
     border: 0;
     border-collapse: separate;
     border-spacing: 0;
@@ -278,5 +289,75 @@
 
   .rk-page :where(td code):not(.rk-demo *) {
     font-size: 14px;
+  }
+
+  /*
+   * A props table on a phone: the definition list Figma draws at 390px. The
+   * name in bold and the type in the mono face on one line — the default
+   * after it, «= 'md'» — and the description under them in body text.
+   */
+  @media (max-width: 767px) {
+    .rk-page .rk-props table:not(.rk-demo *) {
+      display: block;
+      padding: 0;
+      background: none;
+      box-shadow: none;
+    }
+
+    .rk-page .rk-props table thead {
+      display: none;
+    }
+
+    .rk-page .rk-props table tbody {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .rk-page .rk-props table tr {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 2px 8px;
+    }
+
+    .rk-page .rk-props table td {
+      padding: 0;
+    }
+
+    .rk-page .rk-props table td[data-label='Prop'],
+    .rk-page .rk-props table td[data-label='Prop'] code {
+      font-family: var(--font-sans);
+      font-size: var(--text-ui);
+      line-height: var(--text-ui--line-height);
+      font-weight: 700;
+    }
+
+    .rk-page .rk-props table :where(td[data-label='Type'], td[data-label='Default']),
+    .rk-page .rk-props table :where(td[data-label='Type'], td[data-label='Default']) code {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      line-height: 16px;
+      color: var(--color-text-subtle);
+    }
+
+    .rk-page .rk-props table td[data-label='Default']::before {
+      content: '= ';
+    }
+
+    .rk-page .rk-props table td[data-empty] {
+      display: none;
+    }
+
+    /* «required» is not a default; it reads as itself, without the «=». */
+    .rk-page .rk-props table td[data-label='Default']:has(strong)::before {
+      content: none;
+    }
+
+    .rk-page .rk-props table td[data-label='Description'] {
+      flex-basis: 100%;
+      font-size: 15px;
+      line-height: 24px;
+    }
   }
 }
