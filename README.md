@@ -83,7 +83,7 @@ const rows = useClientSort(users, sort, columns)
 </script>
 
 <template>
-  <DataTable :rows="rows" :columns="columns" caption="Team members" v-model:sort="sort" hoverable>
+  <DataTable :rows="rows" :columns="columns" caption="Team members" v-model:sort="sort">
     <template #[`cell:status`]="{ value }">
       <Badge :variant="value === 'active' ? 'success' : 'warning'" dot>{{ value }}</Badge>
     </template>
@@ -124,11 +124,10 @@ pnpm dev          # playground app
 pnpm storybook    # component workshop
 pnpm test         # unit, component and browser tests
 pnpm docs:dev     # documentation site
-pnpm docs:shots   # refresh README homepage screenshots (docs:dev must be running)
 ```
 
 ## License
 
 MIT © Nikolai Kushner
 
-Design language based on [shadcn/ui](https://ui.shadcn.com) by shadcn, adapted for Vue. shadcn/ui is MIT licensed; rowkit adopts its token values and class recipes, not its code.
+The look is rowkit's own drawing of the Windows 98 interface, from its Figma file. rowkit is not affiliated with Microsoft and ships no Microsoft artwork — no Windows flag, no logos.
