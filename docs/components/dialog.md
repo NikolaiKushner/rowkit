@@ -7,87 +7,114 @@ come from rowkit's shared primitives. You place the parts;
 the portal, the outside-click layer, and the close button live inside
 `DialogContent`.
 
-```vue
-<Dialog v-model:open="open">
-  <DialogTrigger as-child>
-    <Button variant="destructive">Delete project</Button>
-  </DialogTrigger>
-  <DialogContent size="sm">
-    <DialogHeader>
-      <DialogTitle>Delete project</DialogTitle>
-      <DialogDescription>This cannot be undone.</DialogDescription>
-    </DialogHeader>
-    <DialogBody>Everything in the project goes with it.</DialogBody>
-    <DialogFooter>
-      <Button @click="open = false">Cancel</Button>
-      <Button variant="destructive" @click="remove">Delete</Button>
-    </DialogFooter>
-  </DialogContent>
-</Dialog>
-```
-
 <script setup>
-import { ref } from 'vue'
-
-const confirmOpen = ref(false)
-const termsOpen = ref(false)
-const deleted = ref(false)
-
-function remove() {
-  confirmOpen.value = false
-  deleted.value = true
-}
+import DialogBasic from '../examples/dialog/DialogBasic.vue'
+import DialogConfirm from '../examples/dialog/DialogConfirm.vue'
+import DialogForm from '../examples/dialog/DialogForm.vue'
+import DialogPicker from '../examples/dialog/DialogPicker.vue'
+import DialogWizard from '../examples/dialog/DialogWizard.vue'
+import DialogProgress from '../examples/dialog/DialogProgress.vue'
+import DialogScroll from '../examples/dialog/DialogScroll.vue'
+import DialogSizes from '../examples/dialog/DialogSizes.vue'
 </script>
 
 <DemoBox>
-  <Dialog v-model:open="confirmOpen">
-    <DialogTrigger as-child>
-      <Button variant="destructive">Delete project</Button>
-    </DialogTrigger>
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Delete Ada's project</DialogTitle>
-        <DialogDescription>This cannot be undone.</DialogDescription>
-      </DialogHeader>
-      <DialogBody>
-        Everything in the project goes with it: 12 tables, 3 saved filters, and every
-        invite link you have shared.
-      </DialogBody>
-      <DialogFooter>
-        <Button @click="confirmOpen = false">Cancel</Button>
-        <Button variant="destructive" @click="remove">Delete</Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
-
-  <Dialog v-model:open="termsOpen">
-    <DialogTrigger as-child>
-      <Button variant="secondary">Read the terms</Button>
-    </DialogTrigger>
-    <DialogContent size="lg">
-      <DialogHeader>
-        <DialogTitle>Terms of service</DialogTitle>
-      </DialogHeader>
-      <DialogBody>
-        <p v-for="n in 20" :key="n" class="!mt-0">
-          Clause {{ n }}. Nothing here is a real term. It is here so the body has
-          more content than the viewport, which is the only way to see that the body
-          scrolls while the header, the close button and the footer stay put.
-        </p>
-      </DialogBody>
-    </DialogContent>
-  </Dialog>
-
-<span v-if="deleted" class="text-sm text-muted-foreground">Deleted — and focus is back on the button that opened it.</span>
+  <DialogBasic />
 </DemoBox>
 
-Open either one and press <kbd>Tab</kbd> a few times: focus cycles inside the
-dialog and does not reach the page behind it. <kbd>Esc</kbd> closes, clicking
-outside closes, and focus returns to the trigger — which is the
-part that is easy to lose and very obvious to a keyboard user when it is missing.
+<<< @/examples/dialog/DialogBasic.vue
 
-The second dialog is long on purpose. The **body is the only scrolling region**,
-so the title and the actions stay reachable no matter how much content there is.
+Open it and press <kbd>Tab</kbd> a few times: focus cycles inside the dialog
+and does not reach the page behind it. <kbd>Esc</kbd> closes, clicking outside
+closes, and focus returns to the trigger — the part that is easy to lose and
+very obvious to a keyboard user when it is missing.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### A confirmation
+
+The Windows 98 system question: an icon, one sentence, two buttons. The safe
+choice comes first and is the default button, so Enter never archives by
+accident. `DialogDescription` is read out with the title when the dialog
+opens.
+
+<DemoBox>
+  <DialogConfirm />
+</DemoBox>
+
+<<< @/examples/dialog/DialogConfirm.vue
+
+### A form in a dialog
+
+Edit a copy of the record: Cancel throws it away, Save writes it back. The
+dialog's parts sit inside a real `<form>`, so Enter in any field saves through
+the submit button, and a validation error keeps the dialog open.
+
+<DemoBox>
+  <DialogForm />
+</DemoBox>
+
+<<< @/examples/dialog/DialogForm.vue
+
+### Choosing from a list
+
+A picker: a single-select `DataTable` inside the dialog. The choice is pending
+until OK, so Cancel leaves the old owner in place.
+
+<DemoBox>
+  <DialogPicker />
+</DemoBox>
+
+<<< @/examples/dialog/DialogPicker.vue
+
+### A wizard
+
+Several steps in one dialog, with the Windows 98 wizard buttons — < Back,
+Next >, Finish and Cancel. Next stays disabled until the step is complete.
+
+<DemoBox>
+  <DialogWizard />
+</DemoBox>
+
+<<< @/examples/dialog/DialogWizard.vue
+
+### Progress, opened from code
+
+No trigger: the dialog opens from code when the job starts and closes when it
+ends, and focus goes back to whatever had it. `prevent-close` blocks Escape and
+outside clicks, so a stray key does not hide a running job; the ✕ — never
+removed — and Cancel still stop it on purpose.
+
+<DemoBox>
+  <DialogProgress />
+</DemoBox>
+
+<<< @/examples/dialog/DialogProgress.vue
+
+### Long content
+
+The **body is the only scrolling region**, so the title and the buttons stay
+reachable however much content there is.
+
+<DemoBox>
+  <DialogScroll />
+</DemoBox>
+
+<<< @/examples/dialog/DialogScroll.vue
+
+### Sizes
+
+`size` on `DialogContent` sets the width — 320, 440 or 600px; the height
+follows the content, capped to the screen.
+
+<DemoBox>
+  <DialogSizes />
+</DemoBox>
+
+<<< @/examples/dialog/DialogSizes.vue
 
 ## Anatomy
 
