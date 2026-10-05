@@ -6,140 +6,14 @@ component below is doing one job, and the composition is where the decisions
 live.
 
 <script setup>
-import { computed, ref, watch } from 'vue'
-import { compareSortable } from 'rowkit'
-
-const roles = ['Owner', 'Admin', 'Member', 'Billing']
-const statuses = ['active', 'invited', 'suspended']
-const firstNames = ['Ada', 'Grace', 'Alan', 'Katherine', 'Barbara', 'Edsger', 'Margaret', 'Donald', 'Radia', 'Tim']
-const lastNames = ['Lovelace', 'Hopper', 'Turing', 'Johnson', 'Liskov', 'Dijkstra', 'Hamilton', 'Knuth', 'Perlman', 'Berners-Lee']
-
-// Deterministic, so the page renders the same on the server and after hydration.
-const allUsers = Array.from({ length: 137 }, (_, i) => {
-  const first = firstNames[i % firstNames.length]
-  const last = lastNames[(i * 3) % lastNames.length]
-  return {
-    id: i + 1,
-    name: `${first} ${last}`,
-    email: `${first.toLowerCase()}.${last.toLowerCase().replace(/[^a-z]/g, '')}${i}@example.com`,
-    role: roles[i % roles.length],
-    status: statuses[i % statuses.length],
-    seats: (i * 7) % 24,
-  }
-})
-
-const roleOptions = roles.map((role) => ({ label: role, value: role }))
-const statusOptions = statuses.map((s) => ({ label: s[0].toUpperCase() + s.slice(1), value: s }))
-
-const search = ref('')
-const role = ref()
-const status = ref()
-const sort = ref()
-const page = ref(1)
-const pageSize = ref(10)
-const selected = ref([])
-
-const columns = [
-  { key: 'name', header: 'Name', sortable: true, sticky: true, width: '14rem' },
-  { key: 'email', header: 'Email', sortable: true, width: '20rem' },
-  { key: 'role', header: 'Role', sortable: true, width: '8rem' },
-  {
-    key: 'status',
-    header: 'Status',
-    sortable: true,
-    width: '9rem',
-    sortValue: (row) => ({ active: 0, invited: 1, suspended: 2 })[row.status],
-  },
-  { key: 'seats', header: 'Seats', sortable: true, numeric: true, width: '7rem' },
-]
-
-const tone = { active: 'success', invited: 'warning', suspended: 'danger' }
-
-const filtered = computed(() => {
-  const term = search.value.trim().toLowerCase()
-  return allUsers.filter((user) => {
-    if (role.value && user.role !== role.value) return false
-    if (status.value && user.status !== status.value) return false
-    if (!term) return true
-    return user.name.toLowerCase().includes(term) || user.email.toLowerCase().includes(term)
-  })
-})
-
-const sorted = computed(() => {
-  if (!sort.value) return filtered.value
-  const column = columns.find((c) => c.key === sort.value.key)
-  if (!column) return filtered.value
-  const valueOf = (row) => (column.sortValue ? column.sortValue(row) : row[column.key])
-  return [...filtered.value].sort((a, b) => compareSortable(valueOf(a), valueOf(b), sort.value.direction))
-})
-
-const pageRows = computed(() =>
-  sorted.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value)
-)
-
-const chips = computed(() => {
-  const applied = []
-  if (search.value.trim()) applied.push({ id: 'search', label: 'Search', value: search.value })
-  if (role.value) applied.push({ id: 'role', label: 'Role', value: role.value })
-  if (status.value) {
-    applied.push({
-      id: 'status',
-      label: 'Status',
-      value: statusOptions.find((o) => o.value === status.value)?.label,
-    })
-  }
-  return applied
-})
-
-function removeFilter(id) {
-  if (id === 'search') search.value = ''
-  if (id === 'role') role.value = undefined
-  if (id === 'status') status.value = undefined
-}
-
-function clearFilters() {
-  search.value = ''
-  role.value = undefined
-  status.value = undefined
-}
-
-// The application resets the page, not the components.
-watch([search, role, status, sort, pageSize], () => {
-  page.value = 1
-})
+import PatternUsersPage from '../examples/patterns/PatternUsersPage.vue'
+import PatternServerPage from '../examples/patterns/PatternServerPage.vue'
+import PatternBulkActions from '../examples/patterns/PatternBulkActions.vue'
+import PatternDetailPanel from '../examples/patterns/PatternDetailPanel.vue'
 </script>
 
-<!-- prettier-ignore -->
 <DemoBox layout="stack">
-  <FilterBar v-model:search="search" :filters="chips" :result-count="filtered.length" label="Filter users" searchable search-placeholder="Search name or email" @remove="removeFilter" @clear="clearFilters">
-    <template #controls>
-      <Field label="Role" label-sr-only>
-        <Select v-model="role">
-          <SelectTrigger placeholder="Role" class="min-w-36" />
-          <SelectContent>
-            <SelectItem v-for="option in roleOptions" :key="option.value" :value="option.value" :label="option.label" />
-          </SelectContent>
-        </Select>
-      </Field>
-      <Field label="Status" label-sr-only>
-        <Select v-model="status">
-          <SelectTrigger placeholder="Status" class="min-w-36" />
-          <SelectContent>
-            <SelectItem v-for="option in statusOptions" :key="option.value" :value="option.value" :label="option.label" />
-          </SelectContent>
-        </Select>
-      </Field>
-    </template>
-  </FilterBar>
-  <DataTable :rows="pageRows" :columns="columns" caption="Users" selectable="multiple" :row-label="(row) => `Select ${row.name}`" v-model:sort="sort" v-model:selected="selected" hoverable>
-    <template #[`cell:status`]="{ row }"><Badge :variant="tone[row.status]" size="sm" dot>{{ row.status }}</Badge></template>
-    <template #empty>
-      <EmptyState reason="no-results" title="No users match these filters" size="sm" :level="3" announce>
-        <template #actions><Button variant="secondary" size="sm" @click="clearFilters">Clear filters</Button></template>
-      </EmptyState>
-    </template>
-  </DataTable>
-  <Pagination v-model:page="page" v-model:page-size="pageSize" :total="filtered.length" label="Users pagination" />
+  <PatternUsersPage />
 </DemoBox>
 
 Search for a name, narrow by role, sort a column, page through. Then filter down
@@ -148,72 +22,10 @@ that you have no users.
 
 ## The code
 
-```vue
-<script setup lang="ts">
-import {
-  Badge, Button, DataTable, EmptyState, FilterBar, Field, Select, Pagination,
-  compareSortable,
-  type DataTableColumn, type DataTableSort, type FilterChip,
-} from 'rowkit'
-import { computed, ref, watch } from 'vue'
+The whole page, exactly as the demo above runs it. `people` is any array of
+rows with a stable `id` — here the sample set from the DataTable examples.
 
-interface User {
-  id: number
-  name: string
-  email: string
-  role: string
-  status: 'active' | 'invited' | 'suspended'
-  seats: number
-}
-
-const search = ref('')
-const role = ref<string>()
-const status = ref<string>()
-const sort = ref<DataTableSort<User>>()
-const page = ref(1)
-const pageSize = ref(10)
-const selected = ref<User['id'][]>([])
-
-const columns: DataTableColumn<User>[] = [
-  { key: 'name', header: 'Name', sortable: true, sticky: true, width: '14rem' },
-  { key: 'email', header: 'Email', sortable: true, width: '20rem' },
-  { key: 'role', header: 'Role', sortable: true, width: '8rem' },
-  {
-    key: 'status',
-    header: 'Status',
-    sortable: true,
-    width: '9rem',
-    sortValue: (row) => ({ active: 0, invited: 1, suspended: 2 })[row.status],
-  },
-  { key: 'seats', header: 'Seats', sortable: true, numeric: true, width: '7rem' },
-]
-
-// Whatever your data source is, it answers these four questions.
-const filtered = computed(() => /* search + role + status */)
-const sorted = computed(() => /* compareSortable, using column.sortValue */)
-const pageRows = computed(() =>
-  sorted.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value)
-)
-
-const chips = computed<FilterChip[]>(() => [
-  ...(search.value ? [{ id: 'search', label: 'Search', value: search.value }] : []),
-  ...(role.value ? [{ id: 'role', label: 'Role', value: role.value }] : []),
-  ...(status.value ? [{ id: 'status', label: 'Status', value: status.value }] : []),
-])
-
-function removeFilter(id: string) {
-  if (id === 'search') search.value = ''
-  if (id === 'role') role.value = undefined
-  if (id === 'status') status.value = undefined
-}
-
-watch([search, role, status, sort, pageSize], () => {
-  page.value = 1
-})
-</script>
-```
-
-The template is the demo above, verbatim.
+<<< @/examples/patterns/PatternUsersPage.vue
 
 ## Why it is wired this way
 
@@ -284,3 +96,41 @@ Add `:loading="pending"` to the table and it renders placeholder rows in the rea
 column layout while the request is in flight — see
 [loading states](/patterns/loading-states) for when that helps and when it makes
 things worse.
+
+### A working version
+
+The same page against a slow «server»: typing waits for a 300ms pause, sort and
+page fetch at once, and an answer that arrives after a newer request is
+dropped. Placeholders appear only on the first load, and only once it has taken
+150ms; a refresh keeps the rows on screen and marks the region `aria-busy`.
+
+<DemoBox layout="stack">
+  <PatternServerPage />
+</DemoBox>
+
+<<< @/examples/patterns/PatternServerPage.vue
+
+## Acting on a selection
+
+The toolbar above the table talks about the selection — how many, and what can
+be done to them. A destructive action asks first, with the safe choice as the
+default, and then offers Undo, because a confirmation is not a substitute for a
+way back.
+
+<DemoBox layout="stack">
+  <PatternBulkActions />
+</DemoBox>
+
+<<< @/examples/patterns/PatternBulkActions.vue
+
+## Details beside the list
+
+A list and the record it points at, side by side — stacked on a phone. A click
+or Enter opens a row; the radio column shows which one is open and works from
+the keyboard, so the row click is an extra, not the only way in.
+
+<DemoBox layout="stack">
+  <PatternDetailPanel />
+</DemoBox>
+
+<<< @/examples/patterns/PatternDetailPanel.vue

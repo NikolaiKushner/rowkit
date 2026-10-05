@@ -6,71 +6,14 @@ ships no validation layer — that decision, and how to wire any validation
 library to it, is what this page is about.
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
-
-const form = reactive({ name: '', email: '', role: undefined, seats: '1' })
-const touched = reactive({ name: false, email: false, role: false, seats: false })
-const submitted = ref(false)
-const saving = ref(false)
-const saved = ref(false)
-
-const roleOptions = [
-  { label: 'Owner', value: 'owner' },
-  { label: 'Admin', value: 'admin' },
-  { label: 'Member', value: 'member' },
-]
-
-const errors = computed(() => ({
-  name: form.name.trim() ? undefined : 'Enter a name.',
-  email: /^[^@\s]+@[^@\s.]+\.\S+$/.test(form.email) ? undefined : 'Enter a valid email address.',
-  role: form.role ? undefined : 'Choose a role.',
-  seats: Number(form.seats) >= 1 ? undefined : 'At least one seat.',
-}))
-
-// An error is shown once the user has left the field, or once they have tried
-// to submit — never while they are still typing into it for the first time.
-const shown = computed(() =>
-  Object.fromEntries(
-    Object.entries(errors.value).map(([key, message]) => [
-      key,
-      touched[key] || submitted.value ? message : undefined,
-    ])
-  )
-)
-
-const isValid = computed(() => Object.values(errors.value).every((e) => e === undefined))
-
-function submit() {
-  submitted.value = true
-  saved.value = false
-  if (!isValid.value) return
-  saving.value = true
-  setTimeout(() => {
-    saving.value = false
-    saved.value = true
-  }, 900)
-}
+import PatternInviteForm from '../examples/patterns/PatternInviteForm.vue'
+import PatternSettingsForm from '../examples/patterns/PatternSettingsForm.vue'
+import PatternAsyncValidation from '../examples/patterns/PatternAsyncValidation.vue'
+import PatternServerErrors from '../examples/patterns/PatternServerErrors.vue'
 </script>
 
-<!-- prettier-ignore -->
 <DemoBox layout="stack">
-  <form class="flex w-full max-w-md flex-col gap-4" novalidate @submit.prevent="submit">
-    <Field label="Full name" :error="shown.name" required><Input v-model="form.name" @blur="touched.name = true" /></Field>
-    <Field label="Work email" hint="Used for the invitation and for billing receipts." :error="shown.email" required><Input v-model="form.email" type="email" placeholder="ada@example.com" @blur="touched.email = true" /></Field>
-    <Field label="Role" hint="Determines what they can change." :error="shown.role" required>
-      <Select v-model="form.role">
-        <SelectTrigger placeholder="Choose a role" />
-        <SelectContent>
-          <SelectItem v-for="option in roleOptions" :key="option.value" :value="option.value" :label="option.label" />
-        </SelectContent>
-      </Select>
-    </Field>
-    <Field label="Seats" :error="shown.seats" required><Input v-model="form.seats" type="number" @blur="touched.seats = true" /></Field>
-    <div class="flex items-center gap-3">
-      <Button type="submit" :loading="saving">Send invitation</Button>
-      <span v-if="saved" class="text-sm text-muted-foreground">Invitation sent.</span>
-    </div>
-  </form>
+  <PatternInviteForm />
 </DemoBox>
 
 Press **Send invitation** with the form empty: every field reports at once and
@@ -79,42 +22,7 @@ stays.
 
 ## The code
 
-```vue
-<script setup lang="ts">
-import { Button, Field, Input, Select } from 'rowkit'
-import { computed, reactive, ref } from 'vue'
-
-const form = reactive({ name: '', email: '', role: undefined, seats: '1' })
-const touched = reactive({ name: false, email: false, role: false, seats: false })
-const submitted = ref(false)
-
-const errors = computed(() => ({
-  name: form.name.trim() ? undefined : 'Enter a name.',
-  email: /^[^@\s]+@[^@\s.]+\.\S+$/.test(form.email) ? undefined : 'Enter a valid email address.',
-  role: form.role ? undefined : 'Choose a role.',
-  seats: Number(form.seats) >= 1 ? undefined : 'At least one seat.',
-}))
-
-/** Shown after blur, or after a submit attempt — never mid-first-keystroke. */
-const shown = computed(() =>
-  Object.fromEntries(
-    Object.entries(errors.value).map(([key, message]) => [
-      key,
-      touched[key] || submitted.value ? message : undefined,
-    ])
-  )
-)
-</script>
-
-<template>
-  <!-- `novalidate` because this form renders its own messages. -->
-  <form novalidate @submit.prevent="submit">
-    <Field label="Work email" hint="Used for billing receipts." :error="shown.email" required>
-      <Input v-model="form.email" type="email" @blur="touched.email = true" />
-    </Field>
-  </form>
-</template>
-```
+<<< @/examples/patterns/PatternInviteForm.vue
 
 ## Why it is wired this way
 
@@ -160,6 +68,44 @@ which is also what makes "press submit on an empty form" a useful thing to try.
 
 While the request is in flight the button sets `aria-busy` rather than
 `disabled`, so focus is not destroyed by the user's own action.
+
+## Editing what already exists
+
+A settings form starts full. Save and Revert matter only once something has
+changed, and the bar says «Unsaved changes» so nobody walks away believing a
+change is stored. Disabling Save here is fine — there is nothing to save, and
+the status line says why.
+
+<DemoBox layout="stack">
+  <PatternSettingsForm />
+</DemoBox>
+
+<<< @/examples/patterns/PatternSettingsForm.vue
+
+## Checking with the server as they type
+
+Some rules only the server knows — whether a name is taken. Check the format
+locally and at once; ask the server only for a well-formed value, after a
+pause, and drop an answer that arrives after the value changed. The hint says
+«Checking…» meanwhile, and the answer lands in the hint or the error.
+
+<DemoBox layout="stack">
+  <PatternAsyncValidation />
+</DemoBox>
+
+<<< @/examples/patterns/PatternAsyncValidation.vue
+
+## Errors from the server
+
+A 422 with a message per field goes straight onto the fields — `error` takes
+any string. Clear a field's error as the person edits it, and move focus to the
+first field that failed so a keyboard user is not left hunting.
+
+<DemoBox layout="stack">
+  <PatternServerErrors />
+</DemoBox>
+
+<<< @/examples/patterns/PatternServerErrors.vue
 
 ## With a validation library
 
