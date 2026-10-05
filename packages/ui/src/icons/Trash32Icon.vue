@@ -1,0 +1,42 @@
+<script setup lang="ts">
+/**
+ * A wastebasket, large. 32×32, from the Figma icon set.
+ *
+ * Pixel art: shown at its own size or an integer multiple, never scaled in
+ * between. Decorative: whatever it marks is said in words or ARIA elsewhere.
+ */
+defineOptions({ name: 'RkTrash32Icon' })
+</script>
+
+<template>
+  <svg
+    aria-hidden="true"
+    focusable="false"
+    preserveAspectRatio="none"
+    width="32"
+    height="32"
+    overflow="visible"
+    style="display: block"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M12 2h9v1h-9zM12 3h1v1h-1zM20 3h1v1h-1zM6 4h21v1h-21zM6 5h1v1h-1zM26 5h1v1h-1zM6 6h21v1h-21zM7 7h19v1h-19zM7 8h1v1h-1zM25 8h1v1h-1zM7 9h1v1h-1zM25 9h1v1h-1zM7 10h1v1h-1zM25 10h1v1h-1zM7 11h1v1h-1zM25 11h1v1h-1zM7 12h1v1h-1zM25 12h1v1h-1zM7 13h1v1h-1zM25 13h1v1h-1zM7 14h1v1h-1zM25 14h1v1h-1zM7 15h1v1h-1zM25 15h1v1h-1zM7 16h1v1h-1zM25 16h1v1h-1zM7 17h1v1h-1zM25 17h1v1h-1zM7 18h1v1h-1zM25 18h1v1h-1zM7 19h1v1h-1zM25 19h1v1h-1zM7 20h1v1h-1zM25 20h1v1h-1zM7 21h1v1h-1zM25 21h1v1h-1zM7 22h1v1h-1zM25 22h1v1h-1zM7 23h1v1h-1zM25 23h1v1h-1zM7 24h1v1h-1zM25 24h1v1h-1zM7 25h1v1h-1zM25 25h1v1h-1zM7 26h1v1h-1zM25 26h1v1h-1zM7 27h1v1h-1zM25 27h1v1h-1zM7 28h19v1h-19z"
+      fill="black"
+    />
+    <path
+      d="M13 3h7v1h-7zM9 8h1v1h-1zM11 8h1v1h-1zM13 8h1v1h-1zM15 8h1v1h-1zM17 8h1v1h-1zM19 8h1v1h-1zM21 8h1v1h-1zM23 8h1v1h-1zM9 9h1v1h-1zM11 9h1v1h-1zM13 9h1v1h-1zM15 9h1v1h-1zM17 9h1v1h-1zM19 9h1v1h-1zM21 9h1v1h-1zM23 9h1v1h-1zM9 10h1v1h-1zM11 10h1v1h-1zM13 10h1v1h-1zM15 10h1v1h-1zM17 10h1v1h-1zM19 10h1v1h-1zM21 10h1v1h-1zM23 10h1v1h-1zM9 11h1v1h-1zM11 11h1v1h-1zM13 11h1v1h-1zM15 11h1v1h-1zM17 11h1v1h-1zM19 11h1v1h-1zM21 11h1v1h-1zM23 11h1v1h-1zM9 12h1v1h-1zM11 12h1v1h-1zM13 12h1v1h-1zM15 12h1v1h-1zM17 12h1v1h-1zM19 12h1v1h-1zM21 12h1v1h-1zM23 12h1v1h-1zM9 13h1v1h-1zM11 13h1v1h-1zM13 13h1v1h-1zM15 13h1v1h-1zM17 13h1v1h-1zM19 13h1v1h-1zM21 13h1v1h-1zM23 13h1v1h-1zM9 14h1v1h-1zM11 14h1v1h-1zM13 14h1v1h-1zM15 14h1v1h-1zM17 14h1v1h-1zM19 14h1v1h-1zM21 14h1v1h-1zM23 14h1v1h-1zM9 15h1v1h-1zM11 15h1v1h-1zM13 15h1v1h-1zM15 15h1v1h-1zM17 15h1v1h-1zM19 15h1v1h-1zM21 15h1v1h-1zM23 15h1v1h-1zM9 16h1v1h-1zM11 16h1v1h-1zM13 16h1v1h-1zM15 16h1v1h-1zM17 16h1v1h-1zM19 16h1v1h-1zM21 16h1v1h-1zM23 16h1v1h-1zM9 17h1v1h-1zM11 17h1v1h-1zM13 17h1v1h-1zM15 17h1v1h-1zM17 17h1v1h-1zM19 17h1v1h-1zM21 17h1v1h-1zM23 17h1v1h-1zM9 18h1v1h-1zM11 18h1v1h-1zM13 18h1v1h-1zM15 18h1v1h-1zM17 18h1v1h-1zM19 18h1v1h-1zM21 18h1v1h-1zM23 18h1v1h-1zM9 19h1v1h-1zM11 19h1v1h-1zM13 19h1v1h-1zM15 19h1v1h-1zM17 19h1v1h-1zM19 19h1v1h-1zM21 19h1v1h-1zM23 19h1v1h-1zM9 20h1v1h-1zM11 20h1v1h-1zM13 20h1v1h-1zM15 20h1v1h-1zM17 20h1v1h-1zM19 20h1v1h-1zM21 20h1v1h-1zM23 20h1v1h-1zM9 21h1v1h-1zM11 21h1v1h-1zM13 21h1v1h-1zM15 21h1v1h-1zM17 21h1v1h-1zM19 21h1v1h-1zM21 21h1v1h-1zM23 21h1v1h-1zM9 22h1v1h-1zM11 22h1v1h-1zM13 22h1v1h-1zM15 22h1v1h-1zM17 22h1v1h-1zM19 22h1v1h-1zM21 22h1v1h-1zM23 22h1v1h-1zM9 23h1v1h-1zM11 23h1v1h-1zM13 23h1v1h-1zM15 23h1v1h-1zM17 23h1v1h-1zM19 23h1v1h-1zM21 23h1v1h-1zM23 23h1v1h-1zM9 24h1v1h-1zM11 24h1v1h-1zM13 24h1v1h-1zM15 24h1v1h-1zM17 24h1v1h-1zM19 24h1v1h-1zM21 24h1v1h-1zM23 24h1v1h-1zM9 25h1v1h-1zM11 25h1v1h-1zM13 25h1v1h-1zM15 25h1v1h-1zM17 25h1v1h-1zM19 25h1v1h-1zM21 25h1v1h-1zM23 25h1v1h-1zM9 26h1v1h-1zM11 26h1v1h-1zM13 26h1v1h-1zM15 26h1v1h-1zM17 26h1v1h-1zM19 26h1v1h-1zM21 26h1v1h-1zM23 26h1v1h-1zM9 27h1v1h-1zM11 27h1v1h-1zM13 27h1v1h-1zM15 27h1v1h-1zM17 27h1v1h-1zM19 27h1v1h-1zM21 27h1v1h-1zM23 27h1v1h-1z"
+      fill="#C0C0C0"
+    />
+    <path d="M7 5h19v1h-19z" fill="#DFDFDF" />
+    <path
+      d="M27 6h2v1h-2zM26 7h3v1h-3zM8 8h1v1h-1zM12 8h1v1h-1zM16 8h1v1h-1zM20 8h1v1h-1zM24 8h1v1h-1zM26 8h3v1h-3zM8 9h1v1h-1zM12 9h1v1h-1zM16 9h1v1h-1zM20 9h1v1h-1zM24 9h1v1h-1zM26 9h3v1h-3zM8 10h1v1h-1zM12 10h1v1h-1zM16 10h1v1h-1zM20 10h1v1h-1zM24 10h1v1h-1zM26 10h3v1h-3zM8 11h1v1h-1zM12 11h1v1h-1zM16 11h1v1h-1zM20 11h1v1h-1zM24 11h1v1h-1zM26 11h3v1h-3zM8 12h1v1h-1zM12 12h1v1h-1zM16 12h1v1h-1zM20 12h1v1h-1zM24 12h1v1h-1zM26 12h3v1h-3zM8 13h1v1h-1zM12 13h1v1h-1zM16 13h1v1h-1zM20 13h1v1h-1zM24 13h1v1h-1zM26 13h3v1h-3zM8 14h1v1h-1zM12 14h1v1h-1zM16 14h1v1h-1zM20 14h1v1h-1zM24 14h1v1h-1zM26 14h3v1h-3zM8 15h1v1h-1zM12 15h1v1h-1zM16 15h1v1h-1zM20 15h1v1h-1zM24 15h1v1h-1zM26 15h3v1h-3zM8 16h1v1h-1zM12 16h1v1h-1zM16 16h1v1h-1zM20 16h1v1h-1zM24 16h1v1h-1zM26 16h3v1h-3zM8 17h1v1h-1zM12 17h1v1h-1zM16 17h1v1h-1zM20 17h1v1h-1zM24 17h1v1h-1zM26 17h3v1h-3zM8 18h1v1h-1zM12 18h1v1h-1zM16 18h1v1h-1zM20 18h1v1h-1zM24 18h1v1h-1zM26 18h3v1h-3zM8 19h1v1h-1zM12 19h1v1h-1zM16 19h1v1h-1zM20 19h1v1h-1zM24 19h1v1h-1zM26 19h3v1h-3zM8 20h1v1h-1zM12 20h1v1h-1zM16 20h1v1h-1zM20 20h1v1h-1zM24 20h1v1h-1zM26 20h3v1h-3zM8 21h1v1h-1zM12 21h1v1h-1zM16 21h1v1h-1zM20 21h1v1h-1zM24 21h1v1h-1zM26 21h3v1h-3zM8 22h1v1h-1zM12 22h1v1h-1zM16 22h1v1h-1zM20 22h1v1h-1zM24 22h1v1h-1zM26 22h3v1h-3zM8 23h1v1h-1zM12 23h1v1h-1zM16 23h1v1h-1zM20 23h1v1h-1zM24 23h1v1h-1zM26 23h3v1h-3zM8 24h1v1h-1zM12 24h1v1h-1zM16 24h1v1h-1zM20 24h1v1h-1zM24 24h1v1h-1zM26 24h3v1h-3zM8 25h1v1h-1zM12 25h1v1h-1zM16 25h1v1h-1zM20 25h1v1h-1zM24 25h1v1h-1zM26 25h3v1h-3zM8 26h1v1h-1zM12 26h1v1h-1zM16 26h1v1h-1zM20 26h1v1h-1zM24 26h1v1h-1zM26 26h3v1h-3zM8 27h1v1h-1zM12 27h1v1h-1zM16 27h1v1h-1zM20 27h1v1h-1zM24 27h1v1h-1zM26 27h3v1h-3zM26 28h3v1h-3zM8 29h21v1h-21zM8 30h21v1h-21z"
+      fill="#808080"
+    />
+    <path
+      d="M10 8h1v1h-1zM14 8h1v1h-1zM18 8h1v1h-1zM22 8h1v1h-1zM10 9h1v1h-1zM14 9h1v1h-1zM18 9h1v1h-1zM22 9h1v1h-1zM10 10h1v1h-1zM14 10h1v1h-1zM18 10h1v1h-1zM22 10h1v1h-1zM10 11h1v1h-1zM14 11h1v1h-1zM18 11h1v1h-1zM22 11h1v1h-1zM10 12h1v1h-1zM14 12h1v1h-1zM18 12h1v1h-1zM22 12h1v1h-1zM10 13h1v1h-1zM14 13h1v1h-1zM18 13h1v1h-1zM22 13h1v1h-1zM10 14h1v1h-1zM14 14h1v1h-1zM18 14h1v1h-1zM22 14h1v1h-1zM10 15h1v1h-1zM14 15h1v1h-1zM18 15h1v1h-1zM22 15h1v1h-1zM10 16h1v1h-1zM14 16h1v1h-1zM18 16h1v1h-1zM22 16h1v1h-1zM10 17h1v1h-1zM14 17h1v1h-1zM18 17h1v1h-1zM22 17h1v1h-1zM10 18h1v1h-1zM14 18h1v1h-1zM18 18h1v1h-1zM22 18h1v1h-1zM10 19h1v1h-1zM14 19h1v1h-1zM18 19h1v1h-1zM22 19h1v1h-1zM10 20h1v1h-1zM14 20h1v1h-1zM18 20h1v1h-1zM22 20h1v1h-1zM10 21h1v1h-1zM14 21h1v1h-1zM18 21h1v1h-1zM22 21h1v1h-1zM10 22h1v1h-1zM14 22h1v1h-1zM18 22h1v1h-1zM22 22h1v1h-1zM10 23h1v1h-1zM14 23h1v1h-1zM18 23h1v1h-1zM22 23h1v1h-1zM10 24h1v1h-1zM14 24h1v1h-1zM18 24h1v1h-1zM22 24h1v1h-1zM10 25h1v1h-1zM14 25h1v1h-1zM18 25h1v1h-1zM22 25h1v1h-1zM10 26h1v1h-1zM14 26h1v1h-1zM18 26h1v1h-1zM22 26h1v1h-1zM10 27h1v1h-1zM14 27h1v1h-1zM18 27h1v1h-1zM22 27h1v1h-1z"
+      fill="white"
+    />
+  </svg>
+</template>

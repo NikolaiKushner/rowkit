@@ -5,22 +5,60 @@
 A short, non-interactive status label. Built for the status column of a table,
 where the same handful of values repeat down the page.
 
-```vue
-<Badge variant="success" dot>Active</Badge>
-```
+<script setup>
+import BadgeBasic from '../examples/badge/BadgeBasic.vue'
+import BadgeMatrix from '../examples/badge/BadgeMatrix.vue'
+import BadgeSizes from '../examples/badge/BadgeSizes.vue'
+import BadgeInContext from '../examples/badge/BadgeInContext.vue'
+</script>
 
 <DemoBox>
-  <Badge variant="success" dot>Active</Badge>
-  <Badge variant="warning" dot>Invited</Badge>
-  <Badge variant="danger" dot>Suspended</Badge>
-  <Badge variant="neutral">Archived</Badge>
-  <Badge variant="primary" appearance="solid">Beta</Badge>
-  <Badge variant="neutral" appearance="outline" size="sm">v0.4</Badge>
+  <BadgeBasic />
 </DemoBox>
 
-The first three are the shape a status column takes. Note that they stay
-readable with the colour removed — the word carries the meaning, and the dot is
-there to give the eye something to lock onto down a repeating column.
+<<< @/examples/badge/BadgeBasic.vue
+
+The shape a status column takes. They stay readable with the colour removed —
+the word carries the meaning, and the dot gives the eye something to lock onto
+down a repeating column.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Variants and appearances
+
+Five variants by three appearances. `subtle` is the quiet default for values
+that repeat; `solid` is for the one thing that should stand out; `outline`
+keeps black text on any face.
+
+<DemoBox>
+  <BadgeMatrix />
+</DemoBox>
+
+<<< @/examples/badge/BadgeMatrix.vue
+
+### Sizes
+
+`sm` for table cells and dense lists, `md` beside headings and labels.
+
+<DemoBox>
+  <BadgeSizes />
+</DemoBox>
+
+<<< @/examples/badge/BadgeSizes.vue
+
+### Beside a heading, in a button, after a name
+
+The state of a thing next to its heading, a count inside a button — read with
+its label, «Inbox 12» — and a version after a package name.
+
+<DemoBox layout="stack">
+  <BadgeInContext />
+</DemoBox>
+
+<<< @/examples/badge/BadgeInContext.vue
 
 ## Anatomy
 
@@ -59,8 +97,8 @@ there to give the eye something to lock onto down a repeating column.
 | ------------ | -------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------- |
 | `variant`    | `'neutral' \| 'primary' \| 'success' \| 'warning' \| 'danger'` | `'neutral'` | Status family. `neutral` is the "no particular status" default rather than an absence of styling.          |
 | `appearance` | `'subtle' \| 'solid' \| 'outline'`                             | `'subtle'`  | How much visual weight the badge carries.                                                                  |
-| `size`       | `'sm' \| 'md'`                                                 | `'md'`      | Badge size. `sm` is intended for dense table rows.                                                         |
-| `dot`        | `boolean`                                                      | `false`     | Shows a filled dot before the label, inheriting the text colour.                                           |
+| `size`       | `'sm' \| 'md'`                                                 | `'md'`      | `sm` (18px) for table rows and navigation counts, `md` (20px) elsewhere.                                   |
+| `dot`        | `boolean`                                                      | `false`     | Shows a 5×5 square before the label in the variant's colour.                                               |
 | `class`      | `string`                                                       | —           | Additional classes, merged with the variant classes so a consumer's utility wins over the component's own. |
 | `as`         | `string \| Component`                                          | `'span'`    | Element or component to render as.                                                                         |
 | `asChild`    | `boolean`                                                      | `false`     | Merge props onto the single child element instead of rendering a wrapper.                                  |
@@ -82,8 +120,8 @@ yourself wanting keyboard support here, you want a different component.
 
 - The dot is `aria-hidden`: it repeats information the label already carries,
   and announcing it before every status would be noise.
-- Every `variant` × `appearance` pair meets WCAG AA for text contrast in both
-  light and dark mode. This is asserted in `@rowkit/tokens`, not assumed.
+- Every `variant` × `appearance` pair meets WCAG AA for text contrast. This
+  is asserted in `@rowkit/tokens`, not assumed.
 - A badge announces as plain text. If its appearance is the _result_ of an
   action the user just took, put it in a container with `aria-live`, not on
   the badge itself.

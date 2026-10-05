@@ -16,6 +16,7 @@ interface PaginationArgs {
   hidePageSize: boolean
   hideSummary: boolean
   size: (typeof sizes)[number]
+  compact: boolean | 'auto'
   disabled: boolean
 }
 
@@ -43,6 +44,7 @@ const meta: Meta<PaginationArgs> = {
     hidePageSize: false,
     hideSummary: false,
     size: 'md',
+    compact: 'auto',
     disabled: false,
   },
   argTypes: {
@@ -52,6 +54,7 @@ const meta: Meta<PaginationArgs> = {
     hidePageSize: { control: 'boolean' },
     hideSummary: { control: 'boolean' },
     size: { control: 'inline-radio', options: sizes },
+    compact: { control: 'inline-radio', options: ['auto', true, false] },
     disabled: { control: 'boolean' },
   },
   render: (args) => stateful(args),
@@ -112,6 +115,16 @@ export const Sizes: Story = {
   }),
 }
 
+/**
+ * Back and Next as arrows alone, mid-list, so the row fits a phone or a
+ * narrow panel. The words stay as the buttons' names. `compact: 'auto'`, the
+ * default, does this below 640px.
+ */
+export const Compact: Story = {
+  args: { compact: true, hidePageSize: true },
+  render: (args) => stateful(args, 12),
+}
+
 /** Numbers only, for a compact toolbar. */
 export const Minimal: Story = {
   args: { hidePageSize: true, hideSummary: true },
@@ -147,7 +160,7 @@ export const PagingForward: Story = {
 
     await expect(canvas.getByText('1–10 of 247')).toBeInTheDocument()
 
-    await userEvent.click(canvas.getByLabelText('Next page'))
+    await userEvent.click(canvas.getByRole('button', { name: 'Next' }))
 
     await expect(canvas.getByText('11–20 of 247')).toBeInTheDocument()
     await expect(canvas.getByRole('button', { current: 'page' })).toHaveTextContent('2')
@@ -161,7 +174,7 @@ export const JumpToPage: Story = {
     const canvas = within(canvasElement)
 
     // The last page is reachable in one click because `showEdges` is on.
-    // Reka names page buttons "Page N" rather than the bare number.
+    // Page buttons are named "Page N" rather than the bare number.
     await userEvent.click(canvas.getByRole('button', { name: 'Page 25' }))
 
     await expect(canvas.getByText('241–247 of 247')).toBeInTheDocument()

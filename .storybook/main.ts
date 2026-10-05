@@ -9,19 +9,10 @@ const config: StorybookConfig = {
     name: '@storybook/vue3-vite',
     options: {},
   },
-  // Brand assets + fonts for the manager chrome (preview loads fonts via CSS).
-  staticDirs: [
-    '../docs/public',
-    {
-      from: '../node_modules/@fontsource-variable/geist',
-      to: '/fontsource/geist',
-    },
-    {
-      from: '../node_modules/@fontsource-variable/geist-mono',
-      to: '/fontsource/geist-mono',
-    },
-  ],
-  core: { disableTelemetry: true },
+  // Brand assets for the manager chrome.
+  staticDirs: ['../docs/public'],
+  // No «What's new» toast over the sidebar.
+  core: { disableTelemetry: true, disableWhatsNewNotifications: true },
   /**
    * Two plugins the preview cannot build without.
    *

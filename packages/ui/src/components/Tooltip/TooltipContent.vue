@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { TooltipContent, TooltipPortal } from 'reka-ui'
+import { computed, onBeforeUnmount, onMounted, ref, watch, type ComponentPublicInstance } from 'vue'
+import DismissableLayer from '../../primitives/DismissableLayer.vue'
+import { unrefElement } from '../../primitives/dom'
+import type { PointerDownOutsideEvent } from '../../primitives/dismissableLayer'
+import { useFloating } from '../../primitives/position'
+import { Presence } from '../../primitives/Presence'
 import { cn } from '../../utils/cn'
+import { useTooltipContext } from './context'
 import { tooltipContentVariants } from './Tooltip.variants'
 import type { TooltipContentProps } from './types'
 
@@ -20,27 +26,71 @@ defineSlots<{
    */
   default: () => unknown
 }>()
+
+const tooltip = useTooltipContext('TooltipContent')
+
+// Teleported only once mounted: there is no `body` to reach during server rendering.
+const mounted = ref(false)
+onMounted(() => {
+  mounted.value = true
+})
+
+const layer = ref<ComponentPublicInstance | null>(null)
+const bubble = computed(() => unrefElement(layer.value))
+
+// The root needs the bubble's box to know where the hover area ends.
+watch(bubble, (element) => {
+  tooltip.bubbleElement.value = element
+})
+onBeforeUnmount(() => {
+  tooltip.bubbleElement.value = undefined
+})
+
+const { style, side } = useFloating(tooltip.triggerElement, bubble, () => ({
+  side: props.placement,
+  offset: 4,
+  padding: 8,
+}))
+
+/**
+ * A press on the trigger is the trigger's to handle — activating it may or may
+ * not close the tooltip, depending on the group. Anywhere else dismisses.
+ */
+function onPointerDownOutside(event: PointerDownOutsideEvent): void {
+  const target = event.detail.originalEvent.target
+  if (target instanceof Node && tooltip.triggerElement.value?.contains(target)) {
+    event.preventDefault()
+  }
+}
 </script>
 
 <template>
-  <TooltipPortal>
-    <!--
-      `side-offset` keeps the tooltip clear of the trigger without a gap the
-      pointer can fall through: WCAG 1.4.13 requires the content stay visible
-      while the pointer moves onto it, and Reka's hoverable bridge covers the
-      4px.
+  <Teleport v-if="mounted" to="body">
+    <Presence :present="tooltip.open.value">
+      <!--
+        The bubble is the description itself: role="tooltip", pointed at by
+        the trigger's aria-describedby. No visually hidden copy of the text:
+        one element is enough, and the text exists once.
 
-      `avoid-collisions` is Reka's default and left on — `placement` is a
-      preference, and a tooltip clipped by the viewport edge is worse than one
-      that flipped.
-    -->
-    <TooltipContent
-      data-slot="tooltip-content"
-      :side="props.placement"
-      :side-offset="4"
-      :class="cn(tooltipContentVariants(), props.class)"
-    >
-      <slot />
-    </TooltipContent>
-  </TooltipPortal>
+        A layer for Escape and outside presses, but one that never blocks the
+        page or reacts to focus moving on: the trigger's own blur decides that.
+      -->
+      <DismissableLayer
+        :id="tooltip.contentId"
+        ref="layer"
+        role="tooltip"
+        data-slot="tooltip-content"
+        :data-state="tooltip.state.value"
+        :data-side="side"
+        data-align="center"
+        :style="style"
+        :class="cn(tooltipContentVariants(), props.class)"
+        @focus-outside="$event.preventDefault()"
+        @pointer-down-outside="onPointerDownOutside"
+        @dismiss="tooltip.dismiss()"
+      >
+        <slot />
+      </DismissableLayer>
+    </Presence>
+  </Teleport>
 </template>

@@ -61,7 +61,7 @@ const columns: DataTableColumn<User>[] = [
   { key: 'email', header: 'Email' },
   { key: 'role', header: 'Role' },
   { key: 'status', header: 'Status' },
-  { key: 'seats', header: 'Seats', align: 'end' },
+  { key: 'seats', header: 'Seats', numeric: true },
 ]
 
 /**
@@ -86,7 +86,7 @@ const meta: Meta<DataTableArgs> = {
     caption: 'Team members',
     captionVisible: false,
     loading: false,
-    loadingRows: 5,
+    loadingRows: 6,
     size: 'md',
     hoverable: false,
     emptyTitle: 'Nothing to show',
@@ -125,7 +125,7 @@ export const Default: Story = {
         { key: 'email', header: 'Email' },
         { key: 'role', header: 'Role' },
         { key: 'status', header: 'Status', sortable: true },
-        { key: 'seats', header: 'Seats', align: 'end', sortable: true },
+        { key: 'seats', header: 'Seats', numeric: true, sortable: true },
         { id: 'actions', header: 'Actions', headerSrOnly: true, align: 'end' },
       ] satisfies DataTableColumn<User>[],
       sort: ref<DataTableSort<User>>({ key: 'name', direction: 'asc' }),
@@ -251,8 +251,8 @@ export const ComputedColumn: Story = {
       users,
       columns: [
         { key: 'name', header: 'Name' },
-        { key: 'seats', header: 'Seats', align: 'end' },
-        { id: 'cost', header: 'Monthly', align: 'end' },
+        { key: 'seats', header: 'Seats', numeric: true },
+        { id: 'cost', header: 'Monthly', numeric: true },
       ],
     }),
     template: `
@@ -282,7 +282,7 @@ export const StickyColumn: Story = {
         { key: 'email', header: 'Email', width: '16rem' },
         { key: 'role', header: 'Role', width: '10rem' },
         { key: 'status', header: 'Status', width: '10rem' },
-        { key: 'seats', header: 'Seats', align: 'end', width: '10rem' },
+        { key: 'seats', header: 'Seats', numeric: true, width: '10rem' },
         { id: 'notes', header: 'Notes', width: '20rem' },
       ],
     }),
@@ -356,11 +356,118 @@ export const StickyHeader: Story = {
   },
 }
 
+/** A table taller and wider than its frame, with selection and two pinned columns. */
+function stickyBoth(scrollbars: 'native' | 'drawn') {
+  return {
+    components: { DataTable },
+    setup: () => ({
+      rows: Array.from({ length: 40 }, (_, i) => ({
+        id: i + 1,
+        name: `Person ${String(i + 1)}`,
+        email: `person${String(i + 1)}@example.com`,
+        role: i % 3 === 0 ? 'Admin' : 'Member',
+        status: 'active',
+        seats: i % 7,
+      })),
+      columns: [
+        { key: 'id', header: 'ID', sticky: true, numeric: true, width: '3rem' },
+        { key: 'name', header: 'Name', sticky: true, width: '10rem' },
+        { key: 'email', header: 'Email', width: '16rem' },
+        { key: 'role', header: 'Role', width: '10rem' },
+        { key: 'status', header: 'Status', width: '10rem' },
+        { key: 'seats', header: 'Seats', numeric: true, width: '10rem' },
+      ],
+      selected: ref<number[]>([2]),
+    }),
+    template: `
+      <div class="w-full max-w-md">
+        <DataTable
+          v-model:selected="selected"
+          :rows="rows"
+          :columns="columns"
+          selectable="multiple"
+          :row-label="(row) => row.name"
+          caption="Team members"
+          scrollbars="${scrollbars}"
+          class="max-h-80"
+        />
+      </div>
+    `,
+  }
+}
+
+/** The element that scrolls: the table's own, or a ScrollArea's viewport. */
+function scroller(canvasElement: HTMLElement): HTMLElement {
+  const region =
+    canvasElement.querySelector<HTMLElement>('[data-slot="scroll-area-viewport"]') ??
+    canvasElement.querySelector<HTMLElement>('[data-slot="data-table-scroll"]')
+  if (!region) throw new Error('no scroll container')
+  return region
+}
+
+async function checkStickyBoth(canvasElement: HTMLElement) {
+  const canvas = within(canvasElement)
+  const region = scroller(canvasElement)
+  const [select, id, name] = canvas.getAllByRole('columnheader')
+  if (!select || !id || !name) throw new Error('missing header cells')
+  const cell = canvas.getByText('Person 10').closest('td')
+  if (!cell) throw new Error('no body cell')
+
+  region.scrollTop = 120
+  region.scrollLeft = 150
+  await new Promise((r) => requestAnimationFrame(() => r(null)))
+
+  const box = region.getBoundingClientRect()
+  const edge = (el: Element) => el.getBoundingClientRect()
+  // The header is still at the top, the pinned columns at the start,
+  // each one starting where the one before it ends.
+  await expect(Math.abs(edge(select).top - box.top)).toBeLessThanOrEqual(2)
+  await expect(Math.abs(edge(select).left - box.left)).toBeLessThanOrEqual(2)
+  await expect(edge(id).left).toBeCloseTo(edge(select).right, 0)
+  await expect(edge(name).left).toBeCloseTo(edge(id).right, 0)
+  // The body's pinned cell lines up under its header, not under the column
+  // before it.
+  await expect(edge(cell).left).toBeCloseTo(edge(name).left, 0)
+  // No wrapping: the row keeps its 27px.
+  await expect(edge(cell).height).toBe(27)
+}
+
+/**
+ * Both at once: scroll down and sideways. The header stays at the top; the
+ * selection, ID and name columns stay at the start, side by side; and the
+ * corner where they meet stays over both.
+ */
+export const StickyHeaderAndColumn: Story = {
+  render: () => stickyBoth('native'),
+  play: ({ canvasElement }) => checkStickyBoth(canvasElement),
+}
+
+/**
+ * The same table with `scrollbars="drawn"`: the bars are rowkit's own, the
+ * same in every browser, and they sit beside the cells, never over them.
+ */
+export const DrawnScrollbars: Story = {
+  render: () => stickyBoth('drawn'),
+  play: async ({ canvasElement }) => {
+    await checkStickyBoth(canvasElement)
+    const region = scroller(canvasElement)
+    const bar = canvasElement.querySelector(
+      '[data-slot="scroll-area-scrollbar"][data-orientation="vertical"]'
+    )
+    if (!bar) throw new Error('no drawn bar')
+    await expect(region.getBoundingClientRect().right).toBeLessThanOrEqual(
+      bar.getBoundingClientRect().left
+    )
+    // The body is the named region, from the caption.
+    await expect(region).toHaveAccessibleName('Team members')
+  },
+}
+
 const sortableColumns: DataTableColumn<User>[] = [
   { key: 'name', header: 'Name', sortable: true },
   { key: 'email', header: 'Email' },
   { key: 'role', header: 'Role', sortable: true },
-  { key: 'seats', header: 'Seats', sortable: true, align: 'end' },
+  { key: 'seats', header: 'Seats', sortable: true, numeric: true },
 ]
 
 /** Sorting handled locally. Fine for a table that holds all its rows. */
@@ -571,13 +678,15 @@ export const SelectAllIsTriState: Story = {
     const canvas = within(canvasElement)
     const all = () => canvas.getByRole('checkbox', { name: 'Select all rows' })
 
-    await expect(all()).toHaveAttribute('data-state', 'unchecked')
+    await expect(all()).not.toBeChecked()
+    await expect(all()).not.toBePartiallyChecked()
 
     await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Ada Lovelace' }))
-    await expect(all()).toHaveAttribute('data-state', 'indeterminate')
+    await expect(all()).toBePartiallyChecked()
 
+    // Partly checked means the next click selects the rest.
     await userEvent.click(all())
-    await expect(all()).toHaveAttribute('data-state', 'checked')
+    await expect(all()).toBeChecked()
     await expect(canvas.getByText('Selected: 4')).toBeInTheDocument()
 
     // Checked means the next click clears.
@@ -709,6 +818,111 @@ export const TenThousandRows: Story = {
  * skeleton all produce exactly the same row height. This story renders the
  * button so a regression is caught rather than reasoned about.
  */
+/**
+ * A reload — a sort, a page, a filter — keeps the header still. The columns
+ * hold the widths they had with rows in them until the new rows arrive.
+ */
+export const ReloadKeepsColumnWidths: Story = {
+  render: () => ({
+    components: { DataTable, Button },
+    setup: () => ({ users, columns, loading: ref(false) }),
+    template: `
+      <div class="flex w-full max-w-3xl flex-col items-start gap-2">
+        <Button @click="loading = !loading">{{ loading ? 'Finish' : 'Reload' }}</Button>
+        <DataTable :rows="users" :columns="columns" caption="Team members" :loading="loading" class="w-full" />
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const widths = () =>
+      canvas.getAllByRole('columnheader').map((th) => th.getBoundingClientRect().width)
+    const before = widths()
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Reload' }))
+    await canvas.findByRole('button', { name: 'Finish' })
+    await expect(widths()).toEqual(before)
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Finish' }))
+    await canvas.findByRole('button', { name: 'Reload' })
+    await expect(widths()).toEqual(before)
+  },
+}
+
+const invoice = [
+  { id: 1, item: 'Seats × 25', qty: 25, amount: '1,225.00' },
+  { id: 2, item: 'Storage 100 GB', qty: 1, amount: '40.00' },
+  { id: 3, item: 'Support', qty: 1, amount: '99.00' },
+]
+const invoiceColumns = [
+  { key: 'item', header: 'Item', width: '200px' },
+  { key: 'qty', header: 'Qty', numeric: true, width: '60px' },
+  { key: 'amount', header: 'Amount', numeric: true, width: '100px' },
+]
+
+/**
+ * Numbers and a total, as in the Figma example: figures right-aligned in the
+ * mono face, and a bold summary row under an etched line.
+ */
+export const SummaryRow: Story = {
+  render: () => ({
+    components: { DataTable },
+    setup: () => ({ invoice, invoiceColumns }),
+    template: `
+      <DataTable
+        :rows="invoice"
+        :columns="invoiceColumns"
+        caption="Invoice"
+        :summary="{ item: 'Total', amount: '1,364.00' }"
+        class="w-[364px]"
+      />
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const footer = canvasElement.querySelector('tfoot')
+    if (!footer) throw new Error('no summary row')
+    const cells = within(footer).getAllByRole('cell')
+    await expect(cells.map((cell) => cell.textContent?.trim())).toEqual(['Total', '', '1,364.00'])
+    await expect(getComputedStyle(cells[0] as Element).fontWeight).toBe('700')
+    // A data row's height plus the 2px etched line.
+    await expect((cells[0] as Element).getBoundingClientRect().height).toBe(29)
+  },
+}
+
+/** A long list: the summary row stays at the bottom while the rows scroll under it. */
+export const SummaryRowStaysVisible: Story = {
+  render: () => ({
+    components: { DataTable },
+    setup: () => ({
+      rows: Array.from({ length: 30 }, (_, i) => ({
+        id: i + 1,
+        item: `Line ${String(i + 1)}`,
+        qty: 1,
+        amount: '10.00',
+      })),
+      invoiceColumns,
+    }),
+    template: `
+      <DataTable
+        :rows="rows"
+        :columns="invoiceColumns"
+        caption="Invoice"
+        :summary="{ item: 'Total', qty: 30, amount: '300.00' }"
+        class="max-h-60 w-[380px]"
+      />
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const region = canvasElement.querySelector<HTMLElement>('[data-slot="data-table-scroll"]')
+    const total = canvasElement.querySelector('tfoot td')
+    if (!region || !total) throw new Error('missing parts')
+    region.scrollTop = 100
+    await new Promise((r) => requestAnimationFrame(() => r(null)))
+    const bottom = region.getBoundingClientRect().top + region.clientHeight
+    await expect(Math.abs(total.getBoundingClientRect().bottom - bottom)).toBeLessThanOrEqual(1)
+  },
+}
+
 export const LoadingRowsMatchLoadedRows: Story = {
   render: () => ({
     components: { DataTable, Button },

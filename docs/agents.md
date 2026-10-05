@@ -10,7 +10,7 @@ fetching anything.
 :::
 
 A professional Vue 3 toolkit: the components a product interface is built
-from. Built on Reka UI, styled with Tailwind v4.
+from. No behaviour library underneath, styled with Tailwind v4.
 
 This file is generated from the source, so it describes the version installed
 rather than whatever was current when it was written.
@@ -18,7 +18,7 @@ rather than whatever was current when it was written.
 ## Setup
 
 ```bash
-pnpm add rowkit
+pnpm add rowkit@beta
 ```
 
 `vue` and `tailwindcss` are peer dependencies. rowkit uses the copies already in
@@ -52,7 +52,9 @@ handling.
   (`Badge` and `DataTable` stop at `sm | md`) but never rename the steps.
 - **Variants are strings, never booleans.** `variant="danger"`, not `danger`.
 - **Identity payloads are stable ids**, never array indices or object references.
-- **No component ships an icon.** Icon slots take whatever the application uses.
+- **Icons are pixel art.** Show each at its own size (8, 16 or 32px) or a
+  whole multiple, never scaled in between. Icon slots take rowkit's icons or
+  your own.
 
 ## Also exported
 
@@ -62,8 +64,13 @@ handling.
   which never reorders its own rows. Deliberately not a prop on the component:
   a server-paged table that sorts locally reorders only the page on screen and
   looks correct.
-- `TooltipProvider` — Reka's, re-exported. Only needed to share
+- `TooltipProvider` — renders nothing. Only needed to share
   `skipDelayDuration` across a toolbar of tooltips.
+- Icons: the Windows 98 pixel set from the design — `PlusIcon`, `CopyIcon`,
+  `TrashIcon`, `FilterIcon`, `EditIcon`, `FolderIcon`, `DocumentIcon`,
+  `UserIcon` and the rest at 16px; `Error32Icon`, `Info32Icon`,
+  `Warning32Icon` and others at 32px for system messages; 8px glyphs such as
+  `TriangleDownIcon` and `CloseGlyphIcon`. All decorative (`aria-hidden`).
 - `cn(...)` — the class merger the components use.
 - Types: `SelectOption`, `FilterChip`, `DataTableColumn`, `DataTableSort`,
   `ToastOptions`, and a `*Props` type per component.
@@ -77,9 +84,9 @@ handling.
 **Props**
 
 - `variant: 'neutral' | 'primary' | 'success' | 'warning' | 'danger'` — default `'neutral'`. Status family. `neutral` is the "no particular status" default rather than an absence of styling.
-- `appearance: 'subtle' | 'solid' | 'outline'` — default `'subtle'`. How much visual weight the badge carries. Prefer `subtle` in a table — soft tinted chip with a matching hairline, quieter than `solid` / `outline`. `solid` is for when a single badge has to carry the page.
-- `size: 'sm' | 'md'` — default `'md'`. Badge size. `sm` is intended for dense table rows.
-- `dot: boolean` — default `false`. Shows a filled dot before the label, inheriting the text colour.
+- `appearance: 'subtle' | 'solid' | 'outline'` — default `'subtle'`. How much visual weight the badge carries.
+- `size: 'sm' | 'md'` — default `'md'`. `sm` (18px) for table rows and navigation counts, `md` (20px) elsewhere.
+- `dot: boolean` — default `false`. Shows a 5×5 square before the label in the variant's colour.
 - `class: string`. Additional classes, merged with the variant classes so a consumer's utility wins over the component's own.
 - `as: string | Component` — default `'span'`. Element or component to render as.
 - `asChild: boolean` — default `false`. Merge props onto the single child element instead of rendering a wrapper.
@@ -94,10 +101,11 @@ handling.
 
 **Props**
 
-- `variant: 'outline' | 'default' | 'secondary' | 'ghost' | 'destructive' | 'link'` — default `'default'`. Visual weight and intent.
-- `size: 'sm' | 'default' | 'xs' | 'lg' | 'icon' | 'icon-xs' | 'icon-sm' | 'icon-lg'` — default `'default'`. Control height and text size.
+- `variant: 'default' | 'secondary' | 'ghost' | 'destructive' | 'link'` — default `'default'`. Visual weight and intent.
+- `size: 'sm' | 'default' | 'xs' | 'lg' | 'icon-xs' | 'icon-sm' | 'icon' | 'icon-lg'` — default `'default'`. Control height: `xs` 21px, `sm` 26px, `default` 28px (Windows 98's own, in Large Fonts), `lg` 33px. Icon sizes render a square of 25, 27, 30 or 34px — supply `aria-label` yourself.
 - `block: boolean` — default `false`. Stretches the button to fill its container.
-- `loading: boolean` — default `false`. Swaps the leading slot for a spinner and blocks activation.
+- `pressed: boolean` — default `undefined`. Makes the button a toggle and sets whether it is on (`aria-pressed`). On is drawn pressed in, over the dither. Leave unset for a plain command button; `false` still announces a toggle that is off.
+- `loading: boolean` — default `false`. Swaps the leading slot for the hourglass and blocks activation.
 - `disabled: boolean` — default `false`. Disables the button.
 - `type: 'button' | 'submit' | 'reset'` — default `'button'`. Native button type. Defaults to `button`, not `submit` — an unlabelled submit inside a form is the more damaging default.
 - `loadingLabel: string`. Announced in place of the visible label while `loading` is set. Leave unset to keep the label unchanged.
@@ -108,7 +116,7 @@ handling.
 **Slots**
 
 - `#default` — The button label.
-- `#leading` — Icon before the label. Replaced by the spinner while loading.
+- `#leading` — Icon before the label. Replaced by the hourglass while loading.
 - `#trailing` — Icon after the label.
 
 ### ButtonGroup
@@ -117,13 +125,36 @@ handling.
 
 **Props**
 
-- `orientation: 'horizontal' | 'vertical'` — default `'horizontal'`. Layout axis.
+- `orientation: 'horizontal' | 'vertical'` — default `'horizontal'`. Layout axis. Buttons sit edge to edge along it; nested groups sit 4px apart, with a `Separator` between them when they are separate units.
 - `ariaLabel: string`. Accessible name for the group.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
 
 **Slots**
 
 - `#default` — Buttons (or nested groups) to join.
+
+### Checkbox
+
+`import { Checkbox } from 'rowkit'`
+
+**Props**
+
+- `label: string`. The label beside the box. The default slot replaces it.
+- `indeterminate: boolean` — default `false`. Partly checked: some of a group, not all. Shows the bar and is announced as "mixed". Checking it clears this; owning that is the caller's.
+- `disabled: boolean` — default `false`. Disables the control: a silver box and a grey, embossed label.
+- `name: string`. Name submitted with a native form.
+- `value: string`. Value submitted with a native form while checked.
+- `required: boolean` — default `false`. Marks the control required for native form validation.
+- `id: string`. Id for the input. Generated when omitted.
+- `class: string`. Additional classes for the row, merged so a consumer's utility wins.
+
+**v-model**
+
+- `v-model` — `boolean`. Whether the box is checked.
+
+**Slots**
+
+- `#default` — The label, for one that needs markup. Replaces `label`.
 
 ### DataTable
 
@@ -136,7 +167,7 @@ handling.
 - `caption: string` _(required)_. Accessible name for the table.
 - `captionVisible: boolean` — default `false`. Shows the caption. It is available to assistive technology either way.
 - `loading: boolean` — default `false`. Swaps the body for placeholder rows.
-- `loadingRows: number` — default `5`. How many placeholder rows to show while loading.
+- `loadingRows: number` — default `6`. How many placeholder rows to show while loading.
 - `loadingLabel: string` — default `'Loading'`. Announced while loading.
 - `emptyTitle: string` — default `'Nothing to show'`. Title for the built-in empty state.
 - `emptyDescription: string`. Description for the built-in empty state.
@@ -145,9 +176,11 @@ handling.
 - `rowLabel: (row: TRow, index: number) => string`. Accessible name for each row's selection control.
 - `selectionLabel: string` — default `'Select'`. Accessible name for the selection column.
 - `selectAllLabel: string` — default `'Select all rows'`. Accessible name for the select-all control.
-- `size: 'sm' | 'md'` — default `'md'`. Row height and text size.
-- `hoverable: boolean` — default `false`. Highlights rows on hover. Only turn this on when a row does something.
-- `class: string`. Additional classes for the scroll container, merged so a consumer's utility wins.
+- `size: 'sm' | 'md'` — default `'md'`. Row height: `sm` 22px for dense lists and logs, `md` 27px.
+- `hoverable: boolean` — default `false`. Kept for compatibility; has no visible effect. Windows 98 list rows have no hover, so a row that does something shows it through the cursor, the dotted focus rectangle and selection instead.
+- `summary: Record<string, unknown>`. A summary row — totals, averages — after the last row, keyed like the columns: `key`, or `id` for a computed column.
+- `scrollbars: 'native' | 'drawn'` — default `'native'`. Which scroll bars the body uses.
+- `class: string`. Additional classes for the root, merged so a consumer's utility wins. A height (`max-h-96`) bounds the table; the body scrolls inside the frame.
 
 **v-model**
 
@@ -161,6 +194,7 @@ handling.
 **Slots**
 
 - `#cell:<key>` `(props: { row: TRow; column: DataTableColumn<TRow>; value: unknown; index: number })` — Per-key slot. Resolution order: this, then the general slot.
+- `#summary:<key>` `(props: { column: DataTableColumn<TRow>; value: unknown })` — Per-key slot.
 - `#cell` `(props: { row: TRow; column: DataTableColumn<TRow>; value: unknown; index: number })` — Fallback renderer for every cell.
 - `#empty` — Replaces the built-in empty state.
 - `#loading` — Replaces the placeholder rows shown while loading.
@@ -186,7 +220,7 @@ handling.
 **Props**
 
 - `size: 'sm' | 'md' | 'lg'` — default `'md'`. Width preset. Height is content-driven, capped to the viewport.
-- `preventClose: boolean` — default `false`. Blocks Escape and clicking the scrim, for a flow where dismissing by accident loses work.
+- `preventClose: boolean` — default `false`. Blocks Escape and clicking outside the window, for a flow where dismissing by accident loses work.
 - `closeLabel: string` — default `'Close dialog'`. Accessible name for the close button.
 - `class: string`. Additional classes for the dialog surface, merged so a consumer's utility wins.
 
@@ -275,7 +309,7 @@ handling.
 - `title: string` _(required)_. What is empty, in a few words.
 - `description: string`. One sentence on what to do next. This is the part that turns a dead end into a starting point, and the part most empty states leave out.
 - `reason: 'no-data' | 'no-results' | 'error'` — default `'no-data'`. Why the view is empty.
-- `size: 'sm' | 'md' | 'lg'` — default `'md'`. Scales every part together. `sm` fits inside a table body.
+- `size: 'sm' | 'md' | 'lg'` — default `'md'`. Scales every part together. `sm` fits inside a table body; `md` and `lg` fill a panel. Pair `sm` with `size="sm"` buttons.
 - `level: 1 | 2 | 3 | 4 | 5 | 6` — default `2`. Heading level for the title.
 - `announce: boolean` — default `false`. Announces the empty state when it appears.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
@@ -284,7 +318,7 @@ handling.
 
 **Slots**
 
-- `#icon` — Illustration or icon above the title. Decorative — mark it `aria-hidden` unless it carries meaning the title does not.
+- `#icon` — Replaces the 32px icon the `reason` picks. Keep it 32×32 and decorative — mark it `aria-hidden` unless it carries meaning the title does not.
 - `#description` — Replaces the `description` text, for explanations that need markup.
 - `#actions` — Buttons. Keep it to one primary action, optionally with one secondary — an empty state offering four choices is a menu, not a next step.
 
@@ -300,6 +334,7 @@ handling.
 - `required: boolean` — default `false`. Marks the control required and shows the required indicator.
 - `disabled: boolean` — default `false`. Disables the control inside.
 - `size: 'sm' | 'md' | 'lg'` — default `'md'`. Sizes the label, hint, error and — via field context — the nested control when that control omits its own `size`.
+- `layout: 'top' | 'left'` — default `'top'`. Where the label sits. `top` stacks it above the control; `left` puts it beside the control, the Windows 98 property-dialog arrangement. Set `--rk-field-label-width` on a container to line up a column of left labels.
 - `id: string`. Id for the control. Generated when omitted — supply one only when something outside the field needs to reference it.
 - `labelSrOnly: boolean` — default `false`. Hides the label visually while leaving it available to screen readers. For a search box in a toolbar whose purpose is obvious from context.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
@@ -321,7 +356,7 @@ handling.
 - `searchable: boolean` — default `true`. Shows the search box.
 - `searchPlaceholder: string` — default `'Search…'`. Placeholder for the search box.
 - `searchLabel: string` — default `'Search'`. Accessible name for the search box. Visually hidden.
-- `clearLabel: string` — default `'Clear all'`. Label for the clear-all control.
+- `clearLabel: string` — default `'Clear filters'`. Label of the button that clears every filter.
 - `removeLabel: string` — default `'Remove {filter} filter'`. Accessible name for the chip's remove control. `{filter}` is replaced with the chip's text.
 - `label: string` — default `'Filters'`. Accessible name for the region.
 - `size: 'sm' | 'md'` — default `'md'`. Control height and text size.
@@ -344,21 +379,36 @@ handling.
 - `#chip` `(props: { chip: FilterChip })` — Replaces a chip's text.
 - `#summary` `(props: { count: number })` — Replaces the result count.
 
+### GroupBox
+
+`import { GroupBox } from 'rowkit'`
+
+**Props**
+
+- `legend: string`. The text on the frame's top line. Names the group for assistive technology.
+- `as: 'fieldset' | 'section' | 'div'` — default `'fieldset'`. The element. `fieldset` — the default — groups form controls, and the browser names the group from its legend. `section` or `div` frame anything else; the group is then `role="group"`, named by the legend.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The grouped content.
+- `#legend` — Replaces the `legend` text, for a legend that needs markup.
+
 ### Input
 
 `import { Input } from 'rowkit'`
 
 **Props**
 
-- `size: 'sm' | 'md' | 'lg'`. Control height and text size. Inherited from a surrounding `Field` when omitted.
-- `type: 'number' | 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'date'` — default `'text'`. Native input type. Deliberately excludes `checkbox`, `radio` and `file`, which need different markup and a different control.
+- `size: 'sm' | 'md' | 'lg'`. Control height: `sm` 26px, `md` 28px, `lg` 33px — the same as Button's `sm`, `default` and `lg`, so a field and its button line up. Inherited from a surrounding `Field` when omitted.
+- `type: 'number' | 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'date'` — default `'text'`. Native input type.
 - `placeholder: string`. Short example of the expected value. Never a substitute for a label.
 - `disabled: boolean` — default `false`. Disables the input. A surrounding disabled `Field` also disables it.
-- `invalid: boolean` — default `false`. Marks the value invalid. A `Field` with an `error` also sets it.
+- `invalid: boolean` — default `false`. Marks the value invalid: `aria-invalid` and the error mark at the end of the field. Quiet on purpose — the message belongs in Field. A `Field` with an `error` also sets it.
 - `required: boolean` — default `false`. Marks the input required. A required `Field` also sets it.
 - `readonly: boolean` — default `false`. Makes the value read-only while keeping it focusable and selectable.
 - `id: string`. Id for the input. Inherited from a surrounding `Field` when omitted.
-- `class: string`. Additional classes, merged so a consumer's utility wins.
+- `class: string`. Additional classes for the frame — the visible box with the bevel — merged so a consumer's utility wins. Width goes here. Other attributes (`name`, `autocomplete`, listeners) go to the native `<input>`.
 
 **v-model**
 
@@ -366,8 +416,8 @@ handling.
 
 **Slots**
 
-- `#leading` — Content rendered before the input, inside the control's border.
-- `#trailing` — Content rendered after the input — a unit, a clear button, a spinner.
+- `#leading` — Content inside the frame, before the text. Replaces the magnifier of a search field.
+- `#trailing` — Content inside the frame, after the text — a unit, a clear button.
 
 ### Pagination
 
@@ -383,9 +433,10 @@ handling.
 - `hideSummary: boolean` — default `false`. Hides the "1–10 of 247" summary.
 - `pageSizeLabel: string` — default `'Rows per page'`. Label for the rows-per-page control.
 - `label: string` — default `'Pagination'`. Accessible name for the navigation region.
-- `previousLabel: string` — default `'Previous page'`. Accessible name for the previous-page control.
-- `nextLabel: string` — default `'Next page'`. Accessible name for the next-page control.
-- `size: 'sm' | 'md'` — default `'md'`. Control height and text size.
+- `previousLabel: string` — default `'Back'`. Label of the previous-page button, shown beside its ◀ and used as its name.
+- `nextLabel: string` — default `'Next'`. Label of the next-page button, shown beside its ▶ and used as its name.
+- `size: 'sm' | 'md'` — default `'md'`. Button height: 21px at `sm`, 26px at `md`.
+- `compact: boolean | 'auto'` — default `'auto'`. Draws «Back» and «Next» as arrows alone, so the row fits a phone. The words stay as the buttons' accessible names. `auto` does it below 640px, in CSS — nothing shifts on load; `true` always, for a narrow panel; `false` never.
 - `disabled: boolean` — default `false`. Disables every control.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
 
@@ -397,6 +448,52 @@ handling.
 **Slots**
 
 - `#summary` `(props: { from: number; to: number; total: number })` — Replaces the range summary.
+
+### ProgressBar
+
+`import { ProgressBar } from 'rowkit'`
+
+**Props**
+
+- `value: number` _(required)_. How far along, from 0 to `max`. Values outside are clamped.
+- `max: number` — default `100`. The value that means done.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+### Radio
+
+`import { Radio } from 'rowkit'`
+
+**Props**
+
+- `value: T` _(required)_. This option's value. `v-model` equals it while this option is chosen.
+- `name: string`. The group's name. Options sharing it are one group: one choice, and the arrow keys move between them.
+- `label: string`. The label beside the well. The default slot replaces it.
+- `disabled: boolean` — default `false`. Disables this option: a silver well and a grey, embossed label.
+- `required: boolean` — default `false`. Marks the group required for native form validation.
+- `id: string`. Id for the input. Generated when omitted.
+- `class: string`. Additional classes for the row, merged so a consumer's utility wins.
+
+**v-model**
+
+- `v-model` — `T | undefined`. The chosen value of the group. Bind the same ref on every option in it.
+
+**Slots**
+
+- `#default` — The label, for one that needs markup. Replaces `label`.
+
+### ScrollArea
+
+`import { ScrollArea } from 'rowkit'`
+
+**Props**
+
+- `label: string`. Accessible name for the scrolling region. The region takes focus so the keyboard can scroll it; give it a name whenever nothing inside is focusable, so a screen reader can say what it is.
+- `scrollbars: 'auto' | 'always'` — default `'auto'`. When the bars show. `auto` draws a bar only on an axis whose content does not fit. `always` draws both, and a bar with nothing to scroll greys its arrows and has no thumb.
+- `class: string`. Additional classes for the root — its size goes here — merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The content that scrolls.
 
 ### Select
 
@@ -413,7 +510,7 @@ handling.
 
 **v-model**
 
-- `v-model` — `T | undefined`. The selected value. `undefined` is nothing selected — Reka's `null` stays inside.
+- `v-model` — `T | undefined`. The selected value. `undefined` is nothing selected.
 - `v-model:searchTerm` — `string`. The current search term. Bind it to fetch options asynchronously.
 
 **Slots**
@@ -427,7 +524,7 @@ handling.
 **Props**
 
 - `placeholder: string` — default `'Select…'`. Text shown while nothing is selected.
-- `togglerLabel: string` — default `'Show options'`. Accessible name for the open/close chevron.
+- `togglerLabel: string` — default `'Show options'`. Accessible name for the drop button that opens and closes the list.
 - `size: 'sm' | 'md' | 'lg'`. Control height and text size. Inherited from a surrounding `Field` when omitted.
 - `id: string`. Id for the combobox input. Inherited from a surrounding `Field` when omitted.
 - `class: string`. Additional classes for the control, merged so a consumer's utility wins.
@@ -463,6 +560,16 @@ handling.
 
 - `#default` `(props: { selected: boolean })` — The row. Defaults to `label`.
 
+### Separator
+
+`import { Separator } from 'rowkit'`
+
+**Props**
+
+- `orientation: 'horizontal' | 'vertical'` — default `'horizontal'`. Direction of the line. Vertical stretches to the height of its row.
+- `decorative: boolean` — default `false`. Purely visual: hidden from assistive technology. Leave it off when the line divides groups of controls a reader should hear as separate.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
 ### Skeleton
 
 `import { Skeleton } from 'rowkit'`
@@ -471,11 +578,35 @@ handling.
 
 - `variant: 'text' | 'circle' | 'rect'` — default `'text'`. Geometry preset.
 - `lines: number` — default `1`. Number of stacked bars. Only meaningful for `text`.
-- `animated: boolean` — default `true`. Whether the placeholder pulses. Suppressed automatically for anyone with `prefers-reduced-motion`.
+- `animated: boolean` — default `true`. Whether the dither steps 1px every 400ms. Windows 98 never pulses. Suppressed automatically for anyone with `prefers-reduced-motion`.
 - `label: string`. Announces this placeholder to assistive technology as a busy region.
 - `class: string`. Additional classes, merged with the variant classes so a consumer's utility wins over the component's own.
 - `as: string | Component` — default `'div'`. Element or component to render as.
 - `asChild: boolean` — default `false`. Merge props onto the single child element instead of rendering a wrapper.
+
+### StatusBar
+
+`import { StatusBar } from 'rowkit'`
+
+**Props**
+
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — `StatusBarSection`s. The first fills the width the others leave.
+
+### StatusBarSection
+
+`import { StatusBarSection } from 'rowkit'`
+
+**Props**
+
+- `class: string`. Additional classes — a width, for every section but the first.
+
+**Slots**
+
+- `#default` — A short line of text, an icon and text, or a small control.
 
 ### Toaster
 
@@ -495,7 +626,7 @@ handling.
 
 **Props**
 
-- `delay: number` — default `300`. Delay before opening, in milliseconds.
+- `delay: number` — default `500`. Delay before opening, in milliseconds.
 - `disabled: boolean` — default `false`. Turns the tooltip off without unwrapping the trigger.
 
 **Slots**
@@ -522,9 +653,64 @@ handling.
 
 **Props**
 
-- `placement: 'top' | 'right' | 'bottom' | 'left'` — default `'top'`. Preferred side. Flips automatically on collision.
+- `placement: 'top' | 'left' | 'right' | 'bottom'` — default `'top'`. Preferred side. Flips automatically on collision.
 - `class: string`. Additional classes for the bubble, merged so a consumer's utility wins.
 
 **Slots**
 
 - `#default` — The label. Plain text.
+
+### Window
+
+`import { Window } from 'rowkit'`
+
+**Props**
+
+- `active: boolean` — default `true`. Whether this is the window in use. An inactive window's title bar is the grey gradient — the one behind a dialog, or beside the window with focus.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — `WindowTitleBar`, `WindowBody`, and a `StatusBar` if the window has one.
+
+### WindowTitleBar
+
+`import { WindowTitleBar } from 'rowkit'`
+
+**Props**
+
+- `title: string`. The window's title. Names the window. The default slot replaces it.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The title, for one that needs markup. Replaces `title`.
+- `#icon` — A 16px icon before the title.
+- `#controls` — `WindowButton`s: minimize, maximize or restore, close — in that order.
+
+### WindowButton
+
+`import { WindowButton } from 'rowkit'`
+
+**Props**
+
+- `glyph: 'minimize' | 'maximize' | 'restore' | 'close'` _(required)_. Which caption button: the glyph it shows.
+- `label: string` _(required)_. Accessible name. The glyph alone says nothing to a screen reader.
+- `disabled: boolean` — default `false`. Disables the button: a grey, embossed glyph.
+- `class: string`. Additional classes, merged so a consumer's utility wins.
+
+**Events**
+
+- `@click` — `[event: MouseEvent]`. The button was activated. What it does — close, minimize — is the caller's.
+
+### WindowBody
+
+`import { WindowBody } from 'rowkit'`
+
+**Props**
+
+- `class: string`. Additional classes — padding, a layout — merged so a consumer's utility wins.
+
+**Slots**
+
+- `#default` — The window's content.

@@ -18,11 +18,11 @@ describe('generated props tables', () => {
   it('found every component', () => {
     // Guards against the glob silently matching nothing and every assertion
     // below passing on an empty set.
-    expect(tables.size).toBe(25)
+    expect(tables.size).toBe(37)
   })
 
-  it('documents thirteen pages', () => {
-    expect(pages).toHaveLength(13)
+  it('documents twenty-one pages', () => {
+    expect(pages).toHaveLength(21)
   })
 
   it('keeps every marker, on the page with two of them', async () => {
@@ -34,7 +34,7 @@ describe('generated props tables', () => {
      * here passed, because a table that no longer exists cannot drift.
      */
     const count = (text: string) => text.match(/<!-- @props \w+ -->/g)?.length ?? 0
-    expect(pages.reduce((total, page) => total + count(page.content), 0)).toBe(25)
+    expect(pages.reduce((total, page) => total + count(page.content), 0)).toBe(37)
 
     for (const page of pages) {
       const regenerated = await injectTables(page.content, tables, page.path)
@@ -77,7 +77,7 @@ describe('generated props tables', () => {
     // A regex for `withDefaults(defineProps<DataTableProps<TRow>>(), …)` closes
     // at the first `>`, which reported no defaults at all for exactly the
     // components whose props are hardest to guess.
-    expect(tables.get('DataTableProps')).toContain('`5`')
+    expect(tables.get('DataTableProps')).toContain('`6`')
     expect(tables.get('SelectTriggerProps')).toContain("`'Select…'`")
   })
 

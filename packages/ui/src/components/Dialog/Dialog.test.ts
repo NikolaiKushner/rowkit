@@ -13,8 +13,8 @@ const title = 'Delete project'
 
 /**
  * The public API is the parts, so the tests compose them the way a consumer
- * does. Reka defers the teleport until after mount, so querying synchronously
- * finds an empty document.
+ * does. The dialog teleports only after mount, so querying synchronously finds
+ * an empty document.
  */
 const Harness = defineComponent({
   components: {
@@ -69,7 +69,7 @@ const dialog = () => document.querySelector('[role="dialog"]')
 const closeButton = () => document.querySelector<HTMLElement>('[aria-label="Close dialog"]')
 const text = () => document.body.textContent ?? ''
 
-/** Reka listens on the layer, so the event has to originate inside it. */
+/** Dispatched from inside the dialog, the way a real keypress originates. */
 function pressEscape(): void {
   dialog()?.dispatchEvent(
     new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })
@@ -90,11 +90,11 @@ describe('Dialog', () => {
     })
 
     it('hides the rest of the page from assistive technology', async () => {
-      // Reka makes the dialog modal by hiding siblings rather than by setting
+      // The dialog is made modal by hiding siblings rather than by setting
       // `aria-modal`, which is the more robust of the two — `aria-modal` alone
       // is inconsistently honoured.
       await setup()
-      // `data-aria-hidden` is Reka's own marker for what it hid.
+      // `data-aria-hidden` marks what hideOthers hid.
       const hidden = document.querySelector('[data-aria-hidden]')
       expect(hidden).not.toBeNull()
       expect(hidden?.getAttribute('aria-hidden')).toBe('true')
@@ -203,29 +203,98 @@ describe('Dialog', () => {
     })
 
     it.each([
-      ['sm', 'sm:max-w-sm'],
-      ['md', 'sm:max-w-lg'],
-      ['lg', 'sm:max-w-2xl'],
+      ['sm', 'max-w-[320px]'],
+      ['md', 'max-w-[440px]'],
+      ['lg', 'max-w-[600px]'],
     ] as const)('%s maps to %s', async (size, expected) => {
       await setup({ size })
       expect(dialog()?.className).toContain(expected)
     })
   })
 
-  it('gates enter and exit behind motion-safe', async () => {
-    // Overlay transitions are ambient — they carry no information, so they
-    // collapse to instant for anyone who asked for reduced motion.
-    await setup()
-    for (const token of (dialog()?.className ?? '').split(/\s+/)) {
-      if (!token.includes('animate-')) continue
-      expect(token, 'every overlay animation is gated').toContain('motion-safe:')
-    }
+  describe('focus on open', () => {
+    it('goes to the first control after the title bar, not the close button', async () => {
+      await setup({}, { default: '<input aria-label="Name" />' })
+      await nextTick()
+      expect(document.activeElement?.getAttribute('aria-label')).toBe('Name')
+    })
+
+    it('goes to the default button when the footer leads with it', async () => {
+      await setup({}, { footer: '<button>OK</button><button>Cancel</button>' })
+      await nextTick()
+      expect(document.activeElement?.textContent).toBe('OK')
+    })
+
+    it('falls back to the close button when there is nothing else', async () => {
+      await setup()
+      await nextTick()
+      expect(document.activeElement).toBe(closeButton())
+    })
+  })
+
+  describe('title bar', () => {
+    it('puts the close button in the title bar, outside the header', async () => {
+      await setup({ eyebrow: 'Billing' })
+      const bar = document.querySelector('[data-slot="dialog-title-bar"]')
+      expect(bar?.contains(closeButton())).toBe(true)
+      expect(bar?.closest('[data-slot="dialog-header"]')).toBeNull()
+    })
+
+    it('turns inactive while another dialog is open above it', async () => {
+      const Nested = defineComponent({
+        components: { Dialog, DialogContent, DialogHeader, DialogTitle },
+        props: { inner: { type: Boolean, default: false } },
+        // Opened in the same tick as the outer dialog, the inner one must
+        // still not be hidden from assistive technology by it.
+        template: `
+          <Dialog :open="true">
+            <DialogContent data-testid="outer">
+              <DialogHeader><DialogTitle>Outer</DialogTitle></DialogHeader>
+              <Dialog :open="inner">
+                <DialogContent data-testid="inner">
+                  <DialogHeader><DialogTitle>Inner</DialogTitle></DialogHeader>
+                </DialogContent>
+              </Dialog>
+            </DialogContent>
+          </Dialog>
+        `,
+      })
+      const el = mount(Nested, { attachTo: document.body })
+      const outer = () => document.querySelector('[data-testid="outer"]')
+      const inner = () => document.querySelector('[data-testid="inner"]')
+      await nextTick()
+      await nextTick()
+      expect(outer()?.hasAttribute('data-inactive')).toBe(false)
+
+      await el.setProps({ inner: true })
+      await nextTick()
+      await nextTick()
+      expect(outer()?.hasAttribute('data-inactive')).toBe(true)
+      expect(inner()?.hasAttribute('data-inactive')).toBe(false)
+      expect(inner()?.closest('[aria-hidden="true"]')).toBeNull()
+
+      await el.setProps({ inner: false })
+      await nextTick()
+      await nextTick()
+      expect(outer()?.hasAttribute('data-inactive')).toBe(false)
+      el.unmount()
+    })
+
+    it('opens and closes instantly, over no backdrop', async () => {
+      // Windows 98 has no window animation and draws nothing behind a
+      // dialog: the layer behind it only catches clicks.
+      await setup()
+      const overlay = document.querySelector('[data-slot="dialog-overlay"]')
+      expect(dialog()?.className).not.toContain('animate-')
+      expect(overlay?.className).not.toContain('animate-')
+      expect(overlay?.className).not.toMatch(/\bbg-/)
+    })
   })
 
   it('merges a consumer class onto the surface', async () => {
-    await setup({ surfaceClass: 'sm:max-w-xs' })
+    await setup({ surfaceClass: 'max-w-[300px]' })
     const className = dialog()?.className ?? ''
-    expect(className).toContain('sm:max-w-xs')
-    expect(className).not.toContain('sm:max-w-lg')
+    expect(className).toContain('max-w-[300px]')
+    expect(className).not.toContain('max-w-[440px]')
   })
 })

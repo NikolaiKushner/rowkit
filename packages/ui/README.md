@@ -1,20 +1,20 @@
 # rowkit
 
-[![npm](https://img.shields.io/npm/v/rowkit?color=3b5bdb)](https://www.npmjs.com/package/rowkit)
+[![npm](https://img.shields.io/npm/v/rowkit/beta?color=000080)](https://www.npmjs.com/package/rowkit)
 [![license](https://img.shields.io/npm/l/rowkit)](https://github.com/NikolaiKushner/rowkit/blob/main/LICENSE)
 
 A professional Vue 3 toolkit — the components a product interface is built from.
 
-Built on [Reka UI](https://reka-ui.com). What is published is the part already finished; the rest of the set is the plan in the [roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md).
+No behaviour library underneath — focus, dismissal and positioning are rowkit's own. What is published is the part already finished; the rest of the set is the plan in the [roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md).
 
 **[Documentation](https://rowkit.dev)** · **[Storybook](https://storybook.rowkit.dev)** · **[GitHub](https://github.com/NikolaiKushner/rowkit)**
 
-![A rowkit DataTable being filtered, sorted and paged](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/rowkit-demo.gif)
+![rowkit — a Windows 98 desktop with a «Welcome to rowkit» window, a Users table with selection and status badges, a toast and the taskbar](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero.png)
 
 ## Install
 
 ```bash
-npm i rowkit
+npm i rowkit@beta
 ```
 
 Then, in your stylesheet — **both lines, in this order**:
@@ -60,7 +60,7 @@ const rows = useClientSort(users, sort, columns)
 </script>
 
 <template>
-  <DataTable :rows="rows" :columns="columns" caption="Team members" v-model:sort="sort" hoverable>
+  <DataTable :rows="rows" :columns="columns" caption="Team members" v-model:sort="sort">
     <template #[`cell:status`]="{ value }">
       <Badge :variant="value === 'active' ? 'success' : 'warning'" dot>{{ value }}</Badge>
     </template>
@@ -73,16 +73,20 @@ The table reports the sort and renders what it is handed — it never reorders i
 ## What you get
 
 - **Columns typed against your row.** `DataTable<TRow>` constrains every column's `key` to `keyof TRow`. Sorting names a field too, so a sort referring to a column that does not exist also fails to compile.
-- **Accessibility as a build gate.** Focus traps, scroll lock, live regions and keyboard models come from Reka UI primitives. Every Storybook story is scanned by axe as part of the test run — a violation fails CI rather than filling a panel nobody opens.
+- **Accessibility as a build gate.** Focus traps, scroll lock, live regions and keyboard models live in shared primitives with their own interaction tests. Every Storybook story is scanned by axe as part of the test run — a violation fails CI rather than filling a panel nobody opens.
 - **Three states that agree.** `Skeleton`, `EmptyState` and the no-results case are designed together, because the bug is never one of them alone.
 - **Tokens all the way down.** Every colour, space, radius and layer lives in [`@rowkit/tokens`](https://www.npmjs.com/package/@rowkit/tokens), installable on its own.
 - **State you own.** Sort, selection, page and filters are all `v-model`. Components report what happened; your application decides what follows.
 
 ## The components
 
-`Button` · `Field` · `Input` · `Select` · `Badge` · `DataTable` · `Pagination` · `FilterBar` · `EmptyState` · `Skeleton` · `Dialog` · `Toast` · `Tooltip`
+- **Foundations:** `Button` · `ButtonGroup` · `Separator` · `Window` · `GroupBox` · `StatusBar` · `ProgressBar` · `ScrollArea`
+- **Forms:** `Field` · `Input` · `Select` · `Checkbox` · `Radio` · `Badge`
+- **Data:** `DataTable` · `Pagination` · `FilterBar` · `EmptyState` · `Skeleton`
+- **Overlays:** `Dialog` · `Toast` · `Tooltip`
+- **Icons:** the Windows 98 pixel set, 42 icons at 8, 16 and 32px.
 
-That is the whole library. If you need forty components covering every case, [Nuxt UI](https://ui.nuxt.com) and [shadcn-vue](https://www.shadcn-vue.com) are better answers — and rowkit composes with either, since all three build on Reka UI.
+That is the whole library. If you need forty components covering every case, [Nuxt UI](https://ui.nuxt.com) and [shadcn-vue](https://www.shadcn-vue.com) are better answers — and rowkit composes with either.
 
 ## For coding agents
 
@@ -90,10 +94,10 @@ That is the whole library. If you need forty components covering every case, [Nu
 
 ## Status
 
-**v0.x.** The API is stabilising toward v1.0 and breaking changes are still possible until then. Releases are cut from CI with provenance attestation. [Changelog](https://github.com/NikolaiKushner/rowkit/blob/main/packages/ui/CHANGELOG.md) · [Roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md)
+**1.0 beta**, published under the npm `beta` tag. The API is stabilising toward 1.0.0 and breaking changes are still possible between betas. Releases are cut from CI with provenance attestation. [Changelog](https://github.com/NikolaiKushner/rowkit/blob/main/packages/ui/CHANGELOG.md) · [Roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md)
 
 ## License
 
 MIT © Nikolai Kushner
 
-Design language based on [shadcn/ui](https://ui.shadcn.com) by shadcn, adapted for Vue. shadcn/ui is MIT licensed; rowkit adopts its token values and class recipes, not its code.
+The look is rowkit's own drawing of the Windows 98 interface, from its Figma file. rowkit is not affiliated with Microsoft and ships no Microsoft artwork — no Windows flag, no logos.

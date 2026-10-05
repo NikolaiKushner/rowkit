@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import Button from '../Button/Button.vue'
+import CopyIcon from '../../icons/CopyIcon.vue'
+import FilterIcon from '../../icons/FilterIcon.vue'
+import PlusIcon from '../../icons/PlusIcon.vue'
+import TrashIcon from '../../icons/TrashIcon.vue'
+import Separator from '../Separator/Separator.vue'
 import ButtonGroup from './ButtonGroup.vue'
 
 const meta: Meta = {
@@ -11,45 +16,56 @@ const meta: Meta = {
 export default meta
 type Story = StoryObj
 
-const ChevronIcon = {
-  template: `
-    <svg class="size-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path d="m12 5-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-    </svg>
-  `,
-}
-
-const MoreIcon = {
-  template: `
-    <svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-      <circle cx="4" cy="10" r="1.5" />
-      <circle cx="10" cy="10" r="1.5" />
-      <circle cx="16" cy="10" r="1.5" />
-    </svg>
-  `,
-}
-
-/** Matches the reference layout: icon, Archive/Report, Snooze/more. */
+/**
+ * The Figma Home toolbar: ghost buttons edge to edge, groups 4px apart with
+ * the etched Separator between them.
+ */
 export const Default: Story = {
   render: () => ({
-    components: { Button, ButtonGroup, ChevronIcon, MoreIcon },
+    components: { Button, ButtonGroup, Separator, CopyIcon, TrashIcon },
     template: `
       <ButtonGroup aria-label="Actions">
         <ButtonGroup>
-          <Button variant="outline" size="icon" aria-label="Open">
-            <ChevronIcon />
-          </Button>
+          <Button variant="ghost"><template #leading><CopyIcon /></template>Export</Button>
+          <Button variant="ghost"><template #leading><TrashIcon /></template>Delete</Button>
         </ButtonGroup>
+        <Separator orientation="vertical" />
         <ButtonGroup>
-          <Button variant="outline">Archive</Button>
-          <Button variant="secondary">Report</Button>
+          <Button variant="ghost">Archive</Button>
+          <Button variant="ghost">Report</Button>
         </ButtonGroup>
-        <ButtonGroup>
-          <Button variant="outline">Snooze</Button>
-          <Button variant="outline" size="icon" aria-label="More">
-            <MoreIcon />
-          </Button>
-        </ButtonGroup>
+      </ButtonGroup>
+    `,
+  }),
+}
+
+/**
+ * The Figma "Toolbar with labels" example: icon and label while there is room,
+ * an icon-only button — with an accessible name — after the separator.
+ */
+export const IconToolbar: Story = {
+  render: () => ({
+    components: { Button, ButtonGroup, Separator, PlusIcon, CopyIcon, TrashIcon, FilterIcon },
+    template: `
+      <ButtonGroup aria-label="Tools">
+        <Button variant="ghost"><template #leading><PlusIcon /></template>New</Button>
+        <Button variant="ghost"><template #leading><CopyIcon /></template>Copy</Button>
+        <Button variant="ghost"><template #leading><TrashIcon /></template>Delete</Button>
+        <Separator orientation="vertical" />
+        <Button variant="ghost" size="icon-sm" aria-label="Filter"><FilterIcon /></Button>
+      </ButtonGroup>
+    `,
+  }),
+}
+
+/** Raised command buttons work the same way: edge to edge, bevels intact. */
+export const CommandButtons: Story = {
+  render: () => ({
+    components: { Button, ButtonGroup },
+    template: `
+      <ButtonGroup aria-label="Navigate">
+        <Button variant="secondary">Back</Button>
+        <Button variant="secondary">Next</Button>
       </ButtonGroup>
     `,
   }),
@@ -60,9 +76,9 @@ export const Vertical: Story = {
     components: { Button, ButtonGroup },
     template: `
       <ButtonGroup orientation="vertical" aria-label="Stack">
-        <Button variant="outline">Top</Button>
-        <Button variant="outline">Middle</Button>
-        <Button variant="outline">Bottom</Button>
+        <Button variant="secondary">Top</Button>
+        <Button variant="secondary">Middle</Button>
+        <Button variant="secondary">Bottom</Button>
       </ButtonGroup>
     `,
   }),

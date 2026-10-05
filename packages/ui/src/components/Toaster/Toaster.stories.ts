@@ -40,28 +40,6 @@ const meta: Meta<ToasterArgs> = {
   component: Toaster,
   tags: ['autodocs'],
   args: { position: 'bottom-right', max: 3 },
-  parameters: {
-    a11y: {
-      config: {
-        rules: [
-          /**
-           * Reka's toast viewport renders focus guards — `aria-hidden` spans
-           * with `tabindex="0"` — to catch Tab and route it into the toast
-           * region for the F8 flow. They are focusable by necessity and hidden
-           * from assistive technology by necessity, which is exactly what
-           * `aria-hidden-focus` forbids.
-           *
-           * The guard only becomes focusable while toasts exist, so it is
-           * inert the rest of the time. rowkit cannot reach the element to fix
-           * it, and rebuilding the viewport to avoid it is what hard rule 2
-           * exists to prevent. Disabled for this component only, and only this
-           * rule — worth reporting upstream and removing when fixed.
-           */
-          { id: 'aria-hidden-focus', enabled: false },
-        ],
-      },
-    },
-  },
   argTypes: {
     position: { control: 'inline-radio', options: positions },
     max: { control: { type: 'number', min: 1, max: 5 } },
@@ -84,15 +62,18 @@ type Story = StoryObj<ToasterArgs>
 
 export const Default: Story = {}
 
-/** All four tones. Danger is styled loudly and still announced politely. */
+/**
+ * All four tones on the same silver face: the icon says which. Danger stays
+ * until it is closed, and is still announced politely.
+ */
 export const Variants: Story = {
   render: () =>
     scene(`
       <div class="flex flex-wrap gap-2 p-8">
-        <Button variant="outline" @click="toast('Nothing special happened')">Neutral</Button>
-        <Button variant="outline" @click="success('Project archived')">Success</Button>
-        <Button variant="outline" @click="warning('Two seats left')">Warning</Button>
-        <Button variant="outline" @click="danger('Could not save')">Danger</Button>
+        <Button variant="secondary" @click="toast('We\\'ll email you when the CSV is ready.', { title: 'Export started' })">Neutral</Button>
+        <Button variant="secondary" @click="success('ada@analytical.io will get an email in a minute.', { title: 'User invited' })">Success</Button>
+        <Button variant="secondary" @click="warning('9.6 of 10 GB used. Old exports are deleted after 30 days.', { title: 'Storage almost full', action: { label: 'View', onClick: () => {} } })">Warning</Button>
+        <Button variant="secondary" @click="danger('Check your connection and try again.', { title: 'Could not save' })">Danger</Button>
         <Toaster />
       </div>
     `),
@@ -174,7 +155,7 @@ export const AutoDismisses: Story = {
 
 /**
  * Hovering pauses that toast's countdown. Dismissal mid-read is the classic
- * toast failure, and this is Reka's `ToastRoot` doing it — not a timer of ours.
+ * toast failure.
  */
 export const HoverPauses: Story = {
   render: () =>

@@ -1,44 +1,66 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
- * The scroll container. A table wider than its parent scrolls here rather than
+ * The root: the visible caption above the frame. A consumer class lands here,
+ * so a height such as `max-h-96` bounds the whole table and the body scrolls
+ * inside it.
+ */
+export const dataTableRootVariants = cva('flex w-full min-h-0 flex-col gap-1')
+
+/**
+ * The Windows 98 list frame: a white well inside a sunken bevel, 2px in.
+ *
+ * The bevel is on its own element, outside the scroll container: an inset
+ * shadow paints under the content, so on the scrolling element itself the rows
+ * and the sticky header would slide over it.
+ */
+export const dataTableFrameVariants = cva(
+  'flex min-h-0 flex-1 flex-col bg-input p-0.5 shadow-sunken'
+)
+
+/**
+ * The scroll container. A table wider than its frame scrolls here rather than
  * pushing the page sideways, which is what makes a sticky column meaningful.
  */
 export const dataTableWrapperVariants = cva([
-  // `shadow-xs` gives the table a plane without inventing a second card
-  // language — hairline lift, same token as resting inputs.
-  'relative w-full overflow-auto rounded-md border border-border bg-card shadow-xs',
-  // Focusable when it actually scrolls, so the ring has to be visible.
-  'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
+  'scrollbar-win98 relative min-h-0 w-full flex-1 overflow-auto',
+  // Focusable when it actually scrolls, so focus has to be visible.
+  'outline-none focus-visible:outline-1 focus-visible:-outline-offset-1',
+  'focus-visible:outline-dotted focus-visible:outline-ring',
 ])
+
+/**
+ * The scroll container with drawn bars (`scrollbars="drawn"`): a ScrollArea in
+ * the same place, filling the frame the same way.
+ */
+export const dataTableScrollAreaVariants = cva('min-h-0 w-full flex-1')
 
 export const dataTableVariants = cva(
   [
-    'w-full border-collapse text-left',
-    /*
-     * The header draws the rule beneath it as an inset shadow, and every body
-     * cell draws its own `border-t`. At the first row those are two separate
-     * paints landing on the same boundary, which reads as a heavier line under
-     * the header than between any other pair of rows. Drop the first row's.
-     */
-    '[&>tbody>tr:first-child>*]:border-t-0',
+    // Report view: no grid lines between rows or columns.
+    'border-collapse text-left font-sans text-ui text-foreground',
+    // As wide as its columns want, and never narrower than the frame. A table
+    // squeezed to the frame ignores every column's width and wraps its cells;
+    // this one keeps the widths and scrolls sideways instead.
+    'w-max min-w-full',
   ],
   {
     variants: {
       size: {
-        sm: 'text-xs',
-        md: 'text-sm',
+        sm: '',
+        md: '',
       },
     },
     defaultVariants: { size: 'md' },
   }
 )
 
-export const dataTableCaptionVariants = cva('px-3 py-2 text-left text-muted-foreground', {
+/** The visible caption: plain UI text on the window face, above the frame. */
+export const dataTableCaptionVariants = cva('text-left font-sans text-ui text-foreground', {
   variants: {
     size: {
-      sm: 'text-xs',
-      md: 'text-sm',
+      sm: '',
+      md: '',
     },
   },
   defaultVariants: { size: 'md' },
@@ -56,27 +78,23 @@ export const dataTableCaptionVariants = cva('px-3 py-2 text-left text-muted-fore
 export const dataTableHeaderRowVariants = cva('relative z-sticky')
 
 /**
- * Body cells need no z-index of their own: a `sticky` cell is positioned, and a
- * positioned element already paints above its static siblings.
+ * A column header: a raised button face, as in a Windows 98 list view.
  *
- * `bg-card`, not `bg-muted`, and `text-foreground` rather than muted.
+ * Body cells need no z-index of their own: a `sticky` cell is positioned, and
+ * a positioned element already paints above its static siblings.
  *
- * The reference design's header is transparent with a hairline beneath it — the column labels
- * are full-strength foreground, not a recessed grey band with quiet text. The
- * fill stays opaque here only because the header can be sticky, and a
- * transparent sticky header lets the rows scroll through it.
+ * The face is opaque, which a sticky header needs anyway: a transparent one
+ * lets the rows scroll through it.
  */
 export const dataTableHeaderCellVariants = cva(
-  'shadow-sticky-header bg-card align-middle font-medium tracking-tight whitespace-nowrap text-foreground',
+  'bg-card align-middle font-normal whitespace-nowrap text-foreground shadow-raised',
   {
     variants: {
       size: {
         // `h-*` on a table cell is the CSS minimum row height (min-height is
-        // ignored on `display: table-cell`). Content can still grow the row
-        // when a name wraps — that is how checkbox columns stay vertically
-        // centered without collapsing single-line rows to bare text height.
-        sm: 'h-8 px-2',
-        md: 'h-10 px-2',
+        // ignored on `display: table-cell`).
+        sm: 'h-[22px] px-1 py-0',
+        md: 'h-[27px] px-1 py-0',
       },
       align: {
         start: 'text-start',
@@ -87,7 +105,7 @@ export const dataTableHeaderCellVariants = cva(
         true: 'sticky top-0',
         false: '',
       },
-      /** Pinned to the start edge, with a shadow once there is anything hidden behind it. */
+      /** Pinned to the start edge, with a 1px edge once there is anything hidden behind it. */
       pinned: {
         /**
          * `z-1` orders this cell against the other header cells, inside the
@@ -101,8 +119,13 @@ export const dataTableHeaderCellVariants = cva(
         true: 'sticky left-0 z-1',
         false: '',
       },
+      /** A sortable header is all button: the button brings its own padding. */
+      sortable: {
+        true: 'p-0',
+        false: '',
+      },
     },
-    defaultVariants: { size: 'md', align: 'start', sticky: false, pinned: false },
+    defaultVariants: { size: 'md', align: 'start', sticky: false, pinned: false, sortable: false },
   }
 )
 
@@ -110,93 +133,116 @@ export const dataTableHeaderCellVariants = cva(
  * The header becomes a real button when the column sorts. A `<th>` with a click
  * handler is not reachable by keyboard, and `aria-sort` describes the state
  * without providing any way to change it.
+ *
+ * Held down, it sinks — the pressed bevel, and the label moves 2px right and
+ * 1px down without the header changing size. Focus is a dotted ring around the
+ * label. No hover: Windows 98 headers had none.
  */
 export const dataTableSortButtonVariants = cva(
   [
-    'group inline-flex w-full cursor-pointer items-center gap-1',
-    'rounded-xs font-medium text-inherit',
-    'transition-colors duration-fast ease-standard hover:text-foreground',
-    'outline-none focus-visible:ring-3 focus-visible:ring-ring',
+    'group/sort flex w-full cursor-pointer items-center bg-card px-1 text-inherit',
+    'shadow-raised outline-none active:shadow-pressed',
   ],
   {
     variants: {
+      size: {
+        sm: 'h-[22px]',
+        md: 'h-[27px]',
+      },
       align: {
         start: 'justify-start',
         center: 'justify-center',
         end: 'justify-end',
       },
     },
-    defaultVariants: { align: 'start' },
+    defaultVariants: { size: 'md', align: 'start' },
   }
 )
 
-/**
- * Present but transparent when the column is unsorted, so revealing it on hover
- * does not shift the header text sideways.
+/** The label and the arrow, which move together when the header is pressed. */
+export const dataTableSortContentVariants = cva(
+  'flex min-w-0 items-center gap-1 group-active/sort:translate-x-0.5 group-active/sort:translate-y-px'
+)
+
+/** The dotted focus ring, drawn around the label only. */
+export const dataTableSortLabelVariants = cva([
+  'truncate px-px',
+  'group-focus-visible/sort:outline-1 group-focus-visible/sort:-outline-offset-1',
+  'group-focus-visible/sort:outline-dotted group-focus-visible/sort:outline-ring',
+])
+
+/** The 8×8 sort triangle. Only a sorted column shows one. */
+export const dataTableSortIconVariants = cva('shrink-0')
+
+/** A body cell. No borders: a Windows 98 report view has no grid lines. */
+/*
+ * `whitespace-nowrap`: a Windows 98 list never wraps a cell. A wrapped cell
+ * breaks the fixed row height, and the row beside it no longer lines up.
  */
-export const dataTableSortIconVariants = cva(
-  'size-3.5 shrink-0 transition-opacity duration-fast ease-standard',
-  {
-    variants: {
-      active: {
-        true: 'opacity-100',
-        false: 'opacity-0 group-hover:opacity-60 group-focus-visible:opacity-60',
-      },
-    },
-    defaultVariants: { active: false },
-  }
-)
-
-// `border-border`, not `border-border-subtle`: the reference design's row separator is its
-// standard hairline, and the fainter one disappeared entirely once the header
-// stopped being a grey band to anchor the grid.
-export const dataTableCellVariants = cva('border-t border-border align-middle text-foreground', {
+export const dataTableCellVariants = cva('px-1.5 py-0 align-middle whitespace-nowrap', {
   variants: {
     size: {
-      sm: 'h-8 px-2 py-1.5',
-      md: 'h-10 px-2 py-1.5',
+      sm: 'h-[22px]',
+      md: 'h-[27px]',
     },
     align: {
       start: 'text-start',
       center: 'text-center',
       end: 'text-end',
     },
-    // `bg-inherit`, so the row's own background — including selected and hover —
-    // shows through instead of being painted over.
+    // `bg-inherit`, so the row's own background — selected included — shows
+    // through instead of being painted over.
     pinned: {
       true: 'sticky left-0 bg-inherit',
       false: '',
     },
+    /** Figures in the mono face, so their digits line up down the column. */
+    numeric: {
+      true: 'font-mono text-mono tabular-nums',
+      false: '',
+    },
   },
-  defaultVariants: { size: 'md', align: 'start', pinned: false },
+  defaultVariants: { size: 'md', align: 'start', pinned: false, numeric: false },
 })
 
 /**
  * The row owns the background, not the cell.
  *
  * A pinned cell has to be opaque or the rows underneath show through it while
- * scrolling, but hardcoding `bg-card` there would paint over the selected
- * and hover states. `bg-inherit` on the cell and a real colour on the row keeps
- * one source of truth.
+ * scrolling, but hardcoding a colour there would paint over the selected
+ * state. `bg-inherit` on the cell and a real colour on the row keeps one
+ * source of truth.
  */
 export const dataTableRowVariants = cva(
-  'group bg-card transition-colors duration-fast ease-standard',
+  [
+    'bg-input',
+    // A focused row gets the dotted rectangle, as a Windows 98 list draws it.
+    'outline-none focus-visible:outline-1 focus-visible:-outline-offset-1',
+    'focus-visible:outline-dotted focus-visible:outline-ring',
+  ],
   {
     variants: {
       /**
-       * Row hover is off unless the row does something. A highlight that follows
-       * the pointer across static data suggests the row is clickable when it is
-       * not.
+       * Kept for the API. Windows 98 rows have no hover, so an interactive row
+       * looks like any other until it is selected or focused.
        */
       interactive: {
-        // Full accent — `/50` disappeared on the cool muted wash. Selection uses
-        // a primary tint, so hover and selected stay distinct.
-        true: 'hover:bg-accent',
+        true: 'cursor-default',
         false: '',
       },
-      /** Selected wins over hover — losing the highlight on hover hides the state. */
+      /**
+       * Navy with white text, as a Windows 98 list draws a selected row, and
+       * it stays navy when the table loses focus (Windows greyed it; navy keeps
+       * the contrast). The cells, and text a cell colours with a text token,
+       * turn white too, or they would be black on navy. The focus rectangle
+       * turns white with them.
+       */
       selected: {
-        true: 'bg-surface-selected hover:bg-surface-selected',
+        true: [
+          'bg-surface-selected text-on-selected *:text-on-selected',
+          '[&_:is(.text-foreground,.text-muted-foreground)]:text-on-selected',
+          'focus-visible:outline-on-selected',
+        ].join(' '),
         false: '',
       },
     },
@@ -204,76 +250,128 @@ export const dataTableRowVariants = cva(
   }
 )
 
-/** Quiet row action — visible on row hover / focus-within, always for keyboard. */
-export const dataTableRowActionClass =
-  'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100'
+/**
+ * Row actions. Always visible: Windows 98 has no hover to reveal them on, and
+ * an action that appears only under the pointer is one a keyboard or touch
+ * user has to know is there. Kept as an export so existing markup still works.
+ */
+export const dataTableRowActionClass = ''
 
-// Checkbox column: keep left padding, drop the right so the control sits close
-// to the first data column without kissing it (`pr-1`, not `pr-0`).
-export const dataTableSelectCellVariants = cva(
-  'w-px border-t border-border align-middle pl-2 pr-1',
-  {
-    variants: {
-      size: {
-        sm: 'h-8 py-1.5',
-        md: 'h-10 py-1.5',
-      },
-      /**
-       * The header composes this on top of the header-cell variant, and inherits
-       * a `border-t` meant for body rows — which painted a short rule above the
-       * checkbox column only, floating above the table with nothing to its right.
-       */
-      header: {
-        true: 'border-t-0',
-        false: '',
-      },
+/** The 28px selection column, the control centred in it. */
+export const dataTableSelectCellVariants = cva('w-7 min-w-7 px-0 text-center align-middle', {
+  variants: {
+    size: {
+      sm: 'h-[22px]',
+      md: 'h-[27px]',
     },
-    defaultVariants: { size: 'md', header: false },
-  }
-)
+    header: {
+      true: '',
+      false: '',
+    },
+    /**
+     * Pinned with the columns after it whenever the table has a pinned column,
+     * so the check boxes stay beside the rows they select.
+     */
+    pinned: {
+      true: 'sticky left-0 bg-inherit',
+      false: '',
+    },
+  },
+  defaultVariants: { size: 'md', header: false, pinned: false },
+})
 
-/*
- * `rounded-xs` is the reference `rounded-[4px]` — the radius scale now lands exactly
- * there, which is the whole reason `xs` exists at 0.4 × `--radius`.
+/**
+ * The Windows 98 check box: a 13×13 sunken white box with a 7×7 check, the
+ * same size at every table density. Held down or disabled, the box turns
+ * silver.
+ *
+ * The check is coloured through the foreground variable rather than the
+ * `text-foreground` class, so a selected row — which turns that class white —
+ * leaves it black on its white box.
+ *
+ * @deprecated DataTable's selection column is the public `Checkbox` now, a
+ * native input styled by `checkboxBoxVariants`. Kept so existing imports do
+ * not break; nothing in rowkit uses it.
  */
 export const dataTableCheckboxVariants = cva(
   [
-    'flex shrink-0 cursor-pointer items-center justify-center rounded-xs border shadow-xs',
-    'border-input bg-card text-primary-on-solid',
-    'transition-all duration-fast ease-standard',
-    'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
-    'data-[state=checked]:border-primary-solid data-[state=checked]:bg-primary-solid',
-    'data-[state=indeterminate]:border-primary-solid data-[state=indeterminate]:bg-primary-solid',
-    'disabled:cursor-not-allowed disabled:opacity-50',
+    'inline-flex size-[13px] shrink-0 cursor-pointer items-center justify-center align-middle',
+    'bg-input text-(--color-foreground) shadow-sunken',
+    'active:bg-surface-disabled',
+    'outline-none focus-visible:outline-1 focus-visible:outline-offset-1',
+    'focus-visible:outline-dotted focus-visible:outline-ring',
+    'disabled:cursor-default disabled:bg-surface-disabled disabled:text-text-disabled',
   ],
   {
     variants: {
       size: {
-        sm: 'size-3.5',
-        md: 'size-4',
+        sm: '',
+        md: '',
       },
     },
     defaultVariants: { size: 'md' },
   }
 )
 
-export const dataTableRadioVariants = cva(
+/**
+ * The Windows 98 option button around a native radio. The input covers the
+ * 12×12 mark, invisible, so clicks, focus, keyboard and the shared `name` stay
+ * native; the mark reads its state through `peer-*`.
+ */
+export const dataTableRadioVariants = cva('relative inline-flex size-3 align-middle', {
+  variants: {
+    size: {
+      sm: '',
+      md: '',
+    },
+  },
+  defaultVariants: { size: 'md' },
+})
+
+export const dataTableRadioInputClass =
+  'peer absolute inset-0 m-0 size-full cursor-pointer appearance-none opacity-0 disabled:cursor-default'
+
+export const dataTableRadioMarkClass = [
+  'pointer-events-none text-(--color-foreground)',
+  '[--rk-radio-well:var(--color-input)] [--rk-radio-dot:transparent]',
+  'peer-checked:[--rk-radio-dot:currentColor]',
+  'peer-active:[--rk-radio-well:var(--color-surface-disabled)]',
+  'peer-disabled:[--rk-radio-well:var(--color-surface-disabled)] peer-disabled:text-text-disabled',
+  'peer-focus-visible:outline-1 peer-focus-visible:outline-offset-1',
+  'peer-focus-visible:outline-dotted peer-focus-visible:outline-ring',
+].join(' ')
+
+/**
+ * A summary row's cell: bold, under an etched line — 1px of shadow over 1px
+ * of highlight — and held at the bottom of the scroll area, as the header is
+ * at the top. The line is a background rather than a shadow, so the pinned
+ * column's edge shadow can still be drawn on the same cell.
+ */
+export const dataTableSummaryCellVariants = cva(
   [
-    'cursor-pointer accent-primary-solid',
-    'outline-none focus-visible:ring-3 focus-visible:ring-ring',
+    'sticky bottom-0 pt-0.5 font-bold',
+    'bg-[linear-gradient(var(--color-bevel-shadow)_0_1px,var(--color-bevel-highlight)_1px_2px,var(--color-input)_2px)]',
   ],
   {
     variants: {
       size: {
-        sm: 'size-3.5',
-        md: 'size-4',
+        sm: 'h-6',
+        md: 'h-[29px]',
+      },
+      /** A pinned summary cell paints over the summary cells scrolling under it. */
+      pinned: {
+        true: 'z-1',
+        false: '',
       },
     },
-    defaultVariants: { size: 'md' },
+    defaultVariants: { size: 'md', pinned: false },
   }
 )
 
-/** Applied to pinned cells once the table is scrolled away from the start. */
+/**
+ * Applied to the last pinned column once the table is scrolled away from the
+ * start: the edge the scrolled columns pass under.
+ */
 export const dataTablePinnedShadow = 'shadow-scroll-x'
 
 export type DataTableVariants = VariantProps<typeof dataTableVariants>

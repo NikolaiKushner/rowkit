@@ -1,21 +1,32 @@
 <script setup lang="ts" generic="TRow extends DataTableRow">
-import { CheckboxIndicator, CheckboxRoot } from 'reka-ui'
-import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
+import { computed, getCurrentInstance, onBeforeUnmount, ref, useId, watch } from 'vue'
+import RadioMark from '../../icons/RadioMark.vue'
+import TriangleDownIcon from '../../icons/TriangleDownIcon.vue'
+import TriangleUpIcon from '../../icons/TriangleUpIcon.vue'
+import Checkbox from '../Checkbox/Checkbox.vue'
 import { cn } from '../../utils/cn'
 import EmptyState from '../EmptyState/EmptyState.vue'
+import ScrollArea from '../ScrollArea/ScrollArea.vue'
 import Skeleton from '../Skeleton/Skeleton.vue'
 import {
   dataTableCaptionVariants,
   dataTableCellVariants,
-  dataTableCheckboxVariants,
+  dataTableFrameVariants,
   dataTableHeaderCellVariants,
   dataTableHeaderRowVariants,
   dataTablePinnedShadow,
+  dataTableRadioInputClass,
+  dataTableRadioMarkClass,
   dataTableRadioVariants,
+  dataTableRootVariants,
   dataTableRowVariants,
+  dataTableScrollAreaVariants,
   dataTableSelectCellVariants,
   dataTableSortButtonVariants,
+  dataTableSummaryCellVariants,
+  dataTableSortContentVariants,
   dataTableSortIconVariants,
+  dataTableSortLabelVariants,
   dataTableVariants,
   dataTableWrapperVariants,
 } from './DataTable.variants'
@@ -35,13 +46,14 @@ defineOptions({ name: 'RkDataTable' })
 const props = withDefaults(defineProps<DataTableProps<TRow>>(), {
   captionVisible: false,
   loading: false,
-  loadingRows: 5,
+  loadingRows: 6,
   loadingLabel: 'Loading',
   emptyTitle: 'Nothing to show',
   selectionLabel: 'Select',
   selectAllLabel: 'Select all rows',
   size: 'md',
   hoverable: false,
+  scrollbars: 'native',
 })
 
 /** The sorted column and direction. `undefined` is unsorted. */
@@ -57,6 +69,7 @@ const sort = defineModel<DataTableSort<TRow> | undefined>('sort', { default: und
 const selected = defineModel<TRow['id'][]>('selected', { default: () => [] })
 
 type CellSlotProps = { row: TRow; column: DataTableColumn<TRow>; value: unknown; index: number }
+type SummarySlotProps = { column: DataTableColumn<TRow>; value: unknown }
 
 const emit = defineEmits<{
   /**
@@ -79,10 +92,22 @@ defineSlots<
     empty?: () => unknown
     /** Replaces the placeholder rows shown while loading. */
     loading?: () => unknown
-  } & Record<`cell:${string}`, ((props: CellSlotProps) => unknown) | undefined>
+  } & Record<`cell:${string}`, ((props: CellSlotProps) => unknown) | undefined> &
+    Record<`summary:${string}`, ((props: SummarySlotProps) => unknown) | undefined>
 >()
 
-const wrapperRef = ref<HTMLElement>()
+/**
+ * The scroll container: a plain element with the browser's bar restyled, or a
+ * `ScrollArea` whose viewport scrolls. Either way the sticky header and the
+ * pinned columns stick to whatever element actually scrolls.
+ */
+const scrollerRef = ref<HTMLElement | { viewport?: HTMLElement }>()
+const drawn = computed(() => props.scrollbars === 'drawn')
+const wrapperRef = computed<HTMLElement | undefined>(() => {
+  const scroller = scrollerRef.value
+  if (scroller === undefined || scroller instanceof HTMLElement) return scroller
+  return scroller.viewport
+})
 const tableRef = ref<HTMLElement>()
 
 /**
@@ -105,27 +130,74 @@ function onScroll(): void {
  */
 const scrollable = ref(false)
 
+/**
+ * Pinned columns stack from the start edge: each one's `left` is the width of
+ * the pinned cells before it, the selection column included. A shared
+ * `left: 0` would pile them on top of each other.
+ */
+const hasPinned = computed(() => props.columns.some((column) => column.sticky === true))
+const selectionPinned = computed(() => props.selectable !== undefined && hasPinned.value)
+const pinnedLeft = ref<Record<string, number>>({})
+
+const lastPinnedId = computed(() => {
+  const pinned = props.columns.filter((column) => column.sticky === true)
+  const last = pinned[pinned.length - 1]
+  return last === undefined ? undefined : columnId(last)
+})
+
+function measurePinned(): void {
+  const cells = tableRef.value?.querySelector('thead tr')?.children
+  if (!cells || !hasPinned.value) return
+  const offsets: Record<string, number> = {}
+  const first = props.selectable === undefined ? 0 : 1
+  let left = first === 1 ? (cells[0]?.getBoundingClientRect().width ?? 0) : 0
+  props.columns.forEach((column, index) => {
+    if (column.sticky !== true) return
+    offsets[columnId(column)] = left
+    left += cells[first + index]?.getBoundingClientRect().width ?? 0
+  })
+  pinnedLeft.value = offsets
+}
+
 function measure(): void {
   const el = wrapperRef.value
   if (!el) return
   scrollable.value = el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight
+  measurePinned()
 }
 
 let resizeObserver: ResizeObserver | undefined
 
-onMounted(() => {
-  measure()
-  if (typeof ResizeObserver === 'undefined') return
-  resizeObserver = new ResizeObserver(measure)
-  // Both: the box can change size, and so can the table inside it.
-  if (wrapperRef.value) resizeObserver.observe(wrapperRef.value)
-  if (tableRef.value) resizeObserver.observe(tableRef.value)
+// Rebound whenever the scroll container is swapped, `scrollbars` included.
+watch(
+  wrapperRef,
+  (el, previous) => {
+    previous?.removeEventListener('scroll', onScroll)
+    resizeObserver?.disconnect()
+    if (!el) return
+    if (resizeObserver === undefined && typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(measure)
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    // Both: the box can change size, and so can the table inside it.
+    resizeObserver?.observe(el)
+    if (tableRef.value) resizeObserver?.observe(tableRef.value)
+    measure()
+  },
+  { flush: 'post' }
+)
+
+onBeforeUnmount(() => {
+  wrapperRef.value?.removeEventListener('scroll', onScroll)
+  resizeObserver?.disconnect()
 })
 
-onBeforeUnmount(() => resizeObserver?.disconnect())
-
 // Row and column changes alter the table's size without resizing the box.
-watch(() => [props.rows.length, props.columns.length, props.loading], measure, { flush: 'post' })
+watch(
+  () => [props.rows.length, props.columns.length, props.loading, props.selectable, hasPinned.value],
+  measure,
+  { flush: 'post' }
+)
 
 /**
  * Rows are only interactive when someone is listening. Without a `row:click`
@@ -174,6 +246,37 @@ function isSortable(column: DataTableColumn<TRow>): column is DataTableFieldColu
 const displayRows = computed(() => props.rows)
 
 const isEmpty = computed(() => !props.loading && props.rows.length === 0)
+
+/** The summary row sums the rows on screen, so it shows only while there are some. */
+const showSummary = computed(
+  () => props.summary !== undefined && !props.loading && props.rows.length > 0
+)
+
+/**
+ * Column widths from the moment before loading began, held until it ends.
+ *
+ * Placeholder bars have no width of their own, so without this every column
+ * resizes to them on a reload — a sort, a page, a filter — and the header jumps
+ * twice. Measured before the rows are swapped out, so it is the layout the
+ * user was looking at. A first load has nothing to hold; `width` on the
+ * columns keeps that one still.
+ */
+const heldWidths = ref<number[]>()
+
+watch(
+  () => props.loading,
+  (loading) => {
+    if (!loading) {
+      heldWidths.value = undefined
+      return
+    }
+    const cells = tableRef.value?.querySelector('thead tr')?.children
+    if (!cells || props.rows.length === 0) return
+    heldWidths.value = Array.from(cells, (cell) => cell.getBoundingClientRect().width)
+  },
+  // Before the update renders the placeholders: the rows are still on screen.
+  { flush: 'pre' }
+)
 
 function sortStateOf(
   column: DataTableColumn<TRow>
@@ -288,96 +391,129 @@ const emptyStateProps = computed(() => ({
 }))
 
 function pinnedClass(column: DataTableColumn<TRow>): string | false {
-  return (column.sticky ?? false) && scrolledFromStart.value && dataTablePinnedShadow
+  return columnId(column) === lastPinnedId.value && scrolledFromStart.value && dataTablePinnedShadow
+}
+
+function pinnedStyle(column: DataTableColumn<TRow>): { left: string } | undefined {
+  const left = column.sticky === true ? pinnedLeft.value[columnId(column)] : undefined
+  return left === undefined ? undefined : { left: `${String(left)}px` }
+}
+
+function headerStyle(
+  column: DataTableColumn<TRow>,
+  index: number
+): Record<string, string> | undefined {
+  const held = heldWidths.value?.[index + (props.selectable === undefined ? 0 : 1)]
+  const width = held === undefined ? column.width : `${String(held)}px`
+  const style = {
+    ...pinnedStyle(column),
+    ...(width === undefined ? {} : { width }),
+  }
+  return Object.keys(style).length === 0 ? undefined : style
 }
 </script>
 
 <template>
-  <div
-    ref="wrapperRef"
-    data-slot="data-table"
-    :tabindex="scrollable ? 0 : undefined"
-    :role="scrollable ? 'region' : undefined"
-    :aria-label="scrollable ? props.caption : undefined"
-    :class="cn(dataTableWrapperVariants(), props.class)"
-    @scroll.passive="onScroll"
-  >
+  <div data-slot="data-table" :class="cn(dataTableRootVariants(), props.class)">
     <!--
+      The visible caption sits above the frame, on the window face, as in a
+      Windows 98 dialog. The table keeps its own <caption> for assistive
+      technology, so this copy is hidden from it.
+    -->
+    <p
+      v-if="props.captionVisible"
+      aria-hidden="true"
+      :class="dataTableCaptionVariants({ size: props.size })"
+    >
+      {{ props.caption }}
+    </p>
+
+    <div data-slot="data-table-frame" :class="dataTableFrameVariants()">
+      <!--
+        Drawn bars: a ScrollArea, which makes its own viewport the focusable,
+        named region. Native: this element is the region, focusable only while
+        it overflows.
+      -->
+      <component
+        :is="drawn ? ScrollArea : 'div'"
+        ref="scrollerRef"
+        data-slot="data-table-scroll"
+        v-bind="
+          drawn
+            ? { label: props.caption, class: dataTableScrollAreaVariants() }
+            : {
+                tabindex: scrollable ? 0 : undefined,
+                role: scrollable ? 'region' : undefined,
+                'aria-label': scrollable ? props.caption : undefined,
+                class: dataTableWrapperVariants(),
+              }
+        "
+      >
+        <!--
       A persistent live region. Rendering one only while loading is unreliable:
       a region added at the same moment as its content frequently goes
       unannounced, so the element stays and only its text changes.
     -->
-    <p role="status" class="sr-only">{{ props.loading ? props.loadingLabel : '' }}</p>
+        <p role="status" class="sr-only">{{ props.loading ? props.loadingLabel : '' }}</p>
 
-    <table ref="tableRef" :class="dataTableVariants({ size: props.size })">
-      <caption
-        :class="
-          cn(dataTableCaptionVariants({ size: props.size }), !props.captionVisible && 'sr-only')
-        "
-      >
-        {{
-          props.caption
-        }}
-      </caption>
+        <table ref="tableRef" :class="dataTableVariants({ size: props.size })">
+          <caption class="sr-only">
+            {{
+              props.caption
+            }}
+          </caption>
 
-      <thead>
-        <tr :class="dataTableHeaderRowVariants()">
-          <th
-            v-if="props.selectable !== undefined"
-            scope="col"
-            :class="
-              cn(
-                dataTableHeaderCellVariants({ size: props.size, sticky: true }),
-                dataTableSelectCellVariants({ size: props.size, header: true })
-              )
-            "
-          >
-            <!--
+          <thead>
+            <tr :class="dataTableHeaderRowVariants()">
+              <th
+                v-if="props.selectable !== undefined"
+                scope="col"
+                :class="
+                  cn(
+                    dataTableHeaderCellVariants({
+                      size: props.size,
+                      sticky: true,
+                      pinned: selectionPinned,
+                    }),
+                    dataTableSelectCellVariants({ size: props.size, header: true })
+                  )
+                "
+              >
+                <!--
               Single selection has nothing to select all of, so the column is
               named in text instead. Either way the header is never empty.
             -->
-            <CheckboxRoot
-              v-if="props.selectable === 'multiple'"
-              :model-value="selectAllState"
-              :aria-label="props.selectAllLabel"
-              :class="dataTableCheckboxVariants({ size: props.size })"
-              @update:model-value="toggleAll"
-            >
-              <CheckboxIndicator class="flex items-center justify-center">
-                <svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                  <path
-                    :d="selectAllState === 'indeterminate' ? 'M3 6h6' : 'm2.5 6 2.5 2.5L9.5 3.5'"
-                    stroke="currentColor"
-                    stroke-width="1.75"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </CheckboxIndicator>
-            </CheckboxRoot>
-            <span v-else class="sr-only">{{ props.selectionLabel }}</span>
-          </th>
+                <Checkbox
+                  v-if="props.selectable === 'multiple'"
+                  :model-value="selectAllState === true"
+                  :indeterminate="selectAllState === 'indeterminate'"
+                  :aria-label="props.selectAllLabel"
+                  @update:model-value="toggleAll"
+                />
+                <span v-else class="sr-only">{{ props.selectionLabel }}</span>
+              </th>
 
-          <th
-            v-for="column in props.columns"
-            :key="columnId(column)"
-            scope="col"
-            :aria-sort="sortStateOf(column)"
-            :style="column.width === undefined ? undefined : { width: column.width }"
-            :class="
-              cn(
-                dataTableHeaderCellVariants({
-                  size: props.size,
-                  align: column.align ?? 'start',
-                  sticky: true,
-                  pinned: column.sticky ?? false,
-                }),
-                pinnedClass(column),
-                column.headerClass
-              )
-            "
-          >
-            <!--
+              <th
+                v-for="(column, columnIndex) in props.columns"
+                :key="columnId(column)"
+                scope="col"
+                :aria-sort="sortStateOf(column)"
+                :style="headerStyle(column, columnIndex)"
+                :class="
+                  cn(
+                    dataTableHeaderCellVariants({
+                      size: props.size,
+                      align: column.align ?? (column.numeric === true ? 'end' : 'start'),
+                      sticky: true,
+                      pinned: column.sticky ?? false,
+                      sortable: isSortable(column),
+                    }),
+                    pinnedClass(column),
+                    column.headerClass
+                  )
+                "
+              >
+                <!--
               Never an empty `<th>`: a column with no name is a column a screen
               reader cannot announce.
 
@@ -385,178 +521,220 @@ function pinnedClass(column: DataTableColumn<TRow>): string | false {
               already conveys the state, so repeating "sorted ascending" in the
               button would have it announced twice.
             -->
-            <button
-              v-if="isSortable(column)"
-              type="button"
-              :class="dataTableSortButtonVariants({ align: column.align ?? 'start' })"
-              @click="toggleSort(column)"
-            >
-              <span :class="column.headerSrOnly === true && 'sr-only'">{{ column.header }}</span>
-              <svg
-                :class="dataTableSortIconVariants({ active: isSortedBy(column) })"
-                viewBox="0 0 20 20"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  :d="
-                    isSortedBy(column) && sort?.direction === 'desc'
-                      ? 'm6 8 4 4 4-4'
-                      : 'm6 12 4-4 4 4'
-                  "
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </button>
-            <span v-else :class="column.headerSrOnly === true && 'sr-only'">
-              {{ column.header }}
-            </span>
-          </th>
-        </tr>
-      </thead>
-
-      <tbody :aria-busy="props.loading ? 'true' : undefined">
-        <template v-if="props.loading">
-          <slot name="loading">
-            <tr v-for="row in props.loadingRows" :key="`skeleton-${row}`">
-              <td
-                v-if="props.selectable !== undefined"
-                :class="dataTableSelectCellVariants({ size: props.size })"
-              >
-                <Skeleton variant="rect" :class="props.size === 'sm' ? 'size-3.5' : 'size-4'" />
-              </td>
-              <td
-                v-for="column in props.columns"
-                :key="columnId(column)"
-                :class="
-                  cn(
-                    dataTableCellVariants({
+                <button
+                  v-if="isSortable(column)"
+                  type="button"
+                  :class="
+                    dataTableSortButtonVariants({
                       size: props.size,
-                      align: column.align ?? 'start',
-                      pinned: column.sticky ?? false,
-                    }),
-                    pinnedClass(column)
-                  )
-                "
-              >
-                <!-- Decorative by default: one announcement above, not one per cell. -->
-                <Skeleton />
+                      align: column.align ?? (column.numeric === true ? 'end' : 'start'),
+                    })
+                  "
+                  @click="toggleSort(column)"
+                >
+                  <span :class="dataTableSortContentVariants()">
+                    <span
+                      :class="
+                        cn(dataTableSortLabelVariants(), column.headerSrOnly === true && 'sr-only')
+                      "
+                      >{{ column.header }}</span
+                    >
+                    <template v-if="isSortedBy(column)">
+                      <TriangleDownIcon
+                        v-if="sort?.direction === 'desc'"
+                        :class="dataTableSortIconVariants()"
+                      />
+                      <TriangleUpIcon v-else :class="dataTableSortIconVariants()" />
+                    </template>
+                  </span>
+                </button>
+                <span v-else :class="column.headerSrOnly === true && 'sr-only'">
+                  {{ column.header }}
+                </span>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody :aria-busy="props.loading ? 'true' : undefined">
+            <template v-if="props.loading">
+              <slot name="loading">
+                <tr v-for="row in props.loadingRows" :key="`skeleton-${row}`">
+                  <td
+                    v-if="props.selectable !== undefined"
+                    :class="
+                      dataTableSelectCellVariants({ size: props.size, pinned: selectionPinned })
+                    "
+                  >
+                    <!-- Empty while loading: there is nothing to select yet. -->
+                  </td>
+                  <td
+                    v-for="column in props.columns"
+                    :key="columnId(column)"
+                    :style="pinnedStyle(column)"
+                    :class="
+                      cn(
+                        dataTableCellVariants({
+                          size: props.size,
+                          align: column.align ?? (column.numeric === true ? 'end' : 'start'),
+                          pinned: column.sticky ?? false,
+                          numeric: column.numeric ?? false,
+                        }),
+                        pinnedClass(column)
+                      )
+                    "
+                  >
+                    <!-- Decorative by default: one announcement above, not one per cell. -->
+                    <Skeleton />
+                  </td>
+                </tr>
+              </slot>
+            </template>
+
+            <tr v-else-if="isEmpty">
+              <td :colspan="columnCount">
+                <slot name="empty">
+                  <!-- Centred in the body with 16px above and below, as the Figma table draws it. -->
+                  <EmptyState v-bind="emptyStateProps" class="mx-auto my-4" />
+                </slot>
               </td>
             </tr>
-          </slot>
-        </template>
 
-        <tr v-else-if="isEmpty">
-          <td :colspan="columnCount" class="border-t border-border-subtle">
-            <slot name="empty">
-              <EmptyState v-bind="emptyStateProps" />
-            </slot>
-          </td>
-        </tr>
-
-        <tr
-          v-for="(row, index) in displayRows"
-          v-else
-          :key="row.id"
-          :data-selected="selectedKeys.has(row.id) ? '' : undefined"
-          :tabindex="isClickable ? 0 : undefined"
-          :class="
-            dataTableRowVariants({
-              interactive: rowsAreInteractive,
-              selected: selectedKeys.has(row.id),
-            })
-          "
-          @click="activateRow(row, $event)"
-          @keydown="activateRow(row, $event)"
-        >
-          <!--
+            <tr
+              v-for="(row, index) in displayRows"
+              v-else
+              :key="row.id"
+              :data-selected="selectedKeys.has(row.id) ? '' : undefined"
+              :tabindex="isClickable ? 0 : undefined"
+              :class="
+                dataTableRowVariants({
+                  interactive: rowsAreInteractive,
+                  selected: selectedKeys.has(row.id),
+                })
+              "
+              @click="activateRow(row, $event)"
+              @keydown="activateRow(row, $event)"
+            >
+              <!--
             No `aria-selected` on the row. It is only valid inside a `grid`, and
             this is a plain `table`; the control's own checked state is what
             carries the selection.
           -->
-          <td
-            v-if="props.selectable !== undefined"
-            :class="dataTableSelectCellVariants({ size: props.size })"
-          >
-            <CheckboxRoot
-              v-if="props.selectable === 'multiple'"
-              :model-value="selectedKeys.has(row.id)"
-              :aria-label="labelFor(row, index)"
-              :class="dataTableCheckboxVariants({ size: props.size })"
-              @update:model-value="setRowSelected(row.id, $event === true)"
-            >
-              <CheckboxIndicator class="flex items-center justify-center">
-                <svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                  <path
-                    d="m2.5 6 2.5 2.5L9.5 3.5"
-                    stroke="currentColor"
-                    stroke-width="1.75"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </CheckboxIndicator>
-            </CheckboxRoot>
-            <!--
-              A native radio, not Reka's RadioGroup. That primitive's root owns
+              <td
+                v-if="props.selectable !== undefined"
+                :class="dataTableSelectCellVariants({ size: props.size, pinned: selectionPinned })"
+              >
+                <Checkbox
+                  v-if="props.selectable === 'multiple'"
+                  :model-value="selectedKeys.has(row.id)"
+                  :aria-label="labelFor(row, index)"
+                  @update:model-value="setRowSelected(row.id, $event)"
+                />
+                <!--
+              A native radio, not a RadioGroup component. A radio group's root owns
               the roving tabstop and would have to wrap the table, putting
               `role="radiogroup"` on it and destroying its table semantics. A
               shared `name` groups native radios with no wrapper at all.
             -->
-            <input
-              v-else
-              type="radio"
-              :name="radioName"
-              :checked="selectedKeys.has(row.id)"
-              :aria-label="labelFor(row, index)"
-              :class="dataTableRadioVariants({ size: props.size })"
-              @change="setRowSelected(row.id, true)"
-            />
-          </td>
+                <span v-else :class="dataTableRadioVariants({ size: props.size })">
+                  <input
+                    type="radio"
+                    :name="radioName"
+                    :checked="selectedKeys.has(row.id)"
+                    :aria-label="labelFor(row, index)"
+                    :class="dataTableRadioInputClass"
+                    @change="setRowSelected(row.id, true)"
+                  />
+                  <RadioMark :class="dataTableRadioMarkClass" />
+                </span>
+              </td>
 
-          <td
-            v-for="column in props.columns"
-            :key="columnId(column)"
-            :class="
-              cn(
-                dataTableCellVariants({
-                  size: props.size,
-                  align: column.align ?? 'start',
-                  pinned: column.sticky ?? false,
-                }),
-                pinnedClass(column),
-                column.cellClass
-              )
-            "
-          >
-            <!--
+              <td
+                v-for="column in props.columns"
+                :key="columnId(column)"
+                :style="pinnedStyle(column)"
+                :class="
+                  cn(
+                    dataTableCellVariants({
+                      size: props.size,
+                      align: column.align ?? (column.numeric === true ? 'end' : 'start'),
+                      pinned: column.sticky ?? false,
+                      numeric: column.numeric ?? false,
+                    }),
+                    pinnedClass(column),
+                    column.cellClass
+                  )
+                "
+              >
+                <!--
               Per-column slot first, then a general one, then the raw value.
               The fallback chain is what lets a table define twelve columns and
               only write markup for the two that need it.
             -->
-            <slot
-              :name="`cell:${columnId(column)}`"
-              :row="row"
-              :column="column"
-              :value="cellValue(row, column)"
-              :index="index"
-            >
-              <slot
-                name="cell"
-                :row="row"
-                :column="column"
-                :value="cellValue(row, column)"
-                :index="index"
+                <slot
+                  :name="`cell:${columnId(column)}`"
+                  :row="row"
+                  :column="column"
+                  :value="cellValue(row, column)"
+                  :index="index"
+                >
+                  <slot
+                    name="cell"
+                    :row="row"
+                    :column="column"
+                    :value="cellValue(row, column)"
+                    :index="index"
+                  >
+                    {{ display(cellValue(row, column)) }}
+                  </slot>
+                </slot>
+              </td>
+            </tr>
+          </tbody>
+
+          <tfoot v-if="showSummary">
+            <tr :class="dataTableHeaderRowVariants()">
+              <td
+                v-if="props.selectable !== undefined"
+                :class="
+                  cn(
+                    dataTableSelectCellVariants({ size: props.size, pinned: selectionPinned }),
+                    dataTableSummaryCellVariants({ size: props.size, pinned: selectionPinned })
+                  )
+                "
+              />
+              <td
+                v-for="column in props.columns"
+                :key="columnId(column)"
+                :style="pinnedStyle(column)"
+                :class="
+                  cn(
+                    dataTableCellVariants({
+                      size: props.size,
+                      align: column.align ?? (column.numeric === true ? 'end' : 'start'),
+                      pinned: column.sticky ?? false,
+                      numeric: column.numeric ?? false,
+                    }),
+                    dataTableSummaryCellVariants({
+                      size: props.size,
+                      pinned: column.sticky ?? false,
+                    }),
+                    pinnedClass(column),
+                    column.cellClass
+                  )
+                "
               >
-                {{ display(cellValue(row, column)) }}
-              </slot>
-            </slot>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                <slot
+                  :name="`summary:${columnId(column)}`"
+                  :column="column"
+                  :value="props.summary?.[columnId(column)]"
+                >
+                  {{ display(props.summary?.[columnId(column)]) }}
+                </slot>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </component>
+    </div>
   </div>
 </template>

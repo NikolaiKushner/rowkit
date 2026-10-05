@@ -5,110 +5,65 @@
 A toolbar above a table: a search box, whatever filter controls the table needs,
 and a chip for every filter currently applied.
 
-```vue
-<FilterBar
-  v-model:search="search"
-  :filters="applied"
-  :result-count="results.length"
-  @remove="unset"
-  @clear="reset"
->
-  <template #controls>
-    <Field label="Role" label-sr-only>
-      <Select v-model="role">
-        <SelectTrigger placeholder="Role" />
-        <SelectContent>
-          <SelectItem v-for="option in roles" :key="option.value" :value="option.value" :label="option.label" />
-        </SelectContent>
-      </Select>
-    </Field>
-  </template>
-</FilterBar>
-```
-
-A control in the `controls` slot still needs a name. A placeholder is not one —
-it disappears the moment a value is chosen, which is exactly when a screen
-reader user asks what the control is. `labelSrOnly` keeps the toolbar visually
-uncluttered without taking the name away.
-
 <script setup>
-import { computed, ref } from 'vue'
-
-const search = ref('')
-const role = ref()
-
-const roles = [
-  { label: 'Owner', value: 'owner' },
-  { label: 'Admin', value: 'admin' },
-  { label: 'Member', value: 'member' },
-]
-
-const people = [
-  { name: 'Ada Lovelace', role: 'owner' },
-  { name: 'Grace Hopper', role: 'admin' },
-  { name: 'Alan Turing', role: 'member' },
-  { name: 'Katherine Johnson', role: 'member' },
-]
-
-const applied = computed(() => [
-  ...(search.value ? [{ id: 'search', label: 'Search', value: search.value }] : []),
-  ...(role.value ? [{ id: 'role', label: 'Role', value: roles.find((r) => r.value === role.value).label }] : []),
-])
-
-const results = computed(() =>
-  people.filter(
-    (person) =>
-      person.name.toLowerCase().includes(search.value.toLowerCase()) &&
-      (!role.value || person.role === role.value)
-  )
-)
-
-function unset(id) {
-  if (id === 'search') search.value = ''
-  if (id === 'role') role.value = undefined
-}
-
-function reset() {
-  search.value = ''
-  role.value = undefined
-}
+import FilterBarBasic from '../examples/filter-bar/FilterBarBasic.vue'
+import FilterBarTable from '../examples/filter-bar/FilterBarTable.vue'
+import FilterBarLocked from '../examples/filter-bar/FilterBarLocked.vue'
 </script>
 
 <DemoBox layout="stack">
-  <FilterBar
-    v-model:search="search"
-    :filters="applied"
-    :result-count="results.length"
-    label="Example filters"
-    searchable
-    search-placeholder="Search people"
-    @remove="unset"
-    @clear="reset"
-  >
-    <template #controls>
-      <Field label="Role" label-sr-only>
-        <Select v-model="role">
-          <SelectTrigger placeholder="Role" class="min-w-40" />
-          <SelectContent>
-            <SelectItem v-for="option in roles" :key="option.value" :value="option.value" :label="option.label" />
-          </SelectContent>
-        </Select>
-      </Field>
-    </template>
-  </FilterBar>
-  <ul class="!my-0 !pl-5 text-sm text-muted-foreground">
-    <li v-for="person in results" :key="person.name">{{ person.name }}</li>
-  </ul>
+  <FilterBarBasic />
 </DemoBox>
 
-Type a name or pick a role. A chip appears for each applied filter, "Clear all"
-appears only once something is applied, and the result count updates in a live
-region — which is the only feedback a screen reader user gets that the filter
-did anything at all.
+<<< @/examples/filter-bar/FilterBarBasic.vue
+
+Type a name. A chip appears for each applied filter, «Clear filters» appears
+only once something is applied, and the result count updates in a live region —
+the only feedback a screen reader user gets that the filter did anything at all.
 
 Remove a chip with the keyboard and watch where focus lands: the next chip, or
 the bar itself when the last one goes. Focus never falls back to the top of the
 document, which is the usual outcome when the focused element is destroyed.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Filtering a table
+
+Search plus two `Select`s in the `controls` slot, a chip for each filter that
+is on, and a table that shows what is left — with the `no-results` empty state
+when nothing is. Each control keeps a name through `label-sr-only`; a
+placeholder is not one, because it disappears the moment a value is chosen.
+The `summary` slot words the count.
+
+<DemoBox layout="stack">
+  <FilterBarTable />
+</DemoBox>
+
+<<< @/examples/filter-bar/FilterBarTable.vue
+
+### A filter the person cannot remove
+
+A scope the application applies — the workspace here — shows as a chip with
+`removable: false`. Actions on what the bar shows go in the `actions` slot, at
+the end of the row.
+
+<DemoBox layout="stack">
+  <FilterBarLocked />
+</DemoBox>
+
+<<< @/examples/filter-bar/FilterBarLocked.vue
+
+## Look
+
+As drawn in the Figma file: a toolbar on the silver face, 4px of padding and
+4px between items, everything in one row that wraps when the chips run out of
+room — search field, your controls, the chips, the result count, then «Clear
+filters» as a command button. A chip is flat: white, a 1px grey border, no
+bevel, 19px tall at `sm` and 21px at `md`. Its ✕ is a flat 13px target with a
+dotted focus ring.
 
 ## Anatomy
 
@@ -117,7 +72,7 @@ document, which is the usual outcome when the focused element is destroyed.
 | Search box   | Free-text search, `v-model:search`                 |
 | Controls     | Your filter controls, in the `controls` slot       |
 | Chips        | One per applied filter, each with a remove control |
-| Clear all    | Appears only while something is applied            |
+| Clear        | «Clear filters», only while something is applied   |
 | Result count | A live region, so filtering announces its effect   |
 
 ## It displays state, it does not own it
@@ -158,7 +113,7 @@ not `'role-admin'`. The value changes; the identity should not.
 | `searchable`        | `boolean`      | `true`                     | Shows the search box.                                                                       |
 | `searchPlaceholder` | `string`       | `'Search…'`                | Placeholder for the search box.                                                             |
 | `searchLabel`       | `string`       | `'Search'`                 | Accessible name for the search box. Visually hidden.                                        |
-| `clearLabel`        | `string`       | `'Clear all'`              | Label for the clear-all control.                                                            |
+| `clearLabel`        | `string`       | `'Clear filters'`          | Label of the button that clears every filter.                                               |
 | `removeLabel`       | `string`       | `'Remove {filter} filter'` | Accessible name for the chip's remove control. `{filter}` is replaced with the chip's text. |
 | `label`             | `string`       | `'Filters'`                | Accessible name for the region.                                                             |
 | `size`              | `'sm' \| 'md'` | `'md'`                     | Control height and text size.                                                               |
@@ -182,7 +137,7 @@ not `'role-admin'`. The value changes; the identity should not.
 | ---------------- | ----- | ---------------------------------------------- |
 | `v-model:search` | model | The search term                                |
 | `@remove`        | event | Payload is the chip's `id`                     |
-| `@clear`         | event | Clear-all was activated                        |
+| `@clear`         | event | «Clear filters» was activated                  |
 | `#controls`      | slot  | Your filter controls                           |
 | `#actions`       | slot  | Trailing actions, pushed to the end of the row |
 | `#chip`          | slot  | Replaces a chip's text. Scoped: `{ chip }`     |
@@ -208,10 +163,11 @@ render, because live regions announce changes rather than initial content.
 
 ## Keyboard
 
-| Key                                 | Action                                                        |
-| ----------------------------------- | ------------------------------------------------------------- |
-| <kbd>Tab</kbd>                      | Moves through search, controls, each chip's remove, clear all |
-| <kbd>Enter</kbd> / <kbd>Space</kbd> | Activates the focused control                                 |
+| Key                                      | Action                                                    |
+| ---------------------------------------- | --------------------------------------------------------- |
+| <kbd>Tab</kbd>                           | Moves through search, controls, each chip's remove, clear |
+| <kbd>Enter</kbd> / <kbd>Space</kbd>      | Activates the focused control                             |
+| <kbd>Backspace</kbd> / <kbd>Delete</kbd> | On a chip's ✕, removes that chip                          |
 
 There is no roving tabstop across the chips. Each remove control is a button in
 document order, so <kbd>Tab</kbd> reaches every one of them — the same reasoning
@@ -231,10 +187,3 @@ a list of them is exactly what a screen reader user gets.
 **The search box has a real label**, visually hidden via `Field`'s
 `labelSrOnly`. A placeholder is not a label — it disappears on the first
 keystroke and is not reliably announced.
-
-## Dark mode
-
-Chips use `surface-subtle` with a `border` hairline, both of which flip with the
-theme. They are deliberately quieter than `Badge`: a chip states a condition the
-user set, not a status that needs to catch the eye, and a row of coloured chips
-above a table competes with the data.

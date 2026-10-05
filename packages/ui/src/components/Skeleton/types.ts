@@ -1,4 +1,4 @@
-import type { PrimitiveProps } from 'reka-ui'
+import type { PrimitiveProps } from '../../primitives/Primitive'
 import type { HTMLAttributes } from 'vue'
 import type { SkeletonVariants } from './Skeleton.variants'
 
@@ -19,8 +19,8 @@ export interface SkeletonProps {
    */
   lines?: number
   /**
-   * Whether the placeholder pulses. Suppressed automatically for anyone with
-   * `prefers-reduced-motion`.
+   * Whether the dither steps 1px every 400ms. Windows 98 never pulses.
+   * Suppressed automatically for anyone with `prefers-reduced-motion`.
    */
   animated?: boolean
   /**

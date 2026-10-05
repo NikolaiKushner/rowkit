@@ -1,7 +1,7 @@
 # Installation
 
 ```bash
-pnpm add rowkit
+pnpm add rowkit@beta
 ```
 
 `vue` and `tailwindcss` are peer dependencies — rowkit uses the copies you
@@ -25,37 +25,33 @@ actually renders.
 
 Note there is no `.css` on either subpath. The export is `rowkit/styles`.
 
-## Typeface (optional, recommended)
+## Typeface (recommended)
 
-rowkit's token stack leads with **Geist**. The library does not ship the font
-files — pull them once in the app:
+rowkit's token stack leads with **PT Sans**, the closest open match to Tahoma,
+the Windows face that succeeded MS Sans Serif, and sets code and fixed-width
+numbers in **VT323**, drawn after the Fixedsys terminal font. The library does
+not ship the font files — load them once in the app:
 
 ```bash
-pnpm add @fontsource-variable/geist @fontsource-variable/geist-mono
+pnpm add @fontsource/pt-sans @fontsource/vt323
 ```
 
 ```css
-@import '@fontsource-variable/geist/wght.css';
-@import '@fontsource-variable/geist-mono/wght.css';
+@import '@fontsource/pt-sans/400.css';
+@import '@fontsource/pt-sans/700.css';
+@import '@fontsource/vt323/400.css';
 @import 'tailwindcss';
 @import 'rowkit/styles';
 ```
 
-Skip the imports and the stack falls through to system UI fonts. Override
-`--font-sans` / `--font-mono` if you want a different face.
+PT Sans covers Latin and Cyrillic. Skip the imports and text falls through to
+system faces (Tahoma, then Microsoft Sans Serif and Verdana; Lucida Console for
+code). Override `--font-sans` / `--font-mono` if you want a different face.
 
-## Dark mode
+## One theme
 
-Add the `dark` class to `<html>`. rowkit's tokens key off the class, not
-`prefers-color-scheme`, so you control when the theme flips:
-
-```ts
-document.documentElement.classList.toggle('dark', isDark)
-```
-
-Only semantic tokens change under `.dark`; the colour primitives stay fixed. A
-component never knows which theme is active — it reads `--color-card` and the
-answer differs.
+rowkit ships a single theme. There is no dark mode and no `.dark` class to set;
+rebrand by repointing the semantic tokens instead.
 
 ## Nuxt
 
@@ -77,8 +73,9 @@ export default defineNuxtConfig({
 
 ### Overlays under SSR
 
-Portals do not exist server-side. Reka defers teleport mounting until the client,
-so `Dialog` and `Tooltip` need nothing extra.
+Portals do not exist server-side. rowkit teleports overlays only after the
+component mounts on the client, so `Dialog`, `Tooltip` and `Select` need nothing
+extra.
 
 `Toaster` holds a module-level queue, which is not per-request safe on the
 server. Wrap it:
@@ -91,12 +88,8 @@ server. Wrap it:
 
 Calls to `toast()` before the client mounts are queued rather than dropped.
 
-> **You do not need `provideSSRWidth`.** Advice to add a VueUse SSR-width plugin
-> circulates for Reka-based apps and does not apply to rowkit on Reka 2.10: the
-> only viewport read in the library's dependency tree is a
-> `matchMedia('(pointer:coarse)')` pointer check, already guarded for SSR. If a
-> future Reka version introduces responsive behaviour that needs it, this section
-> is where it will be documented.
+> **You do not need `provideSSRWidth`.** rowkit does not depend on VueUse and
+> reads the viewport only on the client, after mount.
 
 ## Troubleshooting
 
@@ -138,11 +131,6 @@ supports package exports (Vite 5+, webpack 5+) and that TypeScript is on
 These are token-backed utilities and need `rowkit/styles` imported. If they still
 produce nothing, the token CSS has not been picked up — confirm
 `@rowkit/tokens` resolved, since `rowkit/styles` imports it.
-
-### Dark mode does not switch
-
-rowkit keys off the `.dark` class rather than `prefers-color-scheme`. Setting the
-OS preference alone does nothing; the class has to be on `<html>`.
 
 ## Tokens without components
 

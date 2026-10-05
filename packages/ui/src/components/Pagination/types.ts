@@ -17,7 +17,7 @@ export interface PaginationProps {
   /**
    * Always show the first and last page, with ellipses between.
    *
-   * On by default, unlike the Reka primitive underneath. Without it a user on
+   * On by default. Without it a user on
    * page 12 of 25 sees only `11 12 13` — no indication of how far the table
    * runs and no way to reach the end. For a table that extent is information,
    * not decoration.
@@ -31,12 +31,19 @@ export interface PaginationProps {
   pageSizeLabel?: string
   /** Accessible name for the navigation region. */
   label?: string
-  /** Accessible name for the previous-page control. */
+  /** Label of the previous-page button, shown beside its ◀ and used as its name. */
   previousLabel?: string
-  /** Accessible name for the next-page control. */
+  /** Label of the next-page button, shown beside its ▶ and used as its name. */
   nextLabel?: string
-  /** Control height and text size. */
+  /** Button height: 21px at `sm`, 26px at `md`. */
   size?: NonNullable<PaginationVariants['size']>
+  /**
+   * Draws «Back» and «Next» as arrows alone, so the row fits a phone. The
+   * words stay as the buttons' accessible names. `auto` does it below 640px,
+   * in CSS — nothing shifts on load; `true` always, for a narrow panel;
+   * `false` never.
+   */
+  compact?: boolean | 'auto'
   /** Disables every control. */
   disabled?: boolean
   /** Additional classes, merged so a consumer's utility wins. */

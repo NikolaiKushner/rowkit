@@ -1,4 +1,4 @@
-import type { PrimitiveProps } from 'reka-ui'
+import type { PrimitiveProps } from '../../primitives/Primitive'
 import type { HTMLAttributes } from 'vue'
 import type { BadgeVariants } from './Badge.variants'
 
@@ -13,15 +13,17 @@ export interface BadgeProps {
    */
   variant?: NonNullable<BadgeVariants['variant']>
   /**
-   * How much visual weight the badge carries. Prefer `subtle` in a table —
-   * soft tinted chip with a matching hairline, quieter than `solid` / `outline`.
-   * `solid` is for when a single badge has to carry the page.
+   * How much visual weight the badge carries. `subtle` — white face,
+   * coloured text and border — is the default and the one for tables.
+   * `solid` fills the badge with the colour, for a short label that has to
+   * stand out. `outline` keeps the face transparent and the text black; the
+   * colour is only in the border.
    */
   appearance?: NonNullable<BadgeVariants['appearance']>
-  /** Badge size. `sm` is intended for dense table rows. */
+  /** `sm` (18px) for table rows and navigation counts, `md` (20px) elsewhere. */
   size?: NonNullable<BadgeVariants['size']>
   /**
-   * Shows a filled dot before the label, inheriting the text colour.
+   * Shows a 5×5 square before the label in the variant's colour.
    *
    * Useful when the same badge appears many times in a column and the eye
    * needs a shape to lock onto rather than a colour.

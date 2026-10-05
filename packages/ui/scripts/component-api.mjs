@@ -26,7 +26,7 @@ export const repoRoot = resolve(packageRoot, '../..')
  * Types whose resolved form is technically accurate and useless to read.
  *
  * `HTMLAttributes['class']` expands to Vue's four-way union including
- * `Record<string, any>`, and `PrimitiveProps['as']` to Reka's full component
+ * `Record<string, any>`, and `PrimitiveProps['as']` to the full component
  * union. A consumer needs to know what to pass, not what the type system will
  * tolerate, so these are stated as written rather than as resolved.
  */
@@ -194,12 +194,21 @@ function readSfcApi(source, componentName) {
             if (text(reference.typeName) !== 'Record') continue
             const [key, value] = reference.typeArguments ?? []
             if (key === undefined) continue
+            // `cell:${string}` is precise and unreadable; `cell:<key>` is
+            // what a person or an agent needs to write.
+            const name = text(key).replace(/^`|`$/g, '').replace('${string}', '<key>')
+            // Only a family with a general slot of the same name falls back
+            // to it: `cell:<key>` to `cell`, but `summary:<key>` to nothing.
+            const general = name.split(':')[0]
+            const hasGeneral = typeMembers(typeArg).some(
+              (member) => ts.isPropertySignature(member) && text(member.name) === general
+            )
             api.slots.push({
-              // `cell:${string}` is precise and unreadable; `cell:<key>` is
-              // what a person or an agent needs to write.
-              name: text(key).replace(/^`|`$/g, '').replace('${string}', '<key>'),
+              name,
               props: inlineAliases(paramsOf(value)),
-              description: 'Per-key slot. Resolution order: this, then the general slot.',
+              description: hasGeneral
+                ? 'Per-key slot. Resolution order: this, then the general slot.'
+                : 'Per-key slot.',
               dynamic: true,
             })
           }

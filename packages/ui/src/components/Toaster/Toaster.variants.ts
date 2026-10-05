@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority'
+import { captionButtonVariants } from '../captionButton.variants'
 
 /**
  * The viewport. One per app, portalled to `<body>` at `z-toast` — above a modal,
@@ -8,54 +9,49 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * the gaps between toasts must not swallow clicks on the page underneath.
  */
 export const toasterViewportVariants = cva(
-  'fixed z-toast flex max-h-screen w-full max-w-sm flex-col gap-2 p-4 pointer-events-none',
+  'fixed z-toast flex max-h-screen w-full max-w-[332px] flex-col gap-2 p-4 pointer-events-none',
   {
     variants: {
       position: {
-        'top-right': 'top-0 right-0',
-        'top-center': 'top-0 left-1/2 -translate-x-1/2',
-        'bottom-right': 'bottom-0 right-0 flex-col-reverse',
-        'bottom-center': 'bottom-0 left-1/2 -translate-x-1/2 flex-col-reverse',
+        // Toasts render newest first. At the top the newest sits lowest,
+        // nearest the content; at the bottom it sits highest. Hence reversed
+        // at the top and natural at the bottom.
+        'top-right': 'top-0 right-0 flex-col-reverse',
+        'top-center': 'top-0 left-1/2 -translate-x-1/2 flex-col-reverse',
+        'bottom-right': 'bottom-0 right-0',
+        'bottom-center': 'bottom-0 left-1/2 -translate-x-1/2',
       },
     },
     defaultVariants: { position: 'bottom-right' },
   }
 )
 
-export const toastVariants = cva(
-  [
-    'pointer-events-auto flex items-start gap-3 rounded-lg border p-3 text-sm shadow-lg',
-    'motion-safe:data-[state=open]:animate-toast-in',
-    'motion-safe:data-[state=closed]:animate-toast-out',
-    // Reka drives the swipe with a transform custom property.
-    'data-[swipe=move]:translate-x-(--reka-toast-swipe-move-x)',
-    'data-[swipe=cancel]:translate-x-0',
-  ],
-  {
-    variants: {
-      variant: {
-        neutral: 'border-border bg-card text-foreground',
-        success: 'border-success-border bg-success-subtle text-success-on-subtle',
-        warning: 'border-warning-border bg-warning-subtle text-warning-on-subtle',
-        danger: 'border-danger-border bg-danger-subtle text-danger-on-subtle',
-      },
-    },
-    defaultVariants: { variant: 'neutral' },
-  }
-)
-
-export const toastMessageVariants = cva('min-w-0 flex-1 text-sm')
-
-export const toastActionVariants = cva([
-  'shrink-0 cursor-pointer rounded-sm text-sm font-medium underline underline-offset-2',
-  'transition-opacity duration-fast ease-standard hover:opacity-80',
-  'outline-none focus-visible:ring-3 focus-visible:ring-ring',
+/**
+ * A toast is a small Windows 98 window: the silver face in a window bevel,
+ * the same for every variant — the 16px icon is what says success, warning
+ * or error. It appears and goes instantly; nothing slides.
+ */
+export const toastVariants = cva([
+  'pointer-events-auto flex w-full items-start gap-2 bg-card py-2 pr-1 pl-2',
+  'font-sans text-ui text-foreground shadow-window',
+  'outline-none focus-visible:outline-1 focus-visible:-outline-offset-4',
+  'focus-visible:outline-dotted focus-visible:outline-ring',
+  // The swipe handler in Toaster.vue drives this custom property.
+  'data-[swipe=move]:translate-x-(--rk-toast-swipe-x)',
+  'data-[swipe=cancel]:translate-x-0',
 ])
 
-export const toastCloseVariants = cva([
-  'inline-flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-xs',
-  'opacity-60 transition-opacity duration-fast ease-standard hover:opacity-100',
-  'outline-none focus-visible:ring-3 focus-visible:ring-ring',
-])
+/** The title, the message and the action, stacked. */
+export const toastBodyVariants = cva('flex min-w-0 flex-1 flex-col items-start gap-1 break-words')
+
+export const toastTitleVariants = cva('font-bold')
+
+export const toastMessageVariants = cva('')
+
+/** Space above the action button, so it does not crowd the text. */
+export const toastActionVariants = cva('pt-0.5')
+
+/** The caption button: the same 20×18 ✕ as a dialog's title bar. */
+export const toastCloseVariants = captionButtonVariants
 
 export type ToasterVariants = VariantProps<typeof toasterViewportVariants>

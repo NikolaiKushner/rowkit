@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { Primitive } from 'reka-ui'
+import { Primitive } from '../../primitives/Primitive'
 import { computed } from 'vue'
 import { cn } from '../../utils/cn'
-import { buttonVariants } from './Button.variants'
+import HourglassIcon from '../../icons/HourglassIcon.vue'
+import {
+  buttonContentVariants,
+  buttonFocusVariants,
+  buttonPressedState,
+  buttonVariants,
+} from './Button.variants'
 
 import type { ButtonProps } from './types'
 
@@ -15,6 +21,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
   loading: false,
   disabled: false,
   type: 'button',
+  pressed: undefined,
   as: 'button',
   asChild: false,
 })
@@ -22,7 +29,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
 defineSlots<{
   /** The button label. */
   default: () => unknown
-  /** Icon before the label. Replaced by the spinner while loading. */
+  /** Icon before the label. Replaced by the hourglass while loading. */
   leading: () => unknown
   /** Icon after the label. */
   trailing: () => unknown
@@ -44,6 +51,13 @@ const isNativeButton = computed(() => props.as === 'button' && !props.asChild)
  * Capture phase, so it runs before the listeners a consumer attached through
  * fallthrough attributes.
  */
+/**
+ * With as-child there is no inner ring to draw on, so the dotted ring goes on
+ * the element itself, inset past the bevel.
+ */
+const asChildFocus =
+  'focus-visible:outline-1 focus-visible:-outline-offset-4 focus-visible:outline-dotted focus-visible:outline-ring'
+
 function onClickCapture(event: MouseEvent): void {
   if (props.loading || props.disabled) {
     event.preventDefault()
@@ -60,6 +74,7 @@ function onClickCapture(event: MouseEvent): void {
     :disabled="isNativeButton && props.disabled ? true : undefined"
     :aria-disabled="!isNativeButton && props.disabled ? 'true' : undefined"
     :aria-busy="props.loading ? 'true' : undefined"
+    :aria-pressed="props.pressed === undefined ? undefined : String(props.pressed)"
     :class="
       cn(
         buttonVariants({
@@ -67,44 +82,46 @@ function onClickCapture(event: MouseEvent): void {
           size: props.size,
           block: props.block,
         }),
+        buttonPressedState,
+        props.asChild && asChildFocus,
         props.class
       )
     "
     data-slot="button"
     @click.capture="onClickCapture"
   >
-    <svg
-      v-if="props.loading"
-      class="size-4 shrink-0 animate-spin"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25" stroke-width="3" />
-      <path
-        d="M22 12a10 10 0 0 0-10-10"
-        stroke="currentColor"
-        stroke-width="3"
-        stroke-linecap="round"
-      />
-    </svg>
-    <span v-else-if="$slots.leading" class="flex shrink-0 items-center">
-      <slot name="leading" />
-    </span>
-
-    <span class="truncate"><slot /></span>
-
-    <span v-if="$slots.trailing" class="flex shrink-0 items-center">
-      <slot name="trailing" />
-    </span>
-
     <!--
-      Only rendered when the consumer supplies a loading label, so the default
-      is an unchanged accessible name plus aria-busy rather than a label that
-      silently rewrites itself under a screen reader.
+      With as-child the consumer's element is the button, so its content goes
+      in as given: the content and focus-ring wrappers would otherwise be the
+      first child, and the button's attributes would land on them.
     -->
-    <span v-if="props.loading && props.loadingLabel" class="sr-only" role="status">
-      {{ props.loadingLabel }}
+    <slot v-if="props.asChild" />
+    <span
+      v-else
+      data-slot="button-content"
+      :class="buttonContentVariants({ variant: props.variant })"
+    >
+      <span data-slot="button-focus" :class="buttonFocusVariants({ size: props.size })">
+        <HourglassIcon v-if="props.loading" />
+        <span v-else-if="$slots.leading" class="flex shrink-0 items-center">
+          <slot name="leading" />
+        </span>
+
+        <span v-if="$slots.default" class="truncate"><slot /></span>
+
+        <span v-if="$slots.trailing" class="flex shrink-0 items-center">
+          <slot name="trailing" />
+        </span>
+      </span>
+
+      <!--
+        Only rendered when the consumer supplies a loading label, so the default
+        is an unchanged accessible name plus aria-busy rather than a label that
+        silently rewrites itself under a screen reader.
+      -->
+      <span v-if="props.loading && props.loadingLabel" class="sr-only" role="status">
+        {{ props.loadingLabel }}
+      </span>
     </span>
   </Primitive>
 </template>

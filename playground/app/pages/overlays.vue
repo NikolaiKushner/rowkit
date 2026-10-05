@@ -87,7 +87,7 @@ function toastOverDialog() {
         <Button @click="dialogOpen = true">Open dialog</Button>
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="outline" @click="toastOverDialog">Toast on its own</Button>
+            <Button variant="secondary" @click="toastOverDialog">Toast on its own</Button>
           </TooltipTrigger>
           <TooltipContent>Fires without opening anything</TooltipContent>
         </Tooltip>
@@ -105,25 +105,25 @@ function toastOverDialog() {
       <div class="flex flex-wrap items-center gap-2">
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="outline">Archive</Button>
+            <Button variant="secondary">Archive</Button>
           </TooltipTrigger>
           <TooltipContent placement="top">Archive this project</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="outline">Duplicate</Button>
+            <Button variant="secondary">Duplicate</Button>
           </TooltipTrigger>
           <TooltipContent placement="right">Duplicate into a new project</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="outline">Export</Button>
+            <Button variant="secondary">Export</Button>
           </TooltipTrigger>
           <TooltipContent placement="bottom">Export as CSV</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="outline" aria-disabled="true">Transfer</Button>
+            <Button variant="secondary" aria-disabled="true">Transfer</Button>
           </TooltipTrigger>
           <TooltipContent placement="left">Upgrade your plan to transfer projects</TooltipContent>
         </Tooltip>
@@ -133,9 +133,9 @@ function toastOverDialog() {
     <section class="flex flex-col gap-3">
       <h2 class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Toast tones</h2>
       <div class="flex flex-wrap items-center gap-2">
-        <Button variant="outline" @click="success('Project archived')">Success</Button>
-        <Button variant="outline" @click="warning('Two seats remaining')">Warning</Button>
-        <Button variant="outline" @click="confirmOpen = true">Delete, with undo</Button>
+        <Button variant="secondary" @click="success('Project archived')">Success</Button>
+        <Button variant="secondary" @click="warning('Two seats remaining')">Warning</Button>
+        <Button variant="secondary" @click="confirmOpen = true">Delete, with undo</Button>
         <Badge variant="neutral">Three visible at a time</Badge>
       </div>
     </section>
@@ -169,7 +169,7 @@ function toastOverDialog() {
                 </SelectContent>
               </Select>
             </Field>
-            <Button variant="outline" @click="toastOverDialog">Fire a toast from in here</Button>
+            <Button variant="secondary" @click="toastOverDialog">Fire a toast from in here</Button>
           </div>
         </DialogBody>
         <DialogFooter>

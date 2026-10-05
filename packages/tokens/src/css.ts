@@ -1,8 +1,7 @@
-import { blur } from './blur'
-import { colorPrimitives, semanticColorDark, semanticColorLight } from './color'
+import { colorPrimitives, semanticColor } from './color'
 import { duration, easing } from './motion'
 import { radiusBase, radiusCss } from './radius'
-import { shadow } from './shadow'
+import { shadow, textShadow } from './shadow'
 import { spacing, spacingBase } from './spacing'
 import { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
 import { zIndex } from './z-index'
@@ -14,10 +13,8 @@ import { zIndex } from './z-index'
  * the stylesheet from them, so the two cannot drift. `css.test.ts` asserts that
  * every token in every scale reaches the output.
  *
- * Dark mode works by repointing *semantic* tokens under `.dark`. Primitives are
- * emitted once and never change — `--color-primary-600` is the same colour in
- * both themes; what changes is which primitive `--color-primary-solid` points
- * at. That is why the theme can flip without a single hardcoded colour moving.
+ * There is one theme. Semantic tokens point at primitives, so a consumer
+ * rebrands by repointing a semantic token rather than editing a literal colour.
  *
  * @returns The complete stylesheet, ready to write to disk.
  */
@@ -25,16 +22,12 @@ export function buildThemeCss(): string {
   return [
     header(),
     '',
-    // Tailwind v4 defaults the `dark:` variant to prefers-color-scheme. rowkit
-    // uses a class so an app can offer an explicit theme switch.
-    '@custom-variant dark (&:where(.dark, .dark *));',
-    '',
     '@theme {',
     section('colour primitives — the only literal colours in rowkit'),
     ...entries(colorPrimitives, (k) => `--color-${k}`),
     '',
-    section('semantic colours — light (defaults)'),
-    ...entries(semanticColorLight, (k) => `--color-${k}`),
+    section('semantic colours'),
+    ...entries(semanticColor, (k) => `--color-${k}`),
     '',
     section('spacing'),
     `  --spacing: ${spacingBase};`,
@@ -50,11 +43,9 @@ export function buildThemeCss(): string {
     section('radii — multiples of --radius, declared in :root below'),
     ...entries(radiusCss, (k) => `--radius-${k}`),
     '',
-    section('blur'),
-    ...entries(blur, (k) => `--blur-${k}`),
-    '',
-    section('shadows'),
+    section('bevels — box shadows'),
     ...entries(shadow, (k) => `--shadow-${k}`),
+    ...entries(textShadow, (k) => `--text-shadow-${k}`),
     '',
     section('motion'),
     // Tailwind v4's namespaces are `--transition-duration-*` and `--ease-*`.
@@ -85,11 +76,6 @@ export function buildThemeCss(): string {
     '/* The one length the radius scale multiplies. Override to retune every corner. */',
     ':root {',
     `  --radius: ${radiusBase};`,
-    '}',
-    '',
-    '/* Dark mode repoints semantic tokens only. Primitives are theme-agnostic. */',
-    '.dark {',
-    ...entries(semanticColorDark, (k) => `--color-${k}`),
     '}',
     '',
   ].join('\n')

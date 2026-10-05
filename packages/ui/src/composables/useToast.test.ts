@@ -4,9 +4,8 @@ import { useToast } from './useToast'
 /**
  * These cover the **queue**: how many are visible, what waits, what coalesces.
  *
- * Countdown, hover-pause and swipe-to-dismiss are Reka's `ToastRoot`, so they
- * are verified in `Toaster.stories.ts` against the real primitive rather than
- * re-asserted against an implementation this file no longer has.
+ * Countdown, hover-pause and swipe-to-dismiss live in `Toaster`, so they are
+ * verified in `Toaster.stories.ts` in a real browser rather than here.
  *
  * Fake timers are here only so `Date.now()` can be advanced past the coalescing
  * window.

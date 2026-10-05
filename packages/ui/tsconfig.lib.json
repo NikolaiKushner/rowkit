@@ -8,5 +8,5 @@
     "types": []
   },
   "include": ["src/**/*.ts", "src/**/*.vue"],
-  "exclude": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/**/*.stories.ts"]
+  "exclude": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/**/*.stories.ts", "src/stories/**"]
 }

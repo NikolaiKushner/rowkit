@@ -34,7 +34,7 @@ const describe = (text) => summarise(text, 240)
 const PREAMBLE = `## Setup
 
 \`\`\`bash
-pnpm add rowkit
+pnpm add rowkit@beta
 \`\`\`
 
 \`vue\` and \`tailwindcss\` are peer dependencies. rowkit uses the copies already in
@@ -68,7 +68,9 @@ handling.
   (\`Badge\` and \`DataTable\` stop at \`sm | md\`) but never rename the steps.
 - **Variants are strings, never booleans.** \`variant="danger"\`, not \`danger\`.
 - **Identity payloads are stable ids**, never array indices or object references.
-- **No component ships an icon.** Icon slots take whatever the application uses.
+- **Icons are pixel art.** Show each at its own size (8, 16 or 32px) or a
+  whole multiple, never scaled in between. Icon slots take rowkit's icons or
+  your own.
 
 ## Also exported
 
@@ -78,8 +80,13 @@ handling.
   which never reorders its own rows. Deliberately not a prop on the component:
   a server-paged table that sorts locally reorders only the page on screen and
   looks correct.
-- \`TooltipProvider\` — Reka's, re-exported. Only needed to share
+- \`TooltipProvider\` — renders nothing. Only needed to share
   \`skipDelayDuration\` across a toolbar of tooltips.
+- Icons: the Windows 98 pixel set from the design — \`PlusIcon\`, \`CopyIcon\`,
+  \`TrashIcon\`, \`FilterIcon\`, \`EditIcon\`, \`FolderIcon\`, \`DocumentIcon\`,
+  \`UserIcon\` and the rest at 16px; \`Error32Icon\`, \`Info32Icon\`,
+  \`Warning32Icon\` and others at 32px for system messages; 8px glyphs such as
+  \`TriangleDownIcon\` and \`CloseGlyphIcon\`. All decorative (\`aria-hidden\`).
 - \`cn(...)\` — the class merger the components use.
 - Types: \`SelectOption\`, \`FilterChip\`, \`DataTableColumn\`, \`DataTableSort\`,
   \`ToastOptions\`, and a \`*Props\` type per component.
@@ -142,7 +149,7 @@ export async function buildAgentsBody() {
     '# rowkit for coding agents',
     '',
     'A professional Vue 3 toolkit: the components a product interface is built',
-    'from. Built on Reka UI, styled with Tailwind v4.',
+    'from. No behaviour library underneath, styled with Tailwind v4.',
     '',
     'This file is generated from the source, so it describes the version installed',
     'rather than whatever was current when it was written.',

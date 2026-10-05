@@ -5,7 +5,7 @@
  * declaration retunes every corner in the library:
  *
  * ```css
- * :root { --radius: 0.5rem; }
+ * :root { --radius: 0.25rem; }
  * ```
  *
  * The factors are the source of truth, not the resulting lengths. Two things
@@ -18,31 +18,29 @@
 /**
  * The single length the scale multiplies.
  *
- * `0.5rem` (8px) keeps corners decisive rather than soft — the silhouette that
- * reads as a data tool, not a marketing page. Override `--radius` in a
- * consumer to retune every corner without touching components.
+ * Zero: Windows 98 has no rounded corners, and every `radius/*` token in the
+ * design is 0. The scale is kept rather than deleted so that corners stay one
+ * decision away — set `--radius` in a consumer and every control follows,
+ * without touching a component.
  */
-export const radiusBase = '0.5rem'
+export const radiusBase = '0rem'
 
 /**
- * Multiples of `--radius`.
- *
- * `sm`/`md`/`lg`/`xl` keep the same factors as the reference scale. `xs` is
- * rowkit's, and lands on ~3px — the radius used on checkboxes and chip remove
- * targets inside dense table chrome.
+ * Multiples of `--radius`. All of them compute to 0 with the default base;
+ * the factors decide how a consumer's own `--radius` spreads across controls.
  */
 export const radiusFactor = {
-  /** Square. Table cells, and anything that tiles edge to edge. */
+  /** Always square, whatever `--radius` is: table cells, anything that tiles. */
   none: 0,
-  /** ~3px — checkboxes, tags inside a cell. */
+  /** Checkboxes and tags inside a cell. */
   xs: 0.4,
-  /** ~5px — badges, small controls. */
+  /** Badges and small controls. */
   sm: 0.6,
-  /** ~6px — buttons, inputs, cards. The rowkit default. */
+  /** Buttons, inputs and panels. */
   md: 0.8,
-  /** 8px — dialogs, popovers. */
+  /** Windows, dialogs and popovers. */
   lg: 1,
-  /** ~11px — large empty-state panels. */
+  /** Large empty-state panels. */
   xl: 1.4,
 } as const
 
@@ -57,7 +55,7 @@ export const radius = {
   ...(Object.fromEntries(
     Object.entries(radiusFactor).map(([name, factor]) => [name, resolve(factor)])
   ) as { [K in keyof typeof radiusFactor]: string }),
-  /** Pill. Status chips and avatars. */
+  /** Circle. The only rounded shape Windows 98 draws: radio buttons, and a round skeleton. */
   full: PILL,
 } as const
 

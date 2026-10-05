@@ -57,10 +57,17 @@ interface DataTableColumnBase {
    * compared down the page, a left-aligned one cannot.
    */
   align?: DataTableAlign
+  /**
+   * The column holds figures: its cells use the mono face so digits line up,
+   * and it aligns to the end unless `align` says otherwise.
+   */
+  numeric?: boolean
   /** A CSS width, applied to the column. Omit to let the content size it. */
   width?: string
   /**
    * Pins the column to the start edge while the table scrolls sideways.
+   * Several pinned columns sit side by side in column order, and the
+   * selection column pins with them. Pinned cells stay under the sticky header.
    *
    * For the column that identifies the row — a name or an id. Without it, a
    * user scrolled to the right has no idea which row they are reading.
@@ -237,15 +244,32 @@ export interface DataTableProps<TRow> {
   selectionLabel?: string
   /** Accessible name for the select-all control. */
   selectAllLabel?: string
-  /** Row height and text size. */
+  /** Row height: `sm` 22px for dense lists and logs, `md` 27px. */
   size?: NonNullable<DataTableVariants['size']>
   /**
-   * Highlights rows on hover. Only turn this on when a row does something.
-   *
-   * Implied by a `row:click` listener, since a row that responds to a click
-   * should look like it will.
+   * Kept for compatibility; has no visible effect. Windows 98 list rows have
+   * no hover, so a row that does something shows it through the cursor, the
+   * dotted focus rectangle and selection instead.
    */
   hoverable?: boolean
-  /** Additional classes for the scroll container, merged so a consumer's utility wins. */
+  /**
+   * A summary row — totals, averages — after the last row, keyed like the
+   * columns: `key`, or `id` for a computed column. Drawn in bold under an
+   * etched line and held at the bottom while the body scrolls. Values show as
+   * given, so format numbers before passing them.
+   */
+  summary?: Record<string, unknown>
+  /**
+   * Which scroll bars the body uses. `native` restyles the browser's own as
+   * Windows 98 — exact in Chromium and Safari, colours only in Firefox.
+   * `drawn` puts the body in a `ScrollArea`, whose bars rowkit draws and which
+   * look the same everywhere. The sticky header and pinned columns work with
+   * either.
+   */
+  scrollbars?: 'native' | 'drawn'
+  /**
+   * Additional classes for the root, merged so a consumer's utility wins. A
+   * height (`max-h-96`) bounds the table; the body scrolls inside the frame.
+   */
   class?: HTMLAttributes['class']
 }

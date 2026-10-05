@@ -117,24 +117,26 @@ describe('Pagination', () => {
       expect(current[0]?.text()).toBe('3')
     })
 
-    it('outlines the current page, and does so with a border that clears 3:1', () => {
-      // The outline is the only visual carrier of "you are here", so it uses
-      // the control-boundary token rather than the decorative hairline, which
-      // is deliberately below 3:1. `aria-current` above carries the same state
-      // to assistive tech; this covers the sighted keyboard user.
+    it('draws the current page pressed in, through aria-current', () => {
+      // Button draws aria-current="page" with the pressed bevel; the state and
+      // the look come from the same attribute, so they cannot disagree.
       const current = setup({ page: 3 }).find('[aria-current="page"]')
-      expect(current.classes()).toContain('border-input')
-      expect(current.classes()).not.toContain('border-transparent')
+      expect(current.classes()).toContain('aria-[current=page]:shadow-pressed')
     })
 
-    it('names the previous and next controls', () => {
+    it('labels Back and Next with visible text that is also their name', () => {
       const el = setup()
-      expect(el.find('[aria-label="Previous page"]').exists()).toBe(true)
-      expect(el.find('[aria-label="Next page"]').exists()).toBe(true)
+      const previous = el.find('[data-type="previous"]')
+      const next = el.find('[data-type="next"]')
+      expect(previous.text()).toBe('Back')
+      expect(next.text()).toBe('Next')
+      // No aria-label overriding the visible label (WCAG 2.5.3, label in name).
+      expect(previous.attributes('aria-label')).toBeUndefined()
+      expect(next.attributes('aria-label')).toBeUndefined()
     })
 
     it('shows the first and last page so the extent is visible', () => {
-      // Reka's own default renders only the sibling window — "11 12 13" — which
+      // Without edges only the sibling window renders — "11 12 13" — which
       // tells a table user neither how far the data runs nor how to reach it.
       const labels = setup({ page: 12, siblingCount: 1 })
         .findAll('nav button')
@@ -165,6 +167,28 @@ describe('Pagination', () => {
 
     it('can be hidden', () => {
       expect(setup({ hidePageSize: true }).text()).not.toContain('Rows per page')
+    })
+  })
+
+  describe('compact', () => {
+    const step = (el: ReturnType<typeof setup>, type: string) => el.find(`[data-type="${type}"]`)
+
+    it('hides the words below 640px by default, in CSS', () => {
+      const el = setup()
+      expect(step(el, 'previous').find('span.max-sm\\:sr-only').text()).toBe('Back')
+      expect(step(el, 'next').find('span.max-sm\\:sr-only').text()).toBe('Next')
+    })
+
+    it('always draws arrows alone when true, keeping the words as names', () => {
+      const el = setup({ compact: true })
+      expect(step(el, 'previous').find('span.sr-only').text()).toBe('Back')
+      expect(step(el, 'previous').text()).toBe('Back')
+    })
+
+    it('never hides the words when false', () => {
+      const el = setup({ compact: false })
+      expect(step(el, 'next').find('span').classes()).not.toContain('sr-only')
+      expect(step(el, 'next').find('span').classes()).not.toContain('max-sm:sr-only')
     })
   })
 

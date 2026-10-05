@@ -2,7 +2,7 @@ import { enableAutoUnmount } from '@vue/test-utils'
 import { afterEach, beforeAll } from 'vitest'
 
 beforeAll(() => {
-  // jsdom implements no layout, so it has no scrollIntoView. Reka calls it
+  // jsdom implements no layout, so it has no scrollIntoView. Select calls it
   // whenever the highlighted option moves, which is every keypress in an open
   // listbox.
   if (!Element.prototype.scrollIntoView) {

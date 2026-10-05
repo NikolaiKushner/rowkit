@@ -30,8 +30,8 @@ in CI, not aspirations:
 
 - 1434 tests green across unit, component and real-browser story runs
 - `addon-a11y` runs as a build gate, not a panel
-- 12.97 kB brotli for the full library against a 14 kB budget; Button alone is
-  1.4 kB, so tree-shaking demonstrably works
+- The size budget counts what a consumer actually downloads, dependencies
+  included. Button alone is 1.7 kB, so tree-shaking demonstrably works
 - Strict TypeScript with `exactOptionalPropertyTypes`, no `any`
 - Releases publish from CI over OIDC with provenance, and generated docs are
   checked for drift before anything ships
@@ -62,12 +62,33 @@ Everything in **Now** serves that, or clears something out of its way.
 
 Ordered. Finish or deliberately drop an item before starting the next.
 
-### 1. Ship the pending release
+### 1. The Windows 98 redesign
 
-Eight unreleased changesets are sitting in `.changeset/`, covering a breaking
-`Button` API, the espresso token shift, quieter chrome, and the docs homepage.
-Cut them as one release with a changelog a consumer can read: what broke, what
-merely got quieter.
+Every component, the tokens, the playground, rowkit.dev and the brand — logo,
+favicon, link previews, README banner, Storybook theme — are being redrawn in
+the style of Windows 98. Win98 replaces the current look
+everywhere rowkit appears; dark mode is dropped.
+
+1. A designer draws the Figma file first: Variables mirroring the semantic
+   token names, bevel effect styles, every component in every variant and
+   state, three assembled screens, and seven page templates for the docs site.
+2. Tokens change value, not name, so consumers who rebrand through
+   `--color-primary-*` keep working. Radii go to zero, soft shadows give way to
+   bevels, Geist gives way to PT Sans, and the dark values are removed.
+3. Components are restyled against the Figma file, one at a time, through the
+   usual definition of done. Any API change the new style asks for (a merged
+   `Button` variant, a side label on `Field`) is its own `minor` changeset.
+4. rowkit.dev becomes a Win98 desktop: pages open in Explorer-style windows,
+   navigation lives in a Start menu and a taskbar. That needs a custom
+   VitePress layout, which overrides the earlier "default theme only" choice.
+
+Settled for the redesign: the face is PT Sans (OFL, Latin and Cyrillic,
+regular and bold; the app loads it, rowkit does not ship it). Sizes follow
+Win98 on desktop (11px text, ~23px controls) and grow to ≥ 24px touch targets
+on touch screens. `Button` loses `outline`; hover appears only where Win98 had
+it; `background` is `#C0C0C0`, with teal `#008080` as a separate `desktop`
+token. rowkit.dev gets a VitePress theme written from scratch, in English, set
+in PT Sans throughout.
 
 ### 2. Close the visual-QA blind spot
 
@@ -80,16 +101,16 @@ never actually been reviewed by the process that exists to review them.
 Give those stories a `play` function that opens the overlay before the shot, or
 add always-open variants to the matrix.
 
-### 3. Two inconsistencies the restyle left behind
+### 3. Two inconsistencies to settle in the redesign
 
-Both are decisions, not bugs — but they should be decided rather than inherited:
+Both are decisions, not bugs. Win98 offers no precedent for either, so the
+Figma file has to decide them rather than inherit them:
 
-- **`Badge` `subtle` + `primary` is indistinguishable from `neutral`** in light
-  mode. That follows from primary's low chroma, and it makes the variant close
-  to useless. Either give it a distinguishing treatment or drop it.
-- **Dark-mode invalid `Input` contradicts soft destructive.** The rest of the
-  library expresses danger as a quiet wash with a coloured label; the invalid
-  field uses a saturated red border and red text. One meaning, two volumes.
+- **`Badge` `subtle` + `primary` is indistinguishable from `neutral`.** Either
+  give it a distinguishing treatment in the new style or drop it.
+- **Invalid `Input` is louder than the rest of the library's danger states.**
+  Dark mode, where it was worst, is gone. Win98 has no invalid field at all, so
+  the redesign draws one quiet treatment that matches destructive elsewhere.
 
 ### 4. Harden the documented patterns
 
@@ -123,9 +144,12 @@ awkward without it.
 
 ## Later — not the toolkit
 
-- **A custom docs theme.** Legitimate, and the lowest-information work
-  available. It stays last on purpose.
-- **A Figma kit. A React port.** Separate products, not components of this one.
+- **A published Figma kit. A React port.** Separate products, not components
+  of this one. The Figma file drawn for the redesign is the design source for this repo;
+  publishing it as a kit for others is a separate decision.
+
+The custom docs theme that used to sit here moved into **Now** as part of the
+redesign.
 
 ---
 
@@ -144,16 +168,18 @@ is the application's job.
 
 ## Settled decisions
 
-Do not relitigate these without new information:
+Settled for now. Revisit one when it gets in the way of a component or the design, with a reason:
 
-- **Design direction is restraint** — structure without severity, no excess.
-  Chrome stays neutral; status colour carries meaning and brand colour does not
-  live in the defaults. Primary is ink blue `oklch(0.32 0.09 255)`.
-  Consumers rebrand by pointing `--color-primary-*` at their own colour.
+- **Design direction is Windows 98** — grey face, bevels, navy `#000080`
+  selection, square corners, PT Sans. It replaced the earlier restrained
+  look (ink-blue primary, Geist) entirely. The style, not the assets: no
+  Microsoft logos or original icons. Status is carried by an icon as well as a
+  colour. Consumers rebrand by pointing `--color-primary-*` at their own colour.
+- **One theme, light.** Dark mode is dropped in the redesign.
 - **npm package, not copy-paste distribution.** shadcn-vue's model is good and
   deliberate; rowkit ships versioned.
-- **Reka UI as the primitive layer**, with shadcn-vue as a reference to learn
-  from rather than a dependency.
+- **No behaviour library.** rowkit's focus, dismissal, presence, scroll lock and
+  positioning are its own primitives, with no runtime dependency behind them.
 - **Tokens are a separate package**, consumable without importing components.
 - **The consumer owns state.** Sort, selection, page, filters are all `v-model`;
   components report what happened and the application decides what follows.

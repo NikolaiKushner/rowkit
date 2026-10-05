@@ -50,7 +50,7 @@ export interface FilterBarProps {
   searchPlaceholder?: string
   /** Accessible name for the search box. Visually hidden. */
   searchLabel?: string
-  /** Label for the clear-all control. */
+  /** Label of the button that clears every filter. */
   clearLabel?: string
   /**
    * Accessible name for the chip's remove control. `{filter}` is replaced

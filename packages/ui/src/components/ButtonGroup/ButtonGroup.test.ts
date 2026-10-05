@@ -12,20 +12,25 @@ describe('ButtonGroup', () => {
     expect(wrapper.attributes('data-slot')).toBe('button-group')
   })
 
-  it('joins children on the horizontal axis by default', () => {
+  it('lays buttons edge to edge on the horizontal axis by default', () => {
     const classes = mount(ButtonGroup, {
       slots: {
         default: `
-          <Button variant="outline">Archive</Button>
-          <Button variant="secondary">Report</Button>
+          <Button variant="ghost">Archive</Button>
+          <Button variant="ghost">Report</Button>
         `,
       },
       global: { components: { Button } },
     }).classes()
     expect(classes).toContain('flex-row')
-    expect(
-      classes.some((c) => c.includes('data-slot=button') && c.includes('rounded-l-none'))
-    ).toBe(true)
+    // Windows 98 toolbar buttons keep their own bevels; nothing is merged.
+    expect(classes.some((c) => c.includes('rounded') || c.includes('-ml-px'))).toBe(false)
+    expect(classes.some((c) => /^gap-/.test(c))).toBe(false)
+  })
+
+  it('spaces nested groups 4px apart', () => {
+    const classes = mount(ButtonGroup).classes()
+    expect(classes).toContain('has-[>[data-slot=button-group]]:gap-1')
   })
 
   it('supports vertical orientation', () => {

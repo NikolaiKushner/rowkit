@@ -3,37 +3,102 @@
 **Stage:** 🟢 Stable
 
 Page controls for a table: a range summary, a rows-per-page control, and page
-numbers. Built on Reka UI's `Pagination` primitive.
-
-```vue
-<Pagination v-model:page="page" v-model:page-size="pageSize" :total="247" />
-```
+numbers.
 
 <script setup>
-import { ref } from 'vue'
-
-const page = ref(1)
-const pageSize = ref(10)
+import PaginationBasic from '../examples/pagination/PaginationBasic.vue'
+import PaginationTable from '../examples/pagination/PaginationTable.vue'
+import PaginationStatusBar from '../examples/pagination/PaginationStatusBar.vue'
+import PaginationSummary from '../examples/pagination/PaginationSummary.vue'
+import PaginationSiblings from '../examples/pagination/PaginationSiblings.vue'
+import PaginationLoading from '../examples/pagination/PaginationLoading.vue'
 </script>
 
 <DemoBox layout="stack">
-  <Pagination
-    v-model:page="page"
-    v-model:page-size="pageSize"
-    :total="247"
-    label="Example pagination"
-  />
-  <p class="!my-0 text-sm text-muted-foreground">
-    page {{ page }} · {{ pageSize }} per page
-  </p>
+  <PaginationBasic />
 </DemoBox>
 
+<<< @/examples/pagination/PaginationBasic.vue
+
 Go to page 3 — rows 21–30 — then switch to 50 per page. You stay on page 3 and
-the summary reads 101–150: a completely different set of rows, and deliberately
-so. The component reports both changes and lets the application decide what
-follows, because the right answer differs between "reset to page 1" and "keep
-the user near the row they were reading", and a component cannot know which one
-you meant.
+the summary reads 101–150: a different set of rows, and deliberately so. The
+component reports both changes and lets the application decide what follows,
+because «reset to page 1» and «keep the person near the row they were reading»
+are both right somewhere, and a component cannot know which one you meant.
+
+On a screen narrower than 640px, «Back» and «Next» become arrows alone, so the
+row fits a phone; the words stay as the buttons' names. `compact` sets it —
+`true` for a narrow side panel on a wide screen, `false` to keep the words
+everywhere.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Paging a table
+
+Slice the rows you hold by `page` and `pageSize`. The component reports a new
+page size and leaves the page alone — here a watcher starts again at page 1.
+
+<DemoBox layout="stack">
+  <PaginationTable />
+</DemoBox>
+
+<<< @/examples/pagination/PaginationTable.vue
+
+### In a status bar
+
+`size="sm"` with `hide-page-size` and `hide-summary` fits a window's status
+bar, the range in the section beside it.
+
+<DemoBox layout="stack">
+  <PaginationStatusBar />
+</DemoBox>
+
+<<< @/examples/pagination/PaginationStatusBar.vue
+
+### Your own summary
+
+The `summary` slot gets `from`, `to` and `total`: word it your way and format
+the numbers.
+
+<DemoBox layout="stack">
+  <PaginationSummary />
+</DemoBox>
+
+<<< @/examples/pagination/PaginationSummary.vue
+
+### How many pages to show
+
+`sibling-count` sets how many pages show either side of the current one — `0`
+for the narrowest space, `1` by default. The first and last pages always show,
+so the extent of the list is never hidden.
+
+<DemoBox layout="stack">
+  <PaginationSiblings />
+</DemoBox>
+
+<<< @/examples/pagination/PaginationSiblings.vue
+
+### While a page loads
+
+`disabled` while the next page loads, so clicks do not pile up requests.
+
+<DemoBox layout="stack">
+  <PaginationLoading />
+</DemoBox>
+
+<<< @/examples/pagination/PaginationLoading.vue
+
+## Look
+
+As drawn in the Figma Home template's status bar: Windows 98 command buttons
+2px apart — 17px tall at `sm`, 21px at `md`, page numbers square at their
+narrowest. «◀ Back» and «Next ▶» carry their label beside an 8px triangle and
+go grey and embossed on the first and last page. The current page is pressed
+in, its number shifted 1px. Focus is the button's dotted ring and black frame.
+Nothing animates.
 
 ## Anatomy
 
@@ -65,21 +130,22 @@ you meant.
 
 <!-- @props PaginationProps -->
 
-| Prop              | Type           | Default                   | Description                                                    |
-| ----------------- | -------------- | ------------------------- | -------------------------------------------------------------- |
-| `total`           | `number`       | **required**              | Total number of rows across all pages.                         |
-| `pageSizeOptions` | `number[]`     | `() => [10, 25, 50, 100]` | Choices offered in the rows-per-page control.                  |
-| `siblingCount`    | `number`       | `1`                       | How many page numbers to show on each side of the current one. |
-| `showEdges`       | `boolean`      | `true`                    | Always show the first and last page, with ellipses between.    |
-| `hidePageSize`    | `boolean`      | `false`                   | Hides the rows-per-page control.                               |
-| `hideSummary`     | `boolean`      | `false`                   | Hides the "1–10 of 247" summary.                               |
-| `pageSizeLabel`   | `string`       | `'Rows per page'`         | Label for the rows-per-page control.                           |
-| `label`           | `string`       | `'Pagination'`            | Accessible name for the navigation region.                     |
-| `previousLabel`   | `string`       | `'Previous page'`         | Accessible name for the previous-page control.                 |
-| `nextLabel`       | `string`       | `'Next page'`             | Accessible name for the next-page control.                     |
-| `size`            | `'sm' \| 'md'` | `'md'`                    | Control height and text size.                                  |
-| `disabled`        | `boolean`      | `false`                   | Disables every control.                                        |
-| `class`           | `string`       | —                         | Additional classes, merged so a consumer's utility wins.       |
+| Prop              | Type                | Default                   | Description                                                                 |
+| ----------------- | ------------------- | ------------------------- | --------------------------------------------------------------------------- |
+| `total`           | `number`            | **required**              | Total number of rows across all pages.                                      |
+| `pageSizeOptions` | `number[]`          | `() => [10, 25, 50, 100]` | Choices offered in the rows-per-page control.                               |
+| `siblingCount`    | `number`            | `1`                       | How many page numbers to show on each side of the current one.              |
+| `showEdges`       | `boolean`           | `true`                    | Always show the first and last page, with ellipses between.                 |
+| `hidePageSize`    | `boolean`           | `false`                   | Hides the rows-per-page control.                                            |
+| `hideSummary`     | `boolean`           | `false`                   | Hides the "1–10 of 247" summary.                                            |
+| `pageSizeLabel`   | `string`            | `'Rows per page'`         | Label for the rows-per-page control.                                        |
+| `label`           | `string`            | `'Pagination'`            | Accessible name for the navigation region.                                  |
+| `previousLabel`   | `string`            | `'Back'`                  | Label of the previous-page button, shown beside its ◀ and used as its name. |
+| `nextLabel`       | `string`            | `'Next'`                  | Label of the next-page button, shown beside its ▶ and used as its name.     |
+| `size`            | `'sm' \| 'md'`      | `'md'`                    | Button height: 21px at `sm`, 26px at `md`.                                  |
+| `compact`         | `boolean \| 'auto'` | `'auto'`                  | Draws «Back» and «Next» as arrows alone, so the row fits a phone.           |
+| `disabled`        | `boolean`           | `false`                   | Disables every control.                                                     |
+| `class`           | `string`            | —                         | Additional classes, merged so a consumer's utility wins.                    |
 
 <!-- /@props -->
 
@@ -121,7 +187,7 @@ that already handle it.
 **With `total: 0` every control is disabled rather than hidden**, so the row
 keeps its height and the layout does not jump when results arrive.
 
-**`showEdges` defaults to `true`, unlike the Reka primitive underneath.** With
+**`showEdges` defaults to `true`.** With
 it off, a user on page 12 of 25 sees only `11 12 13`: no sense of how far the
 table runs and no way to reach the end. For a table, extent is information.
 
@@ -150,17 +216,17 @@ entries and cannot tell them apart.
 <Pagination label="Users pagination (bottom)" … />
 ```
 
-**The current page carries `aria-current="page"`**, and is filled rather than
-merely bolder. Weight alone is not enough to find your place in a row of
-numbers, and it fails entirely for anyone who cannot perceive the difference.
+**The current page carries `aria-current="page"`**, and is drawn pressed in
+rather than merely bolder. Weight alone is not enough to find your place in a
+row of numbers. The look comes from the attribute itself, so the state a
+screen reader hears and the one you see cannot disagree.
+
+**Back and Next are named by their visible labels.** `previousLabel` and
+`nextLabel` are the text on the buttons and their accessible names at once, so
+what a voice-control user reads is what they can say.
 
 **The ellipsis is `aria-hidden`.** It is a device for keeping the row short; the
 page numbers either side already convey the gap.
 
-**Page buttons are named "Page 7" by the Reka primitive**, not just "7", so they
+**Page buttons are named "Page 7"**, not just "7", so they
 are unambiguous when read out of context.
-
-## Dark mode
-
-The active page uses `primary-solid` with `primary-on-solid`, which flips with
-the theme. Everything else is transparent over whatever surface contains it.

@@ -5,87 +5,112 @@
 The screen a table shows when it has nothing to show. A title, an explanation,
 and a way forward — the last of which is the part usually missing.
 
-```vue
-<EmptyState title="No projects yet" description="Projects group your work.">
-  <template #actions>
-    <Button>Create a project</Button>
-  </template>
-</EmptyState>
-```
-
 <script setup>
-import { ref } from 'vue'
-
-const reason = ref('no-data')
-
-const copy = {
-  'no-data': { title: 'No projects yet', description: 'Projects group your work and control who can see it.' },
-  'no-results': { title: 'No projects match these filters' },
-  error: { title: "Couldn't load projects" },
-}
+import EmptyStateBasic from '../examples/empty-state/EmptyStateBasic.vue'
+import EmptyStateReasons from '../examples/empty-state/EmptyStateReasons.vue'
+import EmptyStateSizes from '../examples/empty-state/EmptyStateSizes.vue'
+import EmptyStateCustom from '../examples/empty-state/EmptyStateCustom.vue'
+import EmptyStateWindow from '../examples/empty-state/EmptyStateWindow.vue'
 </script>
 
 <DemoBox layout="stack">
-  <div class="flex flex-wrap gap-2">
-    <Button
-      v-for="value in ['no-data', 'no-results', 'error']"
-      :key="value"
-      size="sm"
-      :variant="reason === value ? 'primary' : 'secondary'"
-      @click="reason = value"
-    >{{ value }}</Button>
-  </div>
-  <EmptyState
-    :key="reason"
-    :reason="reason"
-    :title="copy[reason].title"
-    :description="copy[reason].description"
-    :announce="reason !== 'no-data'"
-    :level="2"
-  >
-    <template #actions>
-      <Button v-if="reason === 'no-data'">Create a project</Button>
-      <Button v-else-if="reason === 'no-results'" variant="outline">Clear filters</Button>
-      <Button v-else variant="outline">Try again</Button>
-    </template>
-  </EmptyState>
+  <EmptyStateBasic />
 </DemoBox>
 
-Switch between the three. They share a layout and mean completely different
-things — the action changes with the reason, which is the entire point of the
-prop. Only `no-data` supplies its own description here; the other two are the
-component's.
+<<< @/examples/empty-state/EmptyStateBasic.vue
 
-The demo passes `:level="2"` because this page's own heading is the `h1` above
-it. Getting that wrong is not theoretical — axe caught this exact block at
-`level="3"`, which skips a level and breaks heading navigation for anyone
-moving through the page by structure.
+Every example here passes a `level` that fits this page's outline: the page
+title is the `h1` and the examples sit under `h3`s. Getting it wrong is not
+theoretical — axe caught a block at `level="3"` under an `h1`, which skips a
+level and breaks heading navigation for anyone moving through the page by
+structure.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Three reasons, three next steps
+
+`no-data`, `no-results` and `error` share a layout and mean completely
+different things: the icon, the default description and the action change with
+the reason. `announce` reads the change out when a filter or a retry caused
+it.
+
+<DemoBox layout="stack">
+  <EmptyStateReasons />
+</DemoBox>
+
+<<< @/examples/empty-state/EmptyStateReasons.vue
+
+### Sizes
+
+`md` fills a page or a window; `sm` fits a side panel, a card or a small
+table — pair it with `size="sm"` buttons.
+
+<DemoBox>
+  <EmptyStateSizes />
+</DemoBox>
+
+<<< @/examples/empty-state/EmptyStateSizes.vue
+
+### Your own icon and description
+
+The `icon` slot takes any 32px icon, decorative; the `description` slot takes
+markup, such as a link to help.
+
+<DemoBox>
+  <EmptyStateCustom />
+</DemoBox>
+
+<<< @/examples/empty-state/EmptyStateCustom.vue
+
+### Inside a window
+
+An empty list in an application window: the empty state sits in the white
+well until there is something to show.
+
+<DemoBox>
+  <EmptyStateWindow />
+</DemoBox>
+
+<<< @/examples/empty-state/EmptyStateWindow.vue
+
+## Look
+
+A Windows 98 system message, as drawn in the Figma file: the 32px icon on the
+left, then a bold title, the explanation and the buttons stacked beside it. At
+`sm` it fits inside a table body (12px padding, a 13px title, `size="sm"`
+buttons); `md` and `lg` fill a panel (24px padding, a 13px or 14px title).
+Each size caps the line length at the width drawn in Figma — 280, 360 and
+440px. It sits on whatever holds it: the white body of a table, or a panel.
 
 ## Anatomy
 
-| Part        | Purpose                                                         |
-| ----------- | --------------------------------------------------------------- |
-| Icon        | Optional illustration. Decorative, muted so it does not compete |
-| Title       | A real heading, at a level you choose                           |
-| Description | One sentence on what to do next. Width-capped for readability   |
-| Actions     | One primary action, optionally one secondary                    |
+| Part        | Purpose                                                   |
+| ----------- | --------------------------------------------------------- |
+| Icon        | 32px, picked by `reason`; `#icon` replaces it. Decorative |
+| Title       | A real heading, at a level you choose                     |
+| Description | One sentence on what to do next, in the UI face           |
+| Actions     | One primary action, optionally one secondary              |
 
 ## The three empties
 
 They look similar and mean completely different things. Getting this wrong is
 the most common failure — so it is a prop, not just advice.
 
-`reason` drives the tone and supplies the explanation where that copy is
-generic. It never selects an icon: rowkit ships none, and bundling SVGs to serve
-one prop would cross the scope line. Pass your own through `#icon`.
+`reason` picks the 32px icon from the Figma set — an empty folder for
+`no-data`, a magnifier for `no-results`, the red error mark for `error` — and
+supplies the explanation where that copy is generic. `#icon` replaces the icon
+when your domain has a better one; keep it 32×32.
 
 `no-data` supplies **no** default description, because what to do when nothing
 exists yet depends entirely on your domain — a library guessing at it would
 write worse copy than silence. `no-results` and `error` do supply one, and an
 explicit `description` always wins.
 
-An `error` tints the explanation, not the heading: a red heading reads as an
-alert and pulls the eye away from the sentence that says what to do.
+Nothing turns red for an `error`: the red error mark already says it, and red
+text would make the sentence that says what to do harder to read.
 
 | Situation               | Title names…            | The action is…            | `announce` |
 | ----------------------- | ----------------------- | ------------------------- | ---------- |
@@ -126,7 +151,7 @@ to someone who has fifty projects and a bad filter is worse than saying nothing.
 | `title`       | `string`                               | **required** | What is empty, in a few words.                                                                                                           |
 | `description` | `string`                               | —            | One sentence on what to do next. This is the part that turns a dead end into a starting point, and the part most empty states leave out. |
 | `reason`      | `'no-data' \| 'no-results' \| 'error'` | `'no-data'`  | Why the view is empty.                                                                                                                   |
-| `size`        | `'sm' \| 'md' \| 'lg'`                 | `'md'`       | Scales every part together. `sm` fits inside a table body.                                                                               |
+| `size`        | `'sm' \| 'md' \| 'lg'`                 | `'md'`       | Scales every part together. `sm` fits inside a table body; `md` and `lg` fill a panel. Pair `sm` with `size="sm"` buttons.               |
 | `level`       | `1 \| 2 \| 3 \| 4 \| 5 \| 6`           | `2`          | Heading level for the title.                                                                                                             |
 | `announce`    | `boolean`                              | `false`      | Announces the empty state when it appears.                                                                                               |
 | `class`       | `string`                               | —            | Additional classes, merged so a consumer's utility wins.                                                                                 |
@@ -171,9 +196,3 @@ polite: it waits for a pause rather than cutting off whatever is being read.
 repeats what the title already says, and an unlabelled graphic in the middle of
 an explanation is noise. If the icon genuinely carries meaning the title does
 not, the title is wrong.
-
-## Dark mode
-
-Nothing special — text uses `text` and `text-muted`, the icon `text-subtle`, and
-all three flip with the theme. The component paints no background of its own, so
-it sits on whatever surface contains it.

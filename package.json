@@ -12,7 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "typecheck": "vue-tsc -b --force && pnpm -r --filter \"./packages/*\" typecheck",
+    "typecheck": "vue-tsc -b --force && pnpm typecheck:docs && pnpm -r --filter \"./packages/*\" typecheck",
+    "typecheck:docs": "vue-tsc --noEmit -p docs/.vitepress",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -28,10 +29,11 @@
     "dev": "pnpm --filter playground dev",
     "docs:props": "node packages/ui/scripts/generate-props.mjs",
     "docs:agents": "node packages/ui/scripts/generate-agents.mjs",
+    "icons:import": "node packages/ui/scripts/pixel-icons.mjs import",
+    "icons:optimize": "node packages/ui/scripts/pixel-icons.mjs optimize",
     "docs:dev": "vitepress dev docs",
     "docs:build": "pnpm build && vitepress build docs",
-    "docs:preview": "vitepress preview docs",
-    "docs:shots": "node scripts/docs-shots.mjs"
+    "docs:preview": "vitepress preview docs"
   },
   "lint-staged": {
     "*.{ts,vue}": [
@@ -43,8 +45,8 @@
   "devDependencies": {
     "@changesets/cli": "^2.31.1",
     "@eslint/js": "^10.0.1",
-    "@fontsource-variable/geist": "^5.3.0",
-    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@fontsource/pt-sans": "^5.3.0",
+    "@fontsource/vt323": "^5.3.0",
     "@rowkit/tokens": "workspace:*",
     "@size-limit/preset-small-lib": "^13.0.1",
     "@storybook/addon-a11y": "^10.5.5",

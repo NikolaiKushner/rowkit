@@ -2,50 +2,77 @@
 
 **Stage:** 🟢 Stable
 
-A label for a control, on hover and on focus. Built on Reka UI's `Tooltip`.
+A label for a control, on hover and on focus.
 You place the trigger and the content; the portal lives inside `TooltipContent`.
 
-```vue
-<Tooltip>
-  <TooltipTrigger as-child>
-    <Button variant="ghost" aria-label="Archive project">
-      <ArchiveIcon />
-    </Button>
-  </TooltipTrigger>
-  <TooltipContent>Archive project</TooltipContent>
-</Tooltip>
-```
+<script setup>
+import TooltipBasic from '../examples/tooltip/TooltipBasic.vue'
+import TooltipPlacement from '../examples/tooltip/TooltipPlacement.vue'
+import TooltipToolbar from '../examples/tooltip/TooltipToolbar.vue'
+import TooltipShortcut from '../examples/tooltip/TooltipShortcut.vue'
+import TooltipTruncated from '../examples/tooltip/TooltipTruncated.vue'
+</script>
 
 <DemoBox>
-  <TooltipProvider :delay-duration="300" :skip-delay-duration="500">
-    <Tooltip>
-      <TooltipTrigger as-child>
-        <Button variant="ghost">Archive</Button>
-      </TooltipTrigger>
-      <TooltipContent>Archive project</TooltipContent>
-    </Tooltip>
-    <Tooltip>
-      <TooltipTrigger as-child>
-        <Button variant="ghost">Duplicate</Button>
-      </TooltipTrigger>
-      <TooltipContent placement="bottom">Duplicate project</TooltipContent>
-    </Tooltip>
-    <Tooltip>
-      <TooltipTrigger as-child>
-        <Button variant="ghost">Export</Button>
-      </TooltipTrigger>
-      <TooltipContent placement="right">Export as CSV</TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
+  <TooltipBasic />
 </DemoBox>
 
-Hover the first button, then sweep across the other two. The first waits out the
-300ms delay; the rest open immediately, because they share a `TooltipProvider`
-and its `skipDelayDuration`. Without one, every button in a toolbar re-pays the
+<<< @/examples/tooltip/TooltipBasic.vue
+
+Tab to it and the tooltip opens on focus, with no delay — a keyboard user has
+already committed to the control by the time they reach it. <kbd>Esc</kbd>
+closes it.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Placement
+
+`placement` on `TooltipContent` picks the side. Near the edge of the screen the
+tooltip flips, so it never opens off-screen.
+
+<DemoBox>
+  <TooltipPlacement />
+</DemoBox>
+
+<<< @/examples/tooltip/TooltipPlacement.vue
+
+### A toolbar of icon buttons
+
+Hover the first button, then sweep along the row. The first waits out the
+300ms delay; the rest open at once, because they share a `TooltipProvider` and
+its `skip-delay-duration`. Without one, every button in a toolbar re-pays the
 full delay and the row feels broken.
 
-Tab to them instead and the tooltips open on focus, with no delay at all — a
-keyboard user has already committed to the control by the time they reach it.
+<DemoBox>
+  <TooltipToolbar />
+</DemoBox>
+
+<<< @/examples/tooltip/TooltipToolbar.vue
+
+### Teaching a shortcut
+
+A tooltip on a labelled button adds what the label cannot: the keyboard
+shortcut for the command.
+
+<DemoBox>
+  <TooltipShortcut />
+</DemoBox>
+
+<<< @/examples/tooltip/TooltipShortcut.vue
+
+### Text cut short
+
+A narrow column truncates long names; the tooltip shows the whole one. The
+trigger takes focus, so the full name reaches the keyboard too.
+
+<DemoBox>
+  <TooltipTruncated />
+</DemoBox>
+
+<<< @/examples/tooltip/TooltipTruncated.vue
 
 ## Anatomy
 
@@ -54,7 +81,7 @@ keyboard user has already committed to the control by the time they reach it.
 | `Tooltip`         | Root. `delay` and `disabled`. Supplies a provider when none is above |
 | `TooltipTrigger`  | The control. `as-child` so your element becomes the trigger          |
 | `TooltipContent`  | The label, and the portal that floats it                             |
-| `TooltipProvider` | Shared timing for a toolbar. Reka's, re-exported                     |
+| `TooltipProvider` | Shared timing for a toolbar. Renders nothing                         |
 
 ## Props
 
@@ -64,7 +91,7 @@ keyboard user has already committed to the control by the time they reach it.
 
 | Prop       | Type      | Default | Description                                           |
 | ---------- | --------- | ------- | ----------------------------------------------------- |
-| `delay`    | `number`  | `300`   | Delay before opening, in milliseconds.                |
+| `delay`    | `number`  | `500`   | Delay before opening, in milliseconds.                |
 | `disabled` | `boolean` | `false` | Turns the tooltip off without unwrapping the trigger. |
 
 <!-- /@props -->
@@ -87,7 +114,7 @@ keyboard user has already committed to the control by the time they reach it.
 
 | Prop        | Type                                     | Default | Description                                                             |
 | ----------- | ---------------------------------------- | ------- | ----------------------------------------------------------------------- |
-| `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'top'` | Preferred side. Flips automatically on collision.                       |
+| `placement` | `'top' \| 'left' \| 'right' \| 'bottom'` | `'top'` | Preferred side. Flips automatically on collision.                       |
 | `class`     | `string`                                 | —       | Additional classes for the bubble, merged so a consumer's utility wins. |
 
 <!-- /@props -->
@@ -193,11 +220,10 @@ import { TooltipProvider } from 'rowkit'
 </template>
 ```
 
-`TooltipProvider` is Reka's, re-exported unwrapped — it renders nothing, and
-wrapping it would mean a component and a props table to rename two options. It is
-**the one place rowkit's API uses Reka's prop names** (`delayDuration`,
-`skipDelayDuration`) rather than its own `delay`. A rowkit `Tooltip` inside a
-provider defers to it rather than shadowing it.
+`TooltipProvider` renders nothing. Its props are `delayDuration` and
+`skipDelayDuration` rather than rowkit's `delay`, kept stable so markup written
+against it keeps working. A rowkit `Tooltip` inside a provider
+defers to it rather than shadowing it.
 
 ## Keyboard
 
@@ -214,20 +240,18 @@ pointer crosses a toolbar, and that problem does not exist for the keyboard.
 **Opens on focus, not hover alone.** A hover-only tooltip is invisible to
 keyboard users. Covered by an interaction test, because it is easy to lose.
 
-**`aria-describedby` links the trigger to the content.** Reka renders the text
-twice: once as the visible bubble, and once in a visually-hidden `role="tooltip"`
-span that the trigger references. That split is deliberate — the description is
-announced once rather than announcing a nested tooltip as well.
+**`aria-describedby` links the trigger to the content.** The bubble itself is the
+`role="tooltip"` element the trigger references, so the text exists once and is
+announced once.
 
 **Escape dismisses without moving focus** (WCAG 1.4.13), and the tooltip stays
-open while the pointer travels onto it — the 4px offset is bridged by Reka's
-hoverable content, so the tooltip is not snatched away mid-read.
+open while the pointer travels onto it — anywhere inside the box spanning the
+trigger and the bubble keeps it open, so the 4px gap is crossable and the tooltip
+is not snatched away mid-read.
+
+**Near a viewport edge it flips and slides.** `placement` is a preference: if the
+bubble does not fit on that side it moves to the opposite one, and it slides along
+the edge rather than being clipped.
 
 **Motion is ambient**, so it is gated behind `motion-safe:` and collapses to an
 instant show/hide under `prefers-reduced-motion`.
-
-## Dark mode
-
-The bubble uses `neutral-solid` with `neutral-on-solid`, which inverts with the
-theme — dark bubble on a light page, light bubble on a dark one — so it always
-reads as a layer above the surface rather than part of it.

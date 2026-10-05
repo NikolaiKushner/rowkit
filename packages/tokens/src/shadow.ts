@@ -1,29 +1,66 @@
 /**
- * Elevation shadows.
+ * Bevels, and the two structural shadows a data table needs.
  *
- * Each shadow mixes from `--color-shadow`, a semantic token, rather than
- * hardcoding a colour — so dark mode swaps the base to pure black by
- * repointing one variable.
+ * Windows 98 has no elevation. Depth is drawn with bevels: two 1px lines on
+ * each side of a box, light on the top-left and dark on the bottom-right for a
+ * raised surface, the other way round for a sunken one. Each bevel here is a
+ * stack of hard inset shadows — no blur, no spread — built from the four
+ * `bevel-*` colours, so the frame lives inside the box and never changes its
+ * size.
  *
- * Dark mode leans on surface lightness for elevation rather than on shadows.
- * A shadow is a darker region, and on a near-black page there is very little
- * headroom left to darken; the raised surface colour does the work instead.
+ * The first shadow in the list paints on top, so the 1px outer edge is listed
+ * before the 2px inner one it overlaps. The values match the effect styles in
+ * the Figma file one for one.
  */
+
+const hl = 'var(--color-bevel-highlight)'
+const light = 'var(--color-bevel-light)'
+const sh = 'var(--color-bevel-shadow)'
+const dark = 'var(--color-bevel-dark)'
+
+/** Builds an inset bevel from its outer and inner edge colours. */
+function bevel(outer: [string, string], inner?: [string, string]): string {
+  const [outerTopLeft, outerBottomRight] = outer
+  const layers = [`inset -1px -1px ${outerBottomRight}`, `inset 1px 1px ${outerTopLeft}`]
+  if (inner) {
+    const [innerTopLeft, innerBottomRight] = inner
+    layers.push(`inset -2px -2px ${innerBottomRight}`, `inset 2px 2px ${innerTopLeft}`)
+  }
+  return layers.join(', ')
+}
+
 export const shadow = {
-  /** No elevation. */
+  /** No bevel. */
   none: 'none',
-  /** Hairline lift — sticky table headers, input focus. */
-  xs: '0 1px 2px 0 color-mix(in oklab, var(--color-shadow) 6%, transparent)',
-  /** Resting cards. */
-  sm: '0 1px 3px 0 color-mix(in oklab, var(--color-shadow) 8%, transparent), 0 1px 2px -1px color-mix(in oklab, var(--color-shadow) 8%, transparent)',
-  /** Dropdowns, popovers. */
-  md: '0 4px 6px -1px color-mix(in oklab, var(--color-shadow) 9%, transparent), 0 2px 4px -2px color-mix(in oklab, var(--color-shadow) 9%, transparent)',
-  /** Menus over content. */
-  lg: '0 10px 15px -3px color-mix(in oklab, var(--color-shadow) 10%, transparent), 0 4px 6px -4px color-mix(in oklab, var(--color-shadow) 10%, transparent)',
-  /** Modal dialogs. */
-  xl: '0 20px 25px -5px color-mix(in oklab, var(--color-shadow) 12%, transparent), 0 8px 10px -6px color-mix(in oklab, var(--color-shadow) 12%, transparent)',
-  /** Horizontal-scroll affordance on a sticky table column. */
-  'scroll-x': '12px 0 16px -8px color-mix(in oklab, var(--color-shadow) 22%, transparent)',
+  /** Buttons and raised panels. */
+  raised: bevel([hl, dark], [light, sh]),
+  /** A window's frame: like `raised`, with the bright white on the inner edge. */
+  window: bevel([light, dark], [hl, sh]),
+  /**
+   * The default button of a dialog: a 1px black frame around a raised bevel,
+   * so Enter's target is visible before anyone presses it.
+   */
+  'raised-default': [
+    `inset -1px -1px ${dark}`,
+    `inset 1px 1px ${dark}`,
+    `inset -2px -2px ${dark}`,
+    `inset 2px 2px ${hl}`,
+    `inset -3px -3px ${sh}`,
+    `inset 3px 3px ${light}`,
+  ].join(', '),
+  /** A button held down, or a toggle that is on. */
+  pressed: bevel([dark, hl], [sh, light]),
+  /** Text fields, lists and table bodies: the white well a value sits in. */
+  sunken: bevel([sh, hl], [dark, light]),
+  /** A thin sunken edge: status-bar sections, counters, Badge. */
+  status: bevel([sh, hl]),
+  /** An etched groove: group boxes and separators. */
+  etched: bevel([sh, hl], [hl, sh]),
+  /** A thin raised edge: a flat toolbar button while hovered. */
+  'raised-thin': bevel([hl, sh]),
+
+  /** The edge of a sticky table column while rows scroll under it. */
+  'scroll-x': `inset -1px 0 ${sh}`,
   /**
    * The rule under a sticky table header, drawn as a shadow rather than a
    * border.
@@ -39,3 +76,15 @@ export const shadow = {
 
 /** Names of every shadow token. */
 export type ShadowName = keyof typeof shadow
+
+/**
+ * Text shadows. One: the emboss that makes disabled text read as disabled
+ * rather than as faint — grey text with a white copy one pixel right and
+ * down. Windows 98 never fades a disabled control with opacity.
+ */
+export const textShadow = {
+  disabled: '1px 1px 0 var(--color-text-disabled-emboss)',
+} as const
+
+/** Names of every text shadow token. */
+export type TextShadowName = keyof typeof textShadow

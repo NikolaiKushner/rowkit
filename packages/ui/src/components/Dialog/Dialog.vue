@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { DialogRoot } from 'reka-ui'
+import { provide, ref, useId } from 'vue'
+import { dialogContextKey } from './context'
 
 defineOptions({ name: 'RkDialog' })
 
@@ -15,10 +16,19 @@ defineSlots<{
  * still toggles it. Bind it when the page needs to open or close the dialog.
  */
 const open = defineModel<boolean>('open', { default: false })
+
+provide(dialogContextKey, {
+  open,
+  setOpen: (value) => {
+    open.value = value
+  },
+  triggerElement: ref<HTMLElement>(),
+  contentId: useId(),
+  titleId: useId(),
+  descriptionId: useId(),
+})
 </script>
 
 <template>
-  <DialogRoot v-model:open="open" data-slot="dialog">
-    <slot />
-  </DialogRoot>
+  <slot />
 </template>

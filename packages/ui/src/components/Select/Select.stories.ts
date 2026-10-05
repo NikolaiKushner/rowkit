@@ -339,7 +339,7 @@ export const SelectingAnOption: Story = {
             />
           </SelectContent>
         </Select>
-        <p class="mt-2 text-sm text-muted-foreground">Value: <span data-testid="echo">{{ value ?? 'none' }}</span></p>
+        <p class="mt-2 text-ui">Value: <span data-testid="echo">{{ value ?? 'none' }}</span></p>
       </div>
     `,
   }),
@@ -373,37 +373,26 @@ export const KeyboardOnly: Story = {
 }
 
 /**
- * Tabbing to the trigger paints a visible focus ring.
- *
- * `outline-none` removes the browser's own indicator, so the replacement has to
- * actually render — and it is a `box-shadow`, which nothing in the class list
- * can confirm. A trigger that lost its ring looks identical at rest and is
- * unusable by keyboard.
+ * Tabbing to the trigger draws the dotted focus rectangle. A trigger that lost
+ * it looks identical at rest and is unusable by keyboard.
  */
 export const FocusRingIsVisible: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const trigger = canvas.getByRole('combobox')
 
-    // The ring paints on the anchor, not on the input that holds focus.
-    const anchor = trigger.parentElement
-    if (!anchor) throw new Error('no anchor around the combobox')
+    // The Windows 98 focus rectangle: a dotted outline drawn on the input
+    // itself, inset into its 1px padding. Measured, because a variant that
+    // failed to compile would leave the class list right and the ring absent.
+    await expect(getComputedStyle(trigger).outlineStyle).toBe('none')
 
-    // `shadow-xs` is already on the anchor at rest, so "has a box-shadow" is
-    // true whether or not the ring works. The only assertion that separates the
-    // two is that focusing *changes* it.
-    const resting = getComputedStyle(anchor).boxShadow
-
-    // Keyboard, not `.focus()` — `:focus-visible` is what the recipe hangs on,
+    // Keyboard, not `.focus()` — `:focus-visible` is what the ring hangs on,
     // and browsers deliberately withhold it from a pointer click.
     await userEvent.tab()
     await expect(trigger).toHaveFocus()
 
-    const focused = getComputedStyle(anchor).boxShadow
-    await expect(focused).not.toBe(resting)
-    await expect(focused).not.toBe('none')
-
-    // The input keeps its own outline suppressed, or two indicators stack.
-    await expect(getComputedStyle(trigger).outlineStyle).toBe('none')
+    const focused = getComputedStyle(trigger)
+    await expect(focused.outlineStyle).toBe('dotted')
+    await expect(focused.outlineWidth).toBe('1px')
   },
 }

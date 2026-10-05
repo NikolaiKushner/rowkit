@@ -1,4 +1,4 @@
-import type { PrimitiveProps } from 'reka-ui'
+import type { PrimitiveProps } from '../../primitives/Primitive'
 import type { HTMLAttributes } from 'vue'
 
 /** Where the tooltip prefers to sit. Flips automatically near a viewport edge. */
@@ -14,9 +14,9 @@ export interface TooltipProps {
   /**
    * Delay before opening, in milliseconds.
    *
-   * 300 rather than Reka's own 700: a label that takes three-quarters of a
-   * second to appear reads as a stutter. The delay exists to stop tooltips
-   * firing as the pointer crosses a toolbar, and 300 is enough for that.
+   * 500, as Windows 98 timed its tooltips and as the design specifies: long
+   * enough that a pointer crossing a toolbar does not set labels flashing,
+   * short enough that one the user stopped on appears without a wait.
    *
    * When this tooltip supplies its own provider, the delay is that provider's
    * too. An ancestor `TooltipProvider` keeps its own timing.

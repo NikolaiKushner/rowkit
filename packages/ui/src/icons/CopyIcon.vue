@@ -1,0 +1,37 @@
+<script setup lang="ts">
+/**
+ * Two overlapping pages: copy. 16×16, from the Figma icon set.
+ *
+ * Pixel art: shown at its own size or an integer multiple, never scaled in
+ * between. Decorative: whatever it marks is said in words or ARIA elsewhere.
+ */
+defineOptions({ name: 'RkCopyIcon' })
+</script>
+
+<template>
+  <svg
+    aria-hidden="true"
+    focusable="false"
+    preserveAspectRatio="none"
+    width="16"
+    height="16"
+    overflow="visible"
+    style="display: block"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M0 0h8v1h-8zM0 1h1v1h-1zM7 1h1v1h-1zM0 2h1v1h-1zM7 2h1v1h-1zM0 3h1v1h-1zM5 3h8v1h-8zM0 4h1v1h-1zM5 4h1v1h-1zM12 4h1v1h-1zM0 5h1v1h-1zM5 5h1v1h-1zM12 5h1v1h-1zM0 6h1v1h-1zM5 6h1v1h-1zM12 6h1v1h-1zM0 7h1v1h-1zM5 7h1v1h-1zM12 7h1v1h-1zM0 8h6v1h-6zM12 8h1v1h-1zM5 9h1v1h-1zM12 9h1v1h-1zM5 10h1v1h-1zM12 10h1v1h-1zM5 11h1v1h-1zM12 11h1v1h-1zM5 12h1v1h-1zM12 12h1v1h-1zM5 13h8v1h-8z"
+      fill="black"
+    />
+    <path
+      d="M1 1h6v1h-6zM1 2h1v1h-1zM6 2h1v1h-1zM1 3h4v1h-4zM1 4h1v1h-1zM6 4h6v1h-6zM1 5h4v1h-4zM6 5h1v1h-1zM11 5h1v1h-1zM1 6h1v1h-1zM6 6h6v1h-6zM1 7h4v1h-4zM6 7h1v1h-1zM11 7h1v1h-1zM6 8h6v1h-6zM6 9h1v1h-1zM11 9h1v1h-1zM6 10h6v1h-6zM6 11h1v1h-1zM11 11h1v1h-1zM6 12h6v1h-6z"
+      fill="white"
+    />
+    <path
+      d="M2 2h4v1h-4zM2 4h3v1h-3zM7 5h4v1h-4zM2 6h3v1h-3zM7 7h4v1h-4zM7 9h4v1h-4zM7 11h4v1h-4z"
+      fill="#808080"
+    />
+  </svg>
+</template>

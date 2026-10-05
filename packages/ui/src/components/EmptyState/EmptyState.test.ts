@@ -60,19 +60,23 @@ describe('EmptyState', () => {
       expect(el.find('p').text()).toBe('The billing service is down.')
     })
 
-    it('tints an error explanation without shouting in the heading', () => {
-      // A red heading reads as an alert and pulls the eye off the sentence
-      // that says what to do.
-      const el = mount(EmptyState, { props: { title, reason: 'error' } })
-      expect(el.find('p').classes()).toContain('text-danger-on-subtle')
-      expect(el.find('h2').classes()).toContain('text-foreground')
+    it('keeps the explanation black for every reason, even an error', () => {
+      // The red error mark says "error"; red text would say it a second time
+      // and make the sentence that says what to do harder to read.
+      for (const reason of ['no-data', 'no-results', 'error'] as const) {
+        const el = mount(EmptyState, { props: { title, reason, description: 'x' } })
+        expect(el.find('p').classes(), reason).toContain('text-foreground')
+        expect(el.find('p').classes().join(' '), reason).not.toMatch(/danger|muted/)
+      }
     })
 
-    it('keeps the other two reasons muted', () => {
-      for (const reason of ['no-data', 'no-results'] as const) {
-        const el = mount(EmptyState, { props: { title, reason, description: 'x' } })
-        expect(el.find('p').classes(), reason).toContain('text-muted-foreground')
-      }
+    it.each([
+      ['no-data', 'RkFolderEmpty32Icon'],
+      ['no-results', 'RkSearch32Icon'],
+      ['error', 'RkError32Icon'],
+    ] as const)('draws the 32px icon for %s', (reason, icon) => {
+      const el = mount(EmptyState, { props: { title, reason } })
+      expect(el.findComponent({ name: icon }).exists()).toBe(true)
     })
   })
 
@@ -94,9 +98,12 @@ describe('EmptyState', () => {
       expect(el.find('[data-test="i"]').exists()).toBe(true)
     })
 
-    it('omits the icon wrapper when the slot is unused', () => {
-      const el = mount(EmptyState, { props: { title } })
-      expect(el.html()).not.toContain('text-text-subtle')
+    it('lets the icon slot replace the icon the reason picks', () => {
+      const el = mount(EmptyState, {
+        props: { title, reason: 'error' },
+        slots: { icon: '<svg data-test="i" />' },
+      })
+      expect(el.findComponent({ name: 'RkError32Icon' }).exists()).toBe(false)
     })
 
     it('renders actions', () => {
@@ -108,11 +115,12 @@ describe('EmptyState', () => {
     })
 
     it('omits the actions wrapper when the slot is unused', () => {
-      // The root is itself a div, so count children rather than divs: with no
-      // icon, description or actions the heading should be all there is.
+      // With no description or actions, the heading is all the text column
+      // holds: the icon on the left, the heading beside it.
       const el = mount(EmptyState, { props: { title } })
-      expect(el.element.children).toHaveLength(1)
-      expect(el.element.children[0]?.tagName).toBe('H2')
+      const body = el.element.children[1]
+      expect(body?.children).toHaveLength(1)
+      expect(body?.children[0]?.tagName).toBe('H2')
     })
 
     it('lets the description slot replace the prop', () => {
@@ -127,17 +135,20 @@ describe('EmptyState', () => {
 
   describe('size', () => {
     it.each([
-      ['sm', 'text-sm'],
-      ['md', 'text-base'],
-      ['lg', 'text-lg'],
+      ['sm', 'text-heading'],
+      ['md', 'text-heading'],
+      ['lg', 'text-doc-h3'],
     ] as const)('%s scales the title to %s', (size, expected) => {
       const el = mount(EmptyState, { props: { title, size } })
       expect(el.find('h2').classes()).toContain(expected)
     })
 
-    it('caps the description width so it stays readable', () => {
-      const el = mount(EmptyState, { props: { title, description: 'x', size: 'md' } })
-      expect(el.find('p').classes()).toContain('max-w-sm')
+    it.each([
+      ['sm', 'max-w-[280px]'],
+      ['md', 'max-w-[360px]'],
+      ['lg', 'max-w-[440px]'],
+    ] as const)('caps %s at the width drawn in Figma, %s', (size, expected) => {
+      expect(mount(EmptyState, { props: { title, size } }).classes()).toContain(expected)
     })
   })
 
@@ -147,9 +158,9 @@ describe('EmptyState', () => {
     })
 
     it('drops the padding it replaces rather than emitting both', () => {
-      expect(mount(EmptyState, { props: { title, class: 'py-2' } }).classes()).not.toContain(
-        'py-10'
-      )
+      const classes = mount(EmptyState, { props: { title, class: 'p-2' } }).classes()
+      expect(classes).toContain('p-2')
+      expect(classes).not.toContain('p-6')
     })
   })
 

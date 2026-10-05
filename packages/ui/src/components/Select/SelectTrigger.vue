@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ComboboxAnchor, ComboboxInput, ComboboxTrigger } from 'reka-ui'
-import { computed, inject, onBeforeUnmount, ref, useId, watch } from 'vue'
+import { computed, onMounted, ref, useId, watch } from 'vue'
+import ErrorIcon from '../../icons/ErrorIcon.vue'
+import TriangleDownIcon from '../../icons/TriangleDownIcon.vue'
 import { cn } from '../../utils/cn'
 import { useFieldContext } from '../Field/context'
-import { selectContextKey } from './context'
-import { selectTriggerVariants } from './Select.variants'
+import { useSelectContext } from './context'
+import { selectButtonVariants, selectInputVariants, selectTriggerVariants } from './Select.variants'
 import type { SelectTriggerProps } from './types'
 
 defineOptions({ name: 'RkSelectTrigger', inheritAttrs: false })
@@ -14,10 +15,7 @@ const props = withDefaults(defineProps<SelectTriggerProps>(), {
   togglerLabel: 'Show options',
 })
 
-const select = inject(selectContextKey)
-if (select === undefined) {
-  throw new Error('SelectTrigger must be used inside Select')
-}
+const select = useSelectContext('SelectTrigger')
 
 const field = useFieldContext()
 const generatedId = useId()
@@ -25,21 +23,21 @@ const triggerId = computed(() => props.id ?? field?.controlId.value ?? generated
 /** Explicit `size` wins; otherwise inherit from Field, else `md`. */
 const size = computed(() => props.size ?? field?.size.value ?? 'md')
 
-/**
- * What the input shows when it is not being typed into. The label was
- * registered by `SelectItem`, so it is still known after the panel unmounts.
- */
+const anchor = ref<HTMLElement>()
+const input = ref<HTMLInputElement>()
+onMounted(() => {
+  select.anchor.value = anchor.value
+})
+
 function displayValue(): string {
-  if (select === undefined || select.model.value === undefined) return ''
+  if (select.model.value === undefined) return ''
   return select.labels.get(String(select.model.value)) ?? ''
 }
 
-/**
- * The text in the input.
- *
- * Reka only applies `displayValue` on its own reset path — selection, blur,
- * close — never on mount, so a select given a value up front would render an
- * empty box until the user touched it.
+/*
+ * The box shows the selected label while shut. While open and searchable it
+ * holds what the user is typing, and closing puts the label back — Escape or
+ * a click away leaves the value as it was.
  */
 const inputValue = ref(displayValue())
 
@@ -56,111 +54,176 @@ watch(
   { immediate: true, flush: 'sync' }
 )
 
-// Only edits made while the panel is open are a search. Seeding the box with
-// the selected label is not something a consumer should have to filter out of
-// an async fetch.
-watch(inputValue, (value) => {
-  if (select.open.value) select.searchTerm.value = value
-})
-
-/**
- * Reka keeps its highlight when the panel closes, so the input is left holding
- * an `aria-activedescendant` that points at a list item which has been
- * unmounted. axe reports it as an invalid ARIA reference, and a screen reader
- * following the pointer finds nothing there.
- *
- * Reka binds the attribute from its own state, so a prop cannot override it,
- * and it cannot simply be removed once after closing either: selecting an
- * option moves the highlight onto the clicked item, and Reka's own deferred
- * search-term reset renders again afterwards and writes the attribute back.
- *
- * Watching the attribute for as long as the panel is shut is the one approach
- * that does not depend on winning a race. Removing it inside the callback is
- * safe — the resulting mutation finds nothing left to do.
- *
- * Worth removing once this is fixed upstream in Reka.
- */
-let activeDescendantGuard: MutationObserver | undefined
-
-function stopGuard(): void {
-  activeDescendantGuard?.disconnect()
-  activeDescendantGuard = undefined
+function onInput(event: Event): void {
+  inputValue.value = (event.target as HTMLInputElement).value
+  select.setOpen(true)
+  // Only edits made while open are a search; seeding the box with the label
+  // is not something a consumer should have to filter out of a fetch.
+  select.searchTerm.value = inputValue.value
 }
 
-watch(
-  select.open,
-  (isOpen) => {
-    stopGuard()
-    if (isOpen || typeof MutationObserver === 'undefined') return
+/* Type-ahead for the read-only select: letters jump to the matching option. */
+let typed = ''
+let typedTimer: number | undefined
 
-    const control = document.getElementById(triggerId.value)
-    if (!control) return
+function typeAhead(key: string): void {
+  window.clearTimeout(typedTimer)
+  typed += key.toLowerCase()
+  typedTimer = window.setTimeout(() => (typed = ''), 500)
+  select.setOpen(true)
+  const match = select.visibleItems.value.find(
+    (item) => !item.disabled && item.label.toLowerCase().startsWith(typed)
+  )
+  if (match) select.highlighted.value = match.value
+}
 
-    control.removeAttribute('aria-activedescendant')
-    activeDescendantGuard = new MutationObserver(() => {
-      if (control.hasAttribute('aria-activedescendant')) {
-        control.removeAttribute('aria-activedescendant')
+function onKeyDown(event: KeyboardEvent): void {
+  if (select.isDisabled.value) return
+  const isOpen = select.open.value
+
+  switch (event.key) {
+    case 'ArrowDown':
+    case 'ArrowUp':
+      event.preventDefault()
+      if (!isOpen) select.setOpen(true)
+      else select.move(event.key === 'ArrowDown' ? 'next' : 'previous')
+      return
+    case 'Home':
+    case 'End':
+      // In a searchable box these move the text cursor; leave them alone.
+      if (!isOpen || select.searchable.value) return
+      event.preventDefault()
+      select.move(event.key === 'Home' ? 'first' : 'last')
+      return
+    case 'Enter':
+      if (!isOpen) return
+      // Choosing must not also submit the surrounding form.
+      event.preventDefault()
+      if (select.highlighted.value !== undefined) select.choose(select.highlighted.value)
+      return
+    case 'Escape':
+      if (!isOpen) return
+      // Closes the list, not the dialog the select sits in.
+      event.preventDefault()
+      select.setOpen(false)
+      return
+    case 'Tab':
+      if (isOpen) select.setOpen(false)
+      return
+    default:
+      if (
+        !select.searchable.value &&
+        event.key.length === 1 &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.altKey
+      ) {
+        typeAhead(event.key)
       }
-    })
-    activeDescendantGuard.observe(control, {
-      attributes: true,
-      attributeFilter: ['aria-activedescendant'],
-    })
-  },
-  { flush: 'post' }
-)
+  }
+}
 
-onBeforeUnmount(stopGuard)
+function toggle(): void {
+  select.setOpen(!select.open.value)
+}
+
+/*
+ * A mouse opens the list on press, as Windows 98 does, so the user can drag
+ * straight onto an option and release to choose it. Touch and pen keep the
+ * tap: a press that opens a list under a finger mid-scroll is a misfire.
+ */
+let lastPointer = ''
+
+function onPointerDown(event: PointerEvent): void {
+  lastPointer = event.pointerType
+  if (event.pointerType !== 'mouse' || event.button !== 0 || select.isDisabled.value) return
+  // Focus stays where the user pressed, and nothing selects text in the box.
+  event.preventDefault()
+  input.value?.focus()
+  const opening = !select.open.value
+  toggle()
+  if (opening) select.startDrag()
+}
+
+function onClick(): void {
+  if (lastPointer !== 'mouse') toggle()
+  lastPointer = ''
+}
+
+/* The drop button opens the list and hands focus to the control, as a native select would. */
+const pressed = ref(false)
+
+function onButtonDown(event: PointerEvent): void {
+  if (event.button !== 0 || select.isDisabled.value) return
+  pressed.value = true
+  window.addEventListener('pointerup', () => (pressed.value = false), { once: true })
+  onPointerDown(event)
+  if (event.pointerType !== 'mouse') {
+    event.preventDefault()
+    input.value?.focus()
+    toggle()
+  }
+}
+
+/* A click with no press before it — from script or assistive technology. */
+function onButtonClick(): void {
+  if (lastPointer === '') {
+    toggle()
+    input.value?.focus()
+  }
+  lastPointer = ''
+}
 </script>
 
 <template>
   <!--
-    The input, not a button, is the anchor. Reka gives the trigger
-    `tabindex="-1"` and `aria-label="Show popup"` on the assumption that a
-    ComboboxInput is present to be the focusable combobox — without one the
-    control is unreachable by keyboard and announces itself as "Show popup"
-    instead of its field label.
+    The input is the combobox; the drop button is an extra pointer target, kept
+    out of the tab order so the control is one stop and keeps the field's label.
   -->
-  <ComboboxAnchor
+  <div
+    ref="anchor"
     data-slot="select-trigger"
-    :class="cn(selectTriggerVariants({ size, invalid: select.isInvalid.value }), props.class)"
+    :data-disabled="select.isDisabled.value ? '' : undefined"
+    :class="cn(selectTriggerVariants({ size }), props.class)"
   >
-    <ComboboxInput
+    <input
       v-bind="$attrs"
       :id="triggerId"
-      v-model="inputValue"
-      :placeholder="props.placeholder"
-      :readonly="!select.searchable.value"
-      :display-value="displayValue"
+      ref="input"
+      role="combobox"
+      type="text"
+      autocomplete="off"
+      aria-haspopup="listbox"
+      :aria-expanded="select.open.value"
+      :aria-controls="select.open.value ? select.listboxId : undefined"
+      :aria-autocomplete="select.searchable.value ? 'list' : 'none'"
+      :aria-activedescendant="select.activeDescendant.value"
       :aria-invalid="select.isInvalid.value ? 'true' : undefined"
       :aria-describedby="select.describedBy.value"
-      :class="
-        cn(
-          'min-w-0 flex-1 truncate bg-transparent text-inherit outline-none',
-          'placeholder:text-muted-foreground disabled:cursor-not-allowed',
-          !select.searchable.value && 'cursor-pointer'
-        )
-      "
+      :aria-required="select.isRequired.value ? 'true' : undefined"
+      :value="inputValue"
+      :placeholder="props.placeholder"
+      :readonly="!select.searchable.value"
+      :disabled="select.isDisabled.value"
+      :class="selectInputVariants()"
+      @input="onInput"
+      @keydown="onKeyDown"
+      @pointerdown="onPointerDown"
+      @click="onClick"
     />
-    <ComboboxTrigger
-      class="flex shrink-0 cursor-pointer items-center text-muted-foreground"
+    <ErrorIcon v-if="select.isInvalid.value" data-slot="select-error-icon" class="shrink-0" />
+    <button
+      type="button"
+      tabindex="-1"
+      data-slot="select-button"
+      :class="selectButtonVariants()"
+      :data-pressed="pressed ? '' : undefined"
       :aria-label="props.togglerLabel"
+      :disabled="select.isDisabled.value"
+      @pointerdown="onButtonDown"
+      @click="onButtonClick"
     >
-      <svg
-        class="size-4 transition-transform duration-fast ease-standard"
-        :class="select.open.value && 'rotate-180'"
-        viewBox="0 0 20 20"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path
-          d="m6 8 4 4 4-4"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </ComboboxTrigger>
-  </ComboboxAnchor>
+      <TriangleDownIcon />
+    </button>
+  </div>
 </template>

@@ -1,23 +1,62 @@
+import { createRequire } from 'node:module'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vitepress'
+import { defineConfig, type UserConfig } from 'vitepress'
+import { describe, pageHead, sharedHead } from './social'
+import { win98Code } from './syntax'
+import { tables } from './tables'
 
 /**
- * The default theme, customised through CSS variables — not a custom theme.
+ * A plugin as VitePress's own Vite takes it. `@tailwindcss/vite` is typed
+ * against this repository's Vite 8, while VitePress 1 runs its bundled Vite 5:
+ * the plugin works on either, but the two `Plugin` types are distinct, so it
+ * is named in VitePress's terms here rather than left to a type error.
+ */
+type VitePressPlugin = NonNullable<NonNullable<UserConfig['vite']>['plugins']>[number]
+
+/**
+ * rowkit.dev as a Windows 98 desktop, from the Figma Site page: the home page
+ * is the desktop, every docs page an Explorer window, built from rowkit's own
+ * components in `theme/components/site` and `theme/components/home`.
  *
- * The default ships search, sidebar, prev/next, mobile nav, dark mode and its
- * own accessibility work. Rebuilding those produces a worse version of each,
- * and the brand is expressible entirely in `theme/tokens.css`.
+ * VitePress still renders the markdown, builds the search index and supplies
+ * the `.vp-doc` content styles the site layers its own on top of.
  */
 export default defineConfig({
   title: 'rowkit',
+  // «DataTable — rowkit», as the Explorer window and the taskbar name a page.
+  titleTemplate: ':title — rowkit',
   description: 'A professional Vue 3 toolkit — the components a product interface is built from.',
   lang: 'en-GB',
   cleanUrls: true,
+  // The Explorer window's status bar shows when the page last changed.
+  lastUpdated: true,
 
-  // Internal planning specs (`docs/phases/`) stay off the published site.
-  srcExclude: ['phases/**'],
+  // Callout titles as the Figma panels read: «Tip», not «TIP».
+  markdown: {
+    container: {
+      tipLabel: 'Tip',
+      infoLabel: 'Note',
+      warningLabel: 'Warning',
+      dangerLabel: 'Danger',
+      detailsLabel: 'Details',
+    },
+    config: (md) => md.use(tables),
+    // Code in a Windows 98 IDE's colours. See `syntax.ts`.
+    theme: win98Code,
+  },
+
+  // rowkit has one theme. This removes VitePress's light/dark switch and its
+  // `.dark` class, rather than leaving a toggle that restyles nothing.
+  appearance: false,
 
   sitemap: { hostname: 'https://rowkit.dev' },
+
+  // Link previews: a description from each page's first paragraph, and the
+  // page's own title, description and URL in its card.
+  transformPageData(pageData, { siteConfig }) {
+    describe(pageData, siteConfig.srcDir)
+  },
+  transformHead: pageHead,
 
   /*
    * Vite inlines an `@import` but does not run Tailwind, so without this the
@@ -43,6 +82,20 @@ export default defineConfig({
    * layer statement that restates a known order is a no-op.
    */
   vite: {
+    resolve: {
+      /*
+       * The Find window reads VitePress's own search index with the same
+       * MiniSearch VitePress uses. pnpm keeps it out of the theme's reach, so
+       * point at VitePress's copy rather than adding a second one.
+       */
+      alias: {
+        // The package's folder: it exports no package.json, so take its entry
+        // file and cut back to the folder, which Vite then resolves itself.
+        minisearch: createRequire(createRequire(import.meta.url).resolve('vitepress'))
+          .resolve('minisearch')
+          .replace(/[\\/]dist[\\/].*$/, ''),
+      },
+    },
     plugins: [
       {
         name: 'rowkit-layer-vitepress-css',
@@ -60,36 +113,35 @@ export default defineConfig({
           }
         },
       },
-      tailwindcss(),
+      tailwindcss() as unknown as VitePressPlugin,
     ],
   },
 
   head: [
-    ['meta', { name: 'theme-color', content: '#0c335f' }],
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/mark.svg' }],
-    ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:title', content: 'rowkit' }],
-    [
-      'meta',
-      {
-        property: 'og:description',
-        content: 'A professional Vue 3 component toolkit.',
-      },
-    ],
+    // The active title bar's navy, as the brand page sets it.
+    ['meta', { name: 'theme-color', content: '#000080' }],
+    // Each size is its own pixel drawing, so the browser picks one rather than
+    // scaling the 32px mark down to a blur. No SVG icon for the same reason.
+    ['link', { rel: 'icon', href: '/favicon.ico', sizes: '16x16 32x32 48x48' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16.png' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon-48.png' }],
+    ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
+    ...sharedHead,
   ],
 
   themeConfig: {
-    logo: { light: '/mark-light.svg', dark: '/mark.svg', alt: 'rowkit' },
+    logo: { src: '/mark-light.svg', alt: 'rowkit' },
     siteTitle: 'rowkit',
 
     nav: [
       { text: 'Guide', link: '/introduction' },
-      { text: 'Components', link: '/components/button' },
+      { text: 'Components', link: '/components/' },
       { text: 'Patterns', link: '/patterns/data-table-page' },
       { text: 'Storybook', link: 'https://storybook.rowkit.dev' },
       { text: 'Decisions', link: '/decisions/001-typescript-pin' },
       {
-        text: 'v0.x',
+        text: 'Help',
         items: [
           {
             text: 'Roadmap',
@@ -100,6 +152,10 @@ export default defineConfig({
       },
     ],
 
+    /*
+     * The folder tree of the Explorer window: sections, groups, pages. Nested
+     * `items` are folders; an item with a `link` is a page.
+     */
     sidebar: [
       {
         text: 'Guide',
@@ -111,37 +167,51 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Foundations',
+        // The folder has a page of its own: every component, by subfolder.
+        text: 'Components',
+        link: '/components/',
         items: [
-          { text: 'Tokens', link: '/foundations/tokens' },
-          { text: 'Button', link: '/components/button' },
-          { text: 'ButtonGroup', link: '/components/button-group' },
-        ],
-      },
-      {
-        text: 'Forms',
-        items: [
-          { text: 'Field', link: '/components/field' },
-          { text: 'Select', link: '/components/select' },
-          { text: 'Badge', link: '/components/badge' },
-        ],
-      },
-      {
-        text: 'Data',
-        items: [
-          { text: 'DataTable', link: '/components/data-table' },
-          { text: 'Pagination', link: '/components/pagination' },
-          { text: 'FilterBar', link: '/components/filter-bar' },
-          { text: 'EmptyState', link: '/components/empty-state' },
-          { text: 'Skeleton', link: '/components/skeleton' },
-        ],
-      },
-      {
-        text: 'Overlays',
-        items: [
-          { text: 'Dialog', link: '/components/dialog' },
-          { text: 'Toast', link: '/components/toast' },
-          { text: 'Tooltip', link: '/components/tooltip' },
+          {
+            text: 'Foundations',
+            items: [
+              { text: 'Button', link: '/components/button' },
+              { text: 'ButtonGroup', link: '/components/button-group' },
+              { text: 'Separator', link: '/components/separator' },
+              { text: 'Window', link: '/components/window' },
+              { text: 'GroupBox', link: '/components/group-box' },
+              { text: 'StatusBar', link: '/components/status-bar' },
+              { text: 'ProgressBar', link: '/components/progress-bar' },
+              { text: 'ScrollArea', link: '/components/scroll-area' },
+            ],
+          },
+          {
+            text: 'Forms',
+            items: [
+              { text: 'Field', link: '/components/field' },
+              { text: 'Select', link: '/components/select' },
+              { text: 'Checkbox', link: '/components/checkbox' },
+              { text: 'Radio', link: '/components/radio' },
+              { text: 'Badge', link: '/components/badge' },
+            ],
+          },
+          {
+            text: 'Data',
+            items: [
+              { text: 'DataTable', link: '/components/data-table' },
+              { text: 'Pagination', link: '/components/pagination' },
+              { text: 'FilterBar', link: '/components/filter-bar' },
+              { text: 'EmptyState', link: '/components/empty-state' },
+              { text: 'Skeleton', link: '/components/skeleton' },
+            ],
+          },
+          {
+            text: 'Overlays',
+            items: [
+              { text: 'Dialog', link: '/components/dialog' },
+              { text: 'Toast', link: '/components/toast' },
+              { text: 'Tooltip', link: '/components/tooltip' },
+            ],
+          },
         ],
       },
       {
@@ -153,10 +223,11 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Project',
+        text: 'Foundations · Tokens',
         items: [
-          { text: 'Roadmap', link: '/roadmap' },
-          { text: 'Contributing', link: '/contributing' },
+          { text: 'Tokens', link: '/foundations/tokens' },
+          { text: 'Icons', link: '/foundations/icons' },
+          { text: 'Scrollbar', link: '/foundations/scrollbar' },
         ],
       },
       {
@@ -168,6 +239,8 @@ export default defineConfig({
           { text: 'DataTable performance', link: '/decisions/004-datatable-performance' },
         ],
       },
+      { text: 'Roadmap', link: '/roadmap' },
+      { text: 'Contributing', link: '/contributing' },
     ],
 
     socialLinks: [{ icon: 'github', link: 'https://github.com/NikolaiKushner/rowkit' }],
@@ -180,7 +253,7 @@ export default defineConfig({
     },
 
     footer: {
-      message: 'MIT licensed. v0.x — the API is stabilising toward v1.0.',
+      message: 'MIT licensed. 1.0 beta — the API is stabilising toward 1.0.0.',
       copyright: '© Nikolai Kushner',
     },
   },

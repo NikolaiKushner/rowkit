@@ -10,5 +10,5 @@
     "jsx": "preserve",
     "types": ["node"]
   },
-  "include": ["**/*.ts", "**/*.mts", "**/*.vue"]
+  "include": ["**/*.ts", "**/*.mts", "**/*.vue", "../examples/**/*.ts", "../examples/**/*.vue"]
 }

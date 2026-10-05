@@ -5,65 +5,16 @@ loading state at all — a placeholder that flashes for 80ms is worse than no
 placeholder, and an empty state shown during a slow request is a lie.
 
 <script setup>
-import { computed, onUnmounted, ref } from 'vue'
-
-const columns = [
-  { key: 'name', header: 'Name', sortable: true, width: '14rem' },
-  { key: 'role', header: 'Role', width: '9rem' },
-  { key: 'status', header: 'Status', width: '9rem' },
-  { key: 'seats', header: 'Seats', align: 'end', width: '7rem' },
-]
-
-const users = [
-  { id: 1, name: 'Ada Lovelace', role: 'Owner', status: 'active', seats: 3 },
-  { id: 2, name: 'Grace Hopper', role: 'Admin', status: 'active', seats: 12 },
-  { id: 3, name: 'Alan Turing', role: 'Member', status: 'invited', seats: 1 },
-]
-
-const tone = { active: 'success', invited: 'warning', suspended: 'danger' }
-
-const pending = ref(false)
-const showSkeleton = ref(false)
-const rows = ref(users)
-let delayTimer
-let doneTimer
-
-/**
- * The delay is the whole pattern: `pending` flips immediately, `showSkeleton`
- * only after 150ms, so a fast response never produces a flash.
- */
-function load(duration) {
-  clearTimeout(delayTimer)
-  clearTimeout(doneTimer)
-  pending.value = true
-  rows.value = []
-  delayTimer = setTimeout(() => {
-    if (pending.value) showSkeleton.value = true
-  }, 150)
-  doneTimer = setTimeout(() => {
-    pending.value = false
-    showSkeleton.value = false
-    rows.value = users
-  }, duration)
-}
-
-onUnmounted(() => {
-  clearTimeout(delayTimer)
-  clearTimeout(doneTimer)
-})
+import PatternDelayedSkeleton from '../examples/patterns/PatternDelayedSkeleton.vue'
+import PatternOptimistic from '../examples/patterns/PatternOptimistic.vue'
+import PatternLongTask from '../examples/patterns/PatternLongTask.vue'
 </script>
 
-<!-- prettier-ignore -->
 <DemoBox layout="stack">
-  <div class="flex flex-wrap gap-2">
-    <Button size="sm" variant="outline" @click="load(80)">Fast response (80ms)</Button>
-    <Button size="sm" variant="outline" @click="load(1800)">Slow response (1800ms)</Button>
-  </div>
-  <DataTable :rows="rows" :columns="columns" caption="Team members" :loading="showSkeleton" :loading-rows="3" loading-label="Loading team members">
-    <template #[`cell:status`]="{ row }"><Badge :variant="tone[row.status]" size="sm" dot>{{ row.status }}</Badge></template>
-  </DataTable>
-  <p class="!my-0 text-sm text-muted-foreground">{{ pending ? (showSkeleton ? 'loading — placeholder shown' : 'loading — under the delay, nothing shown') : 'idle' }}</p>
+  <PatternDelayedSkeleton />
 </DemoBox>
+
+<<< @/examples/patterns/PatternDelayedSkeleton.vue
 
 Press **Fast response** and watch nothing happen: the request finishes before the
 placeholder is allowed to appear. Press **Slow response** and the placeholder
@@ -135,6 +86,30 @@ refresh — a filter change over rows already on screen — leave the rows and s
 `aria-busy` on the container instead. Replacing populated content with
 placeholders makes a 200ms refetch feel like a page load.
 
+## Optimistic updates
+
+For a small change that almost always succeeds — a star, a toggle — show the
+result at once and send the request behind it. If the server says no, put it
+back and say so in words. The third project here always fails.
+
+<DemoBox layout="stack">
+  <PatternOptimistic />
+</DemoBox>
+
+<<< @/examples/patterns/PatternOptimistic.vue
+
+## Long tasks: measure them
+
+A task with a known size gets a progress bar and a count, not a placeholder —
+and a Cancel. The words beside the bar say how far along it is; blocks alone
+do not.
+
+<DemoBox layout="stack">
+  <PatternLongTask />
+</DemoBox>
+
+<<< @/examples/patterns/PatternLongTask.vue
+
 ## Composing skeletons
 
 Away from the table, the primitives are a bar, a circle and a block, and you
@@ -161,13 +136,13 @@ with the margin and a stack of equal bars reads as a table.
 
 ## Motion
 
-The pulse is behind `motion-safe:`, so it is absent entirely for anyone who has
-asked for reduced motion — the shapes stay, the animation goes, and nothing else
-changes. That is the right trade for an _ambient_ loop, which carries no
-information the static shape does not.
+The skeleton's dither steps one pixel sideways every 400ms, behind
+`motion-safe:`, so it is absent entirely for anyone who has asked for reduced
+motion — the shapes stay, the step goes, and nothing else changes. That is the
+right trade for an _ambient_ loop, which carries no information the still shape
+does not.
 
-The exception is deliberate and lives on `Button`: its spinner is the only thing
-telling the user something is happening, so gating it would remove the signal
-rather than reduce motion. `styles/motion.test.ts` enforces the distinction —
-an ungated animation fails the build unless it is exempted by name with a
+`Button`'s loading state is a still hourglass, as Windows 98 drew it, so there
+is nothing there to gate. `styles/motion.test.ts` keeps the rule honest: an
+ungated looping animation fails the build unless it is exempted by name, with a
 written reason.

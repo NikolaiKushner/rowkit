@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { TooltipProvider } from 'reka-ui'
 import { expect, userEvent, within } from 'storybook/test'
 import Button from '../Button/Button.vue'
 import Tooltip from './Tooltip.vue'
 import TooltipContent from './TooltipContent.vue'
+import TooltipProvider from './TooltipProvider.vue'
 import TooltipTrigger from './TooltipTrigger.vue'
 
 const placements = ['top', 'right', 'bottom', 'left'] as const
@@ -28,7 +28,7 @@ const meta: Meta<TooltipArgs> = {
   args: {
     content: 'Archive this project',
     placement: 'top',
-    delay: 300,
+    delay: 500,
     disabled: false,
   },
   argTypes: {
@@ -45,7 +45,7 @@ const meta: Meta<TooltipArgs> = {
       <div class="flex items-center justify-center p-16">
         <Tooltip :delay="args.delay" :disabled="args.disabled">
           <TooltipTrigger as-child>
-            <Button variant="outline">Archive</Button>
+            <Button variant="secondary">Archive</Button>
           </TooltipTrigger>
           <TooltipContent :placement="args.placement">{{ args.content }}</TooltipContent>
         </Tooltip>
@@ -68,7 +68,7 @@ export const Placements: Story = {
       <div class="flex items-center justify-center gap-3 p-16">
         <Tooltip v-for="placement in placements" :key="placement">
           <TooltipTrigger as-child>
-            <Button variant="outline">{{ placement }}</Button>
+            <Button variant="secondary">{{ placement }}</Button>
           </TooltipTrigger>
           <TooltipContent :placement="placement">Opens on the {{ placement }}</TooltipContent>
         </Tooltip>
@@ -167,7 +167,7 @@ export const DisabledTriggerPattern: Story = {
         <div class="flex flex-col items-center gap-2">
           <Tooltip>
             <TooltipTrigger as-child>
-              <Button aria-disabled="true" variant="outline">Export</Button>
+              <Button aria-disabled="true" variant="secondary">Export</Button>
             </TooltipTrigger>
             <TooltipContent>Upgrade your plan to export</TooltipContent>
           </Tooltip>

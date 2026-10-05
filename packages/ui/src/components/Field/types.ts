@@ -27,6 +27,13 @@ export interface FieldProps {
    */
   size?: NonNullable<FieldVariants['size']>
   /**
+   * Where the label sits. `top` stacks it above the control; `left` puts it
+   * beside the control, the Windows 98 property-dialog arrangement. Set
+   * `--rk-field-label-width` on a container to line up a column of left
+   * labels.
+   */
+  layout?: NonNullable<FieldVariants['layout']>
+  /**
    * Id for the control. Generated when omitted — supply one only when
    * something outside the field needs to reference it.
    */

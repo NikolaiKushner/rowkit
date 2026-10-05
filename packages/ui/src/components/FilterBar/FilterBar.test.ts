@@ -118,13 +118,13 @@ describe('FilterBar', () => {
 
   describe('clear all', () => {
     it('appears only while filters are applied', () => {
-      expect(setup().text()).not.toContain('Clear all')
-      expect(setup({ filters }).text()).toContain('Clear all')
+      expect(setup().text()).not.toContain('Clear filters')
+      expect(setup({ filters }).text()).toContain('Clear filters')
     })
 
     it('emits clear', () => {
       const el = setup({ filters })
-      const clear = el.findAll('button').find((b) => b.text() === 'Clear all')
+      const clear = el.findAll('button').find((b) => b.text() === 'Clear filters')
       void clear?.trigger('click')
       expect(el.emitted('clear')).toHaveLength(1)
     })
@@ -189,5 +189,25 @@ describe('FilterBar', () => {
     it('drops the gap it replaces rather than emitting both', () => {
       expect(setup({ class: 'gap-8' }).classes()).not.toContain('gap-3')
     })
+  })
+})
+
+describe('chip keyboard', () => {
+  it.each(['Backspace', 'Delete'])('removes the chip when %s is pressed on its ✕', async (key) => {
+    const el = setup({ filters })
+    const button = removeButtons(el)[1]
+    if (!button) throw new Error('no remove button rendered')
+    await button.trigger('keydown', { key })
+    expect(el.emitted('remove')?.[0]).toEqual([filters[1]?.id])
+    el.unmount()
+  })
+})
+
+describe('look', () => {
+  it('is one wrapping toolbar row on the silver face', () => {
+    const el = setup({ filters, resultCount: 4 })
+    const classes = el.find('[data-slot="filter-bar"]').classes()
+    expect(classes).toEqual(expect.arrayContaining(['flex-wrap', 'bg-card', 'p-1', 'gap-1']))
+    el.unmount()
   })
 })

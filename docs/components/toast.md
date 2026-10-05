@@ -6,55 +6,84 @@ A notification queue. Not really a component — a **service with a component
 attached**: you call a toast into being from anywhere, and one `<Toaster />`
 renders them all.
 
-```ts
-const { success, danger } = useToast()
-
-success('Project archived')
-danger('Could not save', {
-  duration: 0,
-  action: { label: 'Retry', onClick: retry },
-})
-```
-
-```vue
-<!-- Once, at the app root. -->
-<Toaster />
-```
-
 <script setup>
-import { useToast } from 'rowkit'
-
-const { success, warning, danger, dismissAll } = useToast()
-
-function retry() {
-  success('Saved')
-}
+import ToastBasic from '../examples/toast/ToastBasic.vue'
+import ToastVariants from '../examples/toast/ToastVariants.vue'
+import ToastTitle from '../examples/toast/ToastTitle.vue'
+import ToastUndo from '../examples/toast/ToastUndo.vue'
+import ToastAsync from '../examples/toast/ToastAsync.vue'
 </script>
 
+<!-- Lifted clear of this site's 28px taskbar, as an app lifts it clear of its own footer. -->
+<ClientOnly>
+  <Toaster class="bottom-7" />
+</ClientOnly>
+
 <DemoBox>
-  <Button variant="outline" @click="success('Project archived')">success</Button>
-  <Button variant="outline" @click="warning('Two seats left on this plan')">warning</Button>
-  <Button
-    variant="outline"
-    @click="danger('Could not save', { duration: 0, action: { label: 'Retry', onClick: retry } })"
-  >danger, with an action</Button>
-  <Button variant="outline" @click="success('Project archived')">fire a duplicate</Button>
-  <Button variant="ghost" @click="dismissAll()">dismiss all</Button>
-  <ClientOnly>
-    <Toaster />
-  </ClientOnly>
+  <ToastBasic />
 </DemoBox>
 
-Press **success** twice quickly: you get one toast, not two. Duplicates fired
+<<< @/examples/toast/ToastBasic.vue
+
+Call `useToast()` from any component; one `<Toaster />`, mounted once at the
+app root, shows every toast. This page mounts one, and the examples below all
+send to it.
+
+Press a button twice quickly: you get one toast, not two. Duplicates fired
 inside the coalescing window collapse, because a retry loop that fires the same
-message forty times should not produce forty toasts.
+message forty times should not produce forty toasts. Hover any toast and its
+timer pauses; move away and it resumes.
 
-The **danger** one has `duration: 0` and never dismisses itself. Anything
-carrying an action has to wait for the user — a toast that takes its own retry
-button away after four seconds is worse than no toast.
+## Examples
 
-Hover any toast and its timer pauses; move away and it resumes. That is Reka's
-`ToastRoot`, not rowkit — the queue here owns no timers at all.
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Variants
+
+`toast()` for news, `success`, `warning` and `danger` for outcomes. Each draws
+its own icon; colour never carries the meaning alone. `dismissAll()` clears the
+queue.
+
+<DemoBox>
+  <ToastVariants />
+</DemoBox>
+
+<<< @/examples/toast/ToastVariants.vue
+
+### With a title
+
+A bold `title` over the message, for a toast that needs both.
+
+<DemoBox>
+  <ToastTitle />
+</DemoBox>
+
+<<< @/examples/toast/ToastTitle.vue
+
+### Undo instead of «Are you sure?»
+
+Act at once and offer the way back. A longer `duration` leaves time to read
+the toast and reach Undo.
+
+<DemoBox>
+  <ToastUndo />
+</DemoBox>
+
+<<< @/examples/toast/ToastUndo.vue
+
+### Saving, and retrying a failure
+
+Success for the outcome, `danger` with `duration: 0` and a Retry action when
+it fails. A toast that carries an action waits for the person — one that takes
+its own retry button away after four seconds is worse than no toast. This one
+fails every other time, so press it twice.
+
+<DemoBox>
+  <ToastAsync />
+</DemoBox>
+
+<<< @/examples/toast/ToastAsync.vue
 
 ## The three pieces
 
@@ -81,11 +110,12 @@ in a provide/inject tree. Rendering stays in one place so stacking is coherent.
 
 ### `ToastOptions`
 
-| Option     | Type                                              | Default     | Description              |
-| ---------- | ------------------------------------------------- | ----------- | ------------------------ |
-| `variant`  | `'neutral' \| 'success' \| 'warning' \| 'danger'` | `'neutral'` | Tone                     |
-| `duration` | `number`                                          | `5000`      | `0` never auto-dismisses |
-| `action`   | `{ label, onClick }`                              | —           | One action, not several  |
+| Option     | Type                                              | Default                  | Description              |
+| ---------- | ------------------------------------------------- | ------------------------ | ------------------------ |
+| `variant`  | `'neutral' \| 'success' \| 'warning' \| 'danger'` | `'neutral'`              | Tone, shown by the icon  |
+| `title`    | `string`                                          | —                        | Bold first line          |
+| `duration` | `number`                                          | `5000`, `0` for `danger` | `0` never auto-dismisses |
+| `action`   | `{ label, onClick }`                              | —                        | One action, not several  |
 
 ## `<Toaster />`
 
@@ -100,6 +130,9 @@ in a provide/inject tree. Rendering stays in one place so stacking is coherent.
 | `class`      | `string`                                                           | —                | Additional classes for the viewport, merged so a consumer's utility wins.                                   |
 
 <!-- /@props -->
+
+Above a fixed footer or taskbar, lift the stack clear of it with a class —
+this page uses `<Toaster class="bottom-7" />` for its 28px taskbar.
 
 ## When to use
 
@@ -139,18 +172,27 @@ and each has a test.
 
 ## Accessibility
 
-**Everything is announced politely, including danger.** Reka's `foreground` type
-maps to an assertive live region, which interrupts whatever a screen reader is
-currently saying. That is for genuine emergencies. A user mid-sentence somewhere
-else loses more from the interruption than from hearing "could not save" a moment
-later, so **`role="alert"` is never used** and every toast is `background`.
+**Everything is announced politely, including danger.** An assertive live
+region interrupts whatever a screen reader is currently saying. That is for
+genuine emergencies. A user mid-sentence somewhere else loses more from the
+interruption than from hearing "could not save" a moment later, so **`role="alert"`
+is never used**. Announcements go through one persistent `role="status"` region,
+written a frame after the toast appears.
 
-**Toasts never steal focus.** Focus stays where the user left it. The action and
-close buttons are reachable by <kbd>Tab</kbd> in document order.
+**Toasts never steal focus.** Focus stays where the user left it. Toasts sit in
+the document newest first, so <kbd>Tab</kbd> and a screen reader's reading order
+both start at the one that just arrived.
 
-**<kbd>F8</kbd> moves focus into the toast region**, which is Reka's affordance
-and the reason the region is named "Notifications (F8)" — that label is how
-anyone discovers the shortcut.
+**<kbd>F8</kbd> moves focus into the toast region**, which is why the region is
+named "Notifications (F8)" — that label is how anyone discovers the shortcut.
+
+**<kbd>Escape</kbd> closes the toast that holds focus**, and only then. Escape
+pressed anywhere else belongs to what the user is in — it closes a dialog, not
+the notifications. When a focused toast closes, focus moves to the region rather
+than falling to the page.
+
+**Clicking a toast does not close an open dialog.** The region is a branch of
+every layer, so an interaction there is never "outside".
 
 **The viewport is mounted before there is anything in it.** A live region added
 at the same moment as its content is frequently not announced.
@@ -161,18 +203,6 @@ generous default, and the recommendation below.
 
 > **Use `duration: 0` whenever you attach an `action`.** An undo that vanishes at
 > its own pace is worse than no undo.
-
-### One known violation, scoped off
-
-Reka's viewport renders focus guards — `aria-hidden` spans with `tabindex="0"` —
-to catch <kbd>Tab</kbd> and route it into the toast region. They are focusable by
-necessity and hidden from assistive technology by necessity, which is exactly
-what axe's `aria-hidden-focus` forbids.
-
-rowkit cannot reach the element, and rebuilding the viewport to avoid it is what
-"build on the primitive" exists to prevent. The rule is disabled for `Toaster`'s
-stories alone — that rule, that component — and should be reported upstream and
-re-enabled when fixed. The guard is only focusable while toasts exist.
 
 ## Under SSR
 
@@ -196,9 +226,3 @@ Enter and exit are ambient, so they are gated behind `motion-safe:` and collapse
 to instant under `prefers-reduced-motion`. The travel is horizontal because every
 position preset is anchored to a side edge; vertical entry would read as the
 stack reordering itself.
-
-## Dark mode
-
-Each tone uses its `-subtle` / `-on-subtle` / `-border` trio, all of which flip
-with the theme. Neutral sits on `surface` so it reads as a raised card rather
-than a coloured alert.

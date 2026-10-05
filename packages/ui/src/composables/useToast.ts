@@ -10,13 +10,20 @@ export interface ToastAction {
 }
 
 export interface ToastOptions {
-  /** Tone. */
+  /** Tone. Shown by the toast's icon; the face is the same silver for all four. */
   variant?: ToastVariant
   /**
+   * A bold first line above the message — what happened, in a few words
+   * ("Export started"), with the message saying the rest.
+   */
+  title?: string
+  /**
    * Auto-dismiss delay in milliseconds. `0` never dismisses on its own.
+   * Defaults to 5000, and to `0` for `danger`: an error stays until it is
+   * closed or acted on.
    *
-   * The countdown itself belongs to Reka's `ToastRoot`, which also pauses it
-   * while the pointer is over that toast — this value is passed through.
+   * The countdown itself runs in `Toaster`, which also pauses it while the
+   * pointer or focus is on the stack — this value is passed through.
    *
    * Use `0` whenever an `action` is attached. An undo that disappears at its
    * own pace is worse than no undo — see the WCAG note in the docs.
@@ -29,6 +36,8 @@ export interface ToastOptions {
 /** A toast in the queue. */
 export interface ToastItem {
   id: string
+  /** The bold first line, when there is one. */
+  title?: string
   message: string
   variant: ToastVariant
   duration: number
@@ -90,8 +99,9 @@ function add(message: string, options: ToastOptions = {}): string {
     id,
     message,
     variant: options.variant ?? 'neutral',
-    duration: options.duration ?? DEFAULT_DURATION,
+    duration: options.duration ?? (options.variant === 'danger' ? 0 : DEFAULT_DURATION),
     createdAt: now,
+    ...(options.title === undefined ? {} : { title: options.title }),
     ...(options.action === undefined ? {} : { action: options.action }),
   }
 
@@ -134,11 +144,10 @@ export interface UseToastReturn {
  * The toast API.
  *
  * This owns the **queue** — how many are visible, what waits, what coalesces.
- * It deliberately owns no timers: `Toaster` renders each visible toast into a
- * Reka `ToastRoot`, which runs the countdown, pauses it on hover, and handles
- * swipe-to-dismiss. Re-implementing any of that here would be the thing hard
- * rule 2 exists to prevent, and a queued toast still cannot count down early
- * because it has no `ToastRoot` until it is on screen.
+ * It deliberately owns no timers: `Toaster` runs the countdown for each toast
+ * it shows, pauses it on hover and focus, and handles swipe-to-dismiss. A
+ * queued toast cannot count down early, because it has no countdown until it
+ * is on screen.
  *
  * Callable from anywhere, including outside a component — that is the whole
  * point of the module-level queue. Rendering happens in one `<Toaster />`

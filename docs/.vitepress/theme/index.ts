@@ -2,11 +2,18 @@ import { inject as injectAnalytics } from '@vercel/analytics'
 import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import * as rowkit from 'rowkit'
-import ColorScale from './components/ColorScale.vue'
+import BevelTiles from './components/BevelTiles.vue'
+import ColorList from './components/ColorList.vue'
+import ColorPalette from './components/ColorPalette.vue'
 import DemoBox from './components/DemoBox.vue'
-import DocsLayout from './components/DocsLayout.vue'
+import SiteLayout from './components/site/SiteLayout.vue'
 import NpmVersion from './components/NpmVersion.vue'
 import TokenGrid from './components/TokenGrid.vue'
+import TypeSamples from './components/TypeSamples.vue'
+// The Windows 98 faces, loaded the way an app is told to load them.
+import '@fontsource/pt-sans/400.css'
+import '@fontsource/pt-sans/700.css'
+import '@fontsource/vt323/400.css'
 import './tokens.css'
 
 /**
@@ -18,7 +25,7 @@ import './tokens.css'
  */
 export default {
   extends: DefaultTheme,
-  Layout: DocsLayout,
+  Layout: SiteLayout,
   enhanceApp({ app }) {
     for (const [name, value] of Object.entries(rowkit)) {
       // Every component export is PascalCase; the composables, the `cn` helper
@@ -31,7 +38,10 @@ export default {
     }
 
     app.component('DemoBox', DemoBox)
-    app.component('ColorScale', ColorScale)
+    app.component('ColorPalette', ColorPalette)
+    app.component('ColorList', ColorList)
+    app.component('BevelTiles', BevelTiles)
+    app.component('TypeSamples', TypeSamples)
     app.component('TokenGrid', TokenGrid)
     app.component('NpmVersion', NpmVersion)
 

@@ -5,78 +5,169 @@
 A typed table. Column definitions are constrained to the row type, cells render
 through per-column slots, and the loading and empty states are built in.
 
-```vue
-<DataTable :rows="users" :columns="columns" caption="Team members">
-  <template #[`cell:status`]="{ value }">
-    <Badge :variant="tone(value)" dot>{{ value }}</Badge>
-  </template>
-</DataTable>
-```
-
 <script setup>
-import { computed, ref } from 'vue'
-import { useClientSort } from 'rowkit'
-
-const state = ref('rows')
-const sort = ref()
-
-const columns = [
-  { key: 'name', header: 'Name', sortable: true, sticky: true },
-  { key: 'role', header: 'Role', sortable: true },
-  { key: 'status', header: 'Status' },
-  { key: 'seats', header: 'Seats', sortable: true, align: 'end' },
-]
-
-const users = [
-  { id: 1, name: 'Ada Lovelace', role: 'Owner', status: 'active', seats: 3 },
-  { id: 2, name: 'Grace Hopper', role: 'Admin', status: 'active', seats: 12 },
-  { id: 3, name: 'Alan Turing', role: 'Member', status: 'invited', seats: 1 },
-  { id: 4, name: 'Katherine Johnson', role: 'Member', status: 'suspended', seats: 0 },
-]
-
-const tone = { active: 'success', invited: 'warning', suspended: 'danger' }
-
-const sorted = useClientSort(users, sort, columns)
-const rows = computed(() => (state.value === 'empty' ? [] : sorted.value))
+import DataTableBasic from '../examples/data-table/DataTableBasic.vue'
+import DataTableSorting from '../examples/data-table/DataTableSorting.vue'
+import DataTableCustomCells from '../examples/data-table/DataTableCustomCells.vue'
+import DataTableSelection from '../examples/data-table/DataTableSelection.vue'
+import DataTableSingleSelection from '../examples/data-table/DataTableSingleSelection.vue'
+import DataTableRowClick from '../examples/data-table/DataTableRowClick.vue'
+import DataTablePinned from '../examples/data-table/DataTablePinned.vue'
+import DataTableSummary from '../examples/data-table/DataTableSummary.vue'
+import DataTableStates from '../examples/data-table/DataTableStates.vue'
+import DataTableDense from '../examples/data-table/DataTableDense.vue'
+import DataTableServerSide from '../examples/data-table/DataTableServerSide.vue'
 </script>
 
 <DemoBox layout="stack">
-  <div class="flex flex-wrap gap-2">
-    <Button
-      v-for="value in ['rows', 'loading', 'empty']"
-      :key="value"
-      size="sm"
-      :variant="state === value ? 'default' : 'secondary'"
-      @click="state = value"
-    >{{ value }}</Button>
-  </div>
-  <DataTable
-    :rows="rows"
-    :columns="columns"
-    caption="Team members"
-    :loading="state === 'loading'"
-    empty-title="No people match these filters"
-    v-model:sort="sort"
-    hoverable
-  >
-    <template #[`cell:status`]="{ value }">
-      <Badge :variant="tone[value]" size="sm" dot>{{ value }}</Badge>
-    </template>
-  </DataTable>
+  <DataTableBasic />
 </DemoBox>
 
-The three body states, on one table. Loading renders placeholder rows in the
-real column layout rather than a spinner over the top, so nothing shifts when
-the data lands — the header and the column widths are already correct.
+<<< @/examples/data-table/DataTableBasic.vue
 
-Sort a column and switch to `loading`: the sort survives, because the table
-never owned it.
+Every row needs a stable `id`. Columns name a field with `key`, and `caption`
+names the table for screen readers — it is required, and hidden unless you pass
+`caption-visible`.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Sortable columns
+
+Mark columns `sortable` and bind `v-model:sort`. The table reports which column
+the user asked for; `useClientSort` applies it to rows you hold in memory. A
+`sortValue` sorts by meaning rather than by the text shown — here, stable
+before beta before draft.
+
+<DemoBox layout="stack">
+  <DataTableSorting />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableSorting.vue
+
+### Custom cells and row actions
+
+Every column renders through a `cell:<key>` slot when you give it one: a
+badge, a link, a formatted amount. A column with no field behind it — row
+actions — has an `id` instead of a `key`, and `header-sr-only` keeps its name
+for screen readers without drawing it.
+
+<DemoBox layout="stack">
+  <DataTableCustomCells />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableCustomCells.vue
+
+### Selecting rows
+
+`selectable="multiple"` adds check boxes and a select-all; `v-model:selected`
+holds the ids. Give `row-label` so each check box says which row it selects.
+A toolbar above the table acts on the selection.
+
+<DemoBox layout="stack">
+  <DataTableSelection />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableSelection.vue
+
+### Choosing one row
+
+`selectable="single"` gives radio buttons: pick one row, show its details
+beside the table. The model is still an array, holding at most one id.
+
+<DemoBox layout="stack">
+  <DataTableSingleSelection />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableSingleSelection.vue
+
+### Opening a row
+
+Listen to `row:click` and a row opens on a click, or on Enter or Space once it
+has focus. Keep a real control in the row as well — a clickable row is an
+extra, never the only way in.
+
+<DemoBox layout="stack">
+  <DataTableRowClick />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableRowClick.vue
+
+### Pinned columns and a sticky header
+
+A table wider than its frame scrolls sideways. `sticky` pins the columns that
+say which row you are reading — several stack, with the selection column —
+and a height on the table (`max-h-64`) makes the body scroll under the header.
+
+<DemoBox layout="stack">
+  <DataTablePinned />
+</DemoBox>
+
+<<< @/examples/data-table/DataTablePinned.vue
+
+::: details people.ts — the rows behind the larger examples
+<<< @/examples/data-table/people.ts
+:::
+
+### Totals
+
+`summary` adds a bold row under an etched line, keyed like the columns, held at
+the bottom while the body scrolls. A computed column — the line total — uses an
+`id` and a slot.
+
+<DemoBox layout="stack">
+  <DataTableSummary />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableSummary.vue
+
+### Loading, empty and error states
+
+Loading renders placeholder rows in the real column layout rather than a
+spinner over the top. On a reload — a sort, a page, a filter — the columns hold
+the widths they had with rows in them, so the header stays still; a first load
+has no rows to measure, so give the columns a `width`. Empty has three reasons
+with three next steps: no data yet, filters that matched nothing, a failed
+fetch. The `empty` slot takes your own `EmptyState` with a way out.
+
+<DemoBox layout="stack">
+  <DataTableStates />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableStates.vue
+
+### Dense rows for logs
+
+`size="sm"` sets 18px rows. `scrollbars="drawn"` draws the Windows 98 scroll
+bars instead of restyling the browser's, so they look the same in every
+browser.
+
+<DemoBox layout="stack">
+  <DataTableDense />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableDense.vue
+
+### Sorting and paging on the server
+
+When the server holds the rows, the table only ever shows the page it is
+handed. Watch the sort and the page, fetch, and show `loading` meanwhile — the
+sort stays on the header while the next page loads, because the table never
+owned it. For a whole page with filters, see
+[A data table page](/patterns/data-table-page).
+
+<DemoBox layout="stack">
+  <DataTableServerSide />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableServerSide.vue
 
 ::: warning Under a fixed header of your own
 `--z-index-sticky` is `100`, because rowkit's scale assumes rowkit is the page's
 chrome. A sticky table header will therefore paint over any application header
-below that layer — raise yours above it. This site does exactly that for
-VitePress's navbar.
+below that layer — raise yours above it.
 :::
 
 ## Anatomy
@@ -93,7 +184,7 @@ VitePress's navbar.
 ```ts
 const columns: DataTableColumn<User>[] = [
   { key: 'name', header: 'Name', sticky: true },
-  { key: 'seats', header: 'Seats', align: 'end' },
+  { key: 'seats', header: 'Seats', numeric: true },
   { id: 'actions', header: 'Actions', headerSrOnly: true },
 ]
 ```
@@ -110,9 +201,10 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 | `headerSrOnly` | `boolean`                      | Hide the heading visually, keep it for screen readers |
 | `sortable`     | `boolean`                      | Makes the header a sort control                       |
 | `sortValue`    | `(row: TRow) => Sortable`      | What to compare, when the displayed text sorts badly  |
-| `align`        | `'start' \| 'center' \| 'end'` | Use `end` for numbers                                 |
+| `numeric`      | `boolean`                      | Figures: mono face, aligned to the end                |
+| `align`        | `'start' \| 'center' \| 'end'` | Overrides the alignment                               |
 | `width`        | `string`                       | A CSS width                                           |
-| `sticky`       | `boolean`                      | Pin the column to the start edge while scrolling      |
+| `sticky`       | `boolean`                      | Pin the column to the start edge; several stack       |
 | `headerClass`  | `string`                       | Extra classes for the header cell                     |
 | `cellClass`    | `string`                       | Extra classes for this column's body cells            |
 
@@ -120,25 +212,27 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 
 <!-- @props DataTableProps -->
 
-| Prop               | Type                                   | Default             | Description                                                                       |
-| ------------------ | -------------------------------------- | ------------------- | --------------------------------------------------------------------------------- |
-| `rows`             | `TRow[]`                               | **required**        | The rows to render.                                                               |
-| `columns`          | `DataTableColumn<TRow>[]`              | **required**        | Column definitions, in display order.                                             |
-| `caption`          | `string`                               | **required**        | Accessible name for the table.                                                    |
-| `captionVisible`   | `boolean`                              | `false`             | Shows the caption. It is available to assistive technology either way.            |
-| `loading`          | `boolean`                              | `false`             | Swaps the body for placeholder rows.                                              |
-| `loadingRows`      | `number`                               | `5`                 | How many placeholder rows to show while loading.                                  |
-| `loadingLabel`     | `string`                               | `'Loading'`         | Announced while loading.                                                          |
-| `emptyTitle`       | `string`                               | `'Nothing to show'` | Title for the built-in empty state.                                               |
-| `emptyDescription` | `string`                               | —                   | Description for the built-in empty state.                                         |
-| `emptyReason`      | `'no-data' \| 'no-results' \| 'error'` | —                   | Why the built-in empty state is empty.                                            |
-| `selectable`       | `'single' \| 'multiple'`               | —                   | Adds a selection column.                                                          |
-| `rowLabel`         | `(row: TRow, index: number) => string` | —                   | Accessible name for each row's selection control.                                 |
-| `selectionLabel`   | `string`                               | `'Select'`          | Accessible name for the selection column.                                         |
-| `selectAllLabel`   | `string`                               | `'Select all rows'` | Accessible name for the select-all control.                                       |
-| `size`             | `'sm' \| 'md'`                         | `'md'`              | Row height and text size.                                                         |
-| `hoverable`        | `boolean`                              | `false`             | Highlights rows on hover. Only turn this on when a row does something.            |
-| `class`            | `string`                               | —                   | Additional classes for the scroll container, merged so a consumer's utility wins. |
+| Prop               | Type                                   | Default             | Description                                                                                                          |
+| ------------------ | -------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `rows`             | `TRow[]`                               | **required**        | The rows to render.                                                                                                  |
+| `columns`          | `DataTableColumn<TRow>[]`              | **required**        | Column definitions, in display order.                                                                                |
+| `caption`          | `string`                               | **required**        | Accessible name for the table.                                                                                       |
+| `captionVisible`   | `boolean`                              | `false`             | Shows the caption. It is available to assistive technology either way.                                               |
+| `loading`          | `boolean`                              | `false`             | Swaps the body for placeholder rows.                                                                                 |
+| `loadingRows`      | `number`                               | `6`                 | How many placeholder rows to show while loading.                                                                     |
+| `loadingLabel`     | `string`                               | `'Loading'`         | Announced while loading.                                                                                             |
+| `emptyTitle`       | `string`                               | `'Nothing to show'` | Title for the built-in empty state.                                                                                  |
+| `emptyDescription` | `string`                               | —                   | Description for the built-in empty state.                                                                            |
+| `emptyReason`      | `'no-data' \| 'no-results' \| 'error'` | —                   | Why the built-in empty state is empty.                                                                               |
+| `selectable`       | `'single' \| 'multiple'`               | —                   | Adds a selection column.                                                                                             |
+| `rowLabel`         | `(row: TRow, index: number) => string` | —                   | Accessible name for each row's selection control.                                                                    |
+| `selectionLabel`   | `string`                               | `'Select'`          | Accessible name for the selection column.                                                                            |
+| `selectAllLabel`   | `string`                               | `'Select all rows'` | Accessible name for the select-all control.                                                                          |
+| `size`             | `'sm' \| 'md'`                         | `'md'`              | Row height: `sm` 22px for dense lists and logs, `md` 27px.                                                           |
+| `hoverable`        | `boolean`                              | `false`             | Kept for compatibility; has no visible effect.                                                                       |
+| `summary`          | `Record<string, unknown>`              | —                   | A summary row — totals, averages — after the last row, keyed like the columns: `key`, or `id` for a computed column. |
+| `scrollbars`       | `'native' \| 'drawn'`                  | `'native'`          | Which scroll bars the body uses.                                                                                     |
+| `class`            | `string`                               | —                   | Additional classes for the root, merged so a consumer's utility wins.                                                |
 
 <!-- /@props -->
 
@@ -299,14 +393,48 @@ nothing focusable inside cannot be scrolled by keyboard at all. It gets
 there is actually overflow, measured with a `ResizeObserver`, so a table that
 fits adds no pointless tab stop.
 
-**The sticky header needs a height on the container.** `position: sticky`
+**The sticky header needs a height on the table.** `position: sticky`
 resolves against the nearest scrolling ancestor, which is the component's own
-wrapper. Put the height there: `<DataTable class="max-h-96" />`. An outer
-scrolling div will not work.
+scroll area inside the frame. Put the height on the component:
+`<DataTable class="max-h-96" />`. An outer scrolling div will not work.
 
-**A pinned column grows a shadow only once something is behind it**, using the
-`shadow-scroll-x` token. Without the cue, a user scrolled to the right has no
-signal that the table continues past the pinned edge.
+**Pinned columns stack.** Several `sticky` columns sit side by side in column
+order, and the selection column pins with them, so the check boxes stay beside
+the rows they select. The header stays over all of them while the body
+scrolls both ways.
+
+**The last pinned column grows a hard 1px edge only once something is behind
+it**, using the `shadow-scroll-x` token. Without the cue, a user scrolled to
+the right has no signal that the table continues past the pinned edge.
+
+**Cells never wrap.** As in a Windows 98 list, every row keeps its height and
+a column keeps its `width`. Columns that do not fit the frame scroll sideways
+rather than squeezing; a table narrower than the frame still fills it.
+
+**Two kinds of scroll bar.** By default the body uses the browser's own bar,
+restyled as Windows 98 by `scrollbar-win98`: exact in Chromium and Safari,
+colours only in Firefox. `scrollbars="drawn"` puts the body in a
+[`ScrollArea`](/components/scroll-area) instead, whose bars rowkit draws and
+which look the same everywhere. Either way the bars sit beside the cells,
+never over them, and the sticky header and pinned columns behave the same.
+
+## Summary row
+
+`summary` adds a row after the last one — a total, an average — keyed like the
+columns. It is bold, under an etched line, and stays at the bottom while the
+body scrolls, as the header stays at the top. Values show as given, so format
+numbers first; a `#summary:<key>` slot replaces a cell that needs markup.
+
+```vue
+<DataTable
+  :rows="items"
+  :columns="columns"
+  caption="Invoice"
+  :summary="{ item: 'Total', amount: '1,364.00' }"
+/>
+```
+
+It shows only while there are rows: not while loading, not when empty.
 
 ## Clickable rows
 
@@ -361,8 +489,8 @@ offering any way to change it.
 inside a `grid`, and this is a plain `table`; the checkbox's own state carries
 the selection. Rows get a `data-selected` attribute for styling instead.
 
-**Single selection uses native radios rather than Reka's `RadioGroup`.** That
-primitive's root owns the roving tabstop and would have to wrap the table,
+**Single selection uses native radios rather than a `RadioGroup` component.**
+A radio group's root owns the roving tabstop and would have to wrap the table,
 putting `role="radiogroup"` on it and destroying its table semantics. A shared
 `name` groups native radios with no wrapper at all.
 
@@ -384,9 +512,3 @@ browser paints only what is visible. What does grow is initial render — about
 So the threshold is a render-time one: **above ~500 rows, paginate** with
 `Pagination`. That is the better interaction regardless, since nobody
 scrolls ten thousand rows looking for something.
-
-## Dark mode
-
-Header uses `surface-subtle`, body `surface`, separators `border-subtle`. Pinned
-cells carry their own `surface` background so rows do not show through them
-while scrolling. All of it flips with the theme.

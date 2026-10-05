@@ -4,8 +4,13 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { compile } from 'tailwindcss'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { badgeVariants } from '../components/Badge/Badge.variants'
-import { buttonVariants } from '../components/Button/Button.variants'
+import { badgeDotVariants, badgeVariants } from '../components/Badge/Badge.variants'
+import {
+  buttonContentVariants,
+  buttonFocusVariants,
+  buttonPressedState,
+  buttonVariants,
+} from '../components/Button/Button.variants'
 import {
   dataTableCaptionVariants,
   dataTableCellVariants,
@@ -17,12 +22,14 @@ import {
   dataTableSelectCellVariants,
   dataTableSortButtonVariants,
   dataTableSortIconVariants,
+  dataTableSummaryCellVariants,
   dataTableVariants,
   dataTableWrapperVariants,
 } from '../components/DataTable/DataTable.variants'
 import {
   dialogBodyVariants,
   dialogCloseVariants,
+  dialogTitleBarVariants,
   dialogContentVariants,
   dialogDescriptionVariants,
   dialogFooterVariants,
@@ -32,6 +39,7 @@ import {
 } from '../components/Dialog/Dialog.variants'
 import {
   emptyStateActionsVariants,
+  emptyStateBodyVariants,
   emptyStateDescriptionVariants,
   emptyStateIconVariants,
   emptyStateTitleVariants,
@@ -46,20 +54,72 @@ import {
   filterBarVariants,
 } from '../components/FilterBar/FilterBar.variants'
 import {
+  fieldControlVariants,
   fieldErrorVariants,
   fieldHintVariants,
   fieldLabelVariants,
+  fieldRequiredVariants,
   fieldVariants,
 } from '../components/Field/Field.variants'
 import { inputVariants } from '../components/Input/Input.variants'
 import {
+  selectButtonVariants,
   selectContentVariants,
+  selectInputVariants,
   selectItemVariants,
+  selectListVariants,
+  selectMessageVariants,
   selectTriggerVariants,
 } from '../components/Select/Select.variants'
+import {
+  checkboxBoxVariants,
+  checkboxLabelVariants,
+  checkboxVariants,
+} from '../components/Checkbox/Checkbox.variants'
+import {
+  radioLabelVariants,
+  radioMarkVariants,
+  radioVariants,
+} from '../components/Radio/Radio.variants'
+import {
+  groupBoxFrameVariants,
+  groupBoxLegendVariants,
+  groupBoxVariants,
+} from '../components/GroupBox/GroupBox.variants'
+import {
+  progressBarFillVariants,
+  progressBarVariants,
+} from '../components/ProgressBar/ProgressBar.variants'
+import {
+  scrollAreaButtonVariants,
+  scrollAreaContentVariants,
+  scrollAreaCornerVariants,
+  scrollAreaFootVariants,
+  scrollAreaMainVariants,
+  scrollAreaScrollbarVariants,
+  scrollAreaThumbVariants,
+  scrollAreaTrackVariants,
+  scrollAreaVariants,
+  scrollAreaViewportVariants,
+} from '../components/ScrollArea/ScrollArea.variants'
+import { separatorVariants } from '../components/Separator/Separator.variants'
+import {
+  windowBodyVariants,
+  windowButtonVariants,
+  windowControlsVariants,
+  windowTitleBarVariants,
+  windowTitleVariants,
+  windowVariants,
+} from '../components/Window/Window.variants'
+import {
+  statusBarSectionVariants,
+  statusBarVariants,
+} from '../components/StatusBar/StatusBar.variants'
 import { skeletonVariants } from '../components/Skeleton/Skeleton.variants'
 import {
   toastActionVariants,
+  toastBodyVariants,
+  toastTitleVariants,
   toastCloseVariants,
   toasterViewportVariants,
   toastMessageVariants,
@@ -118,11 +178,17 @@ type CvaFn = ((props?: Record<string, string>) => string) & {
   config?: { variants?: Record<string, Record<string, unknown>> }
 }
 
+/**
+ * Group markers (`group/button`) name an element for `group-*` variants to
+ * refer to. They generate no CSS of their own, by design.
+ */
+const isMarker = (className: string) => /^(group|peer)(\/|$)/.test(className)
+
 function classesOf(variant: CvaFn): string[] {
   const seen = new Set<string>()
   for (const combo of combinations(variant.config?.variants)) {
     for (const className of variant(combo).split(/\s+/)) {
-      if (className) seen.add(className)
+      if (className && !isMarker(className)) seen.add(className)
     }
   }
   return [...seen]
@@ -130,17 +196,58 @@ function classesOf(variant: CvaFn): string[] {
 
 const components: readonly (readonly [string, CvaFn])[] = [
   ['Badge', badgeVariants],
+  ['Badge dot', badgeDotVariants],
   ['Button', buttonVariants],
+  ['Button content', buttonContentVariants],
+  ['Button focus ring', buttonFocusVariants],
+  ['Button pressed state', () => buttonPressedState],
   ['Field', fieldVariants],
   ['Field label', fieldLabelVariants],
   ['Field hint', fieldHintVariants],
   ['Field error', fieldErrorVariants],
+  ['Field control', fieldControlVariants],
+  ['Field required', fieldRequiredVariants],
   ['Input', inputVariants],
   ['Select trigger', selectTriggerVariants],
   ['Select content', selectContentVariants],
   ['Select item', selectItemVariants],
+  ['ScrollArea', scrollAreaVariants],
+  ['ScrollArea main', scrollAreaMainVariants],
+  ['ScrollArea viewport', scrollAreaViewportVariants],
+  ['ScrollArea content', scrollAreaContentVariants],
+  ['ScrollArea scrollbar', scrollAreaScrollbarVariants],
+  ['ScrollArea foot', scrollAreaFootVariants],
+  ['ScrollArea button', scrollAreaButtonVariants],
+  ['ScrollArea track', scrollAreaTrackVariants],
+  ['ScrollArea thumb', scrollAreaThumbVariants],
+  ['ScrollArea corner', scrollAreaCornerVariants],
+  ['Separator', separatorVariants],
+  ['Window', windowVariants],
+  ['Window title bar', windowTitleBarVariants],
+  ['Window title', windowTitleVariants],
+  ['Window controls', windowControlsVariants],
+  ['Window button', windowButtonVariants],
+  ['Window body', windowBodyVariants],
+  ['Checkbox', checkboxVariants],
+  ['Checkbox box', checkboxBoxVariants],
+  ['Checkbox label', checkboxLabelVariants],
+  ['Radio', radioVariants],
+  ['Radio mark', radioMarkVariants],
+  ['Radio label', radioLabelVariants],
+  ['StatusBar', statusBarVariants],
+  ['StatusBar section', statusBarSectionVariants],
+  ['GroupBox', groupBoxVariants],
+  ['GroupBox frame', groupBoxFrameVariants],
+  ['GroupBox legend', groupBoxLegendVariants],
+  ['ProgressBar', progressBarVariants],
+  ['ProgressBar fill', progressBarFillVariants],
+  ['Select input', selectInputVariants],
+  ['Select button', selectButtonVariants],
+  ['Select list', selectListVariants],
+  ['Select message', selectMessageVariants],
   ['Skeleton', skeletonVariants],
   ['EmptyState', emptyStateVariants],
+  ['EmptyState body', emptyStateBodyVariants],
   ['EmptyState icon', emptyStateIconVariants],
   ['EmptyState title', emptyStateTitleVariants],
   ['EmptyState description', emptyStateDescriptionVariants],
@@ -161,6 +268,7 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['DataTable header row', dataTableHeaderRowVariants],
   ['DataTable header cell', dataTableHeaderCellVariants],
   ['DataTable cell', dataTableCellVariants],
+  ['DataTable summary cell', dataTableSummaryCellVariants],
   ['DataTable row', dataTableRowVariants],
   ['DataTable select cell', dataTableSelectCellVariants],
   ['DataTable checkbox', dataTableCheckboxVariants],
@@ -172,12 +280,15 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['Dialog description', dialogDescriptionVariants],
   ['Dialog body', dialogBodyVariants],
   ['Dialog footer', dialogFooterVariants],
+  ['Dialog title bar', dialogTitleBarVariants],
   ['Dialog close', dialogCloseVariants],
   ['Tooltip content', tooltipContentVariants],
   ['Toaster viewport', toasterViewportVariants],
   ['Toast', toastVariants],
   ['Toast message', toastMessageVariants],
   ['Toast action', toastActionVariants],
+  ['Toast body', toastBodyVariants],
+  ['Toast title', toastTitleVariants],
   ['Toast close', toastCloseVariants],
   ['DataTable sort button', dataTableSortButtonVariants],
   ['DataTable sort icon', dataTableSortIconVariants],
@@ -242,12 +353,32 @@ describe('the focus ring has something to draw', () => {
     ).toBe(true)
   })
 
-  it('does not invent outline-* focus recipes', () => {
+  /*
+   * Windows 98 marks focus with a 1px dotted rectangle, which only `outline`
+   * can draw — a ring is a box-shadow and is always solid. Any outline focus
+   * must be that rectangle: dotted, in the ring colour. A solid or coloured
+   * outline is an improvised focus style. The one other colour is the title
+   * bar's white, for a control drawn on the navy bar, where black would vanish.
+   */
+  it('draws outline focus only as the dotted ring', () => {
     for (const [name, variant] of components) {
-      const outlineFocus = classesOf(variant).filter((c) =>
-        /^(?:focus-visible:)?outline(?:-\d+|-offset-\d+|-ring)?$/.test(c)
+      const classes = classesOf(variant)
+      const prefixes = new Set(
+        classes
+          .map((c) => /^(.*focus-visible(?:\/\w+)?:)outline-1$/.exec(c)?.[1])
+          .filter((p): p is string => p !== undefined)
       )
-      expect(outlineFocus, `${name} uses outline focus — prefer the ring recipe`).toEqual([])
+      for (const prefix of prefixes) {
+        expect(classes, `${name}: ${prefix}outline-1 must be dotted`).toContain(
+          `${prefix}outline-dotted`
+        )
+        expect(
+          [`${prefix}outline-ring`, `${prefix}outline-titlebar-foreground`].some((c) =>
+            classes.includes(c)
+          ),
+          `${name}: ${prefix}outline-1 must use the ring colour`
+        ).toBe(true)
+      }
     }
   })
 })

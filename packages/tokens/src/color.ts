@@ -1,336 +1,79 @@
 /**
- * Colour primitives and semantic mappings.
+ * Colour primitives and semantic mappings — the Windows 98 palette.
  *
- * ## How the scales were derived
+ * ## Where the values come from
  *
- * Every chromatic family shares one lightness ramp and one chroma envelope, so
- * `primary-600`, `danger-600` and `success-600` are the same perceptual weight
- * and can be swapped without relayering the design. Families differ only by
- * hue and a chroma factor.
+ * The primitives are the sixteen-colour VGA palette Windows 98 was drawn in,
+ * plus the handful of system colours the default "Windows Standard" scheme
+ * added on top of it: the light bevel grey, the title-bar gradient ends and
+ * the tooltip yellow. They are written as the exact sRGB hex values, not
+ * converted to another space: these colours are defined by their eight-bit
+ * channels, and a round trip through OKLCH would only add rounding to values
+ * that are already exact.
  *
- * Chroma at each step is clamped to the sRGB gamut boundary. OKLCH can express
- * colours outside sRGB, and browsers gamut-map them per their own rules — that
- * makes a token render differently on a P3 laptop than on an sRGB monitor.
- * Clamping trades a little vividness for identical output everywhere.
+ * The names and values mirror the Figma file's `primitives` collection, and
+ * the semantic map mirrors its `semantic` collection token for token, so a
+ * colour picked in the design is the colour the component paints.
  *
- * `warning` carries a lightness bump through its midtones: at a shared
- * lightness, yellow is far less saturated than blue or red, so the unbumped
- * steps read as muddy brown rather than amber.
- *
- * Contrast for every semantic pair is asserted in `contrast.test.ts` — the
- * ratios are a build gate, not a claim in a comment.
+ * Contrast for every semantic pair a component produces is asserted in
+ * `contrast.test.ts` — the ratios are a build gate, not a claim in a comment.
  */
 
-/** The eleven steps every colour family provides. */
-export const colorSteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as const
-
-/** One step of a colour family. */
-export type ColorStep = (typeof colorSteps)[number]
-
-/**
- * Cool-slate neutral (hue 264). Roughly 70% of the pixels in a data table:
- * page background, row borders, muted labels, table chrome.
- */
-export const neutral = {
-  50: 'oklch(0.984 0.003 264)',
-  100: 'oklch(0.968 0.004 264)',
-  200: 'oklch(0.928 0.006 264)',
-  300: 'oklch(0.869 0.01 264)',
-  400: 'oklch(0.704 0.018 264)',
-  500: 'oklch(0.551 0.024 264)',
-  600: 'oklch(0.446 0.027 264)',
-  700: 'oklch(0.373 0.028 264)',
-  800: 'oklch(0.279 0.03 264)',
-  900: 'oklch(0.21 0.033 264)',
-  950: 'oklch(0.13 0.036 264)',
+/** The sixteen-colour VGA palette, as Windows 98 used it. Only the twelve the design uses are listed. */
+export const vga = {
+  black: '#000000',
+  white: '#ffffff',
+  /** The face of every window, button and dialog. */
+  silver: '#c0c0c0',
+  /** Bevel shadows, disabled text, the borders of a field. */
+  gray: '#808080',
+  /** Selection, the active title bar, the default primary. */
+  navy: '#000080',
+  /** Hyperlinks. */
+  blue: '#0000ff',
+  /** The desktop. */
+  teal: '#008080',
+  green: '#008000',
+  olive: '#808000',
+  yellow: '#ffff00',
+  maroon: '#800000',
+  red: '#ff0000',
 } as const
 
-/**
- * Ink blue (hue 255).
- *
- * Cool and current — the step after warm espresso. Chroma stays low so a
- * solid button is ink, not a brand shout, and the selected-row wash
- * (`primary-50`) reads as a cool mist instead of a pink one.
- */
-export const primary = {
-  50: 'oklch(0.975 0.011 255)',
-  100: 'oklch(0.948 0.022 255)',
-  200: 'oklch(0.90 0.034 255)',
-  300: 'oklch(0.80 0.05 255)',
-  400: 'oklch(0.68 0.07 255)',
-  500: 'oklch(0.52 0.09 255)',
-  600: 'oklch(0.44 0.095 255)',
-  700: 'oklch(0.38 0.095 255)',
-  /** Solid actions — ink blue, deep enough for white labels. */
-  800: 'oklch(0.32 0.09 255)',
-  900: 'oklch(0.27 0.075 255)',
-  950: 'oklch(0.19 0.05 255)',
-} as const
-
-/** Green (hue 152). Reserved for successful outcomes, never for brand accent. */
-export const success = {
-  50: 'oklch(0.97 0.014 152)',
-  100: 'oklch(0.936 0.036 152)',
-  200: 'oklch(0.885 0.064 152)',
-  300: 'oklch(0.809 0.097 152)',
-  400: 'oklch(0.715 0.145 152)',
-  500: 'oklch(0.623 0.162 152)',
-  600: 'oklch(0.546 0.142 152)',
-  700: 'oklch(0.488 0.127 152)',
-  800: 'oklch(0.442 0.115 152)',
-  900: 'oklch(0.396 0.103 152)',
-  950: 'oklch(0.282 0.073 152)',
-} as const
-
-/** Amber (hue 75), lightness-bumped through the midtones. See the module note. */
-export const warning = {
-  50: 'oklch(0.97 0.016 75)',
-  100: 'oklch(0.936 0.04 75)',
-  200: 'oklch(0.885 0.071 75)',
-  300: 'oklch(0.849 0.108 75)',
-  400: 'oklch(0.785 0.162 75)',
-  500: 'oklch(0.723 0.15 75)',
-  600: 'oklch(0.616 0.128 75)',
-  700: 'oklch(0.528 0.11 75)',
-  800: 'oklch(0.442 0.092 75)',
-  900: 'oklch(0.396 0.082 75)',
-  950: 'oklch(0.282 0.059 75)',
-} as const
-
-/** Red (hue 25). Destructive actions and error states. */
-export const danger = {
-  50: 'oklch(0.97 0.014 25)',
-  100: 'oklch(0.936 0.032 25)',
-  200: 'oklch(0.885 0.06 25)',
-  300: 'oklch(0.809 0.107 25)',
-  400: 'oklch(0.715 0.17 25)',
-  500: 'oklch(0.623 0.214 25)',
-  600: 'oklch(0.546 0.218 25)',
-  700: 'oklch(0.488 0.195 25)',
-  800: 'oklch(0.442 0.165 25)',
-  900: 'oklch(0.396 0.135 25)',
-  950: 'oklch(0.282 0.086 25)',
+/** The system colours Windows 98 added on top of VGA. */
+export const win98 = {
+  /** The inner light edge of a raised bevel (`3D Light`). */
+  light: '#dfdfdf',
+  /** Secondary text a step lighter than black. */
+  'dark-gray': '#404040',
+  /** The light end of the active title-bar gradient. */
+  'title-blue': '#1084d0',
+  /** The light end of the inactive title-bar gradient. */
+  'title-gray': '#b5b5b5',
+  /** Tooltip background (`Info`). */
+  info: '#ffffe1',
 } as const
 
 /**
- * Greys keyed by OKLCH lightness × 1000, so `gray-922` is lightness 0.922.
- *
- * Most steps stay zero-chroma — the reference design's quiet base. A few carry
- * a cool cast (hue 264, the same as {@link neutral}): lighter hairlines and
- * soft recessed surfaces. That is rowkit's own signal inside an otherwise
- * clean, reference-shaped palette — enough to read as itself on a long session,
- * not enough to look like a tinted theme.
- */
-export const gray = {
-  /** Soft cool page. Slightly off pure white so a day of table work is less glare. */
-  988: 'oklch(0.988 0.002 264)',
-  /** the reference `--primary-foreground`, `--foreground` (dark). */
-  985: 'oklch(0.985 0 0)',
-  /**
-   * Cool recessed surface — muted toolbars, row hover, quiet chips.
-   *
-   * Lighter and cooler than the reference `--muted` (0.97 0 0): same job, less
-   * ink on the page.
-   */
-  972: 'oklch(0.972 0.003 264)',
-  /** the reference `--secondary`, `--muted`, `--accent` — kept for dark primary fill. */
-  970: 'oklch(0.97 0 0)',
-  /**
-   * Cool decorative hairline / recessed fill step. Lighter than the reference
-   * `--border` (0.922) — table rules, card outlines, and secondary button fill
-   * (`surface-active`) that must read as a surface next to white outline chrome.
-   */
-  940: 'oklch(0.940 0.004 264)',
-  /** the reference `--border`. Kept for pressed fills that still need a step of weight. */
-  922: 'oklch(0.922 0 0)',
-  /**
-   * Cool emphasised hairline. rowkit's; the reference design has no "strong border".
-   * Softer than the old 0.87 step so structure reads without shouting.
-   */
-  905: 'oklch(0.905 0.006 264)',
-  /** Emphasised hairline (legacy weight). Prefer {@link gray[905]} for new chrome. */
-  870: 'oklch(0.87 0 0)',
-  /** the reference `--muted-foreground` (dark), where it clears AA at 7.63:1. */
-  708: 'oklch(0.708 0 0)',
-  /**
-   * rowkit's correction to the reference `--ring` and `--input` in light mode.
-   *
-   * the reference design puts them at 0.708 and 0.922, which measure 2.59:1 and 1.26:1
-   * against a white page — a focus ring and a control boundary that both fail
-   * WCAG 1.4.11.
-   *
-   * Not the mathematical minimum. Solving in floating point gave 0.669 and a
-   * tidy 3.00:1; the browser paints `#959595` and axe measured **2.995:1**,
-   * because a colour is quantised to eight bits per channel before anyone sees
-   * it. Anything solved exactly onto a threshold lands on whichever side the
-   * rounding chooses. 0.635 is 3.45:1 against the page and 3.17:1 against
-   * `surface-subtle`, which clears the bar on both sides of the rounding.
-   */
-  635: 'oklch(0.635 0 0)',
-  /**
-   * Cool control boundary. Softer and cooler than the a11y floor at 0.635, still
-   * clears 3:1 on the page, a card and a recessed toolbar — so inputs speak the
-   * same language as the cool hairlines without failing WCAG 1.4.11.
-   */
-  642: 'oklch(0.642 0.012 264)',
-  /** the reference `--ring` (dark), 4.18:1 against the dark page. */
-  556: 'oklch(0.556 0 0)',
-  /**
-   * rowkit's correction to the reference `--muted-foreground` in light mode.
-   *
-   * The reference design's 0.556 is 4.73:1 on white but only 4.34:1 on `--muted`, the
-   * recessed surface a table header sits on — and a table header is the single
-   * most common use this token has.
-   *
-   * 0.547 was the first attempt and shipped 4.51:1 in floating point; axe,
-   * reading the painted `#717171`, called it 4.47:1 and failed twenty-four
-   * stories. See {@link gray[635]} — same lesson, same cause. 0.535 measures
-   * 4.75:1 on `--muted` and 5.17:1 on the page.
-   */
-  535: 'oklch(0.535 0 0)',
-  /** Pressed row in dark mode. */
-  371: 'oklch(0.371 0 0)',
-  /** the reference `--secondary`, `--muted`, `--accent` (dark). */
-  269: 'oklch(0.269 0 0)',
-  /** the reference `--primary` (light), `--card` and `--popover` (dark). */
-  205: 'oklch(0.205 0 0)',
-  /** the reference `--foreground` (light), `--background` (dark). */
-  145: 'oklch(0.145 0 0)',
-} as const
-
-/**
- * The reference design's destructive red, clamped into sRGB. Keyed by lightness, like `gray`.
- *
- * the reference design publishes `oklch(0.577 0.245 27.325)`, and that chroma **does not fit
- * in sRGB** — 0.235 is the maximum at this lightness and hue. The difference is
- * invisible; what it buys is a colour that renders identically on an sRGB
- * monitor and a P3 laptop, instead of one each browser gamut-maps by its own
- * rules. rowkit clamps every chromatic primitive for this reason, and
- * `color.test.ts` enforces it.
- *
- * One red serves both themes. The reference design's dark `--destructive` is a lighter
- * `oklch(0.704 …)`, which carries its white label at **2.86:1** — the single
- * worst failure in the reference design's default set. Reusing the light value gives 4.90:1
- * on the label in both themes and still clears 4.04:1 against the dark page.
- */
-export const red = {
-  /** Soft text on a dark subtle wash. Chroma clamped for sRGB. */
-  850: 'oklch(0.85 0.08 25)',
-  /** Destructive fill. The reference design's lightness, chroma clamped. */
-  577: 'oklch(0.577 0.235 27.325)',
-  /** Destructive hover — darkens in both themes, so the white label improves. */
-  520: 'oklch(0.52 0.212 27.325)',
-  /** Soft border on a dark subtle wash. */
-  350: 'oklch(0.38 0.055 25)',
-  /** Soft fill in dark mode — quiet red wash, not a solid brick. */
-  260: 'oklch(0.32 0.045 25)',
-} as const
-
-/**
- * Success and warning, at the reference design's weight. Keyed by lightness, like `gray`.
- *
- * the reference design has no equivalent to copy, so the rule is consistency rather than
- * fidelity: the solid step sits at the same lightness band as `red-577` and
- * carries a white label, so a success, a warning and a destructive button are
- * the same perceptual weight and only differ in hue.
- *
- * That is a real change for warning, which used to be bright amber with dark
- * text. Bright amber is the loudest thing on a the reference design page — the language is
- * built on restraint, and one saturated chip undoes it. Chroma is clamped to
- * the sRGB boundary at every step, as everywhere else.
- */
-export const green = {
-  /** Badge fill, light. */
-  950: 'oklch(0.95 0.05 152)',
-  /** Badge border, light. */
-  880: 'oklch(0.88 0.05 152)',
-  /** Badge text, dark. */
-  850: 'oklch(0.85 0.12 152)',
-  /** Solid fill, both themes. White label at 4.56:1. */
-  550: 'oklch(0.55 0.144 152)',
-  /** Solid hover — darkens, so the white label improves. */
-  520: 'oklch(0.52 0.136 152)',
-  /** Badge text, light. */
-  400: 'oklch(0.4 0.105 152)',
-  /** Badge border, dark. */
-  350: 'oklch(0.35 0.092 152)',
-  /** Badge fill, dark. */
-  260: 'oklch(0.26 0.068 152)',
-} as const
-
-/** Warning, mirroring {@link green} step for step. */
-export const amber = {
-  950: 'oklch(0.95 0.04 75)',
-  880: 'oklch(0.88 0.05 75)',
-  850: 'oklch(0.85 0.12 75)',
-  /** Solid fill, both themes. White label at 4.96:1. */
-  550: 'oklch(0.55 0.116 75)',
-  520: 'oklch(0.52 0.109 75)',
-  400: 'oklch(0.4 0.084 75)',
-  350: 'oklch(0.35 0.074 75)',
-  260: 'oklch(0.26 0.055 75)',
-} as const
-
-/**
- * White at a fraction of opacity, for dark-mode borders.
- *
- * Alpha, not a solid grey: a grey tuned for `--background` draws too hard a
- * line once the same border sits on `--card`. The reference uses 10% / 15%;
- * rowkit softens the decorative hairline to 8% so dense tables stay quiet in
- * dark mode the same way the cool light hairline does.
- */
-export const whiteAlpha = {
-  /** Soft decorative hairline in dark mode. */
-  8: 'oklch(1 0 0 / 8%)',
-  /** the reference dark `--border`. */
-  10: 'oklch(1 0 0 / 10%)',
-  /** Emphasised dark hairline / the reference dark `--input`. */
-  15: 'oklch(1 0 0 / 15%)',
-} as const
-
-/**
- * Every primitive colour, keyed by the CSS custom property it becomes.
+ * Every primitive colour, keyed by the CSS custom property it becomes:
+ * `--color-vga-silver`, `--color-win98-info`.
  *
  * These are the only place a literal colour value appears in rowkit. Everything
  * else — semantic tokens, component variants — references one of these.
  */
 export const colorPrimitives = {
-  white: 'oklch(1 0 0)',
-  black: 'oklch(0 0 0)',
-  ...prefixKeys('gray', gray),
-  ...prefixKeys('red', red),
-  ...prefixKeys('green', green),
-  ...prefixKeys('amber', amber),
-  ...prefixKeys('white-alpha', whiteAlpha),
-  ...prefix('neutral', neutral),
-  ...prefix('primary', primary),
-  ...prefix('success', success),
-  ...prefix('warning', warning),
-  ...prefix('danger', danger),
+  ...prefixKeys('vga', vga),
+  ...prefixKeys('win98', win98),
 } as const
 
-function prefix<N extends string>(
-  name: N,
-  scale: Record<ColorStep, string>
-): Record<`${N}-${ColorStep}`, string> {
-  const out: Record<string, string> = {}
-  for (const step of colorSteps) out[`${name}-${step}`] = scale[step]
-  return out
-}
-
-/**
- * The same, for a scale that is not an eleven-step ramp.
- *
- * `gray` and `whiteAlpha` are keyed by lightness and by opacity, so they cannot
- * go through {@link prefix}, which walks {@link colorSteps}.
- */
-function prefixKeys<N extends string, S extends Record<string | number, string>>(
+/** Prefixes every key of a palette with its family name. */
+function prefixKeys<N extends string, S extends Record<string, string>>(
   name: N,
   scale: S
-): { [K in keyof S & (string | number) as `${N}-${K}`]: string } {
+): { [K in keyof S & string as `${N}-${K}`]: S[K] } {
   const out: Record<string, string> = {}
   for (const [key, value] of Object.entries(scale)) out[`${name}-${key}`] = value
-  return out as { [K in keyof S & (string | number) as `${N}-${K}`]: string }
+  return out as { [K in keyof S & string as `${N}-${K}`]: S[K] }
 }
 
 /** A reference to a primitive colour, as a CSS `var()` expression. */
@@ -339,236 +82,161 @@ export type ColorRef = `var(--color-${string})`
 const ref = (token: keyof typeof colorPrimitives): ColorRef => `var(--color-${token})`
 
 /**
- * Light-mode semantic colours.
+ * Semantic colours.
  *
  * Semantic tokens never hold a literal colour — each one points at a primitive
  * through `var()`, so re-theming means repointing references rather than
- * hunting down hex codes. `semantic.test.ts` enforces this.
+ * hunting down hex codes. `color.test.ts` enforces this.
+ *
+ * Windows 98 is a grey world: most surfaces are the same silver, and depth
+ * comes from bevels rather than from a lighter or darker fill. So several
+ * surface tokens below share a value. They stay separate tokens because they
+ * are separate override points — a theme that wants a hovered row to change
+ * colour repoints `accent` without touching `muted`.
  */
-export const semanticColorLight = {
-  /**
-   * Page background, behind all surfaces.
-   *
-   * Soft cool off-white rather than the reference pure white — less glare over
-   * a long session, and enough lift that a white `card` still reads as a plane.
-   */
-  background: ref('gray-988'),
-  /** Cards, panels, table bodies — the plane content sits on. The reference `--card`. */
-  card: ref('white'),
-  /**
-   * Table headers, toolbars: a surface that recedes slightly.
-   *
-   * Cool and a touch lighter than the reference `--muted`. Same role as
-   * `accent` out of the box — separate override points, not different colours.
-   */
-  muted: ref('gray-972'),
-  /** Row hover. */
-  accent: ref('gray-972'),
-  /** Row press / active. One step past hover; the reference design has no press token. */
-  'surface-active': ref('gray-940'),
-  /**
-   * Selected table row. Quiet primary wash — distinct from hover, not a shout.
-   */
-  'surface-selected': ref('primary-50'),
-  /** Disabled control background. */
-  'surface-disabled': ref('gray-972'),
+export const semanticColor = {
+  // Surfaces
+
+  /** The face of a window: the page behind the content. */
+  background: ref('vga-silver'),
+  /** The desktop a window sits on. Docs and demo backdrops. */
+  desktop: ref('vga-teal'),
+  /** Panels and dialogs. Same face as the window; the bevel separates them. */
+  card: ref('vga-silver'),
+  /** Toolbars and table headers. */
+  muted: ref('vga-silver'),
+  /** Row hover. Windows 98 has none — the token is here to be repointed. */
+  accent: ref('vga-silver'),
+  /** A pressed row or toggle. The pressed bevel carries the state, not the fill. */
+  'surface-active': ref('vga-silver'),
+  /** A selected row or list item: navy, with `on-selected` text. */
+  'surface-selected': ref('vga-navy'),
+  /** A disabled control keeps the face colour; its text goes grey and embossed. */
+  'surface-disabled': ref('vga-silver'),
   /**
    * Loading placeholder fill.
    *
-   * Its own token rather than a reuse of `surface-active`, which means "this
-   * row is being pressed". A skeleton is never interactive, so borrowing an
-   * interaction token would tie the two together for any future re-theme.
-   *
-   * Exempt from contrast rules: skeletons are `aria-hidden` decoration
-   * standing in for content that has not arrived, so there is nothing for a
-   * reader to perceive and WCAG 1.4.11 does not apply.
+   * Exempt from contrast rules: skeletons are `aria-hidden` decoration standing
+   * in for content that has not arrived, so WCAG 1.4.11 does not apply.
    */
-  skeleton: ref('gray-972'),
+  skeleton: ref('vga-gray'),
+  /** The inside of a text field, list or table body: white inside a sunken bevel. */
+  input: ref('vga-white'),
+  /** Tooltip bubble. */
+  'tooltip-bg': ref('win98-info'),
 
-  /** Primary body and heading text. The reference `--foreground`. */
-  foreground: ref('gray-145'),
+  // Text
+
+  /** Body and heading text. */
+  foreground: ref('vga-black'),
   /**
-   * Secondary text, column labels, help text. The reference `--muted-foreground`.
-   *
-   * `gray-535`, not the reference design's 0.556. The same trap the old `neutral-500` fell
-   * into: a table header is muted text on `surface-subtle`, and the reference design's value
-   * reaches 4.73:1 on white but only 4.34:1 on the recessed surface this token
-   * is most often used against. Nine thousandths of lightness buy the pass.
+   * Secondary text. Black, like body text: Windows 98 never greys out text
+   * that can still be read and acted on — grey means disabled.
    */
-  'muted-foreground': ref('gray-535'),
+  'muted-foreground': ref('vga-black'),
   /** Placeholders and de-emphasised metadata. */
-  'text-subtle': ref('gray-635'),
-  /** Text on a disabled control. */
-  'text-disabled': ref('gray-708'),
+  'text-subtle': ref('win98-dark-gray'),
+  /** Disabled text, always drawn with {@link semanticColor['text-disabled-emboss']} under it. */
+  'text-disabled': ref('vga-gray'),
+  /** The white copy, one pixel right and down, that embosses disabled text. */
+  'text-disabled-emboss': ref('vga-white'),
+  /** Text on a selected row. */
+  'on-selected': ref('vga-white'),
+  /** Hyperlinks. */
+  link: ref('vga-blue'),
 
+  // Borders and bevels
+
+  /** Separators and the frame of a group. Decorative, below 3:1 on purpose. */
+  border: ref('vga-gray'),
+  /** A frame that has to read as an edge: the outline of a default button. */
+  'border-strong': ref('vga-black'),
+  /** The faintest rule, inside a dense group. */
+  'border-subtle': ref('win98-light'),
   /**
-   * Decorative hairline: row separators, card outlines.
-   *
-   * Cool and lighter than the reference 0.922. Deliberately below 3:1 — do not
-   * use it for the boundary of an interactive control; see
-   * {@link semanticColorLight['input']}.
+   * Focus. Drawn as a 1px dotted ring inside the control, around its label.
+   * Black, so it clears 3:1 on every surface rowkit paints.
    */
-  border: ref('gray-940'),
-  /** Emphasised decorative border: dividers that need to read as structure. */
-  'border-strong': ref('gray-905'),
-  /** Barely-there separation inside a dense group. */
-  'border-subtle': ref('gray-972'),
+  ring: ref('vga-black'),
+  /** Base colour for shadows. */
+  shadow: ref('vga-black'),
+
+  /** Outer light edge of a raised bevel, inner one of a sunken bevel. */
+  'bevel-highlight': ref('vga-white'),
+  /** Inner light edge of a raised bevel. */
+  'bevel-light': ref('win98-light'),
+  /** Inner dark edge of a raised bevel. */
+  'bevel-shadow': ref('vga-gray'),
   /**
-   * Boundary of an interactive control — text inputs, selects, outlined
-   * buttons.
-   *
-   * Quiet on purpose (structure without severity). Resting edges sit near the
-   * decorative hairline; the focus treatment (`border-ring` + ring) is what
-   * carries WCAG 1.4.11. Matching the reference design's soft resting edge
-   * rather than a 3:1 ink outline that shouted next to every field.
+   * Outer dark edge of a raised bevel. Being black, it is what gives every
+   * control a boundary of well over 3:1 against the face (WCAG 1.4.11).
    */
-  input: ref('gray-870'),
+  'bevel-dark': ref('vga-black'),
+
+  // Window title bar
+
+  /** Active title bar, left end of the gradient. The title text sits on this end. */
+  'titlebar-from': ref('vga-navy'),
+  /** Active title bar, right end of the gradient. */
+  'titlebar-to': ref('win98-title-blue'),
+  /** Inactive title bar, left end of the gradient. */
+  'titlebar-inactive-from': ref('vga-gray'),
+  /** Inactive title bar, right end of the gradient. */
+  'titlebar-inactive-to': ref('win98-title-gray'),
+  /** Active title text. */
+  'titlebar-foreground': ref('vga-white'),
   /**
-   * Focus ring. Never remove the ring — recolour it.
-   *
-   * Soft silver — the payment-form / shadcn weight (`gray-708`), not ink.
-   * Intentionally under 3:1 as a solid; the visible treatment is
-   * `border-ring` plus a translucent outer ring, not a black halo.
-   * Every control that focuses (Button, Input, Select, Dialog close,
-   * Pagination, FilterBar chips, DataTable, Toast) reads this same token.
+   * Inactive title text. Black, not Windows 98's silver: silver on the grey
+   * gradient is about 2:1 and fails 4.5:1; black is 5.3:1 on `#808080` and
+   * 11:1 on `#b5b5b5`.
    */
-  ring: ref('gray-708'),
+  'titlebar-inactive-foreground': ref('vga-black'),
 
-  /** Base colour shadows are mixed from. */
-  shadow: ref('black'),
-
-  // `neutral` completes the status family so a component's variant matrix has
-  // no special case: a neutral Badge reads the same token names as a danger
-  // one. It is the default state — "no status" — not an absence of styling.
-  'neutral-solid': ref('gray-972'),
-  'neutral-solid-hover': ref('gray-940'),
-  'neutral-on-solid': ref('gray-205'),
-  'neutral-subtle': ref('gray-972'),
-  'neutral-on-subtle': ref('gray-205'),
-  'neutral-border': ref('gray-940'),
-
-  /**
-   * Ink-blue solid — cool, not a black brick and not a saturated brand blue.
-   * `primary-800` ≈ `oklch(0.32 0.09 255)`.
-   */
-  'primary-solid': ref('primary-800'),
-  'primary-solid-hover': ref('primary-900'),
-  'primary-on-solid': ref('gray-985'),
-  'primary-subtle': ref('primary-50'),
-  'primary-on-subtle': ref('primary-900'),
-  'primary-border': ref('primary-200'),
-
-  'success-solid': ref('green-550'),
-  'success-solid-hover': ref('green-520'),
-  'success-on-solid': ref('white'),
-  'success-subtle': ref('green-950'),
-  'success-on-subtle': ref('green-400'),
-  'success-border': ref('green-880'),
-
-  // Amber is squeezed from both sides in light mode. It cannot carry white text
-  // at any usable weight (white on warning-600 is 3.78:1), and a bright amber
-  // fill has no discernible edge against a near-white page (warning-400 vs
-  // background is 1.92:1, failing WCAG 1.4.11). warning-600 is the only step
-  // that satisfies both: 3.61:1 against the page, 4.69:1 for dark text.
+  // Status families. A solid is a filled badge or a button; a subtle is a
+  // white chip with coloured text. No status colour is ever used without an
+  // icon or a word that says the same thing.
   //
-  // Hover therefore brightens rather than darkens — warning-700 would drop dark
-  // text to 3.27:1.
-  'warning-solid': ref('amber-550'),
-  'warning-solid-hover': ref('amber-520'),
-  'warning-on-solid': ref('white'),
-  'warning-subtle': ref('amber-950'),
-  'warning-on-subtle': ref('amber-400'),
-  'warning-border': ref('amber-880'),
+  // `neutral` completes the family so a component's variant matrix has no
+  // special case: a neutral Badge reads the same token names as a danger one.
+  'neutral-solid': ref('vga-black'),
+  'neutral-solid-hover': ref('vga-black'),
+  'neutral-on-solid': ref('vga-white'),
+  'neutral-subtle': ref('vga-white'),
+  'neutral-on-subtle': ref('vga-black'),
+  'neutral-border': ref('vga-gray'),
 
-  'danger-solid': ref('red-577'),
-  'danger-solid-hover': ref('red-520'),
-  'danger-on-solid': ref('white'),
-  // Soft destructive wash — pink enough to read as danger, not a solid brick.
-  'danger-subtle': ref('danger-100'),
-  'danger-on-subtle': ref('danger-700'),
-  'danger-border': ref('danger-200'),
-} as const
+  'primary-solid': ref('vga-navy'),
+  'primary-solid-hover': ref('vga-navy'),
+  'primary-on-solid': ref('vga-white'),
+  'primary-subtle': ref('vga-white'),
+  'primary-on-subtle': ref('vga-navy'),
+  'primary-border': ref('vga-navy'),
 
-/**
- * Dark-mode semantic colours, applied under `.dark`.
- *
- * Soft ink fills invert on dark pages: a near-white solid with dark type,
- * rather than a mid-grey that disappears into the chrome.
- */
-export const semanticColorDark = {
-  background: ref('gray-145'),
-  card: ref('gray-205'),
-  muted: ref('gray-269'),
-  accent: ref('gray-269'),
-  'surface-active': ref('gray-371'),
-  'surface-selected': ref('gray-269'),
-  'surface-disabled': ref('gray-269'),
-  // Lifts off `surface` rather than receding. On a dark page a placeholder
-  // darker than its card reads as a hole in the layout.
-  skeleton: ref('gray-269'),
+  'success-solid': ref('vga-green'),
+  'success-solid-hover': ref('vga-green'),
+  'success-on-solid': ref('vga-white'),
+  'success-subtle': ref('vga-white'),
+  'success-on-subtle': ref('vga-green'),
+  'success-border': ref('vga-green'),
 
-  foreground: ref('gray-985'),
-  // The reference design's own value, kept: 7.63:1 on the page and 5.83:1 on `--muted`, so
-  // dark mode needs none of the correction light mode did.
-  'muted-foreground': ref('gray-708'),
-  'text-subtle': ref('gray-556'),
-  'text-disabled': ref('gray-556'),
-
-  // White at alpha, not a solid grey — see `whiteAlpha`. Decorative hairline
-  // softens to 8% so dense tables stay quiet; controls keep 15% for 1.4.11.
-  border: ref('white-alpha-8'),
-  'border-strong': ref('white-alpha-15'),
-  'border-subtle': ref('white-alpha-8'),
-  // The reference `--input`, unchanged: composited over the page it measures
-  // 3.82:1, and 3.54:1 over a card, so both clear 1.4.11 without help.
-  input: ref('white-alpha-15'),
   /**
-   * Soft focus — white at the same quiet weight as the control border, not a
-   * bright primary wash. Reads as a silver edge on dark surfaces.
+   * Yellow carries black, never white: white on `#ffff00` is 1.07:1. Its edge
+   * is olive, because yellow on silver has almost no edge of its own.
    */
-  ring: ref('white-alpha-15'),
+  'warning-solid': ref('vga-yellow'),
+  'warning-solid-hover': ref('vga-yellow'),
+  'warning-on-solid': ref('vga-black'),
+  'warning-subtle': ref('vga-white'),
+  'warning-on-subtle': ref('vga-black'),
+  'warning-border': ref('vga-olive'),
 
-  shadow: ref('black'),
-
-  'neutral-solid': ref('gray-269'),
-  'neutral-solid-hover': ref('gray-371'),
-  'neutral-on-solid': ref('gray-985'),
-  'neutral-subtle': ref('gray-269'),
-  'neutral-on-subtle': ref('gray-985'),
-  'neutral-border': ref('gray-371'),
-
-  // Soft near-white fill with dark label — ink inverted for dark pages.
-  'primary-solid': ref('primary-100'),
-  'primary-solid-hover': ref('primary-50'),
-  'primary-on-solid': ref('primary-900'),
-  'primary-subtle': ref('primary-900'),
-  'primary-on-subtle': ref('primary-200'),
-  'primary-border': ref('primary-700'),
-
-  'success-solid': ref('green-550'),
-  'success-solid-hover': ref('green-520'),
-  'success-on-solid': ref('white'),
-  'success-subtle': ref('green-260'),
-  'success-on-subtle': ref('green-850'),
-  'success-border': ref('green-350'),
-
-  'warning-solid': ref('amber-550'),
-  'warning-solid-hover': ref('amber-520'),
-  'warning-on-solid': ref('white'),
-  'warning-subtle': ref('amber-260'),
-  'warning-on-subtle': ref('amber-850'),
-  'warning-border': ref('amber-350'),
-
-  // The same red as light mode, with a white label. See `red`.
-  'danger-solid': ref('red-577'),
-  'danger-solid-hover': ref('red-520'),
-  'danger-on-solid': ref('white'),
-  // Soft destructive wash in dark — same philosophy as light (pink wash +
-  // coloured label), mirroring success/warning dark subtle steps.
-  'danger-subtle': ref('red-260'),
-  'danger-on-subtle': ref('red-850'),
-  'danger-border': ref('red-350'),
+  'danger-solid': ref('vga-maroon'),
+  'danger-solid-hover': ref('vga-maroon'),
+  'danger-on-solid': ref('vga-white'),
+  'danger-subtle': ref('vga-white'),
+  'danger-on-subtle': ref('vga-maroon'),
+  'danger-border': ref('vga-maroon'),
 } as const
 
 /** Names of every semantic colour token. */
-export type SemanticColorName = keyof typeof semanticColorLight
+export type SemanticColorName = keyof typeof semanticColor

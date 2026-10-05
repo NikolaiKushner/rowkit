@@ -13,45 +13,87 @@ describe('Button', () => {
   })
 
   it.each([
-    ['default', 'bg-primary-solid'],
-    ['outline', 'bg-card'],
-    ['secondary', 'bg-surface-active'],
+    ['default', 'shadow-raised-default'],
+    ['secondary', 'shadow-raised'],
     ['ghost', 'bg-transparent'],
-    ['destructive', 'bg-danger-subtle'],
-    ['link', 'underline-offset-4'],
+    ['destructive', 'text-danger-on-subtle'],
+    ['link', 'text-link'],
   ] as const)('%s uses the %s token', (variant, expected) => {
-    expect(mount(Button, { props: { variant }, slots: { default: 'x' } }).html()).toContain(
-      expected
-    )
+    const classes = mount(Button, { props: { variant }, slots: { default: 'x' } }).classes()
+    expect(classes).toContain(expected)
   })
 
-  it('gives outline a visible control border', () => {
-    const classes = mount(Button, {
-      props: { variant: 'outline' },
-      slots: { default: 'x' },
-    }).classes()
-    expect(classes).toContain('border-input')
-    expect(classes).not.toContain('border-transparent')
+  it('draws every state with a bevel, never with a transition', () => {
+    const classes = mount(Button, { slots: { default: 'x' } }).classes()
+    expect(classes).toContain('active:shadow-pressed')
+    expect(classes.some((c) => c.startsWith('transition'))).toBe(false)
   })
 
   it('renders icon sizes as squares', () => {
     const classes = mount(Button, {
-      props: { size: 'icon', variant: 'outline' },
+      props: { size: 'icon', variant: 'secondary' },
       slots: { default: 'x' },
       attrs: { 'aria-label': 'Open' },
     }).classes()
-    expect(classes).toContain('size-8')
+    expect(classes).toContain('size-[30px]')
   })
 
   it('lets a consumer class beat the variant class', () => {
-    // Assert on the class list, not the raw HTML: `bg-primary-solid` is a
-    // substring of the `hover:` utility that legitimately survives the merge.
     const classes = mount(Button, {
-      props: { variant: 'default', class: 'bg-danger-solid' },
+      props: { variant: 'secondary', class: 'shadow-none' },
       slots: { default: 'x' },
     }).classes()
-    expect(classes).toContain('bg-danger-solid')
-    expect(classes).not.toContain('bg-primary-solid')
+    expect(classes).toContain('shadow-none')
+    expect(classes).not.toContain('shadow-raised')
+  })
+
+  it('shifts the content, not the button, when pressed', () => {
+    const content = mount(Button, { slots: { default: 'x' } }).get('[data-slot="button-content"]')
+    // Padded right and bottom at rest, left and top while held: same box.
+    expect(content.classes()).toEqual(
+      expect.arrayContaining([
+        'pr-px',
+        'pb-px',
+        'group-active/button:pl-px',
+        'group-active/button:pt-px',
+      ])
+    )
+  })
+
+  it('draws the focus ring around the label', () => {
+    const ring = mount(Button, { slots: { default: 'x' } }).get('[data-slot="button-focus"]')
+    expect(ring.classes()).toContain('group-focus-visible/button:outline-dotted')
+    expect(ring.text()).toBe('x')
+  })
+
+  describe('pressed', () => {
+    it('is not a toggle unless asked', () => {
+      const wrapper = mount(Button, { slots: { default: 'x' } })
+      expect(wrapper.attributes('aria-pressed')).toBeUndefined()
+    })
+
+    it.each([true, false])('announces pressed=%s', (pressed) => {
+      const wrapper = mount(Button, { props: { pressed }, slots: { default: 'x' } })
+      expect(wrapper.attributes('aria-pressed')).toBe(String(pressed))
+    })
+
+    it('draws on over the dither', () => {
+      const classes = mount(Button, { props: { pressed: true }, slots: { default: 'x' } }).classes()
+      expect(classes).toContain('aria-pressed:bg-dither')
+    })
+  })
+
+  describe('as child', () => {
+    it("puts the button's attributes on the consumer's element", () => {
+      const wrapper = mount(Button, {
+        props: { asChild: true, variant: 'secondary' },
+        slots: { default: '<a href="/next">Next</a>' },
+      })
+      expect(wrapper.element.tagName).toBe('A')
+      expect(wrapper.attributes('data-slot')).toBe('button')
+      expect(wrapper.classes()).toContain('shadow-raised')
+      expect(wrapper.find('[data-slot="button-content"]').exists()).toBe(false)
+    })
   })
 
   it('emits click when idle', async () => {
@@ -80,10 +122,10 @@ describe('Button', () => {
   })
 
   describe('loading', () => {
-    it('marks the button busy and shows a spinner', () => {
+    it('marks the button busy and shows the hourglass', () => {
       const wrapper = mount(Button, { props: { loading: true }, slots: { default: 'Save' } })
       expect(wrapper.attributes('aria-busy')).toBe('true')
-      expect(wrapper.find('svg.animate-spin').exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'RkHourglassIcon' }).exists()).toBe(true)
     })
 
     it('keeps the label and stays focusable', () => {
@@ -113,7 +155,7 @@ describe('Button', () => {
         slots: { default: 'x', leading: '<span data-testid="icon" />' },
       })
       expect(wrapper.find('[data-testid="icon"]').exists()).toBe(false)
-      expect(wrapper.find('svg.animate-spin').exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'RkHourglassIcon' }).exists()).toBe(true)
     })
 
     it('announces a loading label only when one is given', () => {

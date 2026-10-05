@@ -118,11 +118,6 @@ describe('docs stylesheet', () => {
     expect(css, "do not rewrite the host theme's stacking scale").not.toMatch(/--vp-z-index-\w+:/)
   })
 
-  it('aligns home markdown with the hero', async () => {
-    const css = await readFile(join(repoRoot, 'docs/.vitepress/theme/tokens.css'), 'utf8')
-    expect(css).toMatch(/\.VPHome \.vp-doc\.container\s*\{[^}]*box-sizing: content-box/)
-  })
-
   it('keeps demo tables as tables', async () => {
     /*
      * VitePress sets `.vp-doc table { display: block }` so long markdown tables

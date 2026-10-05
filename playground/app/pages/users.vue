@@ -117,7 +117,7 @@ const columns: DataTableColumn<User>[] = [
     // by accident; this is the order that means something.
     sortValue: (row) => ({ active: 0, invited: 1, suspended: 2 })[row.status],
   },
-  { key: 'seats', header: 'Seats', sortable: true, align: 'end', width: '7rem' },
+  { key: 'seats', header: 'Seats', sortable: true, numeric: true, width: '7rem' },
   {
     key: 'lastActive',
     header: 'Last active',
@@ -228,7 +228,7 @@ const selectedCount = computed(() => selected.value.length)
         </p>
       </div>
       <div class="flex items-center gap-2">
-        <Button variant="outline">Export</Button>
+        <Button variant="secondary">Export</Button>
         <Button>Invite teammate</Button>
       </div>
     </header>

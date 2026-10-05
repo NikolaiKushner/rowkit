@@ -22,9 +22,28 @@ describe('cn', () => {
 })
 
 /**
- * A scale whose class names `tailwind-merge` cannot group without help. Each
- * case is generated from the token package, so adding a token that breaks
- * merging fails here rather than in a consumer's app.
+ * Every ordered pair of tokens in a scale, merged: the second must win. One
+ * test per scale rather than one per pair — the pairs are hundreds of rows of
+ * the same assertion — and a failure lists every pair that went wrong.
+ */
+function collisions(prefix: string, names: readonly string[]): string[] {
+  const failures: string[] = []
+  for (const first of names) {
+    for (const second of names) {
+      if (first === second) continue
+      const merged = cn(`${prefix}-${first}`, `${prefix}-${second}`)
+      if (merged !== `${prefix}-${second}`) {
+        failures.push(`${prefix}-${first} + ${prefix}-${second} → "${merged}"`)
+      }
+    }
+  }
+  return failures
+}
+
+/**
+ * Scales whose class names `tailwind-merge` cannot group without help, read
+ * from the token package so a new token that breaks merging fails here rather
+ * than in a consumer's app.
  */
 const customScales = [
   ['shadow', 'shadow', Object.keys(tokens.shadow)],
@@ -32,19 +51,6 @@ const customScales = [
   ['duration', 'duration', Object.keys(tokens.motion.duration)],
   ['easing', 'ease', Object.keys(tokens.motion.easing)],
 ] as const
-
-describe.each(customScales)('%s tokens collide with each other', (_scale, prefix, names) => {
-  it('has at least two tokens to compare', () => {
-    expect(names.length).toBeGreaterThan(1)
-  })
-
-  it.each(names.flatMap((a) => names.filter((b) => b !== a).map((b) => [a, b] as const)))(
-    `${prefix}-%s then ${prefix}-%s resolves to the second`,
-    (first, second) => {
-      expect(cn(`${prefix}-${first}`, `${prefix}-${second}`)).toBe(`${prefix}-${second}`)
-    }
-  )
-})
 
 /**
  * Scales `tailwind-merge` already handles, asserted so that a future config
@@ -60,11 +66,16 @@ const stockScales = [
   ['spacing', 'p', Object.keys(tokens.spacing)],
 ] as const
 
-describe.each(stockScales)('%s tokens collide with each other', (_scale, prefix, names) => {
-  it.each(names.flatMap((a) => names.filter((b) => b !== a).map((b) => [a, b] as const)))(
-    `${prefix}-%s then ${prefix}-%s resolves to the second`,
-    (first, second) => {
-      expect(cn(`${prefix}-${first}`, `${prefix}-${second}`)).toBe(`${prefix}-${second}`)
+describe('token scales collide within themselves', () => {
+  it.each(customScales)('%s: has at least two tokens to compare', (_scale, _prefix, names) => {
+    expect(names.length).toBeGreaterThan(1)
+  })
+
+  // A scale of one token has nothing to collide with.
+  it.each([...customScales, ...stockScales].filter(([, , names]) => names.length > 1))(
+    '%s: the later token wins',
+    (_scale, prefix, names) => {
+      expect(collisions(prefix, names)).toEqual([])
     }
   )
 })
@@ -74,7 +85,7 @@ describe.each(stockScales)('%s tokens collide with each other', (_scale, prefix,
  * overriding one has to win.
  */
 describe('semantic colour utilities collide within a property', () => {
-  const semantic = Object.keys(tokens.color.semantic.light)
+  const semantic = Object.keys(tokens.color.semantic)
 
   it.each(['bg', 'text', 'border', 'ring', 'fill'] as const)('%s-*', (prefix) => {
     const [first, second] = [semantic[0], semantic[1]]
@@ -83,5 +94,18 @@ describe('semantic colour utilities collide within a property', () => {
 
   it('does not collide across properties', () => {
     expect(cn('bg-card', 'text-foreground')).toBe('bg-card text-foreground')
+  })
+
+  it('keeps every font size beside a text colour', () => {
+    for (const size of Object.keys(tokens.font.size)) {
+      expect(cn(`text-${size}`, 'text-foreground')).toBe(`text-${size} text-foreground`)
+      expect(cn('text-foreground', `text-${size}`)).toBe(`text-foreground text-${size}`)
+    }
+  })
+
+  it('keeps the disabled emboss beside the disabled colour', () => {
+    expect(cn('text-text-disabled', 'text-shadow-disabled')).toBe(
+      'text-text-disabled text-shadow-disabled'
+    )
   })
 })

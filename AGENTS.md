@@ -13,6 +13,22 @@ Repository: `github.com/NikolaiKushner/rowkit`
 Package: `rowkit` on npm
 Docs: `rowkit.dev`
 
+## How to treat these rules
+
+Every rule, ban and "decision already made" in this file is a default, not a
+law. They exist to keep the library consistent, not to slow down a new
+component, a change to an existing one, or the Windows 98 design.
+
+- If a rule gets in the way of building something or of matching the Figma
+  design, depart from it. Say so in one line in the commit or PR — which rule,
+  and why it did not fit.
+- If the same rule keeps getting in the way, change the rule in this file in
+  the same PR rather than working around it again.
+- The Figma design ([rowkit × Windows 98](https://www.figma.com/design/hmDfFpjrDP6WtEary6U6SE/rowkit-%C3%97-Windows-98)) wins over older wording here. When they disagree, follow the
+  design and update the text.
+- What stays firm: do not break a published API without a changeset, and do not
+  ship something inaccessible or untested. Everything else bends.
+
 ## Read first
 
 - **[`docs/conventions.md`](./docs/conventions.md)** — before designing anything
@@ -24,26 +40,27 @@ Docs: `rowkit.dev`
   New surface belongs when a product interface is awkward without it. There is
   no fixed component count.
 
-**Visual direction:** restraint, structure without severity, no excess. Neutral chrome; ink-blue primary (`oklch(0.32 0.09 255)`), not a chromatic shout. Consumers rebrand via tokens — defaults must not fight them. Geist stays.
+**Visual direction:** Windows 98. Grey `#C0C0C0` face, two-pixel bevels (raised, pressed, sunken), navy `#000080` selection and title-bar gradient, square corners, no soft shadows, no blur, next to no motion. PT Sans replaces Geist (OFL, Latin and Cyrillic, regular and bold; apps load the font, rowkit does not ship it). Controls follow Win98 sizes on desktop and grow to ≥ 24px touch targets on touch screens. One light theme — there is no dark mode. The style, not the assets: no Microsoft logos, Windows flag or original system icons. Consumers still rebrand via tokens (`--color-primary-*`). Every component is redrawn; the pre-redesign look is legacy, not a reference.
 
 ## Stack
 
-- **Reka UI** — accessible primitives. NEVER hand-roll focus management, ARIA wiring, or keyboard handling when a Reka primitive exists.
+- **Own behaviour layer, no behaviour library.** Focus scope, dismissable layers, presence, scroll lock, hide-others and positioning live in `packages/ui/src/primitives/`, used by every component. Platform features where they are good enough (native inputs, `aria-live`); otherwise rowkit's own code. Extend a primitive, with its tests, rather than re-solving focus or dismissal inside a component.
 - **Tailwind CSS v4** — configured via the `@theme` block in CSS. There is no `tailwind.config.js`.
 - **Vitest** + **Storybook 10** (`@storybook/addon-vitest`, `@storybook/addon-a11y` as a gate, not a panel). Storybook 10, not 9: `@storybook/vue3-vite@9` peers on Vite 7 and this repo is on Vite 8.
 
 ## Rules
 
 1. **No hardcoded design values.** Colour, space, radius, shadow, and z-index come from a token. If a token is missing, propose one.
-2. **Behaviour comes from Reka.** Forward the primitive with `useForwardPropsEmits`. Do not reimplement focus, dismiss, typeahead, or scroll lock.
-3. **Follow Reka's custom API.** The consumer places the parts that change: root, trigger, content, title, description. Parts that always travel together — portal, overlay, close — belong inside `DialogContent`, which is what Reka's own docs show. A `mode` prop that redraws the layout is the thing to avoid. Details are in `docs/conventions.md`.
-4. **`data-slot` on each public part**, kebab-cased (`dialog`, `dialog-title`). `data-state` comes from Reka.
+2. **Behaviour you own, you test.** Keyboard, focus and dismiss behaviour gets an interaction test, and `addon-a11y` stays a gate.
+3. **Parts, composed by the consumer.** The consumer places the parts that change: root, trigger, content, title, description. Parts that always travel together — portal, overlay, close — belong inside `DialogContent`. A `mode` prop that redraws the layout is the thing to avoid. Details are in `docs/conventions.md`.
+4. **`data-slot` on each public part**, kebab-cased (`dialog`, `dialog-title`), and `data-state` on parts that open and close.
 5. **Variants live in one `ComponentName.variants.ts`**, defined with `cva`.
 6. **Every prop has a JSDoc comment.** These feed the docs site and `packages/ui/AGENTS.md`.
 7. **`vue` is external.** Never bundle the framework into the library output.
-8. **Every public API change requires a changeset.** Rebuilding a component into parts is breaking. On 0.x, mark that changeset `minor` and say so in the text — a `major` here publishes 1.0.0.
+8. **Every public API change requires a changeset.** Rebuilding a component into parts is breaking. rowkit is in the 1.0 beta (changesets pre mode, `.changeset/pre.json`): every changeset publishes the next `1.0.0-beta.N` under the npm `beta` tag, so mark breaking changes `minor` and say so in the text. `pnpm changeset pre exit` before the release that should become 1.0.0.
 9. **No `any`.** If typing is genuinely hard, ask rather than escaping the type system.
 10. **Every public part accepts `class` and merges it** via `tailwind-merge`. A trigger the consumer restyles takes `as-child`.
+11. **No competitor names in code.** Source, comments, tests, stories and docs pages do not mention Reka UI. Explain a design choice on its own terms ("a traced polygon would…"), not by contrast with another library. The only places it is named: changesets and this file. rowkit carries no code adapted from it — learn from how it behaves, then write the implementation yourself. If code from any MIT project is ever adapted, its license notice has to ship with the package: add a `THIRD_PARTY_NOTICES.md` and list it in `files`, never as a file header.
 
 `Toaster` and `Field` are still single components. Leave them that way unless rebuilding one is the task.
 
@@ -55,14 +72,14 @@ A single element (`Button`, `Badge`, `Input`, `Skeleton`, `EmptyState`) is one V
 
 A component is not finished until all of these are true:
 
-1. Renders all variants correctly in light and dark mode
+1. Renders all variants correctly in the Windows 98 theme
 2. Full keyboard support, and that support is documented
 3. `addon-a11y` passes with zero violations
 4. All props typed and JSDoc'd
 5. Stories cover every variant, every state, and — for an assembly — the parts composed by the consumer
 6. Interaction test for the primary behavior
 7. Docs page written, including a **"when not to use"** section
-8. **Visual QA:** `pnpm visual:check <Component>` (Storybook must be running), then **Read the PNGs** and fix anything that looks wrong in light or dark. Green tests are not enough.
+8. **Visual QA:** `pnpm visual:check <Component>` (Storybook must be running), then **Read the PNGs** and fix anything that looks wrong: blurred bevel edges, fractional pixels, an invisible focus rectangle. Green tests are not enough.
 
 ## How to work on this
 
@@ -74,16 +91,23 @@ A component is not finished until all of these are true:
 - **When reviewing, list problems without fixing them** unless asked. The maintainer decides what matters.
 - **Look at the pixels.** After UI changes, screenshot and inspect. Do not claim "looks fine" from code alone.
 
+## The competitor: Reka UI
+
+[Reka UI](https://reka-ui.com) is rowkit's main competitor: the headless Vue behaviour library that Nuxt UI and shadcn-vue are built on, and that rowkit itself was built on before the Windows 98 redesign. Its source (MIT) is the best reference there is for how an accessible Vue component is put together — study it when designing a part: which edge cases its focus scope, dismissable layer, presence, popper or combobox handle. Then write rowkit's own; do not copy its code (rule 11).
+
+Take how it is built; build it better. rowkit's versions already differ where Reka's were weak — Escape that reaches only the toast in focus, toasts ordered newest-first in the DOM instead of hidden focus proxies, one persistent live region, a tooltip that is its own description, a select written to the WAI-ARIA combobox pattern instead of a general engine with workarounds. Before building something it has, ask what it gets wrong. Do not add it back as a dependency, and keep its name out of code (rule 11).
+
 ## Design decisions already made
 
-Don't re-litigate these:
+Settled for now. Revisit one when it gets in the way, with a reason — see "How to treat these rules":
 
 - **npm package, not copy-paste distribution.** shadcn-vue's model is deliberate and good, but rowkit ships as a versioned package.
-- **Reka UI, not shadcn-vue as a dependency.** shadcn-vue is the reference for how styled parts sit on Reka. rowkit does not install it.
-- **Assemblies follow Reka's custom API.** The consumer places root, trigger, content, and the text parts. Portal, overlay, and close can live inside content. See `docs/conventions.md`.
+- **No behaviour library.** rowkit's primitives are its own. Nothing like Reka UI is ever added back as a dependency.
+- **Assemblies are parts.** The consumer places root, trigger, content, and the text parts. Portal, overlay, and close can live inside content. See `docs/conventions.md`.
 - **The set is the professional toolkit.** Components are added until a product interface can be built from rowkit. There is no fixed count, and tables are one part of that set, not the boundary of it.
 - **MIT license.**
 - **Tokens as a separate package**, so they can be consumed without importing components.
+- **Windows 98 is the only theme.** It replaces the previous restrained look entirely, and dark mode is dropped. Semantic token names stay; their values change.
 
 ## Commands
 
@@ -96,7 +120,7 @@ pnpm format       # prettier
 pnpm size         # bundle budget, brotli
 
 pnpm storybook    # then, in another terminal:
-pnpm visual:check # screenshot default stories, light + dark → .visual-check/
+pnpm visual:check # screenshot default stories → .visual-check/
 pnpm visual:check Button  # scoped to one component
 
 pnpm docs:props   # regenerate the props tables after touching a prop or its JSDoc
@@ -107,7 +131,7 @@ pnpm docs:agents  # regenerate packages/ui/AGENTS.md, likewise
 the type checker all resolve `rowkit` through `packages/ui/dist`, and an unbuilt
 workspace produces a wall of confusing type errors rather than one clear one.
 
-After any change that touches variants, tokens, layout, or dark mode: run
+After any change that touches variants, tokens, or layout: run
 `pnpm visual:check`, **Read the PNGs**, and fix what looks wrong before claiming
 done. Styling fails silently — screenshots are how agents catch it.
 

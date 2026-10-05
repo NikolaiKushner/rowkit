@@ -1,32 +1,20 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
- * Joins sibling buttons into one control — shared edges, outer corners only.
+ * A Windows 98 toolbar group: buttons edge to edge, each keeping its own
+ * bevel — nothing is merged, as in the Figma toolbars.
  *
- * Join rules target `data-slot=button` only. Nested `ButtonGroup` children are
- * separate units and pick up `gap-2` from the `has-` rule below.
+ * A group of groups spaces them 4px apart, the gap the Figma Home toolbar
+ * leaves on each side of the etched `Separator` between groups. A
+ * `Separator` placed straight between buttons in one group stays flush.
  */
 export const buttonGroupVariants = cva(
-  [
-    'inline-flex w-fit items-stretch',
-    '[&_[data-slot=button]]:focus-visible:relative [&_[data-slot=button]]:focus-visible:z-10',
-    // Nested groups are separate units — space them clearly so the layout
-    // reads as clusters, not one long sausage.
-    'has-[>[data-slot=button-group]]:gap-3',
-  ],
+  ['inline-flex w-fit', 'has-[>[data-slot=button-group]]:gap-1'],
   {
     variants: {
       orientation: {
-        horizontal: [
-          'flex-row',
-          '[&>[data-slot=button]:not(:first-child)]:rounded-l-none [&>[data-slot=button]:not(:first-child)]:-ml-px',
-          '[&>[data-slot=button]:not(:last-child)]:rounded-r-none',
-        ],
-        vertical: [
-          'flex-col',
-          '[&>[data-slot=button]:not(:first-child)]:rounded-t-none [&>[data-slot=button]:not(:first-child)]:-mt-px',
-          '[&>[data-slot=button]:not(:last-child)]:rounded-b-none',
-        ],
+        horizontal: 'flex-row items-center',
+        vertical: 'flex-col items-stretch',
       },
     },
     defaultVariants: {

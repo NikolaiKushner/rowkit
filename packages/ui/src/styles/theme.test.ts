@@ -52,27 +52,29 @@ async function build(...candidates: string[]): Promise<string> {
 
 /** [utility, the custom property its declaration must reference] */
 const utilities: readonly (readonly [string, string])[] = [
-  ['bg-primary-600', '--color-primary-600'],
-  ['bg-neutral-50', '--color-neutral-50'],
+  ['bg-vga-navy', '--color-vga-navy'],
+  ['bg-win98-info', '--color-win98-info'],
+  ['bg-desktop', '--color-desktop'],
+  ['bg-surface-selected', '--color-surface-selected'],
+  ['text-on-selected', '--color-on-selected'],
   ['bg-card', '--color-card'],
   ['bg-accent', '--color-accent'],
   ['text-muted-foreground', '--color-muted-foreground'],
   ['text-danger-on-solid', '--color-danger-on-solid'],
-  ['border-input', '--color-input'],
-  ['ring-ring', '--color-ring'],
-  // The dialog scrim. Without a utility behind it the overlay renders fully
-  // transparent — the dialog still opens, and nothing looks wrong until you
-  // notice the page behind is not dimmed.
+  ['bg-input', '--color-input'],
+  ['outline-ring', '--color-ring'],
   ['bg-shadow', '--color-shadow'],
   ['p-4', '--spacing-4'],
   ['gap-2', '--spacing-2'],
-  ['text-sm', '--text-sm'],
-  ['font-medium', '--font-weight-medium'],
+  ['text-ui', '--text-ui'],
+  ['text-heading', '--text-heading'],
+  ['text-doc-h1', '--text-doc-h1'],
+  ['font-bold', '--font-weight-bold'],
   ['font-mono', '--font-mono'],
-  ['tracking-wide', '--tracking-wide'],
+  ['tracking-normal', '--tracking-normal'],
   ['leading-snug', '--leading-snug'],
   ['rounded-md', '--radius-md'],
-  ['backdrop-blur-overlay', '--blur-overlay'],
+  ['text-shadow-disabled', '--color-text-disabled-emboss'],
   ['z-modal', '--z-index-modal'],
   ['duration-fast', '--transition-duration-fast'],
   ['ease-standard', '--ease-standard'],
@@ -131,7 +133,7 @@ describe('the radius scale resolves', () => {
   it('declares --radius, so the calc() has something to multiply', async () => {
     const css = await build('rounded-md')
     expect(css, '--radius vanished — every rounded-* utility now computes to 0').toMatch(
-      /--radius:\s*0\.5rem/
+      /--radius:\s*0rem/
     )
   })
 
@@ -149,56 +151,71 @@ describe('the radius scale resolves', () => {
   })
 })
 
+describe('the scroll bar', () => {
+  it('draws every part from tokens', async () => {
+    const css = await build('scrollbar-win98')
+    expect(css, 'scrollbar-win98 generated no rule').toContain('.scrollbar-win98 {')
+    for (const part of ['', '-track', '-thumb', '-corner', '-button:single-button']) {
+      expect(css).toContain(`&::-webkit-scrollbar${part} {`)
+    }
+    expect(css).toContain('box-shadow: var(--shadow-raised)')
+    expect(css).toContain('var(--color-foreground)')
+    const rule = css.slice(css.indexOf('.scrollbar-win98 {'))
+    expect(rule, 'a hex colour bypasses the tokens').not.toMatch(/#[0-9a-f]{3,6}\b/i)
+  })
+
+  it('resets the standard properties that would switch the webkit parts off', async () => {
+    // Chromium drops every ::-webkit-scrollbar rule once an element has a
+    // standard scrollbar-color or scrollbar-width — and scrollbar-color
+    // inherits, so one app-wide rule would silently restore the native bar.
+    const css = await build('scrollbar-win98')
+    expect(css).toContain('scrollbar-color: auto')
+    expect(css).toContain('scrollbar-width: auto')
+    expect(css).toMatch(/@supports not selector\(::-webkit-scrollbar\)\s*{\s*scrollbar-color:/)
+  })
+})
+
 describe('shadows', () => {
   it('draws the sticky header rule as an inset shadow that keeps its token', async () => {
     // A border cannot do this job: under `border-collapse` it belongs to the
     // table grid, so a sticky header scrolls away from its own rule. The value
     // has to survive Tailwind's shadow-colour handling with the var() intact,
-    // or the line renders in the wrong colour under `.dark`.
+    // or the line stops following the border token.
     const css = await build('shadow-sticky-header')
     expect(css, 'shadow-sticky-header generated no rule').toContain('.shadow-sticky-header {')
     expect(css).toContain('inset')
     expect(css).toContain('var(--color-border)')
   })
 
-  it.each(['shadow-xs', 'shadow-md', 'shadow-scroll-x'])('%s is generated', async (utility) => {
+  it.each([
+    'shadow-raised',
+    'shadow-window',
+    'shadow-raised-default',
+    'shadow-pressed',
+    'shadow-sunken',
+    'shadow-status',
+    'shadow-etched',
+    'shadow-raised-thin',
+    'shadow-scroll-x',
+  ])('%s is generated', async (utility) => {
     expect(await build(utility)).toContain(`.${utility} {`)
   })
 
-  it('carries the geometry from the token', async () => {
+  it('draws a bevel from hard inset lines in the bevel colours', async () => {
     // Shadows are the one scale Tailwind inlines rather than referencing, so
-    // the assertion is on the value instead of on a var().
-    expect(await build('shadow-scroll-x')).toContain('12px 0 16px -8px')
-  })
-
-  it('keeps the shadow colour a variable, so .dark repoints it', async () => {
-    // Worth pinning, because the first thing Tailwind emits looks like it
-    // breaks the theming model: it resolves --color-shadow to a literal for an
-    // sRGB fallback. The live declaration sits in the @supports block below it
-    // and keeps the var() intact, so a browser that can do color-mix — which
-    // is every browser that can read these oklch tokens — still picks up the
-    // dark override.
-    const css = await build('shadow-md')
-    const rule = css.slice(css.indexOf('.shadow-md {'))
-    const supports = rule.slice(rule.indexOf('@supports'))
-    expect(supports).toContain('var(--color-shadow)')
+    // the assertion is on the value. Every edge has to keep its var(), or a
+    // theme that repoints a bevel colour would leave the bevels behind.
+    const css = await build('shadow-raised')
+    expect(css).toContain('inset -1px -1px var(--tw-shadow-color, var(--color-bevel-dark))')
+    expect(css).toContain('inset 2px 2px var(--tw-shadow-color, var(--color-bevel-light))')
   })
 })
 
-describe('dark mode', () => {
-  it('is driven by the .dark class, not the OS setting', async () => {
-    const css = await build('dark:bg-card')
-    expect(css).toContain('.dark')
-    // Tailwind's stock `dark` variant is prefers-color-scheme. The token
-    // stylesheet redefines it so an app can offer an explicit theme switch.
-    expect(css).not.toContain('prefers-color-scheme')
-  })
-
-  it('repoints semantic colours without redefining primitives', async () => {
-    const css = await build('bg-card')
-    const darkBlock = css.slice(css.indexOf('.dark'))
-    expect(darkBlock).toContain('--color-card:')
-    expect(darkBlock).not.toContain('--color-neutral-900:')
+describe('one theme', () => {
+  it('ships no dark-mode overrides', async () => {
+    // rowkit has a single theme. A `.dark` block surviving in the token
+    // stylesheet would invite consumers to build on a theme that is gone.
+    expect(await build('bg-card')).not.toContain('.dark')
   })
 })
 

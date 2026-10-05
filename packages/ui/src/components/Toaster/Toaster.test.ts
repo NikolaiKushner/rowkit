@@ -14,7 +14,7 @@ async function setup(props: Record<string, unknown> = {}) {
 }
 
 /**
- * Reka wraps the viewport in a `role="region"` landmark carrying the F8 hotkey
+ * The viewport sits inside a `role="region"` landmark carrying the F8 hotkey
  * label; the `<ol>` inside it is the styled viewport. They are different
  * elements and only the inner one has our classes.
  */
@@ -47,8 +47,8 @@ describe('Toaster', () => {
     })
 
     it('names the region, including the hotkey that focuses it', async () => {
-      // Reka binds F8 to move focus into the toast region — a real keyboard
-      // affordance, and the label is how anyone discovers it.
+      // F8 moves focus into the toast region — a real keyboard affordance, and
+      // the label is how anyone discovers it.
       await setup()
       expect(landmark()?.getAttribute('aria-label')).toContain('F8')
     })
@@ -108,14 +108,37 @@ describe('Toaster', () => {
 
   describe('tone', () => {
     it.each([
-      ['success', 'bg-success-subtle'],
-      ['warning', 'bg-warning-subtle'],
-      ['danger', 'bg-danger-subtle'],
-    ] as const)('%s uses the %s token', async (variant, expected) => {
-      await setup()
-      api[variant]('Message')
+      ['toast', 'RkInfoIcon'],
+      ['success', 'RkSuccessIcon'],
+      ['warning', 'RkWarningIcon'],
+      ['danger', 'RkErrorIcon'],
+    ] as const)('%s shows its icon on the shared silver face', async (method, icon) => {
+      const wrapper = await setup()
+      api[method]('Message')
       await nextTick()
-      expect(document.body.innerHTML).toContain(expected)
+      expect(wrapper.findComponent({ name: icon }).exists()).toBe(true)
+      const toast = document.querySelector('[data-slot="toast"]')
+      expect(toast?.classList.contains('bg-card')).toBe(true)
+      expect(toast?.classList.contains('shadow-window')).toBe(true)
+    })
+
+    it('shows a bold title above the message', async () => {
+      await setup()
+      api.toast("We'll email you when the CSV is ready.", { title: 'Export started' })
+      await nextTick()
+      const title = document.querySelector('[data-slot="toast-title"]')
+      expect(title?.textContent?.trim()).toBe('Export started')
+      expect(title?.classList.contains('font-bold')).toBe(true)
+    })
+
+    it('keeps a danger toast until it is closed', () => {
+      api.danger('Could not save')
+      expect(api.items.value.at(-1)?.duration).toBe(0)
+    })
+
+    it('still lets a danger toast set its own duration', () => {
+      api.danger('Could not save', { duration: 4000 })
+      expect(api.items.value.at(-1)?.duration).toBe(4000)
     })
   })
 
@@ -170,6 +193,10 @@ describe('Toaster', () => {
       await setup()
       api.toast('Deleted', { duration: 0, action: { label: 'Undo', onClick } })
       await nextTick()
+      // Vue ignores an event in the same millisecond its listener was attached,
+      // and the action is a Button rendered a moment ago. No person clicks that
+      // fast; a test does.
+      await new Promise((resolve) => setTimeout(resolve, 2))
 
       const action = [...document.querySelectorAll('button')].find(
         (button) => button.textContent?.trim() === 'Undo'
@@ -196,5 +223,71 @@ describe('Toaster', () => {
   it('merges a consumer class onto the viewport', async () => {
     await setup({ class: 'max-w-md' })
     expect(viewport()?.className).toContain('max-w-md')
+  })
+
+  describe('keyboard', () => {
+    const escape = (target: EventTarget = document.body) =>
+      target.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+
+    it('ignores Escape pressed outside the toast region', async () => {
+      // Escape elsewhere belongs to whatever the user is in — a dialog, a menu.
+      await setup()
+      api.toast('Saved', { duration: 0 })
+      await nextTick()
+      escape()
+      await nextTick()
+      expect(api.items.value).toHaveLength(1)
+    })
+
+    it('closes the toast that holds focus on Escape', async () => {
+      await setup()
+      api.toast('First', { duration: 0 })
+      api.toast('Second', { duration: 0 })
+      await nextTick()
+      const second = [...document.querySelectorAll<HTMLElement>('[data-slot="toast"]')].find((el) =>
+        el.textContent?.includes('Second')
+      )
+      second?.focus()
+      escape(second)
+      await nextTick()
+      expect(api.items.value.map((item) => item.message)).toEqual(['First'])
+    })
+
+    it('moves focus into the region on F8', async () => {
+      await setup()
+      api.toast('Saved', { duration: 0 })
+      await nextTick()
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'F8' }))
+      expect(document.activeElement).toBe(viewport())
+    })
+
+    it('puts the newest toast first, so Tab and reading order start there', async () => {
+      await setup()
+      api.toast('Older', { duration: 0 })
+      await new Promise((resolve) => setTimeout(resolve, 350))
+      api.toast('Newer', { duration: 0 })
+      await nextTick()
+      const order = [...document.querySelectorAll('[data-slot="toast"]')].map((el) =>
+        el.textContent?.trim().slice(0, 5)
+      )
+      expect(order).toEqual(['Newer', 'Older'])
+    })
+  })
+
+  describe('announcing', () => {
+    it('writes into a polite status region that exists before any toast', async () => {
+      await setup()
+      const region = document.querySelector('[role="status"][aria-live="polite"]')
+      expect(region).not.toBeNull()
+
+      api.toast('Project archived')
+      await vi.waitFor(() => expect(region?.textContent).toContain('Project archived'))
+      expect(region?.textContent).toContain('Notification')
+    })
+  })
+
+  it('is a branch of open layers, so clicking a toast does not close a dialog', async () => {
+    await setup()
+    expect(landmark()?.hasAttribute('data-dismissable-layer-branch')).toBe(true)
   })
 })

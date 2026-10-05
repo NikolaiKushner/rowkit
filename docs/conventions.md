@@ -35,22 +35,20 @@ way to write a `<table>`.
 
 ## Anatomy
 
-Taken from Reka UI, which rowkit already builds on, and from the way shadcn-vue
-styles those parts without replacing them.
+The behaviour behind the parts lives in `packages/ui/src/primitives/`, shared by
+every component.
 
-**The root owns the shared state and renders no chrome.** It forwards to the
-Reka root (`DialogRoot`, `SelectRoot`) and `provide`s the context the parts
-read. File and export name drop the `Root` suffix: `Dialog.vue` exports
-`Dialog`. The consumer never imports `DialogRoot`.
+**The root owns the shared state and renders no chrome.** It `provide`s the
+context the parts read. File and export name drop the `Root` suffix:
+`Dialog.vue` exports `Dialog`.
 
 **One file per part the consumer places.** `DialogTrigger.vue`,
-`DialogContent.vue`, `DialogTitle.vue`. A part either forwards a Reka part or
-is layout only (`DialogHeader`, `DialogFooter`: a `div` and a slot, no
-behaviour). Behaviour — focus trap, dismiss, typeahead, scroll lock — stays
-inside Reka.
+`DialogContent.vue`, `DialogTitle.vue`. A part either carries behaviour, built
+from the shared primitives, or is layout only (`DialogHeader`, `DialogFooter`: a
+`div` and a slot, no behaviour). Focus trap, dismiss, scroll lock and
+positioning live in the primitives, written once, not re-solved per component.
 
-**Abstract the parts that always travel together.** This is Reka's own "Custom
-APIs" guidance, not a shortcut around it. `DialogContent` includes the portal,
+**Abstract the parts that always travel together.** `DialogContent` includes the portal,
 the overlay, and the close button, so a consumer writes `Dialog`,
 `DialogTrigger`, and `DialogContent`. Title, description, header, and footer
 stay parts, because those are what changes from one dialog to the next. A
@@ -64,11 +62,7 @@ its behaviour to the `Button` inside it, so a dialog opens from the same button
 the rest of the page uses. Parts compose the same way with each other — a
 tooltip trigger around a dialog trigger around a button.
 
-**Props and emits of a Reka part are forwarded**, not re-declared one by one.
-`useForwardPropsEmits` from Reka. rowkit adds `class` and a few opinions of its
-own, such as a dialog content's `size`.
-
-**Open state follows Reka.** `v-model:open` on the root when the consumer needs
+**Open state is a model on the root.** `v-model:open` on the root when the consumer needs
 the value. With no model, the root holds it, so a trigger still toggles. Data
 state is different and stays fully controlled: sort, selection, page, filters.
 There is no correct default for those, and a component must not guess. See
@@ -86,7 +80,7 @@ State ownership.
     </DialogHeader>
     <DialogBody>Everything in the project goes with it.</DialogBody>
     <DialogFooter>
-      <Button variant="outline">Cancel</Button>
+      <Button variant="secondary">Cancel</Button>
       <Button variant="destructive">Delete</Button>
     </DialogFooter>
   </DialogContent>
@@ -177,7 +171,7 @@ search are `v-model` on the widget. Nothing is held inside. Changing the page
 size does not move the page. Clearing a filter does not reset anything else.
 The component reports what happened.
 
-**An assembly root owns presence state** — open, closed — the way Reka does.
+**An assembly root owns presence state** — open, closed.
 Bind `v-model:open` to take it. Leave it unbound and the root keeps it, which
 is what makes a trigger work without a ref in the page. Do not add a second
 boolean prop for the same fact.
@@ -238,8 +232,8 @@ their own state: `SelectOption`, `DataTableColumn`, `DataTableSort`.
 
 ## Accessibility
 
-The wiring comes from the Reka part a rowkit part forwards. A part that renders
-its own element still follows these.
+The wiring comes from the shared primitives. A part that renders its own element
+still follows these.
 
 **Decorative by default, announced on request.** A badge dot, a sort icon, an
 ellipsis: `aria-hidden`. `Skeleton` is `aria-hidden` always.

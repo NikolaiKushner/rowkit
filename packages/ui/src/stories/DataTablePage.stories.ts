@@ -32,7 +32,7 @@ const columns: DataTableColumn<DemoUser>[] = [
   { key: 'email', header: 'Email', sortable: true, width: '16rem' },
   { key: 'role', header: 'Role', sortable: true, width: '8rem' },
   { key: 'status', header: 'Status', sortable: true, width: '9rem' },
-  { key: 'seats', header: 'Seats', sortable: true, align: 'end', width: '6rem' },
+  { key: 'seats', header: 'Seats', sortable: true, numeric: true, width: '6rem' },
   { key: 'lastActive', header: 'Last active', sortable: true, width: '9rem' },
   { id: 'actions', header: 'Actions', headerSrOnly: true, align: 'end', width: '5rem' },
 ]
@@ -171,7 +171,7 @@ export const Default: Story = {
             </p>
           </div>
           <div class="flex items-center gap-2">
-            <Button variant="outline">Export</Button>
+            <Button variant="secondary">Export</Button>
             <Button>Invite teammate</Button>
           </div>
         </header>
