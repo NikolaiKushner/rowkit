@@ -22,7 +22,7 @@ const layers = {
 </script>
 
 ```bash
-pnpm add @rowkit/tokens
+pnpm add @rowkit/tokens@beta
 ```
 
 The package has no dependency on Vue, so a chart library, a design tool or an

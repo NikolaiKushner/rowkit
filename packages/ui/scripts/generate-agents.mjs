@@ -34,7 +34,7 @@ const describe = (text) => summarise(text, 240)
 const PREAMBLE = `## Setup
 
 \`\`\`bash
-pnpm add rowkit
+pnpm add rowkit@beta
 \`\`\`
 
 \`vue\` and \`tailwindcss\` are peer dependencies. rowkit uses the copies already in

@@ -84,7 +84,12 @@ try {
       .at(-1)
     const tarball = packed?.startsWith('/') ? packed : join(dest, packed ?? '')
 
-    execFileSync('npm', ['publish', tarball, '--access', 'public', '--provenance'], {
+    // A prerelease goes out under its own dist-tag (`1.0.0-beta.0` → `beta`),
+    // so `latest` keeps pointing at the last stable release. npm refuses to
+    // publish a prerelease without an explicit tag anyway.
+    const prerelease = /-([a-z]+)/i.exec(pkg.version)?.[1]
+    const tag = prerelease ? ['--tag', prerelease] : []
+    execFileSync('npm', ['publish', tarball, '--access', 'public', '--provenance', ...tag], {
       cwd: root,
       stdio: 'inherit',
     })

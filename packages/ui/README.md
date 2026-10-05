@@ -1,6 +1,6 @@
 # rowkit
 
-[![npm](https://img.shields.io/npm/v/rowkit?color=000080)](https://www.npmjs.com/package/rowkit)
+[![npm](https://img.shields.io/npm/v/rowkit/beta?color=000080)](https://www.npmjs.com/package/rowkit)
 [![license](https://img.shields.io/npm/l/rowkit)](https://github.com/NikolaiKushner/rowkit/blob/main/LICENSE)
 
 A professional Vue 3 toolkit — the components a product interface is built from.
@@ -14,7 +14,7 @@ No behaviour library underneath — focus, dismissal and positioning are rowkit'
 ## Install
 
 ```bash
-npm i rowkit
+npm i rowkit@beta
 ```
 
 Then, in your stylesheet — **both lines, in this order**:
@@ -94,7 +94,7 @@ That is the whole library. If you need forty components covering every case, [Nu
 
 ## Status
 
-**v0.x.** The API is stabilising toward v1.0 and breaking changes are still possible until then. Releases are cut from CI with provenance attestation. [Changelog](https://github.com/NikolaiKushner/rowkit/blob/main/packages/ui/CHANGELOG.md) · [Roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md)
+**1.0 beta**, published under the npm `beta` tag. The API is stabilising toward 1.0.0 and breaking changes are still possible between betas. Releases are cut from CI with provenance attestation. [Changelog](https://github.com/NikolaiKushner/rowkit/blob/main/packages/ui/CHANGELOG.md) · [Roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md)
 
 ## License
 

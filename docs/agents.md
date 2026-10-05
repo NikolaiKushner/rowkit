@@ -18,7 +18,7 @@ rather than whatever was current when it was written.
 ## Setup
 
 ```bash
-pnpm add rowkit
+pnpm add rowkit@beta
 ```
 
 `vue` and `tailwindcss` are peer dependencies. rowkit uses the copies already in

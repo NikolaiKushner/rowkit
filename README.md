@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/rowkit"><img src="https://img.shields.io/npm/v/rowkit?color=000080" alt="npm" /></a>
+  <a href="https://www.npmjs.com/package/rowkit"><img src="https://img.shields.io/npm/v/rowkit/beta?color=000080" alt="npm" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/rowkit" alt="license" /></a>
   <a href="https://bundlejs.com/?q=rowkit"><img src="https://img.shields.io/bundlejs/size/rowkit" alt="bundle size" /></a>
 </p>
@@ -28,7 +28,7 @@ A product interface is a set of components that have to agree: controls, overlay
 
 ## What it looks like
 
-rowkit v2 has one theme: Windows 98. Bevels, the grey face and navy selection come from tokens, so every component agrees without extra classes.
+rowkit has one theme: Windows 98. Bevels, the grey face and navy selection come from tokens, so every component agrees without extra classes.
 
 ![The Components window: buttons and a toggle group, inputs and a select, badges, checkboxes and radios, pagination with a progress bar, and a field with an error](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/components.png)
 
@@ -39,7 +39,7 @@ The docs at [rowkit.dev](https://rowkit.dev) open every page in an Explorer wind
 ## Install
 
 ```bash
-npm i rowkit
+npm i rowkit@beta
 ```
 
 Then, in your stylesheet — **both lines, in this order**:

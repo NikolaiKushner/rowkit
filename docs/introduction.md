@@ -87,8 +87,8 @@ unpublished components are on the roadmap, not missing by design.
 
 ## Status
 
-**v0.x.** The API is stabilising toward v1.0, every component has reached the
-project's definition of done, and breaking changes are still possible until v1.
+**1.0 beta.** The API is stabilising toward 1.0.0, every component has reached the
+project's definition of done, and breaking changes are still possible between betas.
 
 Version <NpmVersion /> is on npm, published from CI with provenance attestation. The source
 and the working backlog are on [GitHub](https://github.com/NikolaiKushner/rowkit).

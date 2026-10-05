@@ -3,7 +3,7 @@ import { create } from 'storybook/theming'
 /**
  * Storybook manager chrome, tuned to rowkit's tokens.
  *
- * Still the pre-v2 palette. The Windows 98 colours and logo for this chrome
+ * Still the pre-redesign palette. The Windows 98 colours and logo for this chrome
  * come from the designer's brand frame; until then only the fonts follow the
  * interim token stack. Not a second brand for the workshop.
  */

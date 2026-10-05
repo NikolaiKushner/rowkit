@@ -250,7 +250,7 @@ export default defineConfig({
     },
 
     footer: {
-      message: 'MIT licensed. v0.x — the API is stabilising toward v1.0.',
+      message: 'MIT licensed. 1.0 beta — the API is stabilising toward 1.0.0.',
       copyright: '© Nikolai Kushner',
     },
   },

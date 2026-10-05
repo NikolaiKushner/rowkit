@@ -10,7 +10,7 @@ import { Window, WindowButton, WindowTitleBar } from 'rowkit'
 withDefaults(defineProps<{ closable?: boolean }>(), { closable: false })
 defineEmits<{ close: [] }>()
 
-const command = 'pnpm add rowkit'
+const command = 'pnpm add rowkit@beta'
 const copied = ref(false)
 
 async function copy(): Promise<void> {
@@ -32,7 +32,9 @@ async function copy(): Promise<void> {
     <button
       type="button"
       class="flex w-full cursor-pointer flex-col items-start gap-0.5 bg-foreground px-2 pt-1.5 pb-2 text-left font-mono text-[16px] leading-[16px] text-border-subtle shadow-sunken outline-none focus-visible:outline-1 focus-visible:-outline-offset-4 focus-visible:outline-dotted focus-visible:outline-border-subtle"
-      :aria-label="copied ? 'Copied: pnpm add rowkit' : 'Copy the install command: pnpm add rowkit'"
+      :aria-label="
+        copied ? 'Copied: pnpm add rowkit@beta' : 'Copy the install command: pnpm add rowkit@beta'
+      "
       @click="copy"
     >
       <span>C:\&gt; {{ command }}</span>

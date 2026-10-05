@@ -16,7 +16,7 @@ import { Badge, Button } from 'rowkit'
     </Button>
     <!-- A version beside a package name. -->
     <span class="flex items-center gap-2">
-      rowkit <Badge appearance="outline" size="sm">v2.0.0</Badge>
+      rowkit <Badge appearance="outline" size="sm">v1.0.0-beta</Badge>
     </span>
   </div>
 </template>

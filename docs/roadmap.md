@@ -17,20 +17,20 @@ fixed count. What is listed below as next is the plan, not a build in progress.
 ## What 1.0 means
 
 Not a component count — an API that survived contact with applications nobody
-wrote in order to use rowkit. Until that has happened, the version stays on
-`0.x` and breaking changes remain possible. An API is not proven by its author.
+wrote in order to use rowkit. Until that has happened, the version stays in
+the 1.0 beta and breaking changes remain possible. An API is not proven by its author.
 
 ## Design direction
 
 Windows 98. Grey face, two-pixel bevels, navy selection, square corners, PT
 Sans — the style, not the assets. It replaces the earlier restrained look
-entirely, and there is one light theme: dark mode is dropped in v2. Status is
+entirely, and there is one light theme: dark mode is dropped. Status is
 carried by an icon as well as a colour. Rebrand by pointing `--color-primary-*`
 at your own colour.
 
 ## In progress
 
-- The Windows 98 redesign (v2): tokens, every component, the playground, this
+- The Windows 98 redesign: tokens, every component, the playground, this
   site and the logo, drawn in Figma first and then restyled one component at a time
 - Closing a gap in the screenshot-based visual QA, where two overlay stories
   were being captured without the overlay open

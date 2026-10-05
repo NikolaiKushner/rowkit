@@ -1,6 +1,6 @@
 # @rowkit/tokens
 
-[![npm](https://img.shields.io/npm/v/@rowkit/tokens?color=3b5bdb)](https://www.npmjs.com/package/@rowkit/tokens)
+[![npm](https://img.shields.io/npm/v/@rowkit/tokens/beta?color=000080)](https://www.npmjs.com/package/@rowkit/tokens)
 [![license](https://img.shields.io/npm/l/@rowkit/tokens)](https://github.com/NikolaiKushner/rowkit/blob/main/LICENSE)
 
 The design tokens behind [rowkit](https://www.npmjs.com/package/rowkit) — the Windows 98 palette, bevels, type, spacing, radii, layers and motion.
@@ -12,7 +12,7 @@ Usable on its own. Nothing here depends on Vue, so a chart library, a design too
 ## Install
 
 ```bash
-npm i @rowkit/tokens
+npm i @rowkit/tokens@beta
 ```
 
 ## Two layers

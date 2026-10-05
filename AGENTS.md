@@ -40,7 +40,7 @@ component, a change to an existing one, or the Windows 98 design.
   New surface belongs when a product interface is awkward without it. There is
   no fixed component count.
 
-**Visual direction:** Windows 98. Grey `#C0C0C0` face, two-pixel bevels (raised, pressed, sunken), navy `#000080` selection and title-bar gradient, square corners, no soft shadows, no blur, next to no motion. PT Sans replaces Geist (OFL, Latin and Cyrillic, regular and bold; apps load the font, rowkit does not ship it). Controls follow Win98 sizes on desktop and grow to ≥ 24px touch targets on touch screens. One light theme — there is no dark mode. The style, not the assets: no Microsoft logos, Windows flag or original system icons. Consumers still rebrand via tokens (`--color-primary-*`). The v2 redesign is in progress on `refactor/v2`; until a component is redrawn, its current look is legacy, not a reference.
+**Visual direction:** Windows 98. Grey `#C0C0C0` face, two-pixel bevels (raised, pressed, sunken), navy `#000080` selection and title-bar gradient, square corners, no soft shadows, no blur, next to no motion. PT Sans replaces Geist (OFL, Latin and Cyrillic, regular and bold; apps load the font, rowkit does not ship it). Controls follow Win98 sizes on desktop and grow to ≥ 24px touch targets on touch screens. One light theme — there is no dark mode. The style, not the assets: no Microsoft logos, Windows flag or original system icons. Consumers still rebrand via tokens (`--color-primary-*`). Every component is redrawn; the pre-redesign look is legacy, not a reference.
 
 ## Stack
 
@@ -57,7 +57,7 @@ component, a change to an existing one, or the Windows 98 design.
 5. **Variants live in one `ComponentName.variants.ts`**, defined with `cva`.
 6. **Every prop has a JSDoc comment.** These feed the docs site and `packages/ui/AGENTS.md`.
 7. **`vue` is external.** Never bundle the framework into the library output.
-8. **Every public API change requires a changeset.** Rebuilding a component into parts is breaking. On 0.x, mark that changeset `minor` and say so in the text — a `major` here publishes 1.0.0.
+8. **Every public API change requires a changeset.** Rebuilding a component into parts is breaking. rowkit is in the 1.0 beta (changesets pre mode, `.changeset/pre.json`): every changeset publishes the next `1.0.0-beta.N` under the npm `beta` tag, so mark breaking changes `minor` and say so in the text. `pnpm changeset pre exit` before the release that should become 1.0.0.
 9. **No `any`.** If typing is genuinely hard, ask rather than escaping the type system.
 10. **Every public part accepts `class` and merges it** via `tailwind-merge`. A trigger the consumer restyles takes `as-child`.
 11. **No competitor names in code.** Source, comments, tests, stories and docs pages do not mention Reka UI. Explain a design choice on its own terms ("a traced polygon would…"), not by contrast with another library. The only places it is named: changesets and this file. rowkit carries no code adapted from it — learn from how it behaves, then write the implementation yourself. If code from any MIT project is ever adapted, its license notice has to ship with the package: add a `THIRD_PARTY_NOTICES.md` and list it in `files`, never as a file header.
@@ -93,7 +93,7 @@ A component is not finished until all of these are true:
 
 ## The competitor: Reka UI
 
-[Reka UI](https://reka-ui.com) is rowkit's main competitor: the headless Vue behaviour library that Nuxt UI and shadcn-vue are built on, and that rowkit itself was built on until v2. Its source (MIT) is the best reference there is for how an accessible Vue component is put together — study it when designing a part: which edge cases its focus scope, dismissable layer, presence, popper or combobox handle. Then write rowkit's own; do not copy its code (rule 11).
+[Reka UI](https://reka-ui.com) is rowkit's main competitor: the headless Vue behaviour library that Nuxt UI and shadcn-vue are built on, and that rowkit itself was built on before the Windows 98 redesign. Its source (MIT) is the best reference there is for how an accessible Vue component is put together — study it when designing a part: which edge cases its focus scope, dismissable layer, presence, popper or combobox handle. Then write rowkit's own; do not copy its code (rule 11).
 
 Take how it is built; build it better. rowkit's versions already differ where Reka's were weak — Escape that reaches only the toast in focus, toasts ordered newest-first in the DOM instead of hidden focus proxies, one persistent live region, a tooltip that is its own description, a select written to the WAI-ARIA combobox pattern instead of a general engine with workarounds. Before building something it has, ask what it gets wrong. Do not add it back as a dependency, and keep its name out of code (rule 11).
 

@@ -62,11 +62,11 @@ Everything in **Now** serves that, or clears something out of its way.
 
 Ordered. Finish or deliberately drop an item before starting the next.
 
-### 1. The Windows 98 redesign (v2)
+### 1. The Windows 98 redesign
 
 Every component, the tokens, the playground, rowkit.dev and the brand — logo,
 favicon, link previews, README banner, Storybook theme — are being redrawn in
-the style of Windows 98, on `refactor/v2`. Win98 replaces the current look
+the style of Windows 98. Win98 replaces the current look
 everywhere rowkit appears; dark mode is dropped.
 
 1. A designer draws the Figma file first: Variables mirroring the semantic
@@ -145,7 +145,7 @@ awkward without it.
 ## Later — not the toolkit
 
 - **A published Figma kit. A React port.** Separate products, not components
-  of this one. The Figma file drawn for v2 is the design source for this repo;
+  of this one. The Figma file drawn for the redesign is the design source for this repo;
   publishing it as a kit for others is a separate decision.
 
 The custom docs theme that used to sit here moved into **Now** as part of the
@@ -175,7 +175,7 @@ Settled for now. Revisit one when it gets in the way of a component or the desig
   look (ink-blue primary, Geist) entirely. The style, not the assets: no
   Microsoft logos or original icons. Status is carried by an icon as well as a
   colour. Consumers rebrand by pointing `--color-primary-*` at their own colour.
-- **One theme, light.** Dark mode is dropped in v2.
+- **One theme, light.** Dark mode is dropped in the redesign.
 - **npm package, not copy-paste distribution.** shadcn-vue's model is good and
   deliberate; rowkit ships versioned.
 - **No behaviour library.** rowkit's focus, dismissal, presence, scroll lock and
