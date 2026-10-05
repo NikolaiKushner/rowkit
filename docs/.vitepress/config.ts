@@ -1,12 +1,14 @@
+import { createRequire } from 'node:module'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vitepress'
 
 /**
- * The default theme, customised through CSS variables — not a custom theme.
+ * rowkit.dev as a Windows 98 desktop, from the Figma Site page: the home page
+ * is the desktop, every docs page an Explorer window, built from rowkit's own
+ * components in `theme/components/site` and `theme/components/home`.
  *
- * The default ships search, sidebar, prev/next, mobile nav and its
- * own accessibility work. Rebuilding those produces a worse version of each,
- * and the brand is expressible entirely in `theme/tokens.css`.
+ * VitePress still renders the markdown, builds the search index and supplies
+ * the `.vp-doc` content styles the site layers its own on top of.
  */
 export default defineConfig({
   title: 'rowkit',
@@ -57,6 +59,20 @@ export default defineConfig({
    * layer statement that restates a known order is a no-op.
    */
   vite: {
+    resolve: {
+      /*
+       * The Find window reads VitePress's own search index with the same
+       * MiniSearch VitePress uses. pnpm keeps it out of the theme's reach, so
+       * point at VitePress's copy rather than adding a second one.
+       */
+      alias: {
+        // The package's folder: it exports no package.json, so take its entry
+        // file and cut back to the folder, which Vite then resolves itself.
+        minisearch: createRequire(createRequire(import.meta.url).resolve('vitepress'))
+          .resolve('minisearch')
+          .replace(/[\\/]dist[\\/].*$/, ''),
+      },
+    },
     plugins: [
       {
         name: 'rowkit-layer-vitepress-css',
