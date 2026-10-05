@@ -1,6 +1,7 @@
 import { createRequire } from 'node:module'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vitepress'
+import { describe, pageHead, sharedHead } from './social'
 import { tables } from './tables'
 
 /**
@@ -13,6 +14,8 @@ import { tables } from './tables'
  */
 export default defineConfig({
   title: 'rowkit',
+  // «DataTable — rowkit», as the Explorer window and the taskbar name a page.
+  titleTemplate: ':title — rowkit',
   description: 'A professional Vue 3 toolkit — the components a product interface is built from.',
   lang: 'en-GB',
   cleanUrls: true,
@@ -36,6 +39,13 @@ export default defineConfig({
   appearance: false,
 
   sitemap: { hostname: 'https://rowkit.dev' },
+
+  // Link previews: a description from each page's first paragraph, and the
+  // page's own title, description and URL in its card.
+  transformPageData(pageData, { siteConfig }) {
+    describe(pageData, siteConfig.srcDir)
+  },
+  transformHead: pageHead,
 
   /*
    * Vite inlines an `@import` but does not run Tailwind, so without this the
@@ -106,15 +116,7 @@ export default defineConfig({
     ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' }],
     ['link', { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon-48.png' }],
     ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
-    ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:title', content: 'rowkit' }],
-    [
-      'meta',
-      {
-        property: 'og:description',
-        content: 'A professional Vue 3 component toolkit.',
-      },
-    ],
+    ...sharedHead,
   ],
 
   themeConfig: {
