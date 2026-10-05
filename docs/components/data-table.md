@@ -5,80 +5,169 @@
 A typed table. Column definitions are constrained to the row type, cells render
 through per-column slots, and the loading and empty states are built in.
 
-```vue
-<DataTable :rows="users" :columns="columns" caption="Team members">
-  <template #[`cell:status`]="{ value }">
-    <Badge :variant="tone(value)" dot>{{ value }}</Badge>
-  </template>
-</DataTable>
-```
-
 <script setup>
-import { computed, ref } from 'vue'
-import { useClientSort } from 'rowkit'
-
-const state = ref('rows')
-const sort = ref()
-
-const columns = [
-  { key: 'name', header: 'Name', sortable: true, sticky: true },
-  { key: 'role', header: 'Role', sortable: true },
-  { key: 'status', header: 'Status' },
-  { key: 'seats', header: 'Seats', sortable: true, numeric: true },
-]
-
-const users = [
-  { id: 1, name: 'Ada Lovelace', role: 'Owner', status: 'active', seats: 3 },
-  { id: 2, name: 'Grace Hopper', role: 'Admin', status: 'active', seats: 12 },
-  { id: 3, name: 'Alan Turing', role: 'Member', status: 'invited', seats: 1 },
-  { id: 4, name: 'Katherine Johnson', role: 'Member', status: 'suspended', seats: 0 },
-]
-
-const tone = { active: 'success', invited: 'warning', suspended: 'danger' }
-
-const sorted = useClientSort(users, sort, columns)
-const rows = computed(() => (state.value === 'empty' ? [] : sorted.value))
+import DataTableBasic from '../examples/data-table/DataTableBasic.vue'
+import DataTableSorting from '../examples/data-table/DataTableSorting.vue'
+import DataTableCustomCells from '../examples/data-table/DataTableCustomCells.vue'
+import DataTableSelection from '../examples/data-table/DataTableSelection.vue'
+import DataTableSingleSelection from '../examples/data-table/DataTableSingleSelection.vue'
+import DataTableRowClick from '../examples/data-table/DataTableRowClick.vue'
+import DataTablePinned from '../examples/data-table/DataTablePinned.vue'
+import DataTableSummary from '../examples/data-table/DataTableSummary.vue'
+import DataTableStates from '../examples/data-table/DataTableStates.vue'
+import DataTableDense from '../examples/data-table/DataTableDense.vue'
+import DataTableServerSide from '../examples/data-table/DataTableServerSide.vue'
 </script>
 
 <DemoBox layout="stack">
-  <div class="flex flex-wrap gap-2">
-    <Button
-      v-for="value in ['rows', 'loading', 'empty']"
-      :key="value"
-      size="sm"
-      :variant="state === value ? 'default' : 'secondary'"
-      @click="state = value"
-    >{{ value }}</Button>
-  </div>
-  <DataTable
-    :rows="rows"
-    :columns="columns"
-    caption="Team members"
-    :loading="state === 'loading'"
-    empty-title="No people match these filters"
-    v-model:sort="sort"
-    hoverable
-  >
-    <template #[`cell:status`]="{ value }">
-      <Badge :variant="tone[value]" size="sm" dot>{{ value }}</Badge>
-    </template>
-  </DataTable>
+  <DataTableBasic />
 </DemoBox>
 
-The three body states, on one table. Loading renders placeholder rows in the
-real column layout rather than a spinner over the top. On a reload — a sort, a
-page, a filter — the columns hold the widths they had with rows in them, so the
-header stays still. A first load has no rows to measure: give the columns a
-`width` and the header is right from the start.
+<<< @/examples/data-table/DataTableBasic.vue
 
-Sort a column and switch to `loading`: the sort survives, because the table
-never owned it.
+Every row needs a stable `id`. Columns name a field with `key`, and `caption`
+names the table for screen readers — it is required, and hidden unless you pass
+`caption-visible`.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Sortable columns
+
+Mark columns `sortable` and bind `v-model:sort`. The table reports which column
+the user asked for; `useClientSort` applies it to rows you hold in memory. A
+`sortValue` sorts by meaning rather than by the text shown — here, stable
+before beta before draft.
+
+<DemoBox layout="stack">
+  <DataTableSorting />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableSorting.vue
+
+### Custom cells and row actions
+
+Every column renders through a `cell:<key>` slot when you give it one: a
+badge, a link, a formatted amount. A column with no field behind it — row
+actions — has an `id` instead of a `key`, and `header-sr-only` keeps its name
+for screen readers without drawing it.
+
+<DemoBox layout="stack">
+  <DataTableCustomCells />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableCustomCells.vue
+
+### Selecting rows
+
+`selectable="multiple"` adds check boxes and a select-all; `v-model:selected`
+holds the ids. Give `row-label` so each check box says which row it selects.
+A toolbar above the table acts on the selection.
+
+<DemoBox layout="stack">
+  <DataTableSelection />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableSelection.vue
+
+### Choosing one row
+
+`selectable="single"` gives radio buttons: pick one row, show its details
+beside the table. The model is still an array, holding at most one id.
+
+<DemoBox layout="stack">
+  <DataTableSingleSelection />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableSingleSelection.vue
+
+### Opening a row
+
+Listen to `row:click` and a row opens on a click, or on Enter or Space once it
+has focus. Keep a real control in the row as well — a clickable row is an
+extra, never the only way in.
+
+<DemoBox layout="stack">
+  <DataTableRowClick />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableRowClick.vue
+
+### Pinned columns and a sticky header
+
+A table wider than its frame scrolls sideways. `sticky` pins the columns that
+say which row you are reading — several stack, with the selection column —
+and a height on the table (`max-h-64`) makes the body scroll under the header.
+
+<DemoBox layout="stack">
+  <DataTablePinned />
+</DemoBox>
+
+<<< @/examples/data-table/DataTablePinned.vue
+
+::: details people.ts — the rows behind the larger examples
+<<< @/examples/data-table/people.ts
+:::
+
+### Totals
+
+`summary` adds a bold row under an etched line, keyed like the columns, held at
+the bottom while the body scrolls. A computed column — the line total — uses an
+`id` and a slot.
+
+<DemoBox layout="stack">
+  <DataTableSummary />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableSummary.vue
+
+### Loading, empty and error states
+
+Loading renders placeholder rows in the real column layout rather than a
+spinner over the top. On a reload — a sort, a page, a filter — the columns hold
+the widths they had with rows in them, so the header stays still; a first load
+has no rows to measure, so give the columns a `width`. Empty has three reasons
+with three next steps: no data yet, filters that matched nothing, a failed
+fetch. The `empty` slot takes your own `EmptyState` with a way out.
+
+<DemoBox layout="stack">
+  <DataTableStates />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableStates.vue
+
+### Dense rows for logs
+
+`size="sm"` sets 18px rows. `scrollbars="drawn"` draws the Windows 98 scroll
+bars instead of restyling the browser's, so they look the same in every
+browser.
+
+<DemoBox layout="stack">
+  <DataTableDense />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableDense.vue
+
+### Sorting and paging on the server
+
+When the server holds the rows, the table only ever shows the page it is
+handed. Watch the sort and the page, fetch, and show `loading` meanwhile — the
+sort stays on the header while the next page loads, because the table never
+owned it. For a whole page with filters, see
+[A data table page](/patterns/data-table-page).
+
+<DemoBox layout="stack">
+  <DataTableServerSide />
+</DemoBox>
+
+<<< @/examples/data-table/DataTableServerSide.vue
 
 ::: warning Under a fixed header of your own
 `--z-index-sticky` is `100`, because rowkit's scale assumes rowkit is the page's
 chrome. A sticky table header will therefore paint over any application header
-below that layer — raise yours above it. This site does exactly that for
-VitePress's navbar.
+below that layer — raise yours above it.
 :::
 
 ## Anatomy

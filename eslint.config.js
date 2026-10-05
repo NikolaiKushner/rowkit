@@ -89,10 +89,10 @@ export default tseslint.config(
     },
   },
 
-  // Docs theme imports .vue SFCs the same way stories do — eslint's program
+  // Docs theme and examples import .vue SFCs the same way stories do — eslint's program
   // cannot type them; vue-tsc can. VitePress also wants a `Layout` export key.
   {
-    files: ['docs/.vitepress/theme/**/*.{ts,vue}'],
+    files: ['docs/.vitepress/theme/**/*.{ts,vue}', 'docs/examples/**/*.{ts,vue}'],
     rules: {
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
