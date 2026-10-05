@@ -66,8 +66,15 @@ export default defineConfig({
   },
 
   head: [
-    ['meta', { name: 'theme-color', content: '#0c335f' }],
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/mark.svg' }],
+    // The active title bar's navy, as the brand page sets it.
+    ['meta', { name: 'theme-color', content: '#000080' }],
+    // Each size is its own pixel drawing, so the browser picks one rather than
+    // scaling the 32px mark down to a blur. No SVG icon for the same reason.
+    ['link', { rel: 'icon', href: '/favicon.ico', sizes: '16x16 32x32 48x48' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16.png' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon-48.png' }],
+    ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'rowkit' }],
     [
