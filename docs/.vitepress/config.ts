@@ -1,8 +1,16 @@
 import { createRequire } from 'node:module'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vitepress'
+import { defineConfig, type UserConfig } from 'vitepress'
 import { describe, pageHead, sharedHead } from './social'
 import { tables } from './tables'
+
+/**
+ * A plugin as VitePress's own Vite takes it. `@tailwindcss/vite` is typed
+ * against this repository's Vite 8, while VitePress 1 runs its bundled Vite 5:
+ * the plugin works on either, but the two `Plugin` types are distinct, so it
+ * is named in VitePress's terms here rather than left to a type error.
+ */
+type VitePressPlugin = NonNullable<NonNullable<UserConfig['vite']>['plugins']>[number]
 
 /**
  * rowkit.dev as a Windows 98 desktop, from the Figma Site page: the home page
@@ -102,7 +110,7 @@ export default defineConfig({
           }
         },
       },
-      tailwindcss(),
+      tailwindcss() as unknown as VitePressPlugin,
     ],
   },
 

@@ -1,3 +1,9 @@
+/*
+ * Stylesheets imported for their effect alone — the fonts, the tokens. Vite
+ * handles them; TypeScript only needs to know they are modules.
+ */
+declare module '*.css'
+
 /** VitePress's local search index: per locale, a loader for the MiniSearch JSON. */
 declare module '@localSearchIndex' {
   const data: Record<string, (() => Promise<{ default: string }>) | undefined>

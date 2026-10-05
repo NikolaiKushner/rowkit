@@ -10,6 +10,7 @@
   },
   // docs/.vitepress is deliberately absent: VitePress bundles its own Vite 5,
   // whose types clash with this repo's Vite 8 the moment both land in one
-  // project. It has its own tsconfig, which the lint project service finds.
+  // project. It has its own tsconfig, which the lint project service finds and
+  // `pnpm typecheck:docs` checks — the site's theme and docs/examples.
   "include": ["vitest.config.ts", "eslint.config.js", ".storybook/**/*.ts"]
 }
