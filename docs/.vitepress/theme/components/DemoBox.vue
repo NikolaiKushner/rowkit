@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { GroupBox } from 'rowkit'
 /**
  * The container every live demo on the site sits in.
  *
  * One component rather than a CSS class per page, so a demo cannot invent its
- * own padding or overflow the page on a phone. The border
- * and background come from rowkit's own semantic tokens, which means a demo
- * box on `rowkit.dev` is styled by the package it is demonstrating.
+ * own padding or overflow the page on a phone. It is rowkit's own GroupBox,
+ * so a demo box on `rowkit.dev` is drawn by the package it is demonstrating.
  *
  * Deliberately not a playground: no editable props, no code toggle. That is
  * what the linked Storybook is for, and duplicating it here is how a docs site
@@ -35,10 +35,16 @@ const alignment = { start: 'items-start', center: 'items-center', end: 'items-en
 </script>
 
 <template>
-  <div
-    class="rk-demo my-6 flex gap-4 overflow-x-auto rounded-lg border border-border bg-card p-6"
-    :class="layout === 'stack' ? 'flex-col' : ['flex-wrap', alignment[align]]"
-  >
-    <slot />
-  </div>
+  <!--
+    The Figma page draws a demo as a group box captioned «Example» on the
+    window face. It is a plain group, not a fieldset: a demo is not a form.
+  -->
+  <GroupBox as="div" legend="Example" class="rk-demo mt-4">
+    <div
+      class="flex gap-4 overflow-x-auto p-1"
+      :class="layout === 'stack' ? 'flex-col' : ['flex-wrap', alignment[align]]"
+    >
+      <slot />
+    </div>
+  </GroupBox>
 </template>

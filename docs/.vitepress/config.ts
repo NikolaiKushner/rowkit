@@ -16,6 +16,17 @@ export default defineConfig({
   // The Explorer window's status bar shows when the page last changed.
   lastUpdated: true,
 
+  // Callout titles as the Figma panels read: «Tip», not «TIP».
+  markdown: {
+    container: {
+      tipLabel: 'Tip',
+      infoLabel: 'Note',
+      warningLabel: 'Warning',
+      dangerLabel: 'Danger',
+      detailsLabel: 'Details',
+    },
+  },
+
   // rowkit has one theme. This removes VitePress's light/dark switch and its
   // `.dark` class, rather than leaving a toggle that restyles nothing.
   appearance: false,

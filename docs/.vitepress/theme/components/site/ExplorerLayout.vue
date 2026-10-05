@@ -24,6 +24,8 @@ import {
   WindowTitleBar,
 } from 'rowkit'
 import FolderTree from './FolderTree.vue'
+import PageHeader from './PageHeader.vue'
+import PageOutline from './PageOutline.vue'
 import SiteAddressBar from './SiteAddressBar.vue'
 import SiteMenuBar from './SiteMenuBar.vue'
 import SiteTaskbar from './SiteTaskbar.vue'
@@ -166,10 +168,21 @@ const searching = ref(false)
             Text wraps at the pane's width whatever is inside: without
             `contain`, one wide demo would widen the page and every paragraph
             with it. A wide element overflows on its own instead.
+
+            The header spans the page; under it, the text and «On this page»,
+            868px and 200px with 32px between at full width, as in Figma.
           -->
-          <main class="vp-doc px-6 py-6 contain-inline-size">
-            <Content />
-          </main>
+          <div class="max-w-[1100px] p-6 contain-inline-size">
+            <PageHeader :title="title" :current="current" />
+            <div class="mt-6 grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1fr)_200px]">
+              <main class="vp-doc rk-page min-w-0">
+                <Content />
+              </main>
+              <aside class="sticky top-0 self-start max-xl:hidden">
+                <PageOutline :scroller="contentArea?.viewport" />
+              </aside>
+            </div>
+          </div>
         </ScrollArea>
       </WindowBody>
 
