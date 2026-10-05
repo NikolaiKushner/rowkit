@@ -31,7 +31,7 @@ async function copy(): Promise<void> {
     </WindowTitleBar>
     <button
       type="button"
-      class="flex w-full cursor-pointer flex-col items-start gap-0.5 bg-foreground px-2 pt-1.5 pb-2 text-left font-mono text-[16px] leading-[16px] text-border-subtle shadow-sunken outline-none focus-visible:outline-1 focus-visible:-outline-offset-4 focus-visible:outline-dotted focus-visible:outline-border-subtle"
+      class="flex w-full cursor-pointer flex-col items-start gap-0.5 bg-foreground px-2 pt-1.5 pb-2 text-left font-mono text-mono text-border-subtle shadow-sunken outline-none focus-visible:outline-1 focus-visible:-outline-offset-4 focus-visible:outline-dotted focus-visible:outline-border-subtle"
       :aria-label="
         copied ? 'Copied: pnpm add rowkit@beta' : 'Copy the install command: pnpm add rowkit@beta'
       "

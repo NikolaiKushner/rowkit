@@ -29,7 +29,7 @@ const icon = computed(
     <div class="flex items-center gap-3">
       <!-- 32px pixel art drawn at 2×: a whole-number scale keeps every pixel square. -->
       <component :is="icon" class="size-16 shrink-0" />
-      <h1 class="m-0 text-[24px] leading-[28px] font-bold text-foreground">{{ title }}</h1>
+      <h1 class="m-0 text-doc-h1 font-bold text-foreground">{{ title }}</h1>
     </div>
     <div class="h-[3px] bg-linear-to-r from-titlebar-from to-transparent" />
   </header>

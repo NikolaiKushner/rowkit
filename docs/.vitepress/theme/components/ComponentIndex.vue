@@ -52,7 +52,7 @@ const columns: DataTableColumn<Row>[] = [
 
 <template>
   <section v-for="group in groups" :key="group.name" class="rk-demo mt-6 flex flex-col gap-2">
-    <h2 :id="group.name.toLowerCase()" class="m-0 text-[18px] leading-[22px] font-bold">
+    <h2 :id="group.name.toLowerCase()" class="m-0 text-doc-h2 font-bold">
       {{ group.name }}
     </h2>
     <DataTable :rows="group.rows" :columns="columns" :caption="`${group.name} components`">

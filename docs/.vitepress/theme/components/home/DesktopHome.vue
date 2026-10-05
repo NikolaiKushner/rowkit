@@ -191,7 +191,7 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
             <img :src="withBase('/mark-48.svg')" alt="" width="48" height="48" class="shrink-0" />
             <div class="flex flex-col gap-2">
               <img :src="withBase('/logo.svg')" alt="rowkit" width="160" height="32" />
-              <p class="m-0 text-[15px] leading-[24px] text-foreground">
+              <p class="m-0 text-doc text-foreground">
                 A professional Vue 3 toolkit — the components a product interface is built from.
               </p>
               <p class="m-0 text-muted-foreground">Version {{ version }} on npm · MIT licence</p>
@@ -220,7 +220,7 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
         <ScrollArea label="rowkit" class="min-h-0 flex-auto">
           <main class="flex flex-col gap-4 p-3">
             <img :src="withBase('/logo.svg')" alt="rowkit" width="160" height="32" />
-            <p class="m-0 text-[15px] leading-[24px] text-foreground">
+            <p class="m-0 text-doc text-foreground">
               A professional Vue 3 toolkit — the components a product interface is built from.
             </p>
             <div class="flex gap-1.5">

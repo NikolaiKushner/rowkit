@@ -66,7 +66,7 @@ const goHome = () => void router.go(withBase('/'))
           <div class="flex items-start gap-3">
             <Error32Icon class="shrink-0" />
             <div id="rk-not-found-message" class="flex min-w-0 flex-1 flex-col gap-1.5">
-              <h1 class="m-0 text-[13px] leading-4 font-bold break-words text-foreground">
+              <h1 class="m-0 text-heading font-bold break-words text-foreground">
                 Cannot find '{{ path }}'.
               </h1>
               <p class="m-0 text-ui text-foreground">

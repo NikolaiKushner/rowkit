@@ -118,9 +118,13 @@ fading it with opacity.
 
 ## Type
 
-The interface is set at Windows 98's own 11px in **PT Sans**, the closest open
-face to Tahoma. Documentation paragraphs run at 15px. Code and fixed-width
-numbers use **VT323**, drawn after the Fixedsys terminal font. The sizes are
+The interface is set at 13px in **PT Sans**, the closest open face to Tahoma.
+That is Windows 98's 8pt in its "Large Fonts" mode: at the standard 96 DPI 8pt
+is 11px, which on a 1998 monitor's large pixels read fine and on today's screens
+is too small. Documentation paragraphs run at 16px. Code and fixed-width numbers
+use **VT323**, drawn after the Fixedsys terminal font, at a size that matches
+the x-height of the text beside it: 16px next to the interface, 20px next to
+documentation. The sizes are
 named after the design's text styles: `ui/body` is `text-ui`, `doc/h1` is
 `text-doc-h1`.
 

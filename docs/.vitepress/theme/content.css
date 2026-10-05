@@ -12,8 +12,8 @@
 @layer components {
   .rk-page {
     font-family: var(--font-sans);
-    font-size: 15px;
-    line-height: 24px;
+    font-size: var(--text-doc);
+    line-height: var(--text-doc--line-height);
     color: var(--color-foreground);
   }
 
@@ -105,15 +105,15 @@
   .rk-page :where(h2):not(.rk-demo *) {
     padding: 0;
     border: 0;
-    font-size: 18px;
-    line-height: 22px;
+    font-size: var(--text-doc-h2);
+    line-height: var(--text-doc-h2--line-height);
     font-weight: 700;
     letter-spacing: 0;
   }
 
   .rk-page :where(h3, h4):not(.rk-demo *) {
-    font-size: 13px;
-    line-height: 16px;
+    font-size: var(--text-doc-h3);
+    line-height: var(--text-doc-h3--line-height);
     font-weight: 700;
     letter-spacing: 0;
   }
@@ -123,8 +123,8 @@
   }
 
   .rk-page :where(p, li):not(.rk-demo *) {
-    font-size: 15px;
-    line-height: 24px;
+    font-size: var(--text-doc);
+    line-height: var(--text-doc--line-height);
   }
 
   .rk-page :where(li + li):not(.rk-demo *) {
@@ -152,7 +152,7 @@
     border-radius: 0;
     background: none;
     font-family: var(--font-mono);
-    font-size: 16px;
+    font-size: var(--text-doc-mono);
     color: inherit;
   }
 
@@ -164,8 +164,8 @@
     background: none;
     box-shadow: none;
     font-family: var(--font-mono);
-    font-size: 16px;
-    line-height: 16px;
+    font-size: var(--text-doc-mono);
+    line-height: var(--text-doc-mono--line-height);
     color: inherit;
   }
 
@@ -198,8 +198,8 @@
   .rk-page div[class*='language-'] code {
     padding: 0;
     font-family: var(--font-mono);
-    font-size: 16px;
-    line-height: 16px;
+    font-size: var(--text-doc-mono);
+    line-height: var(--text-doc-mono--line-height);
     color: var(--color-foreground);
   }
 
@@ -301,8 +301,8 @@
 
   .rk-page .custom-block p.custom-block-title {
     margin-bottom: 4px;
-    font-size: 13px;
-    line-height: 16px;
+    font-size: var(--text-heading);
+    line-height: var(--text-heading--line-height);
     font-weight: 700;
   }
 
@@ -360,7 +360,7 @@
   }
 
   .rk-page :where(td code):not(.rk-demo *) {
-    font-size: 14px;
+    font-size: var(--text-mono);
   }
 
   /*
@@ -408,8 +408,8 @@
     .rk-page .rk-props table :where(td[data-label='Type'], td[data-label='Default']),
     .rk-page .rk-props table :where(td[data-label='Type'], td[data-label='Default']) code {
       font-family: var(--font-mono);
-      font-size: 16px;
-      line-height: 16px;
+      font-size: var(--text-mono);
+      line-height: var(--text-mono--line-height);
       color: var(--color-text-subtle);
     }
 
@@ -428,8 +428,8 @@
 
     .rk-page .rk-props table td[data-label='Description'] {
       flex-basis: 100%;
-      font-size: 15px;
-      line-height: 24px;
+      font-size: var(--text-doc);
+      line-height: var(--text-doc--line-height);
     }
   }
 }

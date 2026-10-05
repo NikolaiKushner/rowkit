@@ -25,7 +25,7 @@ const { copied, copy } = useCopyToken()
         <span class="block size-5 shrink-0 bg-card p-0.5 shadow-sunken">
           <span class="block size-4" :style="{ background: `var(--color-${name})` }" />
         </span>
-        <span class="font-mono text-[16px] leading-4 whitespace-nowrap text-foreground">
+        <span class="font-mono text-mono whitespace-nowrap text-foreground">
           {{ copied === `--color-${name}` ? 'copied' : `--color-${name}` }}
         </span>
       </button>

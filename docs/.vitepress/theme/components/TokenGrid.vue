@@ -59,7 +59,7 @@ const { copied, copy } = useCopyToken()
               {{ copied === `${prefix}-${name}` ? 'copied' : `${prefix}-${name}` }}
             </button>
           </td>
-          <td class="text-right! font-mono text-[16px]! leading-4! whitespace-nowrap">
+          <td class="text-right! font-mono text-mono! whitespace-nowrap">
             {{ value }}
           </td>
           <td v-if="slots.preview">

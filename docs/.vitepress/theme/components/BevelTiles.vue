@@ -29,7 +29,7 @@ const { copied, copy } = useCopyToken()
             :class="String(name).includes('sunken') ? 'bg-input' : 'bg-card'"
             :style="{ boxShadow: value }"
           />
-          <span class="font-mono text-[16px] leading-4 whitespace-nowrap text-foreground">
+          <span class="font-mono text-mono whitespace-nowrap text-foreground">
             {{ copied === `--shadow-${name}` ? 'copied' : `--shadow-${name}` }}
           </span>
         </button>
