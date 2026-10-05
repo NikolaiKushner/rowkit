@@ -678,13 +678,15 @@ export const SelectAllIsTriState: Story = {
     const canvas = within(canvasElement)
     const all = () => canvas.getByRole('checkbox', { name: 'Select all rows' })
 
-    await expect(all()).toHaveAttribute('data-state', 'unchecked')
+    await expect(all()).not.toBeChecked()
+    await expect(all()).not.toBePartiallyChecked()
 
     await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Ada Lovelace' }))
-    await expect(all()).toHaveAttribute('data-state', 'indeterminate')
+    await expect(all()).toBePartiallyChecked()
 
+    // Partly checked means the next click selects the rest.
     await userEvent.click(all())
-    await expect(all()).toHaveAttribute('data-state', 'checked')
+    await expect(all()).toBeChecked()
     await expect(canvas.getByText('Selected: 4')).toBeInTheDocument()
 
     // Checked means the next click clears.

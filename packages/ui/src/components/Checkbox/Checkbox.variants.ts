@@ -13,10 +13,15 @@ export const checkboxVariants = cva([
 /**
  * The box: white in the sunken bevel. Held down, or disabled, it turns
  * silver; disabled, the mark turns grey.
+ *
+ * The mark is coloured through the foreground variable rather than the
+ * `text-foreground` class: a selected DataTable row turns that class white,
+ * and a white mark on the white box would vanish. The label beside it does
+ * turn white, as it should on navy.
  */
 export const checkboxBoxVariants = cva([
   'pointer-events-none flex size-[13px] shrink-0 items-center justify-center',
-  'bg-input text-foreground shadow-sunken',
+  'bg-input text-(--color-foreground) shadow-sunken',
   'group-active/checkbox:bg-surface-disabled',
   'group-data-disabled/checkbox:bg-surface-disabled group-data-disabled/checkbox:text-text-disabled',
 ])

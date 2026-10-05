@@ -561,7 +561,7 @@ describe('DataTable', () => {
           'onRow:click': () => undefined,
         },
       })
-      await el.find('tbody [role="checkbox"]').trigger('click')
+      await el.find('tbody input[type="checkbox"]').trigger('click')
       expect(el.emitted('row:click')).toBeUndefined()
     })
 

@@ -1,10 +1,9 @@
 <script setup lang="ts" generic="TRow extends DataTableRow">
 import { computed, getCurrentInstance, onBeforeUnmount, ref, useId, watch } from 'vue'
-import CheckGlyphIcon from '../../icons/CheckGlyphIcon.vue'
 import RadioMark from '../../icons/RadioMark.vue'
 import TriangleDownIcon from '../../icons/TriangleDownIcon.vue'
 import TriangleUpIcon from '../../icons/TriangleUpIcon.vue'
-import Checkbox from '../../primitives/Checkbox.vue'
+import Checkbox from '../Checkbox/Checkbox.vue'
 import { cn } from '../../utils/cn'
 import EmptyState from '../EmptyState/EmptyState.vue'
 import ScrollArea from '../ScrollArea/ScrollArea.vue'
@@ -12,8 +11,6 @@ import Skeleton from '../Skeleton/Skeleton.vue'
 import {
   dataTableCaptionVariants,
   dataTableCellVariants,
-  dataTableCheckboxBarClass,
-  dataTableCheckboxVariants,
   dataTableFrameVariants,
   dataTableHeaderCellVariants,
   dataTableHeaderRowVariants,
@@ -488,17 +485,11 @@ function headerStyle(
             -->
                 <Checkbox
                   v-if="props.selectable === 'multiple'"
-                  :model-value="selectAllState"
+                  :model-value="selectAllState === true"
+                  :indeterminate="selectAllState === 'indeterminate'"
                   :aria-label="props.selectAllLabel"
-                  :class="dataTableCheckboxVariants({ size: props.size })"
                   @update:model-value="toggleAll"
-                >
-                  <span
-                    v-if="selectAllState === 'indeterminate'"
-                    :class="dataTableCheckboxBarClass"
-                  />
-                  <CheckGlyphIcon v-else />
-                </Checkbox>
+                />
                 <span v-else class="sr-only">{{ props.selectionLabel }}</span>
               </th>
 
@@ -636,11 +627,8 @@ function headerStyle(
                   v-if="props.selectable === 'multiple'"
                   :model-value="selectedKeys.has(row.id)"
                   :aria-label="labelFor(row, index)"
-                  :class="dataTableCheckboxVariants({ size: props.size })"
-                  @update:model-value="setRowSelected(row.id, $event === true)"
-                >
-                  <CheckGlyphIcon />
-                </Checkbox>
+                  @update:model-value="setRowSelected(row.id, $event)"
+                />
                 <!--
               A native radio, not a RadioGroup component. A radio group's root owns
               the roving tabstop and would have to wrap the table, putting
