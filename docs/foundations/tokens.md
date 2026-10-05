@@ -9,7 +9,16 @@ this page is hand-maintained — the swatches below are rendered from
 <script setup>
 import { tokens } from '@rowkit/tokens'
 
-const families = ['vga', 'win98']
+const layers = {
+  base: 'page content',
+  sticky: 'sticky table header',
+  dropdown: 'menus',
+  overlay: 'optional dithered backdrop',
+  modal: 'Dialog',
+  popover: 'Select list',
+  toast: 'Toaster',
+  tooltip: 'Tooltip',
+}
 </script>
 
 ```bash
@@ -48,7 +57,7 @@ exact.
 The names match the Figma file's variables, so `vga/silver` in the design is
 `--color-vga-silver` here.
 
-<ColorScale v-for="family in families" :key="family" :name="family" :scale="tokens.color[family]" />
+<ColorPalette :vga="tokens.color.vga" :win98="tokens.color.win98" />
 
 ## Semantic colours
 
@@ -58,14 +67,7 @@ fill. Several surface tokens therefore point at the same primitive. They stay
 separate because they are separate override points — a theme that wants a
 hovered row to change colour repoints `accent` and nothing else.
 
-<TokenGrid :tokens="tokens.color.semantic" prefix="--color">
-  <template #preview="{ token }">
-    <span
-      class="inline-block h-6 w-16 rounded-sm border border-border align-middle"
-      :style="{ background: `var(--color-${token})` }"
-    ></span>
-  </template>
-</TokenGrid>
+<ColorList :tokens="tokens.color.semantic" />
 
 There is one theme, so there is one map. Contrast for every pairing is asserted
 in the package's tests — the ratios are a build gate, not a claim in a comment.
@@ -84,7 +86,7 @@ difference between a grid showing twenty rows and one showing twelve.
   </template>
 </TokenGrid>
 
-## Radii
+## Radius
 
 Every corner is square: Windows 98 draws no rounded corners, and every radius
 in the design is 0. The scale is still there, built on one `--radius` length
@@ -92,14 +94,7 @@ that defaults to `0rem`. Set `--radius` and every control gets corners in
 proportion, without touching a component. `full` stays a circle, for the radio
 button and a round skeleton.
 
-<TokenGrid :tokens="tokens.radius" prefix="--radius">
-  <template #preview="{ value }">
-    <span
-      class="inline-block size-10 border border-border bg-muted align-middle"
-      :style="{ borderRadius: value }"
-    ></span>
-  </template>
-</TokenGrid>
+<TokenGrid :tokens="tokens.radius" prefix="--radius" />
 
 ## Bevels
 
@@ -109,14 +104,7 @@ surface, and the other way round for a sunken one. Each bevel is a stack of hard
 inset shadows built from the four `bevel-*` colours. There is no blur, and the
 frame sits inside the box, so it never changes the box's size.
 
-<TokenGrid :tokens="tokens.shadow" prefix="--shadow">
-  <template #preview="{ value }">
-    <span
-      class="inline-block size-10 bg-card align-middle"
-      :style="{ boxShadow: value }"
-    ></span>
-  </template>
-</TokenGrid>
+<BevelTiles :tokens="tokens.shadow" />
 
 Disabled text has a shadow of its own. Windows 98 shows a disabled control by
 drawing its text grey with a white copy one pixel right and down, never by
@@ -136,11 +124,7 @@ numbers use **VT323**, drawn after the Fixedsys terminal font. The sizes are
 named after the design's text styles: `ui/body` is `text-ui`, `doc/h1` is
 `text-doc-h1`.
 
-<TokenGrid :tokens="Object.fromEntries(Object.entries(tokens.font.size).map(([k, v]) => [k, `${v.size} / ${v.lineHeight}`]))" prefix="--text">
-  <template #preview="{ token }">
-    <span class="align-middle" :class="`text-${token}`" :style="token === 'mono' ? { fontFamily: 'var(--font-mono)' } : undefined">Ag Яя 123</span>
-  </template>
-</TokenGrid>
+<TypeSamples :sizes="tokens.font.size" />
 
 Two weights, `normal` and `bold`, because PT Sans has two. A weight in between
 would be faked by the browser, and a faked weight is blurrier than either real
@@ -158,7 +142,7 @@ pnpm add @fontsource/pt-sans @fontsource/vt323
 @import '@fontsource/vt323/400.css';
 ```
 
-## Layers
+## Stacking (z-index)
 
 Stacking order is a token scale, not a set of numbers chosen at each call site.
 The gaps are wide enough that an application can slot its own layer between two
@@ -168,7 +152,7 @@ The order itself is a build gate: `z-index.test.ts` asserts that a modal sits
 above an overlay, a tooltip above everything, and that consecutive layers stay
 at least 100 apart.
 
-<TokenGrid :tokens="tokens.zIndex" prefix="--z-index" />
+<TokenGrid :tokens="tokens.zIndex" prefix="--z-index" :notes="layers" />
 
 Note the namespace. Tailwind v4 reads `--z-index-*`, not `--z-*`, and a token
 written into the wrong namespace generates **no utility and no error** — it
@@ -214,3 +198,8 @@ import { tokens } from '@rowkit/tokens'
 
 const series = [tokens.color.vga.navy, tokens.color.vga.green, tokens.color.vga.maroon]
 ```
+
+::: tip Rebranding
+Override a semantic token (for example `--color-primary-solid`), never a
+primitive. Every component follows.
+:::

@@ -3,7 +3,7 @@ import { ref } from 'vue'
 /**
  * Copy-on-click for a token name, with a short confirmation.
  *
- * Shared by `ColorScale` and `TokenGrid` so the two cannot drift on timing or
+ * Shared by the token components on the Tokens page so they cannot drift on timing or
  * on what actually lands in the clipboard: the CSS custom property, because
  * that is what a consumer pastes into a stylesheet. The raw value is on the
  * page for reading; it is not what anyone wants on their clipboard.
