@@ -187,7 +187,7 @@ handling.
 **Slots**
 
 - `#cell:<key>` `(props: { row: TRow; column: DataTableColumn<TRow>; value: unknown; index: number })` — Per-key slot. Resolution order: this, then the general slot.
-- `#summary:<key>` `(props: { column: DataTableColumn<TRow>; value: unknown })` — Per-key slot. Resolution order: this, then the general slot.
+- `#summary:<key>` `(props: { column: DataTableColumn<TRow>; value: unknown })` — Per-key slot.
 - `#cell` `(props: { row: TRow; column: DataTableColumn<TRow>; value: unknown; index: number })` — Fallback renderer for every cell.
 - `#empty` — Replaces the built-in empty state.
 - `#loading` — Replaces the placeholder rows shown while loading.
