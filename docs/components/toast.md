@@ -6,56 +6,84 @@ A notification queue. Not really a component — a **service with a component
 attached**: you call a toast into being from anywhere, and one `<Toaster />`
 renders them all.
 
-```ts
-const { success, danger } = useToast()
-
-success('Project archived')
-danger('Could not save', {
-  duration: 0,
-  action: { label: 'Retry', onClick: retry },
-})
-```
-
-```vue
-<!-- Once, at the app root. -->
-<Toaster />
-```
-
 <script setup>
-import { useToast } from 'rowkit'
-
-const { success, warning, danger, dismissAll } = useToast()
-
-function retry() {
-  success('Saved')
-}
+import ToastBasic from '../examples/toast/ToastBasic.vue'
+import ToastVariants from '../examples/toast/ToastVariants.vue'
+import ToastTitle from '../examples/toast/ToastTitle.vue'
+import ToastUndo from '../examples/toast/ToastUndo.vue'
+import ToastAsync from '../examples/toast/ToastAsync.vue'
 </script>
 
+<!-- Lifted clear of this site's 28px taskbar, as an app lifts it clear of its own footer. -->
+<ClientOnly>
+  <Toaster class="bottom-7" />
+</ClientOnly>
+
 <DemoBox>
-  <Button variant="secondary" @click="success('Project archived')">success</Button>
-  <Button variant="secondary" @click="warning('Two seats left on this plan')">warning</Button>
-  <Button
-    variant="secondary"
-    @click="danger('Could not save', { duration: 0, action: { label: 'Retry', onClick: retry } })"
-  >danger, with an action</Button>
-  <Button variant="secondary" @click="success('Project archived')">fire a duplicate</Button>
-  <Button variant="ghost" @click="dismissAll()">dismiss all</Button>
-  <ClientOnly>
-    <Toaster />
-  </ClientOnly>
+  <ToastBasic />
 </DemoBox>
 
-Press **success** twice quickly: you get one toast, not two. Duplicates fired
+<<< @/examples/toast/ToastBasic.vue
+
+Call `useToast()` from any component; one `<Toaster />`, mounted once at the
+app root, shows every toast. This page mounts one, and the examples below all
+send to it.
+
+Press a button twice quickly: you get one toast, not two. Duplicates fired
 inside the coalescing window collapse, because a retry loop that fires the same
-message forty times should not produce forty toasts.
+message forty times should not produce forty toasts. Hover any toast and its
+timer pauses; move away and it resumes.
 
-The **danger** one has `duration: 0` and never dismisses itself. Anything
-carrying an action has to wait for the user — a toast that takes its own retry
-button away after four seconds is worse than no toast.
+## Examples
 
-Hover any toast and its timer pauses; move away and it resumes. Focusing a
-toast, or switching to another window, pauses it too. The timers live in
-`<Toaster>`, not in the queue: a queued toast has no countdown until it shows.
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Variants
+
+`toast()` for news, `success`, `warning` and `danger` for outcomes. Each draws
+its own icon; colour never carries the meaning alone. `dismissAll()` clears the
+queue.
+
+<DemoBox>
+  <ToastVariants />
+</DemoBox>
+
+<<< @/examples/toast/ToastVariants.vue
+
+### With a title
+
+A bold `title` over the message, for a toast that needs both.
+
+<DemoBox>
+  <ToastTitle />
+</DemoBox>
+
+<<< @/examples/toast/ToastTitle.vue
+
+### Undo instead of «Are you sure?»
+
+Act at once and offer the way back. A longer `duration` leaves time to read
+the toast and reach Undo.
+
+<DemoBox>
+  <ToastUndo />
+</DemoBox>
+
+<<< @/examples/toast/ToastUndo.vue
+
+### Saving, and retrying a failure
+
+Success for the outcome, `danger` with `duration: 0` and a Retry action when
+it fails. A toast that carries an action waits for the person — one that takes
+its own retry button away after four seconds is worse than no toast. This one
+fails every other time, so press it twice.
+
+<DemoBox>
+  <ToastAsync />
+</DemoBox>
+
+<<< @/examples/toast/ToastAsync.vue
 
 ## The three pieces
 
@@ -102,6 +130,9 @@ in a provide/inject tree. Rendering stays in one place so stacking is coherent.
 | `class`      | `string`                                                           | —                | Additional classes for the viewport, merged so a consumer's utility wins.                                   |
 
 <!-- /@props -->
+
+Above a fixed footer or taskbar, lift the stack clear of it with a class —
+this page uses `<Toaster class="bottom-7" />` for its 28px taskbar.
 
 ## When to use
 

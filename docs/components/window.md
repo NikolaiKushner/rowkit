@@ -7,35 +7,71 @@ status bar if it needs one. For a panel of the page that should read as its
 own window — a tool, a preview, an "About" box. It is not modal; for that, use
 `Dialog`.
 
-```vue
-<Window>
-  <WindowTitleBar title="About rowkit">
-    <template #icon><ComputerIcon /></template>
-    <template #controls>
-      <WindowButton glyph="close" label="Close" @click="open = false" />
-    </template>
-  </WindowTitleBar>
-  <WindowBody class="p-4">…</WindowBody>
-</Window>
-```
+<script setup>
+import WindowBasic from '../examples/window/WindowBasic.vue'
+import WindowActive from '../examples/window/WindowActive.vue'
+import WindowApp from '../examples/window/WindowApp.vue'
+import WindowStates from '../examples/window/WindowStates.vue'
+import WindowProperties from '../examples/window/WindowProperties.vue'
+</script>
 
 <DemoBox>
-  <Window class="w-[400px]">
-    <WindowTitleBar title="Users — rowkit playground">
-      <template #icon><ComputerIcon /></template>
-      <template #controls>
-        <WindowButton glyph="minimize" label="Minimize" />
-        <WindowButton glyph="maximize" label="Maximize" />
-        <WindowButton glyph="close" label="Close" />
-      </template>
-    </WindowTitleBar>
-    <WindowBody class="h-24 bg-input shadow-sunken" />
-    <StatusBar>
-      <StatusBarSection>312 users</StatusBarSection>
-      <StatusBarSection class="w-[100px]">2 selected</StatusBarSection>
-    </StatusBar>
-  </Window>
+  <WindowBasic />
 </DemoBox>
+
+<<< @/examples/window/WindowBasic.vue
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Active and inactive
+
+`active` draws the blue title bar on the window in use; the others turn grey,
+as Windows 98 does behind a dialog or beside the window with focus. Click
+either window.
+
+<DemoBox>
+  <WindowActive />
+</DemoBox>
+
+<<< @/examples/window/WindowActive.vue
+
+### A small application
+
+Title bar, a toolbar, a `DataTable` filling the body, and a status bar that
+counts. `WindowBody` is the part that grows and scrolls.
+
+<DemoBox layout="stack">
+  <WindowApp />
+</DemoBox>
+
+<<< @/examples/window/WindowApp.vue
+
+### Minimize, maximize, restore
+
+The caption buttons do what they say. Maximized, the middle button becomes
+Restore; minimized, the window leaves a button behind to bring it back. A
+caption button that does nothing here is disabled, never left to fail
+silently.
+
+<DemoBox layout="stack">
+  <WindowStates />
+</DemoBox>
+
+<<< @/examples/window/WindowStates.vue
+
+### A properties sheet
+
+Groups of settings and the Windows 98 OK · Cancel · Apply row: Apply saves and
+stays, Cancel puts the fields back.
+
+<DemoBox>
+  <WindowProperties />
+</DemoBox>
+
+<<< @/examples/window/WindowProperties.vue
 
 ## Look
 

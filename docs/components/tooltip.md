@@ -5,47 +5,74 @@
 A label for a control, on hover and on focus.
 You place the trigger and the content; the portal lives inside `TooltipContent`.
 
-```vue
-<Tooltip>
-  <TooltipTrigger as-child>
-    <Button variant="ghost" aria-label="Archive project">
-      <ArchiveIcon />
-    </Button>
-  </TooltipTrigger>
-  <TooltipContent>Archive project</TooltipContent>
-</Tooltip>
-```
+<script setup>
+import TooltipBasic from '../examples/tooltip/TooltipBasic.vue'
+import TooltipPlacement from '../examples/tooltip/TooltipPlacement.vue'
+import TooltipToolbar from '../examples/tooltip/TooltipToolbar.vue'
+import TooltipShortcut from '../examples/tooltip/TooltipShortcut.vue'
+import TooltipTruncated from '../examples/tooltip/TooltipTruncated.vue'
+</script>
 
 <DemoBox>
-  <TooltipProvider :delay-duration="300" :skip-delay-duration="500">
-    <Tooltip>
-      <TooltipTrigger as-child>
-        <Button variant="ghost">Archive</Button>
-      </TooltipTrigger>
-      <TooltipContent>Archive project</TooltipContent>
-    </Tooltip>
-    <Tooltip>
-      <TooltipTrigger as-child>
-        <Button variant="ghost">Duplicate</Button>
-      </TooltipTrigger>
-      <TooltipContent placement="bottom">Duplicate project</TooltipContent>
-    </Tooltip>
-    <Tooltip>
-      <TooltipTrigger as-child>
-        <Button variant="ghost">Export</Button>
-      </TooltipTrigger>
-      <TooltipContent placement="right">Export as CSV</TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
+  <TooltipBasic />
 </DemoBox>
 
-Hover the first button, then sweep across the other two. The first waits out the
-300ms delay; the rest open immediately, because they share a `TooltipProvider`
-and its `skipDelayDuration`. Without one, every button in a toolbar re-pays the
+<<< @/examples/tooltip/TooltipBasic.vue
+
+Tab to it and the tooltip opens on focus, with no delay — a keyboard user has
+already committed to the control by the time they reach it. <kbd>Esc</kbd>
+closes it.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Placement
+
+`placement` on `TooltipContent` picks the side. Near the edge of the screen the
+tooltip flips, so it never opens off-screen.
+
+<DemoBox>
+  <TooltipPlacement />
+</DemoBox>
+
+<<< @/examples/tooltip/TooltipPlacement.vue
+
+### A toolbar of icon buttons
+
+Hover the first button, then sweep along the row. The first waits out the
+300ms delay; the rest open at once, because they share a `TooltipProvider` and
+its `skip-delay-duration`. Without one, every button in a toolbar re-pays the
 full delay and the row feels broken.
 
-Tab to them instead and the tooltips open on focus, with no delay at all — a
-keyboard user has already committed to the control by the time they reach it.
+<DemoBox>
+  <TooltipToolbar />
+</DemoBox>
+
+<<< @/examples/tooltip/TooltipToolbar.vue
+
+### Teaching a shortcut
+
+A tooltip on a labelled button adds what the label cannot: the keyboard
+shortcut for the command.
+
+<DemoBox>
+  <TooltipShortcut />
+</DemoBox>
+
+<<< @/examples/tooltip/TooltipShortcut.vue
+
+### Text cut short
+
+A narrow column truncates long names; the tooltip shows the whole one. The
+trigger takes focus, so the full name reaches the keyboard too.
+
+<DemoBox>
+  <TooltipTruncated />
+</DemoBox>
+
+<<< @/examples/tooltip/TooltipTruncated.vue
 
 ## Anatomy
 

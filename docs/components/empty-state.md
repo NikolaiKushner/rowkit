@@ -5,61 +5,76 @@
 The screen a table shows when it has nothing to show. A title, an explanation,
 and a way forward — the last of which is the part usually missing.
 
-```vue
-<EmptyState title="No projects yet" description="Projects group your work.">
-  <template #actions>
-    <Button>Create a project</Button>
-  </template>
-</EmptyState>
-```
-
 <script setup>
-import { ref } from 'vue'
-
-const reason = ref('no-data')
-
-const copy = {
-  'no-data': { title: 'No projects yet', description: 'Projects group your work and control who can see it.' },
-  'no-results': { title: 'No projects match these filters' },
-  error: { title: "Couldn't load projects" },
-}
+import EmptyStateBasic from '../examples/empty-state/EmptyStateBasic.vue'
+import EmptyStateReasons from '../examples/empty-state/EmptyStateReasons.vue'
+import EmptyStateSizes from '../examples/empty-state/EmptyStateSizes.vue'
+import EmptyStateCustom from '../examples/empty-state/EmptyStateCustom.vue'
+import EmptyStateWindow from '../examples/empty-state/EmptyStateWindow.vue'
 </script>
 
 <DemoBox layout="stack">
-  <div class="flex flex-wrap gap-2">
-    <Button
-      v-for="value in ['no-data', 'no-results', 'error']"
-      :key="value"
-      size="sm"
-      :variant="reason === value ? 'default' : 'secondary'"
-      @click="reason = value"
-    >{{ value }}</Button>
-  </div>
-  <EmptyState
-    :key="reason"
-    :reason="reason"
-    :title="copy[reason].title"
-    :description="copy[reason].description"
-    :announce="reason !== 'no-data'"
-    :level="2"
-  >
-    <template #actions>
-      <Button v-if="reason === 'no-data'">Create a project</Button>
-      <Button v-else-if="reason === 'no-results'" variant="secondary">Clear filters</Button>
-      <Button v-else variant="secondary">Try again</Button>
-    </template>
-  </EmptyState>
+  <EmptyStateBasic />
 </DemoBox>
 
-Switch between the three. They share a layout and mean completely different
-things — the action changes with the reason, which is the entire point of the
-prop. Only `no-data` supplies its own description here; the other two are the
-component's.
+<<< @/examples/empty-state/EmptyStateBasic.vue
 
-The demo passes `:level="2"` because this page's own heading is the `h1` above
-it. Getting that wrong is not theoretical — axe caught this exact block at
-`level="3"`, which skips a level and breaks heading navigation for anyone
-moving through the page by structure.
+Every example here passes a `level` that fits this page's outline: the page
+title is the `h1` and the examples sit under `h3`s. Getting it wrong is not
+theoretical — axe caught a block at `level="3"` under an `h1`, which skips a
+level and breaks heading navigation for anyone moving through the page by
+structure.
+
+## Examples
+
+Each example below is the whole component: copy it into a `.vue` file and it
+runs. The code is the file the demo is built from, so the two cannot differ.
+
+### Three reasons, three next steps
+
+`no-data`, `no-results` and `error` share a layout and mean completely
+different things: the icon, the default description and the action change with
+the reason. `announce` reads the change out when a filter or a retry caused
+it.
+
+<DemoBox layout="stack">
+  <EmptyStateReasons />
+</DemoBox>
+
+<<< @/examples/empty-state/EmptyStateReasons.vue
+
+### Sizes
+
+`md` fills a page or a window; `sm` fits a side panel, a card or a small
+table — pair it with `size="sm"` buttons.
+
+<DemoBox>
+  <EmptyStateSizes />
+</DemoBox>
+
+<<< @/examples/empty-state/EmptyStateSizes.vue
+
+### Your own icon and description
+
+The `icon` slot takes any 32px icon, decorative; the `description` slot takes
+markup, such as a link to help.
+
+<DemoBox>
+  <EmptyStateCustom />
+</DemoBox>
+
+<<< @/examples/empty-state/EmptyStateCustom.vue
+
+### Inside a window
+
+An empty list in an application window: the empty state sits in the white
+well until there is something to show.
+
+<DemoBox>
+  <EmptyStateWindow />
+</DemoBox>
+
+<<< @/examples/empty-state/EmptyStateWindow.vue
 
 ## Look
 
