@@ -5,6 +5,7 @@ import {
   Badge,
   Button,
   CopyIcon,
+  EditIcon,
   DataTable,
   FilterBar,
   GroupBox,
@@ -22,8 +23,10 @@ import {
 } from 'rowkit'
 import SiteTaskbar from '../site/SiteTaskbar.vue'
 import CommandPrompt from './CommandPrompt.vue'
+import EditUserDialog from './EditUserDialog.vue'
 import DesktopIcon from './DesktopIcon.vue'
 import { shortcuts } from './shortcuts'
+import type { HomeUser } from '../home-users'
 import { columns, label, tone, useHomeDemo } from './useHomeDemo'
 
 /**
@@ -36,6 +39,9 @@ import { columns, label, tone, useHomeDemo } from './useHomeDemo'
  * away, and the task on the taskbar brings every window back.
  */
 const demo = useHomeDemo()
+
+// The row the pencil opened, in the Edit dialog.
+const editing = ref<HomeUser>()
 
 const open = reactive({ demo: true, about: true, prompt: true })
 const restore = () => Object.assign(open, { demo: true, about: true, prompt: true })
@@ -133,14 +139,24 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
               <Badge :variant="tone[row.status]" size="sm">{{ label[row.status] }}</Badge>
             </template>
             <template #[`cell:actions`]="{ row }">
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                :aria-label="`Delete ${row.name}`"
-                @click="demo.remove([row.id])"
-              >
-                <TrashIcon />
-              </Button>
+              <div class="flex">
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  :aria-label="`Edit ${row.name}`"
+                  @click="editing = row"
+                >
+                  <EditIcon />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  :aria-label="`Delete ${row.name}`"
+                  @click="demo.remove([row.id])"
+                >
+                  <TrashIcon />
+                </Button>
+              </div>
             </template>
           </DataTable>
         </WindowBody>
@@ -181,7 +197,7 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
               <p class="m-0 text-muted-foreground">Version {{ version }} on npm · MIT licence</p>
               <div class="flex gap-1.5">
                 <Button as="a" :href="withBase('/installation')">Get started</Button>
-                <Button as="a" :href="withBase('/components/button')" variant="secondary">
+                <Button as="a" :href="withBase('/components/')" variant="secondary">
                   Components
                 </Button>
               </div>
@@ -209,7 +225,7 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
             </p>
             <div class="flex gap-1.5">
               <Button as="a" :href="withBase('/installation')" size="lg">Get started</Button>
-              <Button as="a" :href="withBase('/components/button')" variant="secondary" size="lg">
+              <Button as="a" :href="withBase('/components/')" variant="secondary" size="lg">
                 Components
               </Button>
             </div>
@@ -247,6 +263,12 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
         </ScrollArea>
       </WindowBody>
     </Window>
+
+    <EditUserDialog
+      :user="editing"
+      @save="(user) => (demo.update(user), (editing = undefined))"
+      @close="editing = undefined"
+    />
 
     <SiteTaskbar :task="task" task-button @task="restore" />
   </div>

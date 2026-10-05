@@ -67,6 +67,11 @@ export function useHomeDemo() {
     selected.value = selected.value.filter((id) => !ids.includes(id))
   }
 
+  /** Writes an edited row back, by id. */
+  function update(user: HomeUser): void {
+    people.value = people.value.map((row) => (row.id === user.id ? user : row))
+  }
+
   /** The selected rows as a CSV file, downloaded. */
   function exportSelected(): void {
     const rows = people.value.filter((row) => selected.value.includes(row.id))
@@ -94,6 +99,7 @@ export function useHomeDemo() {
     removeFilter,
     clearFilters,
     remove,
+    update,
     exportSelected,
   }
 }
@@ -104,7 +110,7 @@ export const columns: DataTableColumn<HomeUser>[] = [
   { key: 'role', header: 'Role', sortable: true, width: '96px' },
   { key: 'status', header: 'Status', width: '96px' },
   { key: 'seats', header: 'Seats', sortable: true, numeric: true, width: '80px' },
-  { id: 'actions', header: 'Actions', headerSrOnly: true, width: '40px' },
+  { id: 'actions', header: 'Actions', headerSrOnly: true, width: '56px' },
 ]
 
 /** Status as the badges read it. */
