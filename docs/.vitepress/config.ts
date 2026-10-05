@@ -125,7 +125,7 @@ export default defineConfig({
 
     nav: [
       { text: 'Guide', link: '/introduction' },
-      { text: 'Components', link: '/components/button' },
+      { text: 'Components', link: '/components/' },
       { text: 'Patterns', link: '/patterns/data-table-page' },
       { text: 'Storybook', link: 'https://storybook.rowkit.dev' },
       { text: 'Decisions', link: '/decisions/001-typescript-pin' },
@@ -156,7 +156,9 @@ export default defineConfig({
         ],
       },
       {
+        // The folder has a page of its own: every component, by subfolder.
         text: 'Components',
+        link: '/components/',
         items: [
           {
             text: 'Foundations',

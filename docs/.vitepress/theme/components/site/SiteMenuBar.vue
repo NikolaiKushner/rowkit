@@ -3,7 +3,7 @@ import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useRoute, withBase } from 'vitepress'
 import { DocumentIcon } from 'rowkit'
 import SiteMenu from './SiteMenu.vue'
-import { folder, fromTree, type MenuEntry } from './menu'
+import { folder, folderMenu, fromTree, type MenuEntry } from './menu'
 import { openFind } from './useFind'
 import { useSiteNav } from './useSiteNav'
 
@@ -32,7 +32,7 @@ const bar = computed<BarItem[]>(() => {
   const contributing = page('Contributing')
   return [
     { text: 'Guide', entries: menu('Guide') },
-    { text: 'Components', entries: menu('Components') },
+    { text: 'Components', entries: folderMenu(folder(tree.value, 'Components'), 'All components') },
     { text: 'Patterns', entries: menu('Patterns') },
     { text: 'Storybook', href: 'https://storybook.rowkit.dev' },
     { text: 'Decisions', entries: menu('Decisions') },

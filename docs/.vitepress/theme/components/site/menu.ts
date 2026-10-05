@@ -52,3 +52,24 @@ export function fromTree(nodes: NavNode[]): MenuEntry[] {
 export function folder(tree: NavNode[], text: string): NavNode | undefined {
   return tree.find((node) => node.text === text)
 }
+
+/**
+ * A folder's menu: its subfolders and pages, then — under a separator — the
+ * folder's own page, as Figma's Components cascade ends on «All components».
+ */
+export function folderMenu(node: NavNode | undefined, label: string): MenuEntry[] {
+  if (!node) return []
+  const entries = fromTree(node.children)
+  if (node.link === undefined) return entries
+  return [
+    ...entries,
+    { kind: 'separator', id: `${node.id}-sep` },
+    {
+      kind: 'item',
+      id: `${node.id}-all`,
+      text: label,
+      icon: FolderIcon,
+      href: withBase(node.link),
+    },
+  ]
+}

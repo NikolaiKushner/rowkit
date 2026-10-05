@@ -61,14 +61,15 @@ export function useSiteNav() {
   })
 
   /**
-   * Up: a folder has no page of its own, so Up opens the first page of the
-   * nearest folder above whose first page is not this one. Above the top
-   * folder is the desktop.
+   * Up: the nearest folder above. A folder with a page of its own — the
+   * Components overview — opens it; one without opens its first page that is
+   * not this one. Above the top folder is the desktop.
    */
   const up = computed(() => {
     const node = current.value
     if (!node) return '/'
     for (const folder of [...node.path].reverse()) {
+      if (folder.link !== undefined) return folder.link
       const first = flatten(folder.children).find((child) => child.link !== undefined)
       if (first && first.id !== node.id) return first.link ?? '/'
     }

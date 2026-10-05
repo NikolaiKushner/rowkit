@@ -13,7 +13,7 @@ import {
   Search32Icon,
 } from 'rowkit'
 import SiteMenu from './SiteMenu.vue'
-import { folder, fromTree, type MenuEntry, type MenuItem } from './menu'
+import { folder, folderMenu, fromTree, type MenuEntry, type MenuItem } from './menu'
 import { openFind } from './useFind'
 import { useSiteNav } from './useSiteNav'
 
@@ -46,7 +46,7 @@ const entries = computed<MenuEntry[]>(() => {
       id: 'components',
       text: 'Components',
       icon: Folder32Icon,
-      children: sub('Components'),
+      children: folderMenu(folder(tree.value, 'Components'), 'All components'),
     },
     {
       kind: 'item',

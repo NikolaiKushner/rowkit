@@ -18,7 +18,7 @@ export interface Shortcut {
 /** The desktop's shortcuts, top to bottom: the home page's and the 404's. */
 export const shortcuts: Shortcut[] = [
   { label: 'Guide', href: withBase('/introduction'), icon: Book32Icon },
-  { label: 'Components', href: withBase('/components/button'), icon: Folder32Icon },
+  { label: 'Components', href: withBase('/components/'), icon: Folder32Icon },
   { label: 'Patterns', href: withBase('/patterns/data-table-page'), icon: Folder32Icon },
   { label: 'Storybook', href: 'https://storybook.rowkit.dev', icon: Computer32Icon },
   { label: 'GitHub', href: 'https://github.com/NikolaiKushner/rowkit', icon: Code32Icon },

@@ -18,7 +18,10 @@ const icons: Record<string, Component> = {
   'Foundations · Tokens': Computer32Icon,
 }
 
-const icon = computed(() => icons[props.current?.path[0]?.text ?? ''] ?? Document32Icon)
+// By the top folder; a folder's own page, by the folder itself.
+const icon = computed(
+  () => icons[(props.current?.path[0] ?? props.current)?.text ?? ''] ?? Document32Icon
+)
 </script>
 
 <template>
