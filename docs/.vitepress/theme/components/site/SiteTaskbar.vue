@@ -11,7 +11,14 @@ import { Separator, version } from 'rowkit'
 defineProps<{
   /** The task's label: the page title. */
   task: string
+  /**
+   * The task is a button — on the desktop, where it brings back windows that
+   * were closed. Elsewhere it only shows which page is open.
+   */
+  taskButton?: boolean
 }>()
+
+defineEmits<{ task: [] }>()
 
 // The clock renders on the client only; the server's time would be wrong by
 // the time anyone read it, and would not match on hydration.
@@ -43,10 +50,24 @@ onBeforeUnmount(() => clearInterval(timer))
       <span class="px-px">Start</span>
     </a>
     <Separator orientation="vertical" decorative class="h-[22px] self-center" />
-    <!-- The one task: this page. Active, so pressed in over the dither. -->
+    <!--
+      The one task: this page. Active, so pressed in over the dither. Two
+      elements rather than <component :is="'button'">: the site registers
+      rowkit's Button globally, and Vue would resolve the string to it.
+    -->
+    <button
+      v-if="taskButton"
+      type="button"
+      class="flex h-[22px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
+      @click="$emit('task')"
+    >
+      <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" class="shrink-0" />
+      <span class="truncate">{{ task }}</span>
+    </button>
     <div
+      v-else
       aria-hidden="true"
-      class="flex h-[22px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed"
+      class="flex h-[22px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
     >
       <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" class="shrink-0" />
       <span class="truncate">{{ task }}</span>
