@@ -13,6 +13,8 @@ export default defineConfig({
   description: 'A professional Vue 3 toolkit — the components a product interface is built from.',
   lang: 'en-GB',
   cleanUrls: true,
+  // The Explorer window's status bar shows when the page last changed.
+  lastUpdated: true,
 
   // rowkit has one theme. This removes VitePress's light/dark switch and its
   // `.dark` class, rather than leaving a toggle that restyles nothing.
@@ -97,7 +99,7 @@ export default defineConfig({
       { text: 'Storybook', link: 'https://storybook.rowkit.dev' },
       { text: 'Decisions', link: '/decisions/001-typescript-pin' },
       {
-        text: 'v0.x',
+        text: 'Help',
         items: [
           {
             text: 'Roadmap',
@@ -108,6 +110,10 @@ export default defineConfig({
       },
     ],
 
+    /*
+     * The folder tree of the Explorer window: sections, groups, pages. Nested
+     * `items` are folders; an item with a `link` is a page.
+     */
     sidebar: [
       {
         text: 'Guide',
@@ -119,47 +125,49 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Foundations',
+        text: 'Components',
         items: [
-          { text: 'Tokens', link: '/foundations/tokens' },
-          { text: 'Icons', link: '/foundations/icons' },
-          { text: 'Scrollbar', link: '/foundations/scrollbar' },
-          { text: 'ScrollArea', link: '/components/scroll-area' },
-          { text: 'Button', link: '/components/button' },
-          { text: 'ButtonGroup', link: '/components/button-group' },
-          { text: 'Separator', link: '/components/separator' },
-          { text: 'Window', link: '/components/window' },
-          { text: 'GroupBox', link: '/components/group-box' },
-          { text: 'StatusBar', link: '/components/status-bar' },
-          { text: 'ProgressBar', link: '/components/progress-bar' },
-        ],
-      },
-      {
-        text: 'Forms',
-        items: [
-          { text: 'Field', link: '/components/field' },
-          { text: 'Select', link: '/components/select' },
-          { text: 'Checkbox', link: '/components/checkbox' },
-          { text: 'Radio', link: '/components/radio' },
-          { text: 'Badge', link: '/components/badge' },
-        ],
-      },
-      {
-        text: 'Data',
-        items: [
-          { text: 'DataTable', link: '/components/data-table' },
-          { text: 'Pagination', link: '/components/pagination' },
-          { text: 'FilterBar', link: '/components/filter-bar' },
-          { text: 'EmptyState', link: '/components/empty-state' },
-          { text: 'Skeleton', link: '/components/skeleton' },
-        ],
-      },
-      {
-        text: 'Overlays',
-        items: [
-          { text: 'Dialog', link: '/components/dialog' },
-          { text: 'Toast', link: '/components/toast' },
-          { text: 'Tooltip', link: '/components/tooltip' },
+          {
+            text: 'Foundations',
+            items: [
+              { text: 'Button', link: '/components/button' },
+              { text: 'ButtonGroup', link: '/components/button-group' },
+              { text: 'Separator', link: '/components/separator' },
+              { text: 'Window', link: '/components/window' },
+              { text: 'GroupBox', link: '/components/group-box' },
+              { text: 'StatusBar', link: '/components/status-bar' },
+              { text: 'ProgressBar', link: '/components/progress-bar' },
+              { text: 'ScrollArea', link: '/components/scroll-area' },
+            ],
+          },
+          {
+            text: 'Forms',
+            items: [
+              { text: 'Field', link: '/components/field' },
+              { text: 'Select', link: '/components/select' },
+              { text: 'Checkbox', link: '/components/checkbox' },
+              { text: 'Radio', link: '/components/radio' },
+              { text: 'Badge', link: '/components/badge' },
+            ],
+          },
+          {
+            text: 'Data',
+            items: [
+              { text: 'DataTable', link: '/components/data-table' },
+              { text: 'Pagination', link: '/components/pagination' },
+              { text: 'FilterBar', link: '/components/filter-bar' },
+              { text: 'EmptyState', link: '/components/empty-state' },
+              { text: 'Skeleton', link: '/components/skeleton' },
+            ],
+          },
+          {
+            text: 'Overlays',
+            items: [
+              { text: 'Dialog', link: '/components/dialog' },
+              { text: 'Toast', link: '/components/toast' },
+              { text: 'Tooltip', link: '/components/tooltip' },
+            ],
+          },
         ],
       },
       {
@@ -171,10 +179,11 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Project',
+        text: 'Foundations · Tokens',
         items: [
-          { text: 'Roadmap', link: '/roadmap' },
-          { text: 'Contributing', link: '/contributing' },
+          { text: 'Tokens', link: '/foundations/tokens' },
+          { text: 'Icons', link: '/foundations/icons' },
+          { text: 'Scrollbar', link: '/foundations/scrollbar' },
         ],
       },
       {
@@ -186,6 +195,8 @@ export default defineConfig({
           { text: 'DataTable performance', link: '/decisions/004-datatable-performance' },
         ],
       },
+      { text: 'Roadmap', link: '/roadmap' },
+      { text: 'Contributing', link: '/contributing' },
     ],
 
     socialLinks: [{ icon: 'github', link: 'https://github.com/NikolaiKushner/rowkit' }],

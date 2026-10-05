@@ -4,7 +4,7 @@ import DefaultTheme from 'vitepress/theme'
 import * as rowkit from 'rowkit'
 import ColorScale from './components/ColorScale.vue'
 import DemoBox from './components/DemoBox.vue'
-import DocsLayout from './components/DocsLayout.vue'
+import SiteLayout from './components/site/SiteLayout.vue'
 import NpmVersion from './components/NpmVersion.vue'
 import TokenGrid from './components/TokenGrid.vue'
 // The Windows 98 faces, loaded the way an app is told to load them.
@@ -22,7 +22,7 @@ import './tokens.css'
  */
 export default {
   extends: DefaultTheme,
-  Layout: DocsLayout,
+  Layout: SiteLayout,
   enhanceApp({ app }) {
     for (const [name, value] of Object.entries(rowkit)) {
       // Every component export is PascalCase; the composables, the `cn` helper
