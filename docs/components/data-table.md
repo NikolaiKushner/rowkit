@@ -123,26 +123,27 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 
 <!-- @props DataTableProps -->
 
-| Prop               | Type                                   | Default             | Description                                                            |
-| ------------------ | -------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
-| `rows`             | `TRow[]`                               | **required**        | The rows to render.                                                    |
-| `columns`          | `DataTableColumn<TRow>[]`              | **required**        | Column definitions, in display order.                                  |
-| `caption`          | `string`                               | **required**        | Accessible name for the table.                                         |
-| `captionVisible`   | `boolean`                              | `false`             | Shows the caption. It is available to assistive technology either way. |
-| `loading`          | `boolean`                              | `false`             | Swaps the body for placeholder rows.                                   |
-| `loadingRows`      | `number`                               | `6`                 | How many placeholder rows to show while loading.                       |
-| `loadingLabel`     | `string`                               | `'Loading'`         | Announced while loading.                                               |
-| `emptyTitle`       | `string`                               | `'Nothing to show'` | Title for the built-in empty state.                                    |
-| `emptyDescription` | `string`                               | —                   | Description for the built-in empty state.                              |
-| `emptyReason`      | `'no-data' \| 'no-results' \| 'error'` | —                   | Why the built-in empty state is empty.                                 |
-| `selectable`       | `'single' \| 'multiple'`               | —                   | Adds a selection column.                                               |
-| `rowLabel`         | `(row: TRow, index: number) => string` | —                   | Accessible name for each row's selection control.                      |
-| `selectionLabel`   | `string`                               | `'Select'`          | Accessible name for the selection column.                              |
-| `selectAllLabel`   | `string`                               | `'Select all rows'` | Accessible name for the select-all control.                            |
-| `size`             | `'sm' \| 'md'`                         | `'md'`              | Row height: `sm` 18px for dense lists and logs, `md` 22px.             |
-| `hoverable`        | `boolean`                              | `false`             | Kept for compatibility; has no visible effect.                         |
-| `scrollbars`       | `'native' \| 'drawn'`                  | `'native'`          | Which scroll bars the body uses.                                       |
-| `class`            | `string`                               | —                   | Additional classes for the root, merged so a consumer's utility wins.  |
+| Prop               | Type                                   | Default             | Description                                                                                                          |
+| ------------------ | -------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `rows`             | `TRow[]`                               | **required**        | The rows to render.                                                                                                  |
+| `columns`          | `DataTableColumn<TRow>[]`              | **required**        | Column definitions, in display order.                                                                                |
+| `caption`          | `string`                               | **required**        | Accessible name for the table.                                                                                       |
+| `captionVisible`   | `boolean`                              | `false`             | Shows the caption. It is available to assistive technology either way.                                               |
+| `loading`          | `boolean`                              | `false`             | Swaps the body for placeholder rows.                                                                                 |
+| `loadingRows`      | `number`                               | `6`                 | How many placeholder rows to show while loading.                                                                     |
+| `loadingLabel`     | `string`                               | `'Loading'`         | Announced while loading.                                                                                             |
+| `emptyTitle`       | `string`                               | `'Nothing to show'` | Title for the built-in empty state.                                                                                  |
+| `emptyDescription` | `string`                               | —                   | Description for the built-in empty state.                                                                            |
+| `emptyReason`      | `'no-data' \| 'no-results' \| 'error'` | —                   | Why the built-in empty state is empty.                                                                               |
+| `selectable`       | `'single' \| 'multiple'`               | —                   | Adds a selection column.                                                                                             |
+| `rowLabel`         | `(row: TRow, index: number) => string` | —                   | Accessible name for each row's selection control.                                                                    |
+| `selectionLabel`   | `string`                               | `'Select'`          | Accessible name for the selection column.                                                                            |
+| `selectAllLabel`   | `string`                               | `'Select all rows'` | Accessible name for the select-all control.                                                                          |
+| `size`             | `'sm' \| 'md'`                         | `'md'`              | Row height: `sm` 18px for dense lists and logs, `md` 22px.                                                           |
+| `hoverable`        | `boolean`                              | `false`             | Kept for compatibility; has no visible effect.                                                                       |
+| `summary`          | `Record<string, unknown>`              | —                   | A summary row — totals, averages — after the last row, keyed like the columns: `key`, or `id` for a computed column. |
+| `scrollbars`       | `'native' \| 'drawn'`                  | `'native'`          | Which scroll bars the body uses.                                                                                     |
+| `class`            | `string`                               | —                   | Additional classes for the root, merged so a consumer's utility wins.                                                |
 
 <!-- /@props -->
 
@@ -327,6 +328,24 @@ colours only in Firefox. `scrollbars="drawn"` puts the body in a
 [`ScrollArea`](/components/scroll-area) instead, whose bars rowkit draws and
 which look the same everywhere. Either way the bars sit beside the cells,
 never over them, and the sticky header and pinned columns behave the same.
+
+## Summary row
+
+`summary` adds a row after the last one — a total, an average — keyed like the
+columns. It is bold, under an etched line, and stays at the bottom while the
+body scrolls, as the header stays at the top. Values show as given, so format
+numbers first; a `#summary:<key>` slot replaces a cell that needs markup.
+
+```vue
+<DataTable
+  :rows="items"
+  :columns="columns"
+  caption="Invoice"
+  :summary="{ item: 'Total', amount: '1,364.00' }"
+/>
+```
+
+It shows only while there are rows: not while loading, not when empty.
 
 ## Clickable rows
 

@@ -178,6 +178,7 @@ handling.
 - `selectAllLabel: string` — default `'Select all rows'`. Accessible name for the select-all control.
 - `size: 'sm' | 'md'` — default `'md'`. Row height: `sm` 18px for dense lists and logs, `md` 22px.
 - `hoverable: boolean` — default `false`. Kept for compatibility; has no visible effect. Windows 98 list rows have no hover, so a row that does something shows it through the cursor, the dotted focus rectangle and selection instead.
+- `summary: Record<string, unknown>`. A summary row — totals, averages — after the last row, keyed like the columns: `key`, or `id` for a computed column.
 - `scrollbars: 'native' | 'drawn'` — default `'native'`. Which scroll bars the body uses.
 - `class: string`. Additional classes for the root, merged so a consumer's utility wins. A height (`max-h-96`) bounds the table; the body scrolls inside the frame.
 
@@ -193,6 +194,7 @@ handling.
 **Slots**
 
 - `#cell:<key>` `(props: { row: TRow; column: DataTableColumn<TRow>; value: unknown; index: number })` — Per-key slot. Resolution order: this, then the general slot.
+- `#summary:<key>` `(props: { column: DataTableColumn<TRow>; value: unknown })` — Per-key slot. Resolution order: this, then the general slot.
 - `#cell` `(props: { row: TRow; column: DataTableColumn<TRow>; value: unknown; index: number })` — Fallback renderer for every cell.
 - `#empty` — Replaces the built-in empty state.
 - `#loading` — Replaces the placeholder rows shown while loading.

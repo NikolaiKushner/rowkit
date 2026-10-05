@@ -847,6 +847,80 @@ export const ReloadKeepsColumnWidths: Story = {
   },
 }
 
+const invoice = [
+  { id: 1, item: 'Seats × 25', qty: 25, amount: '1,225.00' },
+  { id: 2, item: 'Storage 100 GB', qty: 1, amount: '40.00' },
+  { id: 3, item: 'Support', qty: 1, amount: '99.00' },
+]
+const invoiceColumns = [
+  { key: 'item', header: 'Item', width: '200px' },
+  { key: 'qty', header: 'Qty', numeric: true, width: '60px' },
+  { key: 'amount', header: 'Amount', numeric: true, width: '100px' },
+]
+
+/**
+ * Numbers and a total, as in the Figma example: figures right-aligned in the
+ * mono face, and a bold summary row under an etched line.
+ */
+export const SummaryRow: Story = {
+  render: () => ({
+    components: { DataTable },
+    setup: () => ({ invoice, invoiceColumns }),
+    template: `
+      <DataTable
+        :rows="invoice"
+        :columns="invoiceColumns"
+        caption="Invoice"
+        :summary="{ item: 'Total', amount: '1,364.00' }"
+        class="w-[364px]"
+      />
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const footer = canvasElement.querySelector('tfoot')
+    if (!footer) throw new Error('no summary row')
+    const cells = within(footer).getAllByRole('cell')
+    await expect(cells.map((cell) => cell.textContent?.trim())).toEqual(['Total', '', '1,364.00'])
+    await expect(getComputedStyle(cells[0] as Element).fontWeight).toBe('700')
+    // A data row's height plus the 2px etched line.
+    await expect((cells[0] as Element).getBoundingClientRect().height).toBe(24)
+  },
+}
+
+/** A long list: the summary row stays at the bottom while the rows scroll under it. */
+export const SummaryRowStaysVisible: Story = {
+  render: () => ({
+    components: { DataTable },
+    setup: () => ({
+      rows: Array.from({ length: 30 }, (_, i) => ({
+        id: i + 1,
+        item: `Line ${String(i + 1)}`,
+        qty: 1,
+        amount: '10.00',
+      })),
+      invoiceColumns,
+    }),
+    template: `
+      <DataTable
+        :rows="rows"
+        :columns="invoiceColumns"
+        caption="Invoice"
+        :summary="{ item: 'Total', qty: 30, amount: '300.00' }"
+        class="max-h-60 w-[380px]"
+      />
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const region = canvasElement.querySelector<HTMLElement>('[data-slot="data-table-scroll"]')
+    const total = canvasElement.querySelector('tfoot td')
+    if (!region || !total) throw new Error('missing parts')
+    region.scrollTop = 100
+    await new Promise((r) => requestAnimationFrame(() => r(null)))
+    const bottom = region.getBoundingClientRect().top + region.clientHeight
+    await expect(Math.abs(total.getBoundingClientRect().bottom - bottom)).toBeLessThanOrEqual(1)
+  },
+}
+
 export const LoadingRowsMatchLoadedRows: Story = {
   render: () => ({
     components: { DataTable, Button },

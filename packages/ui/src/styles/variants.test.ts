@@ -22,6 +22,7 @@ import {
   dataTableSelectCellVariants,
   dataTableSortButtonVariants,
   dataTableSortIconVariants,
+  dataTableSummaryCellVariants,
   dataTableVariants,
   dataTableWrapperVariants,
 } from '../components/DataTable/DataTable.variants'
@@ -267,6 +268,7 @@ const components: readonly (readonly [string, CvaFn])[] = [
   ['DataTable header row', dataTableHeaderRowVariants],
   ['DataTable header cell', dataTableHeaderCellVariants],
   ['DataTable cell', dataTableCellVariants],
+  ['DataTable summary cell', dataTableSummaryCellVariants],
   ['DataTable row', dataTableRowVariants],
   ['DataTable select cell', dataTableSelectCellVariants],
   ['DataTable checkbox', dataTableCheckboxVariants],

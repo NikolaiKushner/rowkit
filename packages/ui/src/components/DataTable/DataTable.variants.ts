@@ -345,6 +345,33 @@ export const dataTableRadioMarkClass = [
 ].join(' ')
 
 /**
+ * A summary row's cell: bold, under an etched line — 1px of shadow over 1px
+ * of highlight — and held at the bottom of the scroll area, as the header is
+ * at the top. The line is a background rather than a shadow, so the pinned
+ * column's edge shadow can still be drawn on the same cell.
+ */
+export const dataTableSummaryCellVariants = cva(
+  [
+    'sticky bottom-0 pt-0.5 font-bold',
+    'bg-[linear-gradient(var(--color-bevel-shadow)_0_1px,var(--color-bevel-highlight)_1px_2px,var(--color-input)_2px)]',
+  ],
+  {
+    variants: {
+      size: {
+        sm: 'h-5',
+        md: 'h-6',
+      },
+      /** A pinned summary cell paints over the summary cells scrolling under it. */
+      pinned: {
+        true: 'z-1',
+        false: '',
+      },
+    },
+    defaultVariants: { size: 'md', pinned: false },
+  }
+)
+
+/**
  * Applied to the last pinned column once the table is scrolled away from the
  * start: the edge the scrolled columns pass under.
  */

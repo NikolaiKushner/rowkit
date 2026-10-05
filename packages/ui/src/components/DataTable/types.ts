@@ -253,6 +253,13 @@ export interface DataTableProps<TRow> {
    */
   hoverable?: boolean
   /**
+   * A summary row — totals, averages — after the last row, keyed like the
+   * columns: `key`, or `id` for a computed column. Drawn in bold under an
+   * etched line and held at the bottom while the body scrolls. Values show as
+   * given, so format numbers before passing them.
+   */
+  summary?: Record<string, unknown>
+  /**
    * Which scroll bars the body uses. `native` restyles the browser's own as
    * Windows 98 — exact in Chromium and Safari, colours only in Firefox.
    * `drawn` puts the body in a `ScrollArea`, whose bars rowkit draws and which

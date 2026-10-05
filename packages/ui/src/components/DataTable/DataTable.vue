@@ -26,6 +26,7 @@ import {
   dataTableScrollAreaVariants,
   dataTableSelectCellVariants,
   dataTableSortButtonVariants,
+  dataTableSummaryCellVariants,
   dataTableSortContentVariants,
   dataTableSortIconVariants,
   dataTableSortLabelVariants,
@@ -71,6 +72,7 @@ const sort = defineModel<DataTableSort<TRow> | undefined>('sort', { default: und
 const selected = defineModel<TRow['id'][]>('selected', { default: () => [] })
 
 type CellSlotProps = { row: TRow; column: DataTableColumn<TRow>; value: unknown; index: number }
+type SummarySlotProps = { column: DataTableColumn<TRow>; value: unknown }
 
 const emit = defineEmits<{
   /**
@@ -93,7 +95,8 @@ defineSlots<
     empty?: () => unknown
     /** Replaces the placeholder rows shown while loading. */
     loading?: () => unknown
-  } & Record<`cell:${string}`, ((props: CellSlotProps) => unknown) | undefined>
+  } & Record<`cell:${string}`, ((props: CellSlotProps) => unknown) | undefined> &
+    Record<`summary:${string}`, ((props: SummarySlotProps) => unknown) | undefined>
 >()
 
 /**
@@ -246,6 +249,11 @@ function isSortable(column: DataTableColumn<TRow>): column is DataTableFieldColu
 const displayRows = computed(() => props.rows)
 
 const isEmpty = computed(() => !props.loading && props.rows.length === 0)
+
+/** The summary row sums the rows on screen, so it shows only while there are some. */
+const showSummary = computed(
+  () => props.summary !== undefined && !props.loading && props.rows.length > 0
+)
 
 /**
  * Column widths from the moment before loading began, held until it ends.
@@ -694,6 +702,49 @@ function headerStyle(
               </td>
             </tr>
           </tbody>
+
+          <tfoot v-if="showSummary">
+            <tr :class="dataTableHeaderRowVariants()">
+              <td
+                v-if="props.selectable !== undefined"
+                :class="
+                  cn(
+                    dataTableSelectCellVariants({ size: props.size, pinned: selectionPinned }),
+                    dataTableSummaryCellVariants({ size: props.size, pinned: selectionPinned })
+                  )
+                "
+              />
+              <td
+                v-for="column in props.columns"
+                :key="columnId(column)"
+                :style="pinnedStyle(column)"
+                :class="
+                  cn(
+                    dataTableCellVariants({
+                      size: props.size,
+                      align: column.align ?? (column.numeric === true ? 'end' : 'start'),
+                      pinned: column.sticky ?? false,
+                      numeric: column.numeric ?? false,
+                    }),
+                    dataTableSummaryCellVariants({
+                      size: props.size,
+                      pinned: column.sticky ?? false,
+                    }),
+                    pinnedClass(column),
+                    column.cellClass
+                  )
+                "
+              >
+                <slot
+                  :name="`summary:${columnId(column)}`"
+                  :column="column"
+                  :value="props.summary?.[columnId(column)]"
+                >
+                  {{ display(props.summary?.[columnId(column)]) }}
+                </slot>
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </component>
     </div>
