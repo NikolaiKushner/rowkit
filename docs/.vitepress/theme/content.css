@@ -203,10 +203,6 @@
     color: var(--color-foreground);
   }
 
-  .rk-page div[class*='language-'] code span {
-    color: var(--color-foreground) !important;
-  }
-
   .rk-page div[class*='language-'] > span.lang {
     display: none;
   }

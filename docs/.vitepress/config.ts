@@ -2,6 +2,7 @@ import { createRequire } from 'node:module'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, type UserConfig } from 'vitepress'
 import { describe, pageHead, sharedHead } from './social'
+import { win98Code } from './syntax'
 import { tables } from './tables'
 
 /**
@@ -40,6 +41,8 @@ export default defineConfig({
       detailsLabel: 'Details',
     },
     config: (md) => md.use(tables),
+    // Code in a Windows 98 IDE's colours. See `syntax.ts`.
+    theme: win98Code,
   },
 
   // rowkit has one theme. This removes VitePress's light/dark switch and its
