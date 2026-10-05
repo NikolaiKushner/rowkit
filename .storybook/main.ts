@@ -11,7 +11,8 @@ const config: StorybookConfig = {
   },
   // Brand assets for the manager chrome.
   staticDirs: ['../docs/public'],
-  core: { disableTelemetry: true },
+  // No «What's new» toast over the sidebar.
+  core: { disableTelemetry: true, disableWhatsNewNotifications: true },
   /**
    * Two plugins the preview cannot build without.
    *
