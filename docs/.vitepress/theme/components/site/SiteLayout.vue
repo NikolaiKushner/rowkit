@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useData } from 'vitepress'
-import DefaultTheme from 'vitepress/theme'
 import DesktopHome from '../home/DesktopHome.vue'
 import ExplorerLayout from './ExplorerLayout.vue'
 import FindWindow from './FindWindow.vue'
+import NotFound from './NotFound.vue'
 import { openFind } from './useFind'
 
 /**
  * Which screen a page is: the home page is the desktop, a docs page is the
- * Explorer window. The 404 keeps the default layout until its error dialog
- * is built.
+ * Explorer window, a missing page the «Cannot find…» dialog on the desktop.
  *
  * Find lives here, above both screens: Ctrl+K (⌘K) or / opens it anywhere.
  */
-const { Layout } = DefaultTheme
 const { frontmatter, page } = useData()
 
 function onKeydown(event: KeyboardEvent): void {
@@ -31,7 +29,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 </script>
 
 <template>
-  <Layout v-if="page.isNotFound" />
+  <NotFound v-if="page.isNotFound" />
   <DesktopHome v-else-if="frontmatter.layout === 'home'" />
   <ExplorerLayout v-else />
   <FindWindow />

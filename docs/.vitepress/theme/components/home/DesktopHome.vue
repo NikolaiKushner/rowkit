@@ -3,22 +3,16 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { withBase } from 'vitepress'
 import {
   Badge,
-  Book32Icon,
   Button,
-  Code32Icon,
-  Computer32Icon,
   CopyIcon,
   DataTable,
-  Document32Icon,
   FilterBar,
-  Folder32Icon,
   GroupBox,
   Pagination,
   ScrollArea,
   Separator,
   StatusBar,
   StatusBarSection,
-  Trash32Icon,
   TrashIcon,
   version,
   Window,
@@ -29,6 +23,7 @@ import {
 import SiteTaskbar from '../site/SiteTaskbar.vue'
 import CommandPrompt from './CommandPrompt.vue'
 import DesktopIcon from './DesktopIcon.vue'
+import { shortcuts } from './shortcuts'
 import { columns, label, tone, useHomeDemo } from './useHomeDemo'
 
 /**
@@ -44,20 +39,6 @@ const demo = useHomeDemo()
 
 const open = reactive({ demo: true, about: true, prompt: true })
 const restore = () => Object.assign(open, { demo: true, about: true, prompt: true })
-
-const shortcuts = [
-  { label: 'Guide', href: withBase('/introduction'), icon: Book32Icon },
-  { label: 'Components', href: withBase('/components/button'), icon: Folder32Icon },
-  { label: 'Patterns', href: withBase('/patterns/data-table-page'), icon: Folder32Icon },
-  { label: 'Storybook', href: 'https://storybook.rowkit.dev', icon: Computer32Icon },
-  { label: 'GitHub', href: 'https://github.com/NikolaiKushner/rowkit', icon: Code32Icon },
-  { label: 'Decisions', href: withBase('/decisions/001-typescript-pin'), icon: Document32Icon },
-  {
-    label: 'Old versions',
-    href: 'https://github.com/NikolaiKushner/rowkit/releases',
-    icon: Trash32Icon,
-  },
-]
 
 /*
  * The one task names the window on screen: the live demo on the desktop, the
