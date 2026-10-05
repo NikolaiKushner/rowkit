@@ -155,7 +155,7 @@ const optionId = (index: number) => `rk-find-option-${String(index)}`
             <template #leading><SearchIcon /></template>
           </Input>
         </div>
-        <div class="flex flex-col gap-1.5 pt-[18px]">
+        <div class="flex flex-col gap-1.5 pt-[21px]">
           <Button class="w-full" @click="findNow">Find Now</Button>
           <Button variant="secondary" class="w-full" @click="newSearch">New Search</Button>
         </div>
@@ -183,7 +183,7 @@ const optionId = (index: number) => `rk-find-option-${String(index)}`
             :data-index="index"
             role="option"
             :aria-selected="index === active"
-            class="flex h-[22px] cursor-default items-center text-ui"
+            class="flex h-[27px] cursor-default items-center text-ui"
             :class="index === active ? 'bg-surface-selected text-on-selected' : 'text-foreground'"
             @click="open(index)"
             @pointermove="active = index"
@@ -220,11 +220,11 @@ const optionId = (index: number) => `rk-find-option-${String(index)}`
 </template>
 
 <style scoped>
-/* A list-view column header: the raised button face, 22px. */
+/* A list-view column header: the raised button face, 27px. */
 .rk-find-head {
   display: flex;
   align-items: center;
-  height: 22px;
+  height: 27px;
   padding: 0 4px;
   background: var(--color-card);
   box-shadow: var(--shadow-raised);

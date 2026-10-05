@@ -165,7 +165,7 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="root" class="fixed bottom-7 left-0.5 z-50 flex bg-card p-0.5 shadow-window">
+  <div ref="root" class="fixed bottom-[34px] left-0.5 z-50 flex bg-card p-0.5 shadow-window">
     <!--
       The strip: the title-bar gradient upright, the wordmark reading upward,
       4px in and 6px up. Turned about its top-left corner so every pixel stays

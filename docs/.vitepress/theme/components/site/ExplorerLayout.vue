@@ -119,7 +119,7 @@ const goForward = () => history.forward()
       <div
         role="toolbar"
         aria-label="Navigation"
-        class="flex h-[55px] shrink-0 items-start gap-0.5 px-1 pt-px"
+        class="flex h-[58px] shrink-0 items-start gap-0.5 px-1 pt-px"
       >
         <SiteToolbarButton label="Back" :disabled="!canGoBack" @click="goBack">
           <ArrowLeft32Icon />
@@ -135,7 +135,7 @@ const goForward = () => history.forward()
         <SiteToolbarButton label="Up" class="max-md:hidden" @click="router.go(withBase(up))">
           <ArrowUp32Icon />
         </SiteToolbarButton>
-        <Separator orientation="vertical" decorative class="mt-1 h-11 self-start" />
+        <Separator orientation="vertical" decorative class="mt-1 h-[47px] self-start" />
         <SiteToolbarButton label="Find" @click="openFind">
           <Search32Icon />
         </SiteToolbarButton>
@@ -146,7 +146,7 @@ const goForward = () => history.forward()
 
       <WindowBody class="flex min-h-0 gap-1 p-0.5">
         <!-- Below 768px the tree gives way to the page; the address bar still lists every page. -->
-        <ScrollArea class="w-[220px] shrink-0 bg-input p-0.5 shadow-sunken max-md:hidden">
+        <ScrollArea class="w-[260px] shrink-0 bg-input p-0.5 shadow-sunken max-md:hidden">
           <FolderTree :tree="tree" :current="current" />
         </ScrollArea>
         <ScrollArea
@@ -191,7 +191,7 @@ const goForward = () => history.forward()
             {{ theme.editLink?.text ?? 'Edit this page' }}
           </a>
         </StatusBarSection>
-        <StatusBarSection v-if="lastUpdated" class="w-[130px] max-md:hidden">
+        <StatusBarSection v-if="lastUpdated" class="w-[170px] max-md:hidden">
           Last updated: {{ lastUpdated }}
         </StatusBarSection>
         <StatusBarSection>MIT</StatusBarSection>

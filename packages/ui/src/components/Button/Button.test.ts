@@ -35,7 +35,7 @@ describe('Button', () => {
       slots: { default: 'x' },
       attrs: { 'aria-label': 'Open' },
     }).classes()
-    expect(classes).toContain('size-6')
+    expect(classes).toContain('size-[30px]')
   })
 
   it('lets a consumer class beat the variant class', () => {

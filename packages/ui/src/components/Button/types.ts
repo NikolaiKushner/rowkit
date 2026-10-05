@@ -19,8 +19,9 @@ export interface ButtonProps {
    */
   variant?: NonNullable<ButtonVariants['variant']>
   /**
-   * Control height: `xs` 17px, `sm` 21px, `default` 23px (Windows 98's own),
-   * `lg` 27px. Icon sizes render a square of 20, 22, 24 or 28px — supply
+   * Control height: `xs` 21px, `sm` 26px, `default` 28px (Windows 98's own,
+   * in Large Fonts), `lg` 33px. Icon sizes render a square of 25, 27, 30 or
+   * 34px — supply
    * `aria-label` yourself.
    */
   size?: NonNullable<ButtonVariants['size']>

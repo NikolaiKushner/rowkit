@@ -22,9 +22,9 @@ export const selectTriggerVariants = cva(
   {
     variants: {
       size: {
-        sm: 'h-[21px] pl-1',
-        md: 'h-[23px] pl-1',
-        lg: 'h-[27px] pl-1.5',
+        sm: 'h-[26px] pl-1',
+        md: 'h-[28px] pl-1',
+        lg: 'h-[33px] pl-1.5',
       },
     },
     defaultVariants: { size: 'md' },
@@ -77,9 +77,9 @@ export const selectContentVariants = cva([
 ])
 
 /**
- * The scrolling list inside the frame: eight 16px rows, then it scrolls.
+ * The scrolling list inside the frame: eight 22px rows, then it scrolls.
  */
-export const selectListVariants = cva('scrollbar-win98 max-h-32 overflow-y-auto')
+export const selectListVariants = cva('scrollbar-win98 max-h-44 overflow-y-auto')
 
 /**
  * One option: a 16px row with the text where the field's text sits.
@@ -88,13 +88,13 @@ export const selectListVariants = cva('scrollbar-win98 max-h-32 overflow-y-auto'
  * option. Disabled is grey embossed text.
  */
 export const selectItemVariants = cva([
-  'flex h-4 cursor-default select-none items-center px-1 outline-none',
+  'flex h-[22px] cursor-default select-none items-center px-1 outline-none',
   'data-highlighted:bg-surface-selected data-highlighted:text-on-selected',
   'data-disabled:pointer-events-none data-disabled:text-text-disabled',
   'data-disabled:text-shadow-disabled',
 ])
 
 /** The loading and empty rows: a line of subtle text in the list. */
-export const selectMessageVariants = cva('flex h-4 items-center px-1 text-text-subtle')
+export const selectMessageVariants = cva('flex h-[22px] items-center px-1 text-text-subtle')
 
 export type SelectVariants = VariantProps<typeof selectTriggerVariants>

@@ -93,8 +93,8 @@ export const dataTableHeaderCellVariants = cva(
       size: {
         // `h-*` on a table cell is the CSS minimum row height (min-height is
         // ignored on `display: table-cell`).
-        sm: 'h-[18px] px-1 py-0',
-        md: 'h-[22px] px-1 py-0',
+        sm: 'h-[22px] px-1 py-0',
+        md: 'h-[27px] px-1 py-0',
       },
       align: {
         start: 'text-start',
@@ -146,8 +146,8 @@ export const dataTableSortButtonVariants = cva(
   {
     variants: {
       size: {
-        sm: 'h-[18px]',
-        md: 'h-[22px]',
+        sm: 'h-[22px]',
+        md: 'h-[27px]',
       },
       align: {
         start: 'justify-start',
@@ -182,8 +182,8 @@ export const dataTableSortIconVariants = cva('shrink-0')
 export const dataTableCellVariants = cva('px-1.5 py-0 align-middle whitespace-nowrap', {
   variants: {
     size: {
-      sm: 'h-[18px]',
-      md: 'h-[22px]',
+      sm: 'h-[22px]',
+      md: 'h-[27px]',
     },
     align: {
       start: 'text-start',
@@ -261,8 +261,8 @@ export const dataTableRowActionClass = ''
 export const dataTableSelectCellVariants = cva('w-7 min-w-7 px-0 text-center align-middle', {
   variants: {
     size: {
-      sm: 'h-[18px]',
-      md: 'h-[22px]',
+      sm: 'h-[22px]',
+      md: 'h-[27px]',
     },
     header: {
       true: '',
@@ -355,8 +355,8 @@ export const dataTableSummaryCellVariants = cva(
   {
     variants: {
       size: {
-        sm: 'h-5',
-        md: 'h-6',
+        sm: 'h-6',
+        md: 'h-[29px]',
       },
       /** A pinned summary cell paints over the summary cells scrolling under it. */
       pinned: {

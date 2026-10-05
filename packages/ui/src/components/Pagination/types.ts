@@ -35,7 +35,7 @@ export interface PaginationProps {
   previousLabel?: string
   /** Label of the next-page button, shown beside its ▶ and used as its name. */
   nextLabel?: string
-  /** Button height: 17px at `sm`, 21px at `md`. */
+  /** Button height: 21px at `sm`, 26px at `md`. */
   size?: NonNullable<PaginationVariants['size']>
   /**
    * Draws «Back» and «Next» as arrows alone, so the row fits a phone. The

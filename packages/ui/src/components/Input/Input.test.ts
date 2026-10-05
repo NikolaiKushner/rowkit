@@ -216,13 +216,13 @@ describe('Input', () => {
       wrapper.get('[data-slot="input-frame"]').classes()
 
     it('inherits size from the field when its own size is omitted', () => {
-      expect(frame(mountInField({ size: 'sm' }))).toContain('h-[21px]')
-      expect(frame(mountInField({ size: 'lg' }))).toContain('h-[27px]')
+      expect(frame(mountInField({ size: 'sm' }))).toContain('h-[26px]')
+      expect(frame(mountInField({ size: 'lg' }))).toContain('h-[33px]')
     })
 
     it('keeps an explicit size over the field size', () => {
-      expect(frame(mountInField({ size: 'sm' }, { size: 'lg' }))).toContain('h-[27px]')
-      expect(frame(mountInField({ size: 'sm' }, { size: 'lg' }))).not.toContain('h-[21px]')
+      expect(frame(mountInField({ size: 'sm' }, { size: 'lg' }))).toContain('h-[33px]')
+      expect(frame(mountInField({ size: 'sm' }, { size: 'lg' }))).not.toContain('h-[26px]')
     })
   })
 

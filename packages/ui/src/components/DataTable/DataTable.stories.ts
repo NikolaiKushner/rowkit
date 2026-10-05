@@ -428,8 +428,8 @@ async function checkStickyBoth(canvasElement: HTMLElement) {
   // The body's pinned cell lines up under its header, not under the column
   // before it.
   await expect(edge(cell).left).toBeCloseTo(edge(name).left, 0)
-  // No wrapping: the row keeps its 22px.
-  await expect(edge(cell).height).toBe(22)
+  // No wrapping: the row keeps its 27px.
+  await expect(edge(cell).height).toBe(27)
 }
 
 /**
@@ -885,7 +885,7 @@ export const SummaryRow: Story = {
     await expect(cells.map((cell) => cell.textContent?.trim())).toEqual(['Total', '', '1,364.00'])
     await expect(getComputedStyle(cells[0] as Element).fontWeight).toBe('700')
     // A data row's height plus the 2px etched line.
-    await expect((cells[0] as Element).getBoundingClientRect().height).toBe(24)
+    await expect((cells[0] as Element).getBoundingClientRect().height).toBe(29)
   },
 }
 

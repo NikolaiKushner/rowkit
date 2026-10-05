@@ -135,7 +135,7 @@ function onKeydown(event: KeyboardEvent, index: number): void {
       :aria-expanded="row.folder ? row.expanded : undefined"
       :aria-current="row.node.id === current?.id ? 'page' : undefined"
       :tabindex="row.node.id === tabStop ? 0 : -1"
-      class="group flex h-[18px] cursor-default items-center gap-1 outline-none"
+      class="group flex h-[22px] cursor-default items-center gap-1 outline-none"
       :style="{ paddingLeft: `${2 + row.depth * 16}px` }"
       @keydown="onKeydown($event, index)"
       @focus="focused = row.node.id"

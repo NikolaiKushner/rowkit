@@ -228,7 +228,7 @@ row actions, a computed total — uses `id` instead and renders from a slot.
 | `rowLabel`         | `(row: TRow, index: number) => string` | —                   | Accessible name for each row's selection control.                                                                    |
 | `selectionLabel`   | `string`                               | `'Select'`          | Accessible name for the selection column.                                                                            |
 | `selectAllLabel`   | `string`                               | `'Select all rows'` | Accessible name for the select-all control.                                                                          |
-| `size`             | `'sm' \| 'md'`                         | `'md'`              | Row height: `sm` 18px for dense lists and logs, `md` 22px.                                                           |
+| `size`             | `'sm' \| 'md'`                         | `'md'`              | Row height: `sm` 22px for dense lists and logs, `md` 27px.                                                           |
 | `hoverable`        | `boolean`                              | `false`             | Kept for compatibility; has no visible effect.                                                                       |
 | `summary`          | `Record<string, unknown>`              | —                   | A summary row — totals, averages — after the last row, keyed like the columns: `key`, or `id` for a computed column. |
 | `scrollbars`       | `'native' \| 'drawn'`                  | `'native'`          | Which scroll bars the body uses.                                                                                     |

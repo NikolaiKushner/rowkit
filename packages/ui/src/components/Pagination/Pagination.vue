@@ -90,7 +90,7 @@ const compactKey = computed(() =>
   props.compact === 'auto' ? 'auto' : props.compact ? 'always' : 'never'
 )
 
-/** The page buttons are Button at its two smallest sizes: 17px and 21px. */
+/** The page buttons are Button at its two smallest sizes: 21px and 26px. */
 const buttonSize = computed(() => (props.size === 'sm' ? 'xs' : 'sm'))
 
 function goTo(target: number): void {

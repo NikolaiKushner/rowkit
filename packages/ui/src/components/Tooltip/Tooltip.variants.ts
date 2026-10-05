@@ -2,7 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
  * A Windows 98 tooltip: the pale yellow info face, a 1px black border, the
- * UI face at 11px. No arrow, no shadow, no corners, no motion — it appears
+ * UI face at 13px. No arrow, no shadow, no corners, no motion — it appears
  * after the delay and goes instantly.
  *
  * `z-tooltip` is the top of the stack, and deliberately so: a toast can carry

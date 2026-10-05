@@ -9,7 +9,7 @@ import type { InputVariants } from './Input.variants'
  */
 export interface InputProps {
   /**
-   * Control height: `sm` 21px, `md` 23px, `lg` 27px — the same as Button's
+   * Control height: `sm` 26px, `md` 28px, `lg` 33px — the same as Button's
    * `sm`, `default` and `lg`, so a field and its button line up. Inherited from
    * a surrounding `Field` when omitted.
    */

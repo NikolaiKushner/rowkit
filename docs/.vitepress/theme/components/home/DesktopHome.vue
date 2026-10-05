@@ -109,7 +109,7 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
             <template #leading><TrashIcon /></template>
             Delete {{ count }}
           </Button>
-          <Separator orientation="vertical" decorative class="mx-0.5 h-[27px]" />
+          <Separator orientation="vertical" decorative class="mx-0.5 h-[33px]" />
           <FilterBar
             v-model:search="demo.search.value"
             label="User filters"

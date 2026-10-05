@@ -20,7 +20,7 @@ export interface BadgeProps {
    * colour is only in the border.
    */
   appearance?: NonNullable<BadgeVariants['appearance']>
-  /** `sm` (15px) for table rows and navigation counts, `md` (17px) elsewhere. */
+  /** `sm` (18px) for table rows and navigation counts, `md` (20px) elsewhere. */
   size?: NonNullable<BadgeVariants['size']>
   /**
    * Shows a 5×5 square before the label in the variant's colour.

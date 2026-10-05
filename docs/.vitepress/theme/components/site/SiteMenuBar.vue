@@ -221,7 +221,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onPointerDown,
 .rk-bar-item {
   display: flex;
   align-items: center;
-  height: 18px;
+  height: 22px;
   padding: 0 6px;
   border: 0;
   background: none;

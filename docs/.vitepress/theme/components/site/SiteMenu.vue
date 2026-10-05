@@ -221,7 +221,7 @@ function onKeydown(event: KeyboardEvent): void {
 const itemClass = computed(() =>
   props.size === 'start'
     ? 'h-[34px] gap-2 pl-1 pr-1.5 py-px w-[200px]'
-    : 'h-5 w-full gap-1.5 pl-0.5 pr-1 min-w-[196px]'
+    : 'h-[25px] w-full gap-1.5 pl-0.5 pr-1 min-w-[196px]'
 )
 </script>
 

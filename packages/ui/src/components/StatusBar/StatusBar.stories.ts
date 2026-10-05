@@ -65,7 +65,7 @@ export const WithPagination: Story = {
     template: `
       <div class="w-[640px]">
         <StatusBar class="h-auto items-center">
-          <StatusBarSection class="h-[18px]">1–25 of 312 · 2 selected</StatusBarSection>
+          <StatusBarSection class="h-[22px]">1–25 of 312 · 2 selected</StatusBarSection>
           <Pagination :total="312" :page-size="25" size="sm" hide-summary hide-page-size label="Users pages" />
         </StatusBar>
       </div>

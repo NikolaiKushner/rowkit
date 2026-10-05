@@ -25,9 +25,9 @@ export const inputFrameVariants = cva(
   {
     variants: {
       size: {
-        sm: 'h-[21px] px-1',
-        md: 'h-[23px] px-1',
-        lg: 'h-[27px] px-1.5',
+        sm: 'h-[26px] px-1',
+        md: 'h-[28px] px-1',
+        lg: 'h-[33px] px-1.5',
       },
       // Spin and drop buttons sit 2px from the bevel, not 4px.
       hasButtons: {

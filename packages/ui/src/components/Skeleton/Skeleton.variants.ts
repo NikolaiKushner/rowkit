@@ -14,8 +14,8 @@ export const skeletonVariants = cva('block shrink-0 bg-dither', {
   variants: {
     /** Geometry preset. Square corners, as everything in Windows 98 but the round controls. */
     variant: {
-      /** A line of text: 9px, so it sits on the 13px line like the letters it stands in for. */
-      text: 'h-[9px] w-full',
+      /** A line of text: 11px, so it sits on the 16px line like the letters it stands in for. */
+      text: 'h-[11px] w-full',
       /** Avatars. Besides the option button, the one round shape in the system. */
       circle: 'size-10 rounded-full',
       /** Thumbnails, cards, controls. */

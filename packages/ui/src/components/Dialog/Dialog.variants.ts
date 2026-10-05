@@ -37,13 +37,13 @@ export const dialogContentVariants = cva(
 )
 
 /**
- * The title bar: 18px of navy-to-blue gradient across the top of the window,
+ * The title bar: 22px of navy-to-blue gradient across the top of the window,
  * with the close button at its right end. `DialogContent` draws it, so the
  * bar is there whatever the consumer puts in the header; `DialogTitle` is
  * laid over it. Grey while another dialog is open above this one.
  */
 export const dialogTitleBarVariants = cva([
-  'flex h-[18px] shrink-0 items-center justify-end px-0.5',
+  'flex h-[22px] shrink-0 items-center justify-end px-0.5',
   'bg-linear-to-r from-titlebar-from to-titlebar-to',
   'group-data-inactive/dialog:from-titlebar-inactive-from',
   'group-data-inactive/dialog:to-titlebar-inactive-to',
@@ -64,11 +64,11 @@ export const dialogHeaderVariants = cva(
  * an ellipsis 4px before the close button. Positioned against the window
  * rather than placed inside the bar, so it stays a child of the header the
  * consumer composed: 2px of frame plus the bar's 2px of padding on the left;
- * on the right, the same plus the 16px button and the 4px gap.
+ * on the right, the same plus the 20px button and the 4px gap.
  */
 export const dialogTitleVariants = cva([
-  'absolute top-0.5 right-6 left-1 h-[18px] truncate',
-  'text-ui leading-[18px] font-bold text-titlebar-foreground',
+  'absolute top-0.5 right-7 left-1 h-[22px] truncate',
+  'text-ui leading-[22px] font-bold text-titlebar-foreground',
   'group-data-inactive/dialog:text-titlebar-inactive-foreground',
 ])
 

@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest'
 import Skeleton from './Skeleton.vue'
 
 describe('Skeleton', () => {
-  it('renders a 9px dithered text bar by default', () => {
+  it('renders an 11px dithered text bar by default', () => {
     const el = mount(Skeleton)
-    expect(el.classes()).toEqual(expect.arrayContaining(['bg-dither', 'h-[9px]']))
+    expect(el.classes()).toEqual(expect.arrayContaining(['bg-dither', 'h-[11px]']))
   })
 
   it('has square corners, except the circle', () => {

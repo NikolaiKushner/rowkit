@@ -51,7 +51,7 @@ export const toastMessageVariants = cva('')
 /** Space above the action button, so it does not crowd the text. */
 export const toastActionVariants = cva('pt-0.5')
 
-/** The caption button: the same 16×14 ✕ as a dialog's title bar. */
+/** The caption button: the same 20×18 ✕ as a dialog's title bar. */
 export const toastCloseVariants = captionButtonVariants
 
 export type ToasterVariants = VariantProps<typeof toasterViewportVariants>

@@ -11,12 +11,12 @@ export const windowVariants = cva([
 ])
 
 /**
- * The title bar: 18px of navy-to-blue gradient, 2px in from each side, 4px
+ * The title bar: 22px of navy-to-blue gradient, 2px in from each side, 4px
  * between the icon, the title and the caption buttons. An inactive window's
  * bar is the grey gradient.
  */
 export const windowTitleBarVariants = cva([
-  'flex h-[18px] shrink-0 items-center gap-1 px-0.5',
+  'flex h-[22px] shrink-0 items-center gap-1 px-0.5',
   'bg-linear-to-r from-titlebar-from to-titlebar-to',
   'group-data-inactive/window:from-titlebar-inactive-from',
   'group-data-inactive/window:to-titlebar-inactive-to',
@@ -37,7 +37,7 @@ export const windowControlsVariants = cva(
 )
 
 /**
- * A caption button: the shared 16×14 raised button. Its focus rectangle is
+ * A caption button: the shared 20×18 raised button. Its focus rectangle is
  * white, drawn on the title bar. Disabled, the glyph is grey and embossed.
  */
 export const windowButtonVariants = cva([

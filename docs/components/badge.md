@@ -97,7 +97,7 @@ its label, «Inbox 12» — and a version after a package name.
 | ------------ | -------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------- |
 | `variant`    | `'neutral' \| 'primary' \| 'success' \| 'warning' \| 'danger'` | `'neutral'` | Status family. `neutral` is the "no particular status" default rather than an absence of styling.          |
 | `appearance` | `'subtle' \| 'solid' \| 'outline'`                             | `'subtle'`  | How much visual weight the badge carries.                                                                  |
-| `size`       | `'sm' \| 'md'`                                                 | `'md'`      | `sm` (15px) for table rows and navigation counts, `md` (17px) elsewhere.                                   |
+| `size`       | `'sm' \| 'md'`                                                 | `'md'`      | `sm` (18px) for table rows and navigation counts, `md` (20px) elsewhere.                                   |
 | `dot`        | `boolean`                                                      | `false`     | Shows a 5×5 square before the label in the variant's colour.                                               |
 | `class`      | `string`                                                       | —           | Additional classes, merged with the variant classes so a consumer's utility wins over the component's own. |
 | `as`         | `string \| Component`                                          | `'span'`    | Element or component to render as.                                                                         |

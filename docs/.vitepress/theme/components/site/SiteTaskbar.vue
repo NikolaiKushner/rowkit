@@ -7,7 +7,7 @@ import StartMenu from './StartMenu.vue'
 /**
  * The taskbar along the bottom of the screen: Start, the page on screen as
  * the one task, and the tray — the version (to the changelog), GitHub and a
- * clock. 28px, raised, the Win98 way round: light outer edge on top.
+ * clock. 34px, raised, the Win98 way round: light outer edge on top.
  *
  * Start opens the Start menu and stays pressed while it is open. Opened from
  * the keyboard, the menu starts on its first item; by the pointer, on none.
@@ -62,13 +62,13 @@ function closeStart(focusStart: boolean): void {
 </script>
 
 <template>
-  <footer class="rk-taskbar flex h-7 shrink-0 items-center gap-1 bg-card p-0.5">
+  <footer class="rk-taskbar flex h-[34px] shrink-0 items-center gap-1 bg-card p-0.5">
     <button
       ref="start"
       type="button"
       aria-haspopup="menu"
       :aria-expanded="startOpen"
-      class="flex h-[22px] shrink-0 items-center gap-1 pr-1.5 pl-0.5 font-bold text-ui text-foreground outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
+      class="flex h-[27px] shrink-0 items-center gap-1 pr-1.5 pl-0.5 font-bold text-ui text-foreground outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
       :class="startOpen ? 'pt-px pl-[3px] shadow-pressed' : 'shadow-raised active:shadow-pressed'"
       @click="toggleStart"
     >
@@ -76,7 +76,7 @@ function closeStart(focusStart: boolean): void {
       <span class="px-px">Start</span>
     </button>
     <StartMenu v-if="startOpen" ref="menu" :anchor="start" @close="closeStart" />
-    <Separator orientation="vertical" decorative class="h-[22px] self-center" />
+    <Separator orientation="vertical" decorative class="h-[27px] self-center" />
     <!--
       The one task: this page. Active, so pressed in over the dither. Two
       elements rather than <component :is="'button'">: the site registers
@@ -85,7 +85,7 @@ function closeStart(focusStart: boolean): void {
     <button
       v-if="taskButton"
       type="button"
-      class="flex h-[22px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
+      class="flex h-[27px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
       @click="$emit('task')"
     >
       <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" class="shrink-0" />
@@ -94,14 +94,14 @@ function closeStart(focusStart: boolean): void {
     <div
       v-else
       aria-hidden="true"
-      class="flex h-[22px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
+      class="flex h-[27px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
     >
       <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" class="shrink-0" />
       <span class="truncate">{{ task }}</span>
     </div>
     <div class="flex-1" />
     <div
-      class="flex h-[22px] shrink-0 items-center gap-1.5 px-1.5 text-ui text-foreground shadow-status"
+      class="flex h-[27px] shrink-0 items-center gap-1.5 px-1.5 text-ui text-foreground shadow-status"
     >
       <a
         href="https://github.com/NikolaiKushner/rowkit/releases"

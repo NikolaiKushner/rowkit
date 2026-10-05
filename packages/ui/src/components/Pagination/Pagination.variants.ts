@@ -2,7 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
  * The pager row: the range summary and rows-per-page control on one side, the
- * page buttons on the other, in the 11px UI face — the way the Figma Home
+ * page buttons on the other, in the 13px UI face — the way the Figma Home
  * template puts it in a window's status bar.
  */
 export const paginationVariants = cva(
@@ -22,15 +22,15 @@ export const paginationVariants = cva(
 export const paginationNavVariants = cva('flex items-center gap-0.5')
 
 /**
- * A page number: a Windows 98 command button (17px at `sm`, 21px at `md`),
+ * A page number: a Windows 98 command button (21px at `sm`, 26px at `md`),
  * square at its narrowest. The current page is pressed in — `Button` draws
  * `aria-current="page"` that way.
  */
 export const paginationItemVariants = cva('px-1', {
   variants: {
     size: {
-      sm: 'min-w-[17px]',
-      md: 'min-w-[21px]',
+      sm: 'min-w-[21px]',
+      md: 'min-w-[26px]',
     },
   },
   defaultVariants: { size: 'md' },
@@ -70,8 +70,8 @@ export const paginationEllipsisVariants = cva(
   {
     variants: {
       size: {
-        sm: 'h-[17px] min-w-[17px]',
-        md: 'h-[21px] min-w-[21px]',
+        sm: 'h-[21px] min-w-[21px]',
+        md: 'h-[26px] min-w-[26px]',
       },
     },
     defaultVariants: { size: 'md' },

@@ -78,7 +78,7 @@ handling.
 
 - `variant: 'neutral' | 'primary' | 'success' | 'warning' | 'danger'` — default `'neutral'`. Status family. `neutral` is the "no particular status" default rather than an absence of styling.
 - `appearance: 'subtle' | 'solid' | 'outline'` — default `'subtle'`. How much visual weight the badge carries.
-- `size: 'sm' | 'md'` — default `'md'`. `sm` (15px) for table rows and navigation counts, `md` (17px) elsewhere.
+- `size: 'sm' | 'md'` — default `'md'`. `sm` (18px) for table rows and navigation counts, `md` (20px) elsewhere.
 - `dot: boolean` — default `false`. Shows a 5×5 square before the label in the variant's colour.
 - `class: string`. Additional classes, merged with the variant classes so a consumer's utility wins over the component's own.
 - `as: string | Component` — default `'span'`. Element or component to render as.
@@ -95,7 +95,7 @@ handling.
 **Props**
 
 - `variant: 'default' | 'secondary' | 'ghost' | 'destructive' | 'link'` — default `'default'`. Visual weight and intent.
-- `size: 'sm' | 'default' | 'xs' | 'lg' | 'icon-xs' | 'icon-sm' | 'icon' | 'icon-lg'` — default `'default'`. Control height: `xs` 17px, `sm` 21px, `default` 23px (Windows 98's own), `lg` 27px. Icon sizes render a square of 20, 22, 24 or 28px — supply `aria-label` yourself.
+- `size: 'sm' | 'default' | 'xs' | 'lg' | 'icon-xs' | 'icon-sm' | 'icon' | 'icon-lg'` — default `'default'`. Control height: `xs` 21px, `sm` 26px, `default` 28px (Windows 98's own, in Large Fonts), `lg` 33px. Icon sizes render a square of 25, 27, 30 or 34px — supply `aria-label` yourself.
 - `block: boolean` — default `false`. Stretches the button to fill its container.
 - `pressed: boolean` — default `undefined`. Makes the button a toggle and sets whether it is on (`aria-pressed`). On is drawn pressed in, over the dither. Leave unset for a plain command button; `false` still announces a toggle that is off.
 - `loading: boolean` — default `false`. Swaps the leading slot for the hourglass and blocks activation.
@@ -169,7 +169,7 @@ handling.
 - `rowLabel: (row: TRow, index: number) => string`. Accessible name for each row's selection control.
 - `selectionLabel: string` — default `'Select'`. Accessible name for the selection column.
 - `selectAllLabel: string` — default `'Select all rows'`. Accessible name for the select-all control.
-- `size: 'sm' | 'md'` — default `'md'`. Row height: `sm` 18px for dense lists and logs, `md` 22px.
+- `size: 'sm' | 'md'` — default `'md'`. Row height: `sm` 22px for dense lists and logs, `md` 27px.
 - `hoverable: boolean` — default `false`. Kept for compatibility; has no visible effect. Windows 98 list rows have no hover, so a row that does something shows it through the cursor, the dotted focus rectangle and selection instead.
 - `summary: Record<string, unknown>`. A summary row — totals, averages — after the last row, keyed like the columns: `key`, or `id` for a computed column.
 - `scrollbars: 'native' | 'drawn'` — default `'native'`. Which scroll bars the body uses.
@@ -393,7 +393,7 @@ handling.
 
 **Props**
 
-- `size: 'sm' | 'md' | 'lg'`. Control height: `sm` 21px, `md` 23px, `lg` 27px — the same as Button's `sm`, `default` and `lg`, so a field and its button line up. Inherited from a surrounding `Field` when omitted.
+- `size: 'sm' | 'md' | 'lg'`. Control height: `sm` 26px, `md` 28px, `lg` 33px — the same as Button's `sm`, `default` and `lg`, so a field and its button line up. Inherited from a surrounding `Field` when omitted.
 - `type: 'number' | 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'date'` — default `'text'`. Native input type.
 - `placeholder: string`. Short example of the expected value. Never a substitute for a label.
 - `disabled: boolean` — default `false`. Disables the input. A surrounding disabled `Field` also disables it.
@@ -428,7 +428,7 @@ handling.
 - `label: string` — default `'Pagination'`. Accessible name for the navigation region.
 - `previousLabel: string` — default `'Back'`. Label of the previous-page button, shown beside its ◀ and used as its name.
 - `nextLabel: string` — default `'Next'`. Label of the next-page button, shown beside its ▶ and used as its name.
-- `size: 'sm' | 'md'` — default `'md'`. Button height: 17px at `sm`, 21px at `md`.
+- `size: 'sm' | 'md'` — default `'md'`. Button height: 21px at `sm`, 26px at `md`.
 - `compact: boolean | 'auto'` — default `'auto'`. Draws «Back» and «Next» as arrows alone, so the row fits a phone. The words stay as the buttons' accessible names. `auto` does it below 640px, in CSS — nothing shifts on load; `true` always, for a narrow panel; `false` never.
 - `disabled: boolean` — default `false`. Disables every control.
 - `class: string`. Additional classes, merged so a consumer's utility wins.

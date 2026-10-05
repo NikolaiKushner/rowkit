@@ -142,7 +142,7 @@ Nothing animates.
 | `label`           | `string`            | `'Pagination'`            | Accessible name for the navigation region.                                  |
 | `previousLabel`   | `string`            | `'Back'`                  | Label of the previous-page button, shown beside its ◀ and used as its name. |
 | `nextLabel`       | `string`            | `'Next'`                  | Label of the next-page button, shown beside its ▶ and used as its name.     |
-| `size`            | `'sm' \| 'md'`      | `'md'`                    | Button height: 17px at `sm`, 21px at `md`.                                  |
+| `size`            | `'sm' \| 'md'`      | `'md'`                    | Button height: 21px at `sm`, 26px at `md`.                                  |
 | `compact`         | `boolean \| 'auto'` | `'auto'`                  | Draws «Back» and «Next» as arrows alone, so the row fits a phone.           |
 | `disabled`        | `boolean`           | `false`                   | Disables every control.                                                     |
 | `class`           | `string`            | —                         | Additional classes, merged so a consumer's utility wins.                    |

@@ -2,8 +2,8 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
  * Label, control, then hint or error, as in the Figma file. The gap between
- * them follows the control: 4px beside a 21px control, 6px beside 23px, 8px
- * beside 27px.
+ * them follows the control: 4px beside a 26px control, 6px beside 28px, 8px
+ * beside 33px.
  *
  * `layout: 'left'` is the Windows 98 property-dialog arrangement: the label
  * beside the control, 8px from it, with the hint or error under the control.
@@ -58,7 +58,7 @@ export const fieldControlVariants = cva('', {
  * embossed like the control's text.
  *
  * Beside the control it drops so its text sits level with the control's text
- * — half of the control's height less the 13px line — and takes the width in
+ * — half of the control's height less the 16px line — and takes the width in
  * `--rk-field-label-width` when a form sets one, so a column of labels lines
  * up.
  */
@@ -79,9 +79,9 @@ export const fieldLabelVariants = cva('flex gap-0.5', {
     },
   },
   compoundVariants: [
-    { layout: 'left', size: 'sm', class: 'pt-1' },
-    { layout: 'left', size: 'md', class: 'pt-[5px]' },
-    { layout: 'left', size: 'lg', class: 'pt-[7px]' },
+    { layout: 'left', size: 'sm', class: 'pt-[5px]' },
+    { layout: 'left', size: 'md', class: 'pt-1.5' },
+    { layout: 'left', size: 'lg', class: 'pt-2' },
   ],
   defaultVariants: { size: 'md', layout: 'top', disabled: false },
 })

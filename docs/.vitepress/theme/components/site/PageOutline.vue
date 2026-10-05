@@ -106,7 +106,7 @@ onBeforeUnmount(() => props.scroller?.removeEventListener('scroll', track))
         <a
           :href="`#${section.id}`"
           :aria-current="section.id === active ? 'location' : undefined"
-          class="flex min-h-[18px] items-center py-px pr-1 pl-[16px] text-ui text-foreground no-underline outline-none focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-dotted focus-visible:outline-ring aria-[current]:bg-surface-selected aria-[current]:text-on-selected"
+          class="flex min-h-[22px] items-center py-px pr-1 pl-[16px] text-ui text-foreground no-underline outline-none focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-dotted focus-visible:outline-ring aria-[current]:bg-surface-selected aria-[current]:text-on-selected"
           >{{ section.text }}</a
         >
       </li>

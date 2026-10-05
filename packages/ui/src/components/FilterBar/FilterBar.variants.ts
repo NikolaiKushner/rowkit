@@ -31,7 +31,7 @@ export const filterBarChipsVariants = cva('contents')
 /**
  * A flat filter chip: white face, 1px grey border, no bevel — quieter than a
  * Badge, because it states a condition the user set rather than a status.
- * 19px tall at `sm`, 21px at `md`. Disabled, its text is grey and embossed.
+ * 23px tall at `sm`, 26px at `md`. Disabled, its text is grey and embossed.
  */
 export const filterBarChipVariants = cva(
   [
@@ -41,8 +41,8 @@ export const filterBarChipVariants = cva(
   {
     variants: {
       size: {
-        sm: 'h-[19px]',
-        md: 'h-[21px]',
+        sm: 'h-[23px]',
+        md: 'h-[26px]',
       },
       /** A chip the user cannot clear is padded evenly, with no ✕. */
       removable: {
