@@ -229,15 +229,20 @@
 
   /*
    * The label rides on ::before, which VitePress also uses for its floating
-   * «Copied» bubble — reset that bubble's box so the word sits in the button.
+   * «Copied» bubble — reset that bubble's box and offset so the word stays in
+   * the button.
    */
   .rk-page div[class*='language-'] > button.copy::before {
     content: 'Copy';
     position: static;
+    top: auto;
+    /* VitePress slides its «Copied» bubble out to the left of the button. */
+    transform: none;
     width: auto;
     height: auto;
     padding: 0 0 0 20px;
     border: 0;
+    border-radius: 0;
     background: none;
     box-shadow: none;
     font-size: var(--text-ui);
