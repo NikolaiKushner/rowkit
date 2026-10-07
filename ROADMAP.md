@@ -100,7 +100,8 @@ the proof that the look is the tokens' and not the components'.
    sizes, shadows, radii and `--rk-*` style switches), Windows 98 unchanged
    pixel for pixel; a draft modern theme from platform guidelines; Storybook
    and rowkit.dev switch between the two.
-2. Next: the designer draws the modern theme in the Figma file — Variables with
+2. Next: the designer draws the modern theme in the Figma file, from the brief in
+   [`design/briefs/modern-theme.md`](./design/briefs/modern-theme.md) — Variables with
    a mode per theme and scheme, every component, the site's modern desktop.
    Its values then replace the draft, token for token.
 3. Then: the modern theme becomes the default, Windows 98 the second theme
