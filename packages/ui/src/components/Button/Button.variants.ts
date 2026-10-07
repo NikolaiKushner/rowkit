@@ -51,6 +51,7 @@ export const buttonVariants = cva(
          */
         default: [
           'bg-control-primary text-control-primary-foreground shadow-raised-default',
+          '[--rk-latched-fill:var(--color-control-primary-latched)]',
           'hover:bg-control-primary-hover',
           'active:bg-control-primary-active active:shadow-pressed',
           'disabled:bg-control disabled:shadow-raised aria-disabled:bg-control aria-disabled:shadow-raised',
@@ -68,6 +69,7 @@ export const buttonVariants = cva(
           'bg-transparent text-control-foreground',
           'hover:bg-control-ghost-hover hover:shadow-raised-thin',
           'active:bg-control-ghost-active active:shadow-status',
+          'aria-pressed:shadow-latched-ghost aria-pressed:hover:shadow-latched-ghost',
         ].join(' '),
         /** Raised, with a maroon label. Status is in the word too, never in colour alone. */
         destructive: [
@@ -75,7 +77,7 @@ export const buttonVariants = cva(
           'focus-visible:shadow-raised-default active:bg-control-active active:shadow-pressed',
         ].join(' '),
         /** Blue underlined text that acts. Still a `<button>`; navigation is a real link. */
-        link: 'bg-transparent text-link underline',
+        link: 'bg-transparent text-link [text-decoration-line:var(--rk-link-decoration)]',
       },
       size: {
         xs: 'h-control-xs min-w-button-min-xs px-button-px-xs',

@@ -256,6 +256,8 @@ export const semanticColor = {
   'control-ghost-active': ref('vga-silver'),
   /** The face of a latched toggle, under its pattern. */
   'control-latched': ref('vga-silver'),
+  /** A latched default button. A toggle is never the default, but if one latches it keeps its colour. */
+  'control-primary-latched': ref('vga-silver'),
   /** The box of a checked checkbox or radio, and the mark inside it. */
   checked: ref('vga-white'),
   'on-checked': ref('vga-black'),
@@ -276,6 +278,8 @@ export const semanticColor = {
   'table-header-foreground': ref('vga-black'),
   /** Every other row of a data table. Windows 98 does not stripe. */
   'table-stripe': ref('vga-white'),
+  /** A data table row under the pointer. Windows 98 does not highlight it. */
+  'table-row-hover': ref('vga-white'),
   /** The channel a progress bar or a scroll thumb runs in, and what fills it. */
   track: ref('vga-silver'),
   progress: ref('vga-navy'),
@@ -290,6 +294,8 @@ export const semanticColor = {
    */
   groupbox: ref('vga-silver'),
   'groupbox-face': ref('vga-silver'),
+  /** The text caret in a field. */
+  'field-caret': ref('vga-black'),
   /** The buttons inside a field: a select's drop button, a number's spin buttons. */
   'field-button': ref('vga-silver'),
 } as const

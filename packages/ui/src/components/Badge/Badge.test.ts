@@ -51,12 +51,12 @@ describe('Badge', () => {
     expect(dot.attributes('data-slot')).toBe('badge-dot')
   })
 
-  it('draws the dot as a square in the variant colour', () => {
+  it('draws the dot at the theme’s dot size, in the variant colour', () => {
     const dot = mount(Badge, {
       props: { dot: true, variant: 'danger' },
       slots: { default: 'x' },
     }).get('[data-slot="badge-dot"]')
-    expect(dot.classes()).toEqual(expect.arrayContaining(['size-[5px]', 'bg-danger-solid']))
+    expect(dot.classes()).toEqual(expect.arrayContaining(['size-badge-dot', 'bg-danger-solid']))
     expect(dot.classes()).not.toContain('rounded-full')
   })
 

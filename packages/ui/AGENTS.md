@@ -279,7 +279,7 @@ handling.
 
 **Slots**
 
-- `#default` — Actions. Cancel first, primary last — primary nearest the corner.
+- `#default` — Actions, primary first, as Windows 98 orders them. A theme may reverse them on screen: the modern theme puts the primary button last.
 
 ### Dialog
 

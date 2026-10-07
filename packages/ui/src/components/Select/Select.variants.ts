@@ -10,7 +10,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * well with grey embossed text, as on Input.
  *
  * Invalid is quiet, as on Input: the error mark at the end of the well, and
- * nothing turns red.
+ * nothing turns red — unless the theme frames it (`--rk-invalid-width`).
  */
 export const selectTriggerVariants = cva(
   [
@@ -20,6 +20,7 @@ export const selectTriggerVariants = cva(
     'transition-[box-shadow,outline-color] duration-(--rk-duration-control)',
     'has-[input:disabled]:bg-surface-disabled has-[input:disabled]:text-text-disabled',
     'has-[input:disabled]:text-shadow-disabled',
+    'has-[input[aria-invalid=true]]:field-invalid',
   ],
   {
     variants: {
@@ -42,7 +43,7 @@ export const selectTriggerVariants = cva(
  * Windows 98 marks the drop-down list that holds the keyboard.
  */
 export const selectInputVariants = cva([
-  'h-full min-w-0 flex-1 truncate bg-transparent p-px text-inherit',
+  'h-full min-w-0 flex-1 truncate bg-transparent p-px text-inherit caret-field-caret',
   'outline-none focus-visible:focus-label focus-visible:-outline-offset-1',
   'focus-visible:outline-ring',
   'placeholder:text-text-subtle',

@@ -60,13 +60,14 @@ describe('EmptyState', () => {
       expect(el.find('p').text()).toBe('The billing service is down.')
     })
 
-    it('keeps the explanation black for every reason, even an error', () => {
+    it('keeps the explanation in the text colour for every reason, even an error', () => {
       // The red error mark says "error"; red text would say it a second time
-      // and make the sentence that says what to do harder to read.
+      // and make the sentence that says what to do harder to read. Muted text
+      // is black in Windows 98 and grey in the modern theme.
       for (const reason of ['no-data', 'no-results', 'error'] as const) {
         const el = mount(EmptyState, { props: { title, reason, description: 'x' } })
-        expect(el.find('p').classes(), reason).toContain('text-foreground')
-        expect(el.find('p').classes().join(' '), reason).not.toMatch(/danger|muted/)
+        expect(el.find('p').classes(), reason).toContain('text-muted-foreground')
+        expect(el.find('p').classes().join(' '), reason).not.toMatch(/danger/)
       }
     })
 

@@ -58,7 +58,7 @@ export const dialogTitleBarVariants = cva([
  * Description, body and footer are 12px apart and 12px in from the frame.
  */
 export const dialogHeaderVariants = cva(
-  'flex shrink-0 flex-col gap-1 px-3 has-[>:not([data-slot=dialog-title])]:pt-3'
+  'flex shrink-0 flex-col gap-1 px-dialog-px has-[>:not([data-slot=dialog-title])]:pt-dialog-pt'
 )
 
 /**
@@ -88,7 +88,7 @@ export const dialogDescriptionVariants = cva('text-ui text-foreground')
  * control would otherwise be cut along its bottom edge.
  */
 export const dialogBodyVariants = cva(
-  'scrollbar-themed min-h-0 flex-1 overflow-y-auto px-3 pt-3 pb-1 text-ui text-foreground'
+  'scrollbar-themed min-h-0 flex-1 overflow-y-auto px-dialog-px pt-dialog-pt pb-1 text-ui text-foreground'
 )
 
 /**
@@ -97,7 +97,7 @@ export const dialogBodyVariants = cva(
  * the window face is one plane.
  */
 export const dialogFooterVariants = cva(
-  'flex shrink-0 flex-wrap items-center justify-end gap-1.5 rounded-b-xl bg-card px-3 pt-2 pb-3'
+  'flex shrink-0 flex-wrap items-center [justify-content:end] [flex-direction:var(--rk-footer-direction)] gap-1.5 rounded-b-xl bg-card px-dialog-px pt-dialog-footer-pt pb-dialog-footer-pb'
 )
 
 /**

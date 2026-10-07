@@ -82,6 +82,17 @@
 }
 
 /*
+ * An invalid field's frame: a line of `--rk-invalid-width` in the danger colour
+ * inside the well, over its sunken edge. Zero in Windows 98, where the error
+ * icon alone marks the field.
+ */
+@utility field-invalid {
+  box-shadow:
+    inset 0 0 0 var(--rk-invalid-width) var(--color-danger-solid),
+    var(--rk-shadow-sunken);
+}
+
+/*
  * A latched toggle: the Windows 98 dither, a 1px checker of white and silver,
  * white in the top-left pixel. A theme without the pattern sets
  * `--rk-dither-image: none` and keeps the fill.
@@ -91,7 +102,8 @@
  * pixel, and the hard stops leave nothing to interpolate.
  */
 @utility bg-dither {
-  background-color: var(--color-control-latched);
+  /* A primary button sets --rk-latched-fill to latch in its own colour. */
+  background-color: var(--rk-latched-fill, var(--color-control-latched));
   background-image: var(--rk-dither-image);
   background-size: 2px 2px;
 }

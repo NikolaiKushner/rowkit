@@ -82,6 +82,8 @@ const text: readonly Pairing[] = [
   ['an option in a dropped list', 'foreground', 'popover', AA_TEXT],
   ['a column header', 'table-header-foreground', 'table-header', AA_TEXT],
   ['a striped row', 'foreground', 'table-stripe', AA_TEXT],
+  ['a row under the pointer', 'foreground', 'table-row-hover', AA_TEXT],
+  ['a destructive button label', 'danger-on-subtle', 'control', AA_TEXT],
 ]
 
 /** Marks that are not text but carry state: WCAG 1.4.11. */

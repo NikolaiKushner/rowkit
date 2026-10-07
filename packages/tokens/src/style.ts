@@ -73,6 +73,30 @@ export const style = {
   /** The opacity of a caption button's glyph at rest; hovering the title bar shows it. */
   'caption-glyph-opacity': '1',
 
+  // Links.
+
+  /** The line under a link-styled button: `underline`, or `none`. */
+  'link-decoration': 'underline',
+
+  // Fields.
+
+  /** The red frame inside an invalid field. Windows 98 marks it with the error icon only. */
+  'invalid-width': '0px',
+
+  // Dialogs and empty views.
+
+  /**
+   * The order of a dialog footer's buttons, written primary first: `row` keeps
+   * it, as Windows 98 does; `row-reverse` puts the primary button last.
+   */
+  'footer-direction': 'row',
+  /**
+   * How an empty view lays out its icon and text: `row` puts the icon beside
+   * the text, `column` above it; `start` or `center` aligns the text.
+   */
+  'empty-direction': 'row',
+  'empty-align': 'start',
+
   // Lists and scroll bars.
 
   /** What a modal dialog lays over the page behind it. */

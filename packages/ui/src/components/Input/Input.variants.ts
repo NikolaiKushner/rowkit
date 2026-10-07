@@ -10,7 +10,8 @@ import { cva, type VariantProps } from 'class-variance-authority'
  *
  * Invalid is quiet: the bevel does not change and nothing turns red. The field
  * shows the error mark at its end, `aria-invalid` tells assistive technology,
- * and the message lives in Field.
+ * and the message lives in Field. A theme can add a red frame inside the well
+ * (`--rk-invalid-width`).
  */
 export const inputFrameVariants = cva(
   [
@@ -23,7 +24,8 @@ export const inputFrameVariants = cva(
     // black text that can still be selected and copied.
     'has-[input:disabled]:bg-surface-disabled has-[input:disabled]:text-text-disabled',
     'has-[input:disabled]:text-shadow-disabled',
-    'has-[input:read-only]:bg-card',
+    'has-[input:read-only]:bg-muted',
+    'has-[input[aria-invalid=true]]:field-invalid',
   ],
   {
     variants: {
@@ -50,7 +52,7 @@ export const inputFrameVariants = cva(
  * is not a visible enough focus indicator, and rowkit checks for one.
  */
 export const inputVariants = cva([
-  'h-full min-w-0 flex-1 bg-transparent p-px text-inherit',
+  'h-full min-w-0 flex-1 bg-transparent p-px text-inherit caret-field-caret',
   'outline-none focus-visible:focus-label focus-visible:-outline-offset-1',
   'focus-visible:outline-ring',
   // #404040: 10:1 on white. The Windows 98 grey (#808080) reads as disabled

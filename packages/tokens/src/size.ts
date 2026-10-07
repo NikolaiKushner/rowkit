@@ -67,6 +67,15 @@ export const size = {
    */
   frame: '2px',
 
+  /**
+   * A dialog's insets: the side padding of its header, body and footer, the
+   * room above the first line, and above and below the footer's buttons.
+   */
+  'dialog-px': '0.75rem',
+  'dialog-pt': '0.75rem',
+  'dialog-footer-pt': '0.5rem',
+  'dialog-footer-pb': '0.75rem',
+
   /** One option in a list: a select's, a menu's. */
   item: '22px',
   /** The inset around a dropped list's options. */
@@ -79,6 +88,18 @@ export const size = {
   /** A filter chip. */
   'chip-sm': '23px',
   'chip-md': '26px',
+
+  /** A badge's side padding. */
+  'badge-px-sm': '0.25rem',
+  'badge-px-md': '0.375rem',
+  /** The side of a badge's status dot. */
+  'badge-dot': '5px',
+
+  /** An empty view's padding at each size, and the gap between its icon and its text at `md` and `lg`. */
+  'empty-p-sm': '0.75rem',
+  'empty-p-md': '1.5rem',
+  'empty-p-lg': '1.5rem',
+  'empty-gap': '1rem',
 
   /** A tooltip's padding. */
   'tooltip-px': '0.25rem',
