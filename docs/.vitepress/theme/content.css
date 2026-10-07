@@ -47,7 +47,7 @@
     border: 0;
     font-size: inherit;
     line-height: inherit;
-    font-weight: 700;
+    font-weight: var(--font-weight-strong);
     letter-spacing: 0;
   }
 
@@ -58,7 +58,7 @@
   }
 
   .rk-page .rk-demo :where(strong) {
-    font-weight: 700;
+    font-weight: var(--font-weight-strong);
   }
 
   .rk-page .rk-demo :where(ul, ol) {
@@ -107,14 +107,14 @@
     border: 0;
     font-size: var(--text-doc-h2);
     line-height: var(--text-doc-h2--line-height);
-    font-weight: 700;
+    font-weight: var(--font-weight-strong);
     letter-spacing: 0;
   }
 
   .rk-page :where(h3, h4):not(.rk-demo *) {
     font-size: var(--text-doc-h3);
     line-height: var(--text-doc-h3--line-height);
-    font-weight: 700;
+    font-weight: var(--font-weight-strong);
     letter-spacing: 0;
   }
 
@@ -178,13 +178,13 @@
     position: relative;
     margin-left: 0;
     margin-right: 0;
-    border-radius: 0;
+    border-radius: var(--radius-lg);
     background: var(--color-input);
-    box-shadow: var(--shadow-sunken);
+    box-shadow: var(--shadow-table);
   }
 
   .rk-page div[class*='language-'] pre {
-    @apply scrollbar-win98;
+    @apply scrollbar-themed;
     /*
      * The code scrolls in its own column, which stops short of Copy — 75px
      * and 4px in, 8px between, as Figma lays them side by side — so a long
@@ -218,9 +218,9 @@
     width: 75px;
     height: 21px;
     border: 0;
-    border-radius: 0;
+    border-radius: var(--radius-sm);
     opacity: 1;
-    background: var(--color-card) url('/icons/copy-16.svg') no-repeat 13px center;
+    background: var(--color-control) url('/icons/copy-16.svg') no-repeat 13px center;
     box-shadow: var(--shadow-raised);
     font-family: var(--font-sans);
     font-size: var(--text-ui);
@@ -276,7 +276,7 @@
     position: relative;
     padding: 12px 12px 12px 56px;
     border: 0;
-    border-radius: 0;
+    border-radius: var(--radius-lg);
     background: var(--color-card) no-repeat 12px 12px;
     box-shadow: var(--shadow-window);
     color: var(--color-foreground);
@@ -304,7 +304,7 @@
     margin-bottom: 4px;
     font-size: var(--text-heading);
     line-height: var(--text-heading--line-height);
-    font-weight: 700;
+    font-weight: var(--font-weight-strong);
   }
 
   .rk-page .custom-block p + p {
@@ -316,7 +316,7 @@
    * cells, 11px text, no grid lines.
    */
   .rk-page .rk-table:not(.rk-demo *) {
-    @apply scrollbar-win98;
+    @apply scrollbar-themed;
     overflow-x: auto;
   }
 
@@ -327,9 +327,10 @@
     border: 0;
     border-collapse: separate;
     border-spacing: 0;
-    padding: 2px;
+    padding: var(--spacing-frame);
+    border-radius: var(--radius-lg);
     background: var(--color-input);
-    box-shadow: var(--shadow-sunken);
+    box-shadow: var(--shadow-table);
     font-size: var(--text-ui);
     line-height: var(--text-ui--line-height);
   }
@@ -348,10 +349,10 @@
     height: 22px;
     padding-top: 0;
     padding-bottom: 0;
-    background: var(--color-card);
-    box-shadow: var(--shadow-raised);
+    background: var(--color-table-header);
+    box-shadow: var(--shadow-header);
     font-weight: 400;
-    color: var(--color-foreground);
+    color: var(--color-table-header-foreground);
     white-space: nowrap;
   }
 
@@ -403,7 +404,7 @@
       font-family: var(--font-sans);
       font-size: var(--text-ui);
       line-height: var(--text-ui--line-height);
-      font-weight: 700;
+      font-weight: var(--font-weight-strong);
     }
 
     .rk-page .rk-props table :where(td[data-label='Type'], td[data-label='Default']),

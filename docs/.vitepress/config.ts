@@ -4,6 +4,7 @@ import { defineConfig, type UserConfig } from 'vitepress'
 import { describe, pageHead, sharedHead } from './social'
 import { win98Code } from './syntax'
 import { tables } from './tables'
+import { themeBootScript } from './theme/components/site/useSiteTheme'
 
 /**
  * A plugin as VitePress's own Vite takes it. `@tailwindcss/vite` is typed
@@ -127,6 +128,8 @@ export default defineConfig({
     ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' }],
     ['link', { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon-48.png' }],
     ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
+    // The theme, set before the first paint so a reload never flashes the other one.
+    ['script', {}, themeBootScript],
     ...sharedHead,
   ],
 

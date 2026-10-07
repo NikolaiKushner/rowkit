@@ -17,6 +17,17 @@
 @import 'tailwindcss';
 @import '../../../packages/ui/src/styles/index.css';
 @import './content.css';
+@import './modern.css';
+
+/*
+ * The site is drawn in one rowkit theme at a time, set on <html> (see
+ * `useSiteTheme.ts`). rowkit's components follow the theme through their
+ * tokens; the site's own chrome — the taskbar that becomes a menu bar, the
+ * Explorer toolbar that becomes Finder's — is styled per theme with these.
+ * They are the site's, not rowkit's: a library cannot assume one theme per page.
+ */
+@custom-variant modern (&:where([data-theme='modern'], [data-theme='modern'] *));
+@custom-variant win98 (&:where(:root:not([data-theme='modern']), :root:not([data-theme='modern']) *));
 
 /*
  * Tailwind skips node_modules; the demos render from source in this repo.

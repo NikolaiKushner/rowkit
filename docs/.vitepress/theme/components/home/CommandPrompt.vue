@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { Window, WindowButton, WindowTitleBar } from 'rowkit'
+import { siteTheme } from '../site/useSiteTheme'
 
 /**
  * The install command in a Command Prompt window: a black screen, light grey
  * mono text and a block cursor blinking every 500ms. Clicking the screen
- * copies the command.
+ * copies the command. In the modern theme the same window is a Terminal.
  */
 withDefaults(defineProps<{ closable?: boolean }>(), { closable: false })
 defineEmits<{ close: [] }>()
@@ -18,11 +19,14 @@ async function copy(): Promise<void> {
   copied.value = true
   setTimeout(() => (copied.value = false), 2000)
 }
+
+/** The prompt each system's shell shows. */
+const prompt = computed(() => (siteTheme.value === 'modern' ? '~ %' : 'C:\\>'))
 </script>
 
 <template>
   <Window>
-    <WindowTitleBar title="Command Prompt">
+    <WindowTitleBar :title="siteTheme === 'modern' ? 'Terminal' : 'Command Prompt'">
       <template v-if="closable" #controls>
         <WindowButton glyph="minimize" label="Minimize Command Prompt" @click="$emit('close')" />
         <WindowButton glyph="maximize" label="Maximize" disabled />
@@ -31,16 +35,18 @@ async function copy(): Promise<void> {
     </WindowTitleBar>
     <button
       type="button"
-      class="flex w-full cursor-pointer flex-col items-start gap-0.5 bg-foreground px-2 pt-1.5 pb-2 text-left font-mono text-mono text-border-subtle shadow-sunken outline-none focus-visible:outline-1 focus-visible:-outline-offset-4 focus-visible:outline-dotted focus-visible:outline-border-subtle"
+      class="flex w-full cursor-pointer flex-col items-start gap-0.5 bg-foreground px-2 pt-1.5 pb-2 text-left font-mono text-mono text-border-subtle shadow-sunken outline-none focus-visible:outline-1 focus-visible:-outline-offset-4 focus-visible:outline-dotted focus-visible:outline-border-subtle modern:bg-(--color-modern-gray-950) modern:px-3 modern:pt-2 modern:pb-3 modern:text-(--color-modern-gray-150) modern:shadow-none"
       :aria-label="
         copied ? 'Copied: pnpm add rowkit@beta' : 'Copy the install command: pnpm add rowkit@beta'
       "
       @click="copy"
     >
-      <span>C:\&gt; {{ command }}</span>
+      <span>{{ prompt }} {{ command }}</span>
       <span class="flex items-end">
-        C:\&gt;&nbsp;<span v-if="copied">Copied.</span
-        ><span class="rk-cursor mb-px h-[3px] w-2 bg-border-subtle" />
+        {{ prompt }}&nbsp;<span v-if="copied">Copied.</span
+        ><span
+          class="rk-cursor mb-px h-[3px] w-2 bg-border-subtle modern:bg-(--color-modern-gray-150)"
+        />
       </span>
     </button>
   </Window>

@@ -69,12 +69,16 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
 </script>
 
 <template>
-  <div class="flex h-dvh flex-col overflow-hidden bg-desktop font-sans text-ui">
+  <div class="rk-desktop flex h-dvh flex-col overflow-hidden bg-desktop font-sans text-ui">
     <h1 class="sr-only">rowkit — a professional Vue 3 toolkit</h1>
 
     <!-- The desktop, at 1280px and up. -->
     <main class="relative min-h-0 flex-1 max-xl:hidden">
-      <nav aria-label="Shortcuts" class="absolute top-4 left-4 flex flex-col gap-3">
+      <!-- Icons down the left in Windows 98; the Dock along the bottom in the modern theme. -->
+      <nav
+        aria-label="Shortcuts"
+        class="absolute top-4 left-4 flex flex-col gap-3 modern:top-auto modern:bottom-3 modern:left-1/2 modern:z-10 modern:-translate-x-1/2 modern:flex-row modern:gap-2 modern:rounded-2xl modern:border modern:border-popover-border modern:bg-popover modern:p-2 modern:shadow-popover modern:[backdrop-filter:var(--rk-popover-backdrop)]"
+      >
         <DesktopIcon
           v-for="item in shortcuts"
           :key="item.label"

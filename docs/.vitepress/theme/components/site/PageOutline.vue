@@ -101,12 +101,14 @@ onBeforeUnmount(() => props.scroller?.removeEventListener('scroll', track))
     class="flex flex-col gap-1.5"
   >
     <p id="rk-outline-title" class="m-0 font-bold text-ui text-foreground">On this page</p>
-    <ul class="m-0 list-none bg-input p-0.5 shadow-sunken">
+    <ul
+      class="m-0 list-none bg-input p-0.5 shadow-sunken modern:bg-transparent modern:p-0 modern:pl-2 modern:shadow-[inset_1px_0_0_var(--color-border)]"
+    >
       <li v-for="section in sections" :key="section.id">
         <a
           :href="`#${section.id}`"
           :aria-current="section.id === active ? 'location' : undefined"
-          class="flex min-h-[22px] items-center py-px pr-1 pl-[16px] text-ui text-foreground no-underline outline-none focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-dotted focus-visible:outline-ring aria-[current]:bg-surface-selected aria-[current]:text-on-selected"
+          class="flex min-h-[22px] items-center py-px pr-1 pl-[16px] text-ui text-foreground no-underline outline-none focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-dotted focus-visible:outline-ring aria-[current]:bg-surface-selected aria-[current]:text-on-selected modern:rounded-sm modern:pl-2 modern:aria-[current]:bg-transparent modern:aria-[current]:font-strong modern:aria-[current]:text-link"
           >{{ section.text }}</a
         >
       </li>

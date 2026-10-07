@@ -1,0 +1,81 @@
+/*
+ * The docs site in the modern theme: the parts of its chrome that are plain
+ * CSS rather than utilities. Everything here is scoped to the modern theme;
+ * the Windows 98 site is untouched by this file.
+ */
+
+/* A wallpaper rather than a flat colour: a soft gradient over the desktop token. */
+[data-theme='modern'] .rk-desktop {
+  background:
+    radial-gradient(120% 90% at 15% 0%, #ffffff66, transparent 60%),
+    radial-gradient(90% 80% at 100% 100%, #0071e333, transparent 60%), var(--color-desktop);
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme='modern']:not([data-color-scheme='light']) .rk-desktop {
+    background:
+      radial-gradient(120% 90% at 15% 0%, #2997ff26, transparent 60%),
+      radial-gradient(90% 80% at 100% 100%, #5e5ce633, transparent 60%), var(--color-desktop);
+  }
+}
+
+[data-theme='modern'][data-color-scheme='dark'] .rk-desktop {
+  background:
+    radial-gradient(120% 90% at 15% 0%, #2997ff26, transparent 60%),
+    radial-gradient(90% 80% at 100% 100%, #5e5ce633, transparent 60%), var(--color-desktop);
+}
+
+/* The menu bar: translucent, a hairline under it, no bevel. */
+[data-theme='modern'] .rk-taskbar {
+  background: var(--color-popover);
+  box-shadow: inset 0 -1px 0 var(--color-border);
+  backdrop-filter: var(--rk-popover-backdrop);
+}
+
+/* The folder tree as a sidebar: rounded selection, no [+]/[−] boxes or dotted rings. */
+[data-theme='modern'] .rk-tree-label {
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+}
+
+[data-theme='modern'] .rk-tree-label-selected {
+  background: var(--color-surface-selected);
+  color: var(--color-on-selected);
+}
+
+[data-theme='modern'] li[role='treeitem']:focus-visible > .rk-tree-label {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 0;
+}
+
+/* Code colours, as a current IDE draws them: light, and dark. */
+[data-theme='modern'] {
+  --rk-code-fg: var(--color-foreground);
+  --rk-code-bg: var(--color-input);
+  --rk-code-comment: #5d6c79;
+  --rk-code-keyword: #9b2393;
+  --rk-code-string: #c41a16;
+  --rk-code-number: #1c00cf;
+  --rk-code-tag: #0b4f79;
+  --rk-code-attribute: #815f03;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme='modern']:not([data-color-scheme='light']) {
+    --rk-code-comment: #7f8c98;
+    --rk-code-keyword: #fc5fa3;
+    --rk-code-string: #fc6a5d;
+    --rk-code-number: #d0bf69;
+    --rk-code-tag: #5dd8ff;
+    --rk-code-attribute: #a167e6;
+  }
+}
+
+[data-theme='modern'][data-color-scheme='dark'] {
+  --rk-code-comment: #7f8c98;
+  --rk-code-keyword: #fc5fa3;
+  --rk-code-string: #fc6a5d;
+  --rk-code-number: #d0bf69;
+  --rk-code-tag: #5dd8ff;
+  --rk-code-attribute: #a167e6;
+}

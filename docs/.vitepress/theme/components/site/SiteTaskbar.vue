@@ -2,7 +2,10 @@
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
 import { Separator, version } from 'rowkit'
+import SiteMenuBar from './SiteMenuBar.vue'
 import StartMenu from './StartMenu.vue'
+import ThemeSwitch from './ThemeSwitch.vue'
+import { siteTheme } from './useSiteTheme'
 
 /**
  * The taskbar along the bottom of the screen: Start, the page on screen as
@@ -62,21 +65,30 @@ function closeStart(focusStart: boolean): void {
 </script>
 
 <template>
-  <footer class="rk-taskbar flex h-[34px] shrink-0 items-center gap-1 bg-card p-0.5">
+  <!--
+    In the modern theme the taskbar is the menu bar: at the top (`order-first`
+    in the page's column), the Start button becomes the rowkit menu, the
+    window's menus move up into it, and there is no task button.
+  -->
+  <footer
+    class="rk-taskbar flex h-[34px] shrink-0 items-center gap-1 bg-card p-0.5 modern:order-first modern:z-40 modern:h-7 modern:gap-2 modern:px-2 modern:py-0"
+  >
     <button
       ref="start"
       type="button"
       aria-haspopup="menu"
       :aria-expanded="startOpen"
-      class="flex h-[27px] shrink-0 items-center gap-1 pr-1.5 pl-0.5 font-bold text-ui text-foreground outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
+      class="flex h-[27px] shrink-0 items-center gap-1 pr-1.5 pl-0.5 font-bold text-ui text-foreground outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring modern:h-6 modern:rounded-sm modern:px-2 modern:pt-0 modern:font-strong modern:shadow-none modern:hover:bg-control-ghost-hover modern:focus-visible:focus-outer"
       :class="startOpen ? 'pt-px pl-[3px] shadow-pressed' : 'shadow-raised active:shadow-pressed'"
       @click="toggleStart"
     >
       <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" />
-      <span class="px-px">Start</span>
+      <span class="px-px modern:hidden">Start</span>
+      <span class="win98:hidden">rowkit</span>
     </button>
     <StartMenu v-if="startOpen" ref="menu" :anchor="start" @close="closeStart" />
-    <Separator orientation="vertical" decorative class="h-[27px] self-center" />
+    <Separator orientation="vertical" decorative class="h-[27px] self-center modern:hidden" />
+    <SiteMenuBar v-if="siteTheme === 'modern'" class="bg-transparent p-0 win98:hidden" />
     <!--
       The one task: this page. Active, so pressed in over the dither. Two
       elements rather than <component :is="'button'">: the site registers
@@ -85,7 +97,7 @@ function closeStart(focusStart: boolean): void {
     <button
       v-if="taskButton"
       type="button"
-      class="flex h-[27px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
+      class="flex h-[27px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring modern:hidden"
       @click="$emit('task')"
     >
       <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" class="shrink-0" />
@@ -94,14 +106,15 @@ function closeStart(focusStart: boolean): void {
     <div
       v-else
       aria-hidden="true"
-      class="flex h-[27px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring"
+      class="flex h-[27px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring modern:hidden"
     >
       <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" class="shrink-0" />
       <span class="truncate">{{ task }}</span>
     </div>
     <div class="flex-1" />
+    <ThemeSwitch />
     <div
-      class="flex h-[27px] shrink-0 items-center gap-1.5 px-1.5 text-ui text-foreground shadow-status"
+      class="flex h-[27px] shrink-0 items-center gap-1.5 px-1.5 text-ui text-foreground shadow-status modern:shadow-none"
     >
       <a
         href="https://github.com/NikolaiKushner/rowkit/releases"

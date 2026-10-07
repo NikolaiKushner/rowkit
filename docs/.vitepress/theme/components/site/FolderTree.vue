@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import { useRouter, withBase } from 'vitepress'
-import { DocumentIcon, FolderIcon, FolderOpenIcon } from 'rowkit'
+import { DocumentIcon, FolderIcon, FolderOpenIcon, TriangleRightIcon } from 'rowkit'
 import type { NavNode } from './useSiteNav'
 
 /**
@@ -142,7 +142,7 @@ function onKeydown(event: KeyboardEvent, index: number): void {
     >
       <!-- The [+]/[−] box: 9px, white, a 1px grey frame. A page has none. -->
       <span
-        class="relative size-[9px] shrink-0"
+        class="relative size-[9px] shrink-0 modern:hidden"
         :class="row.folder && 'border border-border bg-input'"
         @click="row.folder && toggle(row)"
       >
@@ -153,6 +153,17 @@ function onKeydown(event: KeyboardEvent, index: number): void {
             class="absolute top-px left-[3px] h-[5px] w-px bg-foreground"
           />
         </template>
+      </span>
+      <!-- The modern sidebar's disclosure triangle, in place of the [+]/[−] box. -->
+      <span
+        class="flex size-3 shrink-0 items-center justify-center text-text-subtle win98:hidden"
+        @click="row.folder && toggle(row)"
+      >
+        <TriangleRightIcon
+          v-if="row.folder"
+          class="transition-transform duration-(--rk-duration-control)"
+          :class="row.expanded && 'rotate-90'"
+        />
       </span>
       <FolderOpenIcon v-if="row.folder && row.expanded" class="shrink-0" />
       <FolderIcon v-else-if="row.folder" class="shrink-0" />

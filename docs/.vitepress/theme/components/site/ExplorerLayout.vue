@@ -5,11 +5,15 @@ import {
   ArrowLeft32Icon,
   ArrowRight32Icon,
   ArrowUp32Icon,
+  Button,
   ScrollArea,
   Search32Icon,
+  SearchIcon,
   Separator,
   StatusBar,
   StatusBarSection,
+  TriangleLeftIcon,
+  TriangleRightIcon,
   Window,
   WindowBody,
   WindowButton,
@@ -23,6 +27,7 @@ import SiteAddressBar from './SiteAddressBar.vue'
 import SiteMenuBar from './SiteMenuBar.vue'
 import SiteTaskbar from './SiteTaskbar.vue'
 import SiteToolbarButton from './SiteToolbarButton.vue'
+import { siteTheme } from './useSiteTheme'
 import { canGoBack, canGoForward, normalize, recordVisit, stepOf, useSiteNav } from './useSiteNav'
 
 /**
@@ -99,8 +104,8 @@ const goForward = () => history.forward()
 </script>
 
 <template>
-  <div class="flex h-dvh flex-col overflow-hidden bg-background">
-    <Window class="min-h-0 flex-1">
+  <div class="rk-desktop flex h-dvh flex-col overflow-hidden bg-background">
+    <Window class="min-h-0 flex-1 modern:m-3">
       <WindowTitleBar :title="windowTitle">
         <template #icon>
           <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" />
@@ -113,13 +118,14 @@ const goForward = () => history.forward()
       </WindowTitleBar>
 
       <!-- On a phone the Start menu is the navigation, as Figma's 390px templates draw it. -->
-      <SiteMenuBar class="max-md:hidden" />
-      <Separator decorative class="max-md:hidden" />
+      <!-- In the modern theme the menus live in the menu bar at the top of the screen. -->
+      <SiteMenuBar v-if="siteTheme !== 'modern'" class="max-md:hidden modern:hidden" />
+      <Separator decorative class="max-md:hidden modern:hidden" />
 
       <div
         role="toolbar"
         aria-label="Navigation"
-        class="flex h-[58px] shrink-0 items-start gap-0.5 px-1 pt-px"
+        class="flex h-[58px] shrink-0 items-start gap-0.5 px-1 pt-px modern:hidden"
       >
         <SiteToolbarButton label="Back" :disabled="!canGoBack" @click="goBack">
           <ArrowLeft32Icon />
@@ -140,19 +146,55 @@ const goForward = () => history.forward()
           <Search32Icon />
         </SiteToolbarButton>
       </div>
-      <Separator decorative />
+      <Separator decorative class="modern:hidden" />
 
-      <SiteAddressBar :pages="pages" :current="current" />
+      <SiteAddressBar :pages="pages" :current="current" class="modern:hidden" />
 
-      <WindowBody class="flex min-h-0 gap-1 p-0.5">
+      <!-- The modern toolbar, as a Finder window draws it: history, where you are, search. -->
+      <div
+        role="toolbar"
+        aria-label="Navigation"
+        class="flex h-12 shrink-0 items-center gap-1 px-3 shadow-titlebar win98:hidden"
+      >
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label="Back"
+          :disabled="!canGoBack"
+          @click="goBack"
+        >
+          <TriangleLeftIcon />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label="Forward"
+          :disabled="!canGoForward"
+          class="max-md:hidden"
+          @click="goForward"
+        >
+          <TriangleRightIcon />
+        </Button>
+        <span class="ml-2 min-w-0 truncate text-heading font-strong">{{ title }}</span>
+        <span class="flex-1" />
+        <Button variant="secondary" size="sm" class="min-w-0" @click="openFind">
+          <template #leading><SearchIcon /></template>
+          Search
+          <kbd class="ml-2 font-sans text-text-subtle max-md:hidden">⌘K</kbd>
+        </Button>
+      </div>
+
+      <WindowBody class="flex min-h-0 gap-1 p-0.5 modern:gap-0 modern:p-0">
         <!-- Below 768px the tree gives way to the page; the address bar still lists every page. -->
-        <ScrollArea class="w-[260px] shrink-0 bg-input p-0.5 shadow-sunken max-md:hidden">
+        <ScrollArea
+          class="w-[260px] shrink-0 bg-input p-0.5 shadow-sunken max-md:hidden modern:w-[240px] modern:bg-muted modern:p-2 modern:shadow-[inset_-1px_0_0_var(--color-border)]"
+        >
           <FolderTree :tree="tree" :current="current" />
         </ScrollArea>
         <ScrollArea
           ref="contentArea"
           :label="title"
-          class="min-w-0 flex-1 bg-input p-0.5 shadow-sunken"
+          class="min-w-0 flex-1 bg-input p-0.5 shadow-sunken modern:p-0 modern:shadow-none"
         >
           <!--
             Text wraps at the pane's width whatever is inside: without

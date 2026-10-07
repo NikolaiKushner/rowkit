@@ -165,7 +165,10 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="root" class="fixed bottom-[34px] left-0.5 z-50 flex bg-card p-0.5 shadow-window">
+  <div
+    ref="root"
+    class="fixed bottom-[34px] left-0.5 z-50 flex bg-card p-0.5 shadow-window modern:top-8 modern:bottom-auto modern:left-2 modern:rounded-lg modern:p-1"
+  >
     <!--
       The strip: the title-bar gradient upright, the wordmark reading upward,
       4px in and 6px up. Turned about its top-left corner so every pixel stays
@@ -174,7 +177,7 @@ defineExpose({
     <div
       v-if="!narrow"
       aria-hidden="true"
-      class="relative w-[22px] shrink-0 overflow-hidden bg-linear-to-b from-titlebar-to to-titlebar-from"
+      class="relative w-[22px] shrink-0 overflow-hidden bg-linear-to-b from-titlebar-to to-titlebar-from modern:hidden"
     >
       <img
         :src="withBase('/wordmark-light.svg')"

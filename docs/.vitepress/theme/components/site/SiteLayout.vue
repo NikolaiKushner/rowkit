@@ -6,6 +6,7 @@ import ExplorerLayout from './ExplorerLayout.vue'
 import FindWindow from './FindWindow.vue'
 import NotFound from './NotFound.vue'
 import { openFind } from './useFind'
+import { readSiteTheme } from './useSiteTheme'
 
 /**
  * Which screen a page is: the home page is the desktop, a docs page is the
@@ -24,7 +25,10 @@ function onKeydown(event: KeyboardEvent): void {
   }
 }
 
-onMounted(() => window.addEventListener('keydown', onKeydown))
+onMounted(() => {
+  readSiteTheme()
+  window.addEventListener('keydown', onKeydown)
+})
 onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 </script>
 
