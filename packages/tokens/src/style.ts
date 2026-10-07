@@ -50,6 +50,8 @@ export const style = {
   /** The pattern of a loading placeholder, and how it moves. */
   'loading-image': dither,
   'animate-loading': 'rk-dither 800ms steps(1) infinite',
+  /** An indeterminate progress bar's segment travelling across the track. */
+  'animate-progress': 'rk-progress-slide 2s steps(20) infinite',
   /** How long a control takes to change state. Windows 98 changes instantly. */
   'duration-control': '0ms',
   /** How a dialog, a list or a toast arrives. */
@@ -66,12 +68,19 @@ export const style = {
   'caption-order': '0',
   /** Where the close button sits among them: `0` last, `-1` first. */
   'close-order': '0',
+  /** Whether a window shows its icon in the title bar: `flex`, or `none`. */
+  'titlebar-icon': 'flex',
   /** Where the title sits: `start`, or `center`. */
   'titlebar-align': 'start',
   /** Space kept clear opposite the caption buttons, so a centred title is centred on the bar. */
   'titlebar-balance': '0px',
   /** The opacity of a caption button's glyph at rest; hovering the title bar shows it. */
   'caption-glyph-opacity': '1',
+
+  // Group boxes.
+
+  /** The weight of a group box's legend. */
+  'legend-weight': '400',
 
   // Links.
 
@@ -82,6 +91,8 @@ export const style = {
 
   /** The red frame inside an invalid field. Windows 98 marks it with the error icon only. */
   'invalid-width': '0px',
+  /** Where a field's error icon sits beside a message that wraps: `center`, or `start`. */
+  'field-error-align': 'center',
 
   // Dialogs and empty views.
 

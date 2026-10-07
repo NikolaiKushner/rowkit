@@ -217,7 +217,7 @@ function onButtonClick(): void {
       tabindex="-1"
       data-slot="select-button"
       :class="selectButtonVariants()"
-      :data-pressed="pressed ? '' : undefined"
+      :data-pressed="pressed || select.open.value ? '' : undefined"
       :aria-label="props.togglerLabel"
       :disabled="select.isDisabled.value"
       @pointerdown="onButtonDown"

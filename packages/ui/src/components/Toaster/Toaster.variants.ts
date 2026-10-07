@@ -32,7 +32,7 @@ export const toasterViewportVariants = cva(
  * or error. It appears and goes instantly; nothing slides.
  */
 export const toastVariants = cva([
-  'pointer-events-auto flex w-full items-start gap-2 rounded-lg bg-card py-2 pr-1 pl-2',
+  'pointer-events-auto flex w-full items-start gap-toast-gap rounded-lg bg-card py-toast-py pr-toast-pr pl-toast-pl',
   'font-sans text-ui text-foreground shadow-window',
   'motion-safe:animate-(--rk-animate-overlay-in)',
   'outline-none focus-visible:focus-ring focus-visible:-outline-offset-4',
@@ -43,18 +43,33 @@ export const toastVariants = cva([
 ])
 
 /** The title, the message and the action, stacked. */
-export const toastBodyVariants = cva('flex min-w-0 flex-1 flex-col items-start gap-1 break-words')
+export const toastBodyVariants = cva(
+  'flex min-w-0 flex-1 flex-col items-start gap-toast-body-gap break-words'
+)
+
+/** The status icon, 16px in Windows 98. */
+export const toastIconVariants = cva('size-toast-icon shrink-0')
 
 export const toastTitleVariants = cva('font-strong')
 
-export const toastMessageVariants = cva('')
+/** Under a title, the message is the muted second line; alone, it is the text. */
+export const toastMessageVariants = cva('', {
+  variants: {
+    underTitle: { true: 'text-muted-foreground', false: '' },
+  },
+  defaultVariants: { underTitle: false },
+})
 
 /** Space above the action button, so it does not crowd the text. */
 export const toastActionVariants = cva('pt-0.5')
 
-/** The caption button: the same 20×18 ✕ as a dialog's title bar. */
+/**
+ * The caption button: the same 20×18 ✕ as a dialog's title bar. The modern
+ * theme draws it as a grey disc with a muted ✕ instead of a traffic light.
+ */
 export const toastCloseVariants = cva([
   ...captionButtonClasses,
+  'h-toast-close-h w-toast-close-w bg-toast-close text-toast-close-foreground shadow-toast-close',
   'focus-visible:outline-ring',
   '[&_svg]:opacity-100',
 ])

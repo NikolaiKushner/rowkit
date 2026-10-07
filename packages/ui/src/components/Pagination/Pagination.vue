@@ -14,6 +14,7 @@ import Button from '../Button/Button.vue'
 import {
   paginationEllipsisVariants,
   paginationItemVariants,
+  paginationControlsVariants,
   paginationNavVariants,
   paginationStepVariants,
   paginationSummaryVariants,
@@ -100,22 +101,22 @@ function goTo(target: number): void {
 
 <template>
   <div data-slot="pagination" :class="cn(paginationVariants({ size: props.size }), props.class)">
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <p v-if="!props.hideSummary" :class="paginationSummaryVariants()">
-        <slot name="summary" :from="from" :to="to" :total="props.total">
-          <!-- Reads "0 of 0" when empty rather than the nonsensical "1–0 of 0". -->
-          <template v-if="props.total === 0">0 of 0</template>
-          <template v-else>{{ from }}–{{ to }} of {{ props.total }}</template>
-        </slot>
-      </p>
+    <p v-if="!props.hideSummary" :class="paginationSummaryVariants()">
+      <slot name="summary" :from="from" :to="to" :total="props.total">
+        <!-- Reads "0 of 0" when empty rather than the nonsensical "1–0 of 0". -->
+        <template v-if="props.total === 0">0 of 0</template>
+        <template v-else>{{ from }}–{{ to }} of {{ props.total }}</template>
+      </slot>
+    </p>
 
+    <div :class="paginationControlsVariants()">
       <Field
         v-if="!props.hidePageSize"
         layout="left"
         :label="props.pageSizeLabel"
         :size="props.size"
         :disabled="isDisabled"
-        class="[&>label]:whitespace-nowrap"
+        class="[&>label]:whitespace-nowrap [&>label]:text-muted-foreground"
       >
         <Select v-model="pageSize">
           <SelectTrigger :size="props.size" class="w-16" />
@@ -129,67 +130,67 @@ function goTo(target: number): void {
           </SelectContent>
         </Select>
       </Field>
-    </div>
 
-    <nav :aria-label="props.label" :class="paginationNavVariants()">
-      <!-- The visible label is the accessible name: "Back", not an unseen "Previous page". -->
-      <Button
-        variant="secondary"
-        :size="buttonSize"
-        data-type="previous"
-        :disabled="isDisabled || page === 1"
-        :class="paginationStepVariants({ compact: compactKey })"
-        @click="goTo(page - 1)"
-      >
-        <template #leading><TriangleLeftIcon /></template>
-        <span :class="paginationStepLabelVariants({ compact: compactKey })">{{
-          props.previousLabel
-        }}</span>
-      </Button>
-
-      <template v-for="(item, index) in items" :key="index">
+      <nav :aria-label="props.label" :class="paginationNavVariants()">
+        <!-- The visible label is the accessible name: "Back", not an unseen "Previous page". -->
         <Button
-          v-if="item.type === 'page'"
           variant="secondary"
           :size="buttonSize"
-          data-type="page"
-          :aria-label="`Page ${item.value}`"
-          :aria-current="item.value === page ? 'page' : undefined"
-          :data-selected="item.value === page ? 'true' : undefined"
-          :disabled="isDisabled"
-          :class="paginationItemVariants({ size: props.size })"
-          @click="goTo(item.value)"
+          data-type="previous"
+          :disabled="isDisabled || page === 1"
+          :class="paginationStepVariants({ compact: compactKey })"
+          @click="goTo(page - 1)"
         >
-          {{ item.value }}
+          <template #leading><TriangleLeftIcon /></template>
+          <span :class="paginationStepLabelVariants({ compact: compactKey })">{{
+            props.previousLabel
+          }}</span>
         </Button>
-        <!--
+
+        <template v-for="(item, index) in items" :key="index">
+          <Button
+            v-if="item.type === 'page'"
+            variant="secondary"
+            :size="buttonSize"
+            data-type="page"
+            :aria-label="`Page ${item.value}`"
+            :aria-current="item.value === page ? 'page' : undefined"
+            :data-selected="item.value === page ? 'true' : undefined"
+            :disabled="isDisabled"
+            :class="paginationItemVariants({ size: props.size })"
+            @click="goTo(item.value)"
+          >
+            {{ item.value }}
+          </Button>
+          <!--
           Hidden from assistive technology: the gap is a visual device for
           keeping the row short, and the page numbers either side already say
           everything a reader needs.
         -->
-        <div
-          v-else
-          data-type="ellipsis"
-          aria-hidden="true"
-          :class="paginationEllipsisVariants({ size: props.size })"
-        >
-          …
-        </div>
-      </template>
+          <div
+            v-else
+            data-type="ellipsis"
+            aria-hidden="true"
+            :class="paginationEllipsisVariants({ size: props.size })"
+          >
+            …
+          </div>
+        </template>
 
-      <Button
-        variant="secondary"
-        :size="buttonSize"
-        data-type="next"
-        :disabled="isDisabled || page === lastPage"
-        :class="paginationStepVariants({ compact: compactKey })"
-        @click="goTo(page + 1)"
-      >
-        <span :class="paginationStepLabelVariants({ compact: compactKey })">{{
-          props.nextLabel
-        }}</span>
-        <template #trailing><TriangleRightIcon /></template>
-      </Button>
-    </nav>
+        <Button
+          variant="secondary"
+          :size="buttonSize"
+          data-type="next"
+          :disabled="isDisabled || page === lastPage"
+          :class="paginationStepVariants({ compact: compactKey })"
+          @click="goTo(page + 1)"
+        >
+          <span :class="paginationStepLabelVariants({ compact: compactKey })">{{
+            props.nextLabel
+          }}</span>
+          <template #trailing><TriangleRightIcon /></template>
+        </Button>
+      </nav>
+    </div>
   </div>
 </template>

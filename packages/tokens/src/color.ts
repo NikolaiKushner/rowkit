@@ -294,6 +294,27 @@ export const semanticColor = {
    */
   groupbox: ref('vga-silver'),
   'groupbox-face': ref('vga-silver'),
+  /** A toast's ✕: the caption button's silver in Windows 98, a soft grey disc elsewhere. */
+  'toast-close': ref('vga-silver'),
+  'toast-close-foreground': ref('vga-black'),
+  /** A pager's buttons: raised command buttons in Windows 98, flat elsewhere. */
+  pager: ref('vga-silver'),
+  'pager-hover': ref('vga-silver'),
+  'pager-active': ref('vga-silver'),
+  /** The strip a filter bar sits on. */
+  'filter-bar': ref('vga-silver'),
+  /** A filter chip: its face, its edge and its text. */
+  chip: ref('vga-white'),
+  'chip-border': ref('vga-gray'),
+  'chip-foreground': ref('vga-black'),
+  /** The face of a chip's ✕ at rest: the chip's own white in Windows 98. */
+  'chip-remove': ref('vga-white'),
+  /**
+   * The value of a read-only field that holds focus — a drop-down list's —
+   * highlighted the way Windows 98 marks it, and the text on it.
+   */
+  'field-highlight': ref('vga-navy'),
+  'on-field-highlight': ref('vga-white'),
   /** The text caret in a field. */
   'field-caret': ref('vga-black'),
   /** The buttons inside a field: a select's drop button, a number's spin buttons. */

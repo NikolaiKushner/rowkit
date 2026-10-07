@@ -17,13 +17,13 @@ export const fieldVariants = cva('flex font-sans text-ui text-foreground', {
     },
     layout: {
       top: 'flex-col',
-      left: 'items-start gap-2',
+      left: 'items-start gap-field-left-gap',
     },
   },
   compoundVariants: [
-    { layout: 'top', size: 'sm', class: 'gap-1' },
-    { layout: 'top', size: 'md', class: 'gap-1.5' },
-    { layout: 'top', size: 'lg', class: 'gap-2' },
+    { layout: 'top', size: 'sm', class: 'gap-field-gap-sm' },
+    { layout: 'top', size: 'md', class: 'gap-field-gap-md' },
+    { layout: 'top', size: 'lg', class: 'gap-field-gap-lg' },
   ],
   defaultVariants: { size: 'md', layout: 'top' },
 })
@@ -46,9 +46,9 @@ export const fieldControlVariants = cva('', {
     },
   },
   compoundVariants: [
-    { layout: 'left', size: 'sm', class: 'gap-1' },
-    { layout: 'left', size: 'md', class: 'gap-1.5' },
-    { layout: 'left', size: 'lg', class: 'gap-2' },
+    { layout: 'left', size: 'sm', class: 'gap-field-gap-sm' },
+    { layout: 'left', size: 'md', class: 'gap-field-gap-md' },
+    { layout: 'left', size: 'lg', class: 'gap-field-gap-lg' },
   ],
   defaultVariants: { size: 'md', layout: 'top' },
 })
@@ -117,6 +117,8 @@ export const fieldHintVariants = cva('text-text-subtle')
  * The error: the 16px error icon, then the message in maroon (5.5:1 on the
  * silver face). The icon is what says "error"; the colour only repeats it.
  */
-export const fieldErrorVariants = cva('flex items-center gap-1 text-danger-on-subtle')
+export const fieldErrorVariants = cva(
+  'flex [align-items:var(--rk-field-error-align)] gap-field-error-gap text-danger-on-subtle'
+)
 
 export type FieldVariants = VariantProps<typeof fieldVariants>

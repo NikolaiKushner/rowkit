@@ -2,7 +2,8 @@
 import { computed, onBeforeUnmount, useId, watch } from 'vue'
 import { cn } from '../../utils/cn'
 import { useSelectContext, type SelectItemRecord } from './context'
-import { selectItemVariants } from './Select.variants'
+import CheckGlyphIcon from '../../icons/CheckGlyphIcon.vue'
+import { selectItemCheckVariants, selectItemVariants } from './Select.variants'
 import type { SelectItemProps } from './types'
 
 defineOptions({ name: 'RkSelectItem' })
@@ -80,6 +81,9 @@ function onPointerUp(): void {
     @pointerup="onPointerUp"
     @click="select.choose(props.value)"
   >
+    <span data-slot="select-item-check" aria-hidden="true" :class="selectItemCheckVariants()">
+      <CheckGlyphIcon v-if="selected" />
+    </span>
     <slot :selected="selected">
       <span class="truncate">{{ props.label }}</span>
     </slot>

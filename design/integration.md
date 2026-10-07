@@ -51,23 +51,34 @@
 
 ## Шаг 2. Handoff — где дизайн отличается от modern.ts (115:588)
 
-|     | Что меняем                                                                                                                                                    | Где в коде                                     |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| [x] | Input / Select invalid: рамка 1px `danger-solid` внутри поля плюс иконка (Win98 — только иконка)                                                              | `Input.variants.ts`, `Select`                  |
-| [x] | Input readonly: `bg-muted` вместо `bg-card` (в Win98 цвет тот же)                                                                                             | `Input.variants.ts`                            |
-| [ ] | ProgressBar: новое значение `indeterminate` — сегмент 30%, едет за 1.2 с; при reduced motion — неподвижная полоса 40%. Для Win98 нужен дизайн (бегущие блоки) | `ProgressBar.vue` — новый API, нужна changeset |
-| [ ] | Toast, кнопка закрытия: серый круг 18px (`control-ghost-hover`) с приглушённым ×, а не светофор                                                               | `Toaster`                                      |
-| [ ] | FilterChip: капсула `primary-subtle`, рамка `primary-border`, текст `primary-on-subtle` (Win98 — белый чип, серая рамка)                                      | `FilterBar.variants.ts`                        |
-| [ ] | Pagination: плоские кнопки, текущая страница на `control-latched`, радиус md                                                                                  | `Pagination`                                   |
-| [ ] | Window: без иконки, светофор слева, заголовок по центру, у неактивного окна светофор серый (`caption-inactive`)                                               | `Window`, `captionButton.variants.ts`          |
-| [ ] | ButtonGroup: 1px-разделитель между невыбранными сегментами, рядом с выбранным его нет                                                                         | `ButtonGroup`                                  |
-| [x] | Button: защёлкнутая primary-кнопка → `control-primary-active`                                                                                                 | `Button.variants.ts`                           |
-| [ ] | ScrollArea: ползунок 10px виден всегда, под указателем темнее                                                                                                 | `ScrollArea`                                   |
-| [ ] | StatusBar: без линий, секции через 16px                                                                                                                       | `StatusBar`                                    |
-| [ ] | DataTable: ховер строки (`table-row-hover`), выбранная строка — сплошной синий на всю ширину                                                                  | `DataTable`                                    |
-| [x] | EmptyState: иконка над текстом, текст по центру, описание `muted-foreground`                                                                                  | `EmptyState`                                   |
-| [x] | Dialog: порядок кнопок по `--rk-footer-direction`, отступы 20/16/20, фон модалки — чёрный 15% (уже был)                                                       | `DialogFooter` / `Dialog`                      |
-| [x] | Badge: отступы по `badge-px-*`, точка 6px                                                                                                                     | `Badge.variants.ts`                            |
+|     | Что меняем                                                                                                                                                                                                                                        | Где в коде                           |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| [x] | Input / Select invalid: рамка 1px `danger-solid` внутри поля плюс иконка (Win98 — только иконка)                                                                                                                                                  | `Input.variants.ts`, `Select`        |
+| [x] | Input readonly: `bg-muted` вместо `bg-card` (в Win98 цвет тот же)                                                                                                                                                                                 | `Input.variants.ts`                  |
+| [x] | ProgressBar: `value` можно не передавать (или `null`) — тогда сегмент 30% едет по полосе за 1.2 с (`--rk-animate-progress`); при reduced motion — неподвижная полоса 40%. В Win98 пока бегут блоки шагами — **ждёт дизайна**                      | `ProgressBar` — новый API, changeset |
+| [x] | Toast: серый круг 18px с приглушённым ×; заодно отступы 12/10, иконка 18px, описание `muted-foreground` (роли `toast-*`)                                                                                                                          | `Toaster`                            |
+| [x] | FilterChip: капсула `primary-subtle` / `primary-border` / `primary-on-subtle` (роли `chip-*`), панель без подложки, отступы 0 и 8, счётчик `muted-foreground`, кольцо фокуса у × снаружи                                                          | `FilterBar`                          |
+| [x] | Pagination: плоские кнопки (роли `pager*`), текущая страница на `control-latched`, отступ цифр 6px, подписи `muted-foreground`. «Rows per page» перенесён вправо к кнопкам — так и в Win98-макете (**единственное изменение Win98 в этой части**) | `Pagination`                         |
+| [x] | Window: иконки в заголовке нет (`--rk-titlebar-icon`); светофор слева, заголовок по центру, серый у неактивного — уже было                                                                                                                        | `WindowTitleBar`                     |
+| [x] | ButtonGroup: разделители между сегментами — сверено, совпадает (у нас линия чуть темнее из-за наложения теней)                                                                                                                                    | `ButtonGroup`                        |
+| [x] | Button: защёлкнутая primary-кнопка → `control-primary-active`                                                                                                                                                                                     | `Button.variants.ts`                 |
+| [x] | ScrollArea: ползунок 10px виден всегда — сверено, уже так                                                                                                                                                                                         | `ScrollArea`                         |
+| [x] | StatusBar: без рамок, фон окна, отступы 12, секции через 16, текст `muted-foreground` (размеры `statusbar-*`)                                                                                                                                     | `StatusBar`                          |
+| [x] | DataTable: ховер строки; выбранная строка синяя, у чекбокса в ней белая рамка (`shadow-checked-selected`); рамка таблицы рисуется поверх строк; отступы ячеек 8 (`table-*-px`); у строк загрузки — полосы                                         | `DataTable`                          |
+| [x] | EmptyState: иконка над текстом, текст по центру, описание `muted-foreground`                                                                                                                                                                      | `EmptyState`                         |
+| [x] | Dialog: порядок кнопок по `--rk-footer-direction`, отступы 20/16/20, фон модалки — чёрный 15% (уже был)                                                                                                                                           | `DialogFooter` / `Dialog`            |
+| [x] | Badge: отступы по `badge-px-*`, точка 6px                                                                                                                                                                                                         | `Badge.variants.ts`                  |
+
+Найдено при сверке со скриншотами, кроме handoff:
+
+- [x] Select: у пунктов списка колонка под галочку, у выбранного — галочка. Так в макете обеих тем, поэтому изменился и Win98.
+- [x] Select: синяя подсветка значения в фокусе — только в Win98 и только пока список закрыт (`field-highlight`). Пока список открыт, кнопка вдавлена.
+- [x] GroupBox: подпись полужирная (`--rk-legend-weight`) и `muted-foreground`.
+- [x] Field: промежутки 6px на всех размерах, label слева в 12px, иконка ошибки сверху (`field-*`).
+- [x] Button: кнопка-ссылка в modern без подчёркивания; ghost-кнопка «on» — только серая подложка.
+- [x] Tooltip, Checkbox, Radio, Skeleton, Separator — сверены, совпадают.
+- [ ] На шаг 3: шеврон «вверх/вниз» у Select и спиннер вместо песочных часов у Button loading. Это иконки дизайнера.
+- [ ] Копирайт: в макете подпись «Rows per page:» с двоеточием. Нужно решить, менять ли текст по умолчанию.
 
 Не в этой волне (так решил дизайнер): Switch — волна 2; alert-раскладка диалога — позже, отдельным стиль-переключателем.
 

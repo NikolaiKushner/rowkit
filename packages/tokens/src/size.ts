@@ -40,6 +40,16 @@ export const size = {
   'field-px': '0.25rem',
   'field-px-lg': '0.375rem',
 
+  /**
+   * A field's spacing: between label, control and message at each size, between
+   * a label and the control beside it, and between the error icon and its text.
+   */
+  'field-gap-sm': '0.25rem',
+  'field-gap-md': '0.375rem',
+  'field-gap-lg': '0.5rem',
+  'field-left-gap': '0.5rem',
+  'field-error-gap': '0.25rem',
+
   /** The side of a checkbox's box, and of an option button. */
   check: '13px',
   radio: '12px',
@@ -78,13 +88,43 @@ export const size = {
 
   /** One option in a list: a select's, a menu's. */
   item: '22px',
+  /** An option's padding either side, the column its check mark sits in, the gap after it, and the mark. */
+  'item-pl': '2px',
+  'item-pr': '0.25rem',
+  'item-check': '12px',
+  'item-gap': '2px',
+  'item-check-glyph': '7px',
   /** The inset around a dropped list's options. */
   'popover-inset': '0px',
 
+  /**
+   * A data table's side padding: a header cell's, around the 1px its label's
+   * focus ring takes, and a body cell's.
+   */
+  'table-header-px': '0.25rem',
+  'table-cell-px': '0.375rem',
   /** Data table rows, and the header that matches them. */
   'row-sm': '22px',
   'row-md': '27px',
 
+  /** A filter bar's padding and the space between its items. */
+  'filter-bar-p': '0.25rem',
+  'filter-bar-gap': '0.25rem',
+  /** A filter chip's side padding, and its right padding beside the ✕. */
+  'chip-px': '0.375rem',
+  'chip-pr-remove': '0.125rem',
+  /** A toast's padding, the gap between its icon, text and ✕, and between its lines. */
+  'toast-py': '0.5rem',
+  'toast-pl': '0.5rem',
+  'toast-pr': '0.25rem',
+  'toast-gap': '0.5rem',
+  'toast-body-gap': '0.25rem',
+  /** A toast's status icon, and its ✕. */
+  'toast-icon': '16px',
+  'toast-close-w': '20px',
+  'toast-close-h': '18px',
+  /** A page number's side padding. */
+  'pager-px': '0.25rem',
   /** A filter chip. */
   'chip-sm': '23px',
   'chip-md': '26px',
@@ -107,6 +147,12 @@ export const size = {
 
   /** A status bar. */
   statusbar: '27px',
+  /** A status bar's padding and the space between its sections; a section's side padding and the space inside it. */
+  'statusbar-px': '2px',
+  'statusbar-py': '2px',
+  'statusbar-gap': '2px',
+  'statusbar-section-px': '0.25rem',
+  'statusbar-section-gap': '0.25rem',
 
   /** A progress bar: its height, the inset around the fill, and the fill. */
   progress: '18px',

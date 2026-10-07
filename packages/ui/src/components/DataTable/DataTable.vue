@@ -558,7 +558,11 @@ function headerStyle(
           <tbody :aria-busy="props.loading ? 'true' : undefined">
             <template v-if="props.loading">
               <slot name="loading">
-                <tr v-for="row in props.loadingRows" :key="`skeleton-${row}`">
+                <tr
+                  v-for="row in props.loadingRows"
+                  :key="`skeleton-${row}`"
+                  class="bg-input even:bg-table-stripe"
+                >
                   <td
                     v-if="props.selectable !== undefined"
                     :class="

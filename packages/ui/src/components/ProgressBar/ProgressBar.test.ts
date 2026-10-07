@@ -20,6 +20,18 @@ describe('ProgressBar', () => {
     expect(el.attributes('aria-label')).toBe('Upload')
   })
 
+  it('is indeterminate without a value: no aria-valuenow, a travelling segment', () => {
+    const cases: Record<string, unknown>[] = [{}, { value: null }]
+    for (const props of cases) {
+      const el = mount(ProgressBar, { props, attrs: { 'aria-label': 'Loading' } })
+      expect(el.attributes('aria-valuenow')).toBeUndefined()
+      expect(el.attributes('data-state')).toBe('indeterminate')
+      const bar = el.find('[data-slot="progress-bar-fill"]')
+      expect(bar.classes()).toContain('motion-safe:animate-(--rk-animate-progress)')
+      expect(bar.classes()).toContain('motion-reduce:w-[40%]')
+    }
+  })
+
   it('fills to the value as a share of max', () => {
     expect(fill(mount(ProgressBar, { props: { value: 3, max: 12 } }))).toBe('25%')
   })

@@ -4,7 +4,7 @@ import ProgressBar from './ProgressBar.vue'
 
 /** Controls declared explicitly, so the docs table shows the public API. */
 interface ProgressBarArgs {
-  value: number
+  value: number | null
   max: number
 }
 
@@ -37,6 +37,22 @@ export const Values: Story = {
       </div>
     `,
   }),
+}
+
+/**
+ * No value: the work has started but its size is unknown. A segment travels
+ * along the track; with reduced motion it stands still at 40%.
+ */
+export const Indeterminate: Story = {
+  render: () => ({
+    components: { ProgressBar },
+    template: `<div class="w-[200px]"><ProgressBar aria-label="Connecting" /></div>`,
+  }),
+  play: async ({ canvasElement }) => {
+    const bar = within(canvasElement).getByRole('progressbar', { name: 'Connecting' })
+    await expect(bar).not.toHaveAttribute('aria-valuenow')
+    await expect(bar).toHaveAttribute('data-state', 'indeterminate')
+  },
 }
 
 /** Blocks are whole: at 100% of a 200px bar, 19 blocks, none cut off. */

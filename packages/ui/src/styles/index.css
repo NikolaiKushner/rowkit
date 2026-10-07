@@ -47,6 +47,16 @@
   }
 }
 
+/* An indeterminate progress bar: its 30% segment from just off the left to just off the right. */
+@keyframes rk-progress-slide {
+  from {
+    translate: -100%;
+  }
+  to {
+    translate: calc(100% / 0.3);
+  }
+}
+
 @keyframes rk-overlay-in {
   from {
     opacity: 0;

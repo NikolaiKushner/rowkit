@@ -76,8 +76,29 @@ export const shadow = {
   titlebar: 'none',
   /** A checked check box: the same sunken well as an unchecked one, in Windows 98. */
   checked: bevel([sh, hl], [dark, light]),
+  /** A button inside a field while held, or while its list is open: pressed in, in Windows 98. */
+  'field-button-pressed': bevel([dark, hl], [sh, light]),
   /** A flat toolbar button that is latched on: pressed in, in Windows 98. */
   'latched-ghost': bevel([dark, hl], [sh, light]),
+  /** A checked check box in a selected table row: its usual well, in Windows 98. */
+  'checked-selected': bevel([sh, hl], [dark, light]),
+  /** A toast's ✕: a caption button, raised, in Windows 98. */
+  'toast-close': bevel([hl, dark], [light, sh]),
+  /**
+   * A pager's buttons: a raised command button, its focused frame, and pressed
+   * in while held or while it is the current page. Flat in a theme that draws
+   * the pager as a row of plain numbers.
+   */
+  pager: bevel([hl, dark], [light, sh]),
+  'pager-focus': [
+    `inset -1px -1px ${dark}`,
+    `inset 1px 1px ${dark}`,
+    `inset -2px -2px ${dark}`,
+    `inset 2px 2px ${hl}`,
+    `inset -3px -3px ${sh}`,
+    `inset 3px 3px ${light}`,
+  ].join(', '),
+  'pager-pressed': bevel([dark, hl], [sh, light]),
   /** A button inside a field: raised, in Windows 98. */
   'field-button': bevel([hl, dark], [light, sh]),
   /** A scroll bar's thumb. */

@@ -80,11 +80,11 @@ last block.
 
 <!-- @props ProgressBarProps -->
 
-| Prop    | Type     | Default      | Description                                                 |
-| ------- | -------- | ------------ | ----------------------------------------------------------- |
-| `value` | `number` | **required** | How far along, from 0 to `max`. Values outside are clamped. |
-| `max`   | `number` | `100`        | The value that means done.                                  |
-| `class` | `string` | —            | Additional classes, merged so a consumer's utility wins.    |
+| Prop    | Type     | Default | Description                                              |
+| ------- | -------- | ------- | -------------------------------------------------------- |
+| `value` | `number` | `null`  | How far along, from 0 to `max`.                          |
+| `max`   | `number` | `100`   | The value that means done.                               |
+| `class` | `string` | —       | Additional classes, merged so a consumer's utility wins. |
 
 <!-- /@props -->
 

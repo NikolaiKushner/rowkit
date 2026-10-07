@@ -455,7 +455,7 @@ handling.
 
 **Props**
 
-- `value: number` _(required)_. How far along, from 0 to `max`. Values outside are clamped.
+- `value: number` — default `null`. How far along, from 0 to `max`. Values outside are clamped. Leave it out, or pass `null`, while the amount of work is unknown: the bar shows a segment travelling along the track instead.
 - `max: number` — default `100`. The value that means done.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
 

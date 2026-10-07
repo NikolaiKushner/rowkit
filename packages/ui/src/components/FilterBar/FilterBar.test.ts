@@ -204,10 +204,12 @@ describe('chip keyboard', () => {
 })
 
 describe('look', () => {
-  it('is one wrapping toolbar row on the silver face', () => {
+  it('is one wrapping toolbar row on the theme’s filter-bar face', () => {
     const el = setup({ filters, resultCount: 4 })
     const classes = el.find('[data-slot="filter-bar"]').classes()
-    expect(classes).toEqual(expect.arrayContaining(['flex-wrap', 'bg-card', 'p-1', 'gap-1']))
+    expect(classes).toEqual(
+      expect.arrayContaining(['flex-wrap', 'bg-filter-bar', 'p-filter-bar-p', 'gap-filter-bar-gap'])
+    )
     el.unmount()
   })
 })

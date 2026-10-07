@@ -40,7 +40,8 @@ export const selectTriggerVariants = cva(
  *
  * A read-only select with a value shows that value highlighted while it has
  * focus — navy, white text, the ring drawn in white over it — which is how
- * Windows 98 marks the drop-down list that holds the keyboard.
+ * Windows 98 marks the drop-down list that holds the keyboard. Not while the
+ * list is open: then the highlight is in the list.
  */
 export const selectInputVariants = cva([
   'h-full min-w-0 flex-1 truncate bg-transparent p-px text-inherit caret-field-caret',
@@ -51,19 +52,19 @@ export const selectInputVariants = cva([
   // Tabbing in selects the text; in a read-only box that is the browser's
   // blue on top of the navy highlight below.
   'read-only:selection:bg-transparent',
-  'read-only:focus:not-placeholder-shown:bg-surface-selected',
-  'read-only:focus:not-placeholder-shown:text-on-selected',
-  'read-only:focus:not-placeholder-shown:outline-on-selected',
+  'read-only:focus:not-placeholder-shown:aria-[expanded=false]:bg-field-highlight',
+  'read-only:focus:not-placeholder-shown:aria-[expanded=false]:text-on-field-highlight',
+  'read-only:focus:not-placeholder-shown:aria-[expanded=false]:outline-on-field-highlight',
 ])
 
 /**
  * The drop button: 16px wide, as tall as the well, raised, with the 8px
- * triangle. Held, it sinks.
+ * triangle. Held, or while the list is open, it sinks.
  */
 export const selectButtonVariants = cva([
   'flex w-4 shrink-0 cursor-default items-center justify-center self-stretch',
   'rounded-xs bg-field-button text-control-foreground shadow-field-button',
-  'data-pressed:shadow-pressed',
+  'data-pressed:shadow-field-button-pressed',
   'disabled:text-text-disabled',
 ])
 
@@ -87,17 +88,21 @@ export const selectContentVariants = cva([
 export const selectListVariants = cva('scrollbar-themed max-h-44 overflow-y-auto')
 
 /**
- * One option: a 16px row with the text where the field's text sits.
- * Highlighted — by the keyboard or the pointer — it turns navy with white
- * text; there is no check mark, because the highlight starts on the selected
- * option. Disabled is grey embossed text.
+ * One option: a row with a column for the check mark the selected option
+ * carries, then its text. Highlighted — by the keyboard or the pointer — it
+ * turns navy with white text. Disabled is grey embossed text.
  */
 export const selectItemVariants = cva([
-  'flex h-item cursor-default select-none items-center rounded-sm px-1 outline-none',
+  'flex h-item cursor-default select-none items-center gap-item-gap rounded-sm pr-item-pr pl-item-pl outline-none',
   'data-highlighted:bg-surface-selected data-highlighted:text-on-selected',
   'data-disabled:pointer-events-none data-disabled:text-text-disabled',
   'data-disabled:text-shadow-disabled',
 ])
+
+/** The check mark's column, empty unless the option is the selected one. */
+export const selectItemCheckVariants = cva(
+  'flex size-item-check shrink-0 items-center justify-center [&_svg]:size-item-check-glyph'
+)
 
 /** The loading and empty rows: a line of subtle text in the list. */
 export const selectMessageVariants = cva('flex h-item items-center px-1 text-text-subtle')

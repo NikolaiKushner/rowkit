@@ -13,11 +13,14 @@ export const dataTableRootVariants = cva('flex w-full min-h-0 flex-col gap-1')
  *
  * The bevel is on its own element, outside the scroll container: an inset
  * shadow paints under the content, so on the scrolling element itself the rows
- * and the sticky header would slide over it.
+ * and the sticky header would slide over it. It is drawn on a layer over the
+ * frame, so a theme whose frame has no padding (`--spacing-frame: 0`) keeps
+ * its edge above the rows that reach it.
  */
-export const dataTableFrameVariants = cva(
-  'flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-input p-frame shadow-table'
-)
+export const dataTableFrameVariants = cva([
+  'relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-input p-frame',
+  "after:pointer-events-none after:absolute after:inset-0 after:z-sticky after:rounded-[inherit] after:shadow-table after:content-['']",
+])
 
 /**
  * The scroll container. A table wider than its frame scrolls here rather than
@@ -94,8 +97,8 @@ export const dataTableHeaderCellVariants = cva(
       size: {
         // `h-*` on a table cell is the CSS minimum row height (min-height is
         // ignored on `display: table-cell`).
-        sm: 'h-row-sm px-1 py-0',
-        md: 'h-row-md px-1 py-0',
+        sm: 'h-row-sm px-table-header-px py-0',
+        md: 'h-row-md px-table-header-px py-0',
       },
       align: {
         start: 'text-start',
@@ -141,7 +144,7 @@ export const dataTableHeaderCellVariants = cva(
  */
 export const dataTableSortButtonVariants = cva(
   [
-    'group/sort flex w-full cursor-pointer items-center bg-table-header px-1 text-inherit',
+    'group/sort flex w-full cursor-pointer items-center bg-table-header px-table-header-px text-inherit',
     'shadow-header outline-none active:shadow-pressed',
   ],
   {
@@ -180,7 +183,7 @@ export const dataTableSortIconVariants = cva('shrink-0')
  * `whitespace-nowrap`: a Windows 98 list never wraps a cell. A wrapped cell
  * breaks the fixed row height, and the row beside it no longer lines up.
  */
-export const dataTableCellVariants = cva('px-1.5 py-0 align-middle whitespace-nowrap', {
+export const dataTableCellVariants = cva('px-table-cell-px py-0 align-middle whitespace-nowrap', {
   variants: {
     size: {
       sm: 'h-row-sm',
@@ -243,10 +246,13 @@ export const dataTableRowVariants = cva(
           'bg-surface-selected text-on-selected *:text-on-selected',
           '[&_:is(.text-foreground,.text-muted-foreground)]:text-on-selected',
           'focus-visible:outline-on-selected',
+          // A checked box keeps its edge against the selected fill.
+          '[&_[data-slot=checkbox]_[data-slot=checkbox-box]]:shadow-checked-selected',
         ].join(' '),
-        // Every other row, in a theme that stripes. Not on a selected row,
-        // whose fill says it is selected.
-        false: 'even:bg-table-stripe',
+        // Every other row, in a theme that stripes, and the row under the
+        // pointer, in a theme that highlights it (Windows 98 does neither).
+        // Not on a selected row, whose fill says it is selected.
+        false: 'even:bg-table-stripe hover:bg-table-row-hover',
       },
     },
     defaultVariants: { interactive: false, selected: false },

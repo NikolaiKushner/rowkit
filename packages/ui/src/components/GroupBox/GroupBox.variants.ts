@@ -19,8 +19,9 @@ export const groupBoxFrameVariants = cva(
 )
 
 /** The legend: on the silver face, 2px either side, cutting the top line 8px in. */
-export const groupBoxLegendVariants = cva(
-  'absolute top-0 left-groupbox-legend-x max-w-[calc(100%-1rem)] truncate bg-groupbox-face px-groupbox-legend-px py-0'
-)
+export const groupBoxLegendVariants = cva([
+  'absolute top-0 left-groupbox-legend-x max-w-[calc(100%-1rem)] truncate bg-groupbox-face px-groupbox-legend-px py-0',
+  'text-muted-foreground [font-weight:var(--rk-legend-weight)]',
+])
 
 export type GroupBoxVariants = VariantProps<typeof groupBoxVariants>

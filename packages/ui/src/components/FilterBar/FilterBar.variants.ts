@@ -7,7 +7,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * result count and «Clear filters» all sit in it.
  */
 export const filterBarVariants = cva(
-  'flex flex-wrap items-center gap-1 rounded-lg bg-card p-1 font-sans text-ui text-foreground',
+  'flex flex-wrap items-center gap-filter-bar-gap rounded-lg bg-filter-bar p-filter-bar-p font-sans text-ui text-foreground',
   {
     variants: {
       size: {
@@ -35,7 +35,9 @@ export const filterBarChipsVariants = cva('contents')
  */
 export const filterBarChipVariants = cva(
   [
-    'inline-flex max-w-full items-center gap-1 rounded-pill border border-border bg-input pl-1.5',
+    'inline-flex max-w-full items-center gap-1 rounded-pill border border-chip-border bg-chip pl-chip-px text-chip-foreground',
+    // Disabled: the neutral chip, which is the same white chip in Windows 98.
+    'data-disabled:border-neutral-border data-disabled:bg-neutral-subtle',
     'data-disabled:text-text-disabled data-disabled:text-shadow-disabled',
   ],
   {
@@ -46,8 +48,8 @@ export const filterBarChipVariants = cva(
       },
       /** A chip the user cannot clear is padded evenly, with no ✕. */
       removable: {
-        true: 'pr-0.5',
-        false: 'pr-1.5',
+        true: 'pr-chip-pr-remove',
+        false: 'pr-chip-px',
       },
     },
     defaultVariants: { size: 'md', removable: true },
@@ -59,14 +61,22 @@ export const filterBarChipVariants = cva(
  * ring around it; disabled, the glyph turns grey.
  */
 export const filterBarChipRemoveVariants = cva([
-  'inline-flex size-check shrink-0 cursor-default items-center justify-center rounded-pill text-foreground',
-  'hover:bg-control-ghost-hover',
-  'outline-none focus-visible:focus-ring focus-visible:-outline-offset-1',
-  'focus-visible:outline-ring',
+  'group/remove inline-flex size-check shrink-0 cursor-default items-center justify-center rounded-pill',
+  'bg-chip-remove text-foreground hover:bg-control-ghost-hover',
+  // A theme that rings the whole ✕ rings it outside; Windows 98's dotted ring
+  // is drawn by the span inside it.
+  'outline-none focus-visible:focus-outer',
   'disabled:text-text-disabled',
 ])
 
-/** The result count, with digits that do not shift as it changes. */
-export const filterBarSummaryVariants = cva('tabular-nums')
+/** Fills the ✕ and carries its dotted focus ring, 1px inside its edge. */
+export const filterBarChipRemoveRingVariants = cva([
+  'inline-flex size-full items-center justify-center rounded-pill',
+  'group-focus-visible/remove:focus-label group-focus-visible/remove:-outline-offset-1',
+  'group-focus-visible/remove:outline-ring',
+])
+
+/** The result count, muted, with digits that do not shift as it changes. */
+export const filterBarSummaryVariants = cva('text-muted-foreground tabular-nums')
 
 export type FilterBarVariants = VariantProps<typeof filterBarVariants>
