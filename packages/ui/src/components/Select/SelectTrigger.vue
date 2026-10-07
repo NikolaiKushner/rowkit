@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, useId, watch } from 'vue'
 import ErrorIcon from '../../icons/ErrorIcon.vue'
 import TriangleDownIcon from '../../icons/TriangleDownIcon.vue'
+import TriangleUpIcon from '../../icons/TriangleUpIcon.vue'
 import { cn } from '../../utils/cn'
 import { useFieldContext } from '../Field/context'
 import { useSelectContext } from './context'
@@ -223,7 +224,8 @@ function onButtonClick(): void {
       @pointerdown="onButtonDown"
       @click="onButtonClick"
     >
-      <TriangleDownIcon />
+      <TriangleUpIcon data-arrow="up" />
+      <TriangleDownIcon data-arrow="down" />
     </button>
   </div>
 </template>

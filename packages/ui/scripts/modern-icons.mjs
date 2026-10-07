@@ -31,19 +31,9 @@ const target = join(root, 'src/styles/modern-icons.css')
 const TONES = {
   danger: ['error', 'error-32'],
   warning: ['warning', 'warning-32'],
-  info: ['info', 'info-32', 'question'],
+  info: ['info', 'info-32'],
   success: ['success'],
   folder: ['folder', 'folder-32', 'folder-empty-32', 'folder-open'],
-}
-
-/**
- * Stroke width in the glyph's own 24-unit grid. Glyphs inside small controls
- * are drawn heavier so they survive being shown at 8–10px.
- */
-function strokeWidth(name) {
-  if (name.endsWith('-glyph') || name.startsWith('triangle-')) return 3
-  if (name.endsWith('-32')) return 1.5
-  return 1.75
 }
 
 /** An SVG as a compact, quoted data URI. */
@@ -71,7 +61,6 @@ for (const name of names) {
   const svg = (await readFile(join(sourceDir, `${name}.svg`), 'utf8'))
     // A mask reads alpha, not colour; black is opaque everywhere it draws.
     .replace(/currentColor/g, 'black')
-    .replace(/stroke-width="[^"]*"/, `stroke-width="${strokeWidth(name)}"`)
   glyphs.push([name, dataUri(svg)])
 }
 
@@ -81,7 +70,7 @@ const css = `/*
  * The modern theme's icons.
  *
  * GENERATED FILE — DO NOT EDIT.
- * Source: packages/ui/src/icons/modern/*.svg (Lucide, ISC — see LICENSE there)
+ * Source: packages/ui/src/icons/modern/*.svg (the Figma file's Icons page)
  * Regenerate with: pnpm icons:modern
  */
 

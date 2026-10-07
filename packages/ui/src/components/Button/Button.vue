@@ -103,7 +103,16 @@ function onClickCapture(event: MouseEvent): void {
       :class="buttonContentVariants({ variant: props.variant })"
     >
       <span data-slot="button-focus" :class="buttonFocusVariants({ size: props.size })">
-        <HourglassIcon v-if="props.loading" />
+        <!--
+          The hourglass, or a theme's spinner: the busy glyph stands in for the
+          hourglass's own (`--rk-icon-hourglass`) and turns where the theme
+          says so. Windows 98 draws its pixels and keeps them still.
+        -->
+        <HourglassIcon
+          v-if="props.loading"
+          data-slot="button-busy"
+          class="[--rk-icon-hourglass:var(--rk-icon-spinner)] animate-(--rk-animate-busy)"
+        />
         <span v-else-if="$slots.leading" class="flex shrink-0 items-center">
           <slot name="leading" />
         </span>

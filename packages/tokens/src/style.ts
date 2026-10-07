@@ -50,6 +50,11 @@ export const style = {
   /** The pattern of a loading placeholder, and how it moves. */
   'loading-image': dither,
   'animate-loading': 'rk-dither 800ms steps(1) infinite',
+  /**
+   * The busy mark in a loading button: Windows 98's hourglass stands still; a
+   * theme with a spinner glyph turns it.
+   */
+  'animate-busy': 'none',
   /** An indeterminate progress bar's segment travelling across the track. */
   'animate-progress': 'rk-progress-slide 2s steps(20) infinite',
   /** How long a control takes to change state. Windows 98 changes instantly. */
@@ -93,6 +98,9 @@ export const style = {
   'invalid-width': '0px',
   /** Where a field's error icon sits beside a message that wraps: `center`, or `start`. */
   'field-error-align': 'center',
+
+  /** Whether a select's drop button shows an up arrow over its down arrow: `block`, or `none`. */
+  'select-up': 'none',
 
   // Dialogs and empty views.
 

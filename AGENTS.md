@@ -111,7 +111,7 @@ Settled for now. Revisit one when it gets in the way, with a reason — see "How
 - **MIT license.**
 - **Tokens as a separate package**, so they can be consumed without importing components.
 - **Two themes, by attribute.** `data-theme="win98" | "modern"` on any element (default Windows 98), `data-color-scheme` for the modern theme's dark. Each theme declares every value on its own element, so themes nest. No `dark:` variant and no `.dark` class.
-- **The modern theme's values are a draft** from platform guidelines, until the designer's Figma file replaces them. Its icons are Lucide outlines (ISC, see `packages/ui/THIRD_PARTY_NOTICES.md`) drawn over the pixel icons with CSS masks.
+- **The modern theme follows the designer's Figma file**; `design/integration.md` tracks what is integrated. Its icons are the designer's outline glyphs, exported from the file's Icons page into `packages/ui/src/icons/modern/` and drawn over the pixel icons with CSS masks (`pnpm icons:modern`).
 
 ## Commands
 

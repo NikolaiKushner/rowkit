@@ -47,6 +47,13 @@
   }
 }
 
+/* A busy mark turning: the modern theme's spinner in a loading button. */
+@keyframes rk-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
 /* An indeterminate progress bar: its 30% segment from just off the left to just off the right. */
 @keyframes rk-progress-slide {
   from {

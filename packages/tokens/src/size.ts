@@ -107,6 +107,9 @@ export const size = {
   'row-sm': '22px',
   'row-md': '27px',
 
+  /** A select's drop arrows, and how far the down arrow tucks under an up arrow above it. */
+  'select-arrow': '8px',
+  'select-arrow-overlap': '0px',
   /** A filter bar's padding and the space between its items. */
   'filter-bar-p': '0.25rem',
   'filter-bar-gap': '0.25rem',

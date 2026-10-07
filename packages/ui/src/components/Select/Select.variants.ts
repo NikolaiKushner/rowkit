@@ -59,10 +59,14 @@ export const selectInputVariants = cva([
 
 /**
  * The drop button: 16px wide, as tall as the well, raised, with the 8px
- * triangle. Held, or while the list is open, it sinks.
+ * triangle. Held, or while the list is open, it sinks. A theme can stack an
+ * up arrow over the down one (`--rk-select-up`), as a pop-up menu's control.
  */
 export const selectButtonVariants = cva([
-  'flex w-4 shrink-0 cursor-default items-center justify-center self-stretch',
+  'flex w-4 shrink-0 cursor-default flex-col items-center justify-center self-stretch',
+  '[&_svg]:size-select-arrow',
+  '[&>[data-arrow=up]]:[display:var(--rk-select-up)]!',
+  '[&>[data-arrow=up]+[data-arrow=down]]:-mt-(--spacing-select-arrow-overlap)',
   'rounded-xs bg-field-button text-control-foreground shadow-field-button',
   'data-pressed:shadow-field-button-pressed',
   'disabled:text-text-disabled',
