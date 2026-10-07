@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildThemeCss } from '../css'
 import { parseHexAlpha } from '../../test/color'
-import { modernDarkVars, modernLightVars, modernPalette, win98Vars } from './index'
+import { defineTheme, modernDarkVars, modernLightVars, modernPalette, win98Vars } from './index'
 
 const css = buildThemeCss()
 
@@ -45,5 +45,46 @@ describe('themes', () => {
 
   it('reads shadows from variables, so a theme can change them', () => {
     expect(css).toContain('--shadow-raised: var(--rk-shadow-raised);')
+  })
+})
+
+describe('defineTheme', () => {
+  const acme = defineTheme({
+    name: 'acme',
+    light: { '--color-control-primary': '#5b3df5', '--radius-md': '10px' },
+    dark: { '--color-control-primary': '#7c66ff' },
+  })
+
+  it('declares every value on the theme, the base theme’s included', () => {
+    for (const name of Object.keys(modernLightVars)) expect(acme).toContain(`  ${name}: `)
+    expect(acme).toContain('[data-theme="acme"] {\n  color-scheme: light;')
+  })
+
+  it('puts its own values over the base theme’s', () => {
+    const light = acme.slice(0, acme.indexOf('@media'))
+    expect(light).toContain('--color-control-primary: #5b3df5;')
+    expect(light).not.toContain(
+      `--color-control-primary: ${modernLightVars['--color-control-primary'] ?? ''};`
+    )
+  })
+
+  it('follows the system to dark, and can be fixed either way', () => {
+    expect(acme).toMatch(
+      /@media \(prefers-color-scheme: dark\) \{\s+\[data-theme="acme"\]:not\(\[data-color-scheme="light"\]\) \{\s+color-scheme: dark;/
+    )
+    expect(acme).toContain('[data-theme="acme"][data-color-scheme="dark"] {')
+    expect(acme.slice(acme.indexOf('@media'))).toContain('--color-control-primary: #7c66ff;')
+  })
+
+  it('has no dark scheme when built on Windows 98 without one, or when asked', () => {
+    expect(defineTheme({ name: 'retro', extends: 'win98' })).not.toContain('color-scheme: dark')
+    expect(defineTheme({ name: 'flat', dark: false })).not.toContain('color-scheme: dark')
+  })
+
+  it('refuses a token that does not exist, and a name that cannot be an attribute value', () => {
+    expect(() => defineTheme({ name: 'acme', light: { '--color-brand': 'red' } })).toThrow(
+      /--color-brand/
+    )
+    expect(() => defineTheme({ name: 'Acme Theme' })).toThrow(/not a theme name/)
   })
 })

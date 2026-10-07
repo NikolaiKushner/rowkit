@@ -9,5 +9,6 @@
 - **Shadow tokens are now variables a theme can set.** `--shadow-*` in `@theme` points at `--rk-shadow-*`, which holds the value. If you override a shadow, override `--rk-shadow-<name>`.
 - **New utilities in `rowkit/styles`:** `focus-label`, `focus-ring`, `focus-outer`, `bg-loading`, and `scrollbar-themed` (`scrollbar-win98` still works).
 - **Icons carry `data-icon`**, and the stylesheet includes the modern theme's outline glyphs (Lucide, ISC — see `THIRD_PARTY_NOTICES.md`), applied by CSS only inside that theme.
+- **Make a theme of your own with `defineTheme()`** from `@rowkit/tokens`: start from `modern` or `win98`, set the values you change, get the whole stylesheet — both schemes included. It refuses a token that does not exist. `themeRule()` writes a single rule.
 - **`@rowkit/tokens` exports the themes as data:** `tokens.themes.win98`, `tokens.themes.modern.light` and `.dark`, plus `size`, `style` and the modern palette.
 - **Fixed: `ScrollArea` assumed 16px arrow buttons** when sizing its thumb; it reads the theme's.

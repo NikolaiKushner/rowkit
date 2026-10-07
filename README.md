@@ -36,7 +36,19 @@ rowkit ships two themes from one set of components: **Windows 98**, the default,
 <html data-theme="modern" data-color-scheme="dark">
 ```
 
-Every colour, size, corner, shadow and state is a token — the bevels and the dotted focus ring of Windows 98 included — so a brand is a handful of variables on top of either theme. How it works, and how to write your own: [Themes](https://rowkit.dev/foundations/themes). The modern theme's values are a draft until its Figma file is drawn.
+Every colour, size, corner, shadow and state is a token — the bevels and the dotted focus ring of Windows 98 included — so the look is yours to change. Adjust a few variables for your brand, or define a complete theme of your own, light and dark, in one call:
+
+```ts
+import { defineTheme } from '@rowkit/tokens'
+
+export const acme = defineTheme({
+  name: 'acme', // <html data-theme="acme">
+  extends: 'modern',
+  light: { '--color-control-primary': '#5b3df5', '--radius-md': '10px' },
+})
+```
+
+How it works, every value you can change, and a live builder: [Themes](https://rowkit.dev/foundations/themes). The modern theme's values are a draft until its Figma file is drawn.
 
 ![The Components window: buttons and a toggle group, inputs and a select, badges, checkboxes and radios, pagination with a progress bar, and a field with an error](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/components.png)
 

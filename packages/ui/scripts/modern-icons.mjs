@@ -8,9 +8,10 @@
  * the glyphs — `src/icons/modern/<icon>.svg`, one per pixel icon, named by the
  * icon's `data-icon` — into `src/styles/modern-icons.css` as data URIs.
  *
- * Each glyph lives in a variable declared on `[data-theme="modern"]`, so it
- * applies only inside that theme and a Windows 98 region nested in it keeps
- * its pixels. Nothing here costs a Windows 98 page anything but this file.
+ * Each glyph lives in a variable on `:root`. It draws only where a theme turns
+ * the glyphs on — hides the pixels (`--rk-icon-pixels`) and gives the glyph a
+ * fill (`--rk-icon-fill`, `--rk-icon-tone-*`) — so the modern theme, and any
+ * theme built on it, gets them, and Windows 98 draws its pixels as before.
  *
  * Usage: node packages/ui/scripts/modern-icons.mjs
  */
@@ -33,13 +34,6 @@ const TONES = {
   info: ['info', 'info-32', 'question'],
   success: ['success'],
   folder: ['folder', 'folder-32', 'folder-empty-32', 'folder-open'],
-}
-const TONE_COLOR = {
-  danger: 'var(--color-danger-solid)',
-  warning: 'var(--color-warning-solid)',
-  info: 'var(--color-primary-solid)',
-  success: 'var(--color-success-solid)',
-  folder: 'var(--color-primary-solid)',
 }
 
 /**
@@ -95,7 +89,8 @@ const css = `/*
  * Every rowkit icon is an <svg data-icon>. A theme that draws its own icons
  * hides the pixels (--rk-icon-pixels: none), fills the box (--rk-icon-fill)
  * and masks it with the glyph below. In Windows 98 the fill is transparent and
- * the pixels show, so these rules draw nothing there.
+ * --rk-icon-glyphs turns the masks off altogether, so these rules change
+ * nothing there.
  */
 svg[data-icon] {
   background-color: var(--rk-icon-fill);
@@ -107,27 +102,22 @@ svg[data-icon] > * {
   display: var(--rk-icon-pixels);
 }
 
-[data-theme='modern'] {
+/*
+ * The glyphs. Inert until a theme gives them a fill: Windows 98's is
+ * transparent, so its pixel icons show and these draw nothing.
+ */
+:root {
 ${glyphs.map(([name, uri]) => `  --rk-icon-${name}: ${uri};`).join('\n')}
-${Object.entries(TONE_COLOR)
-  .map(([tone, color]) => `  --rk-icon-tone-${tone}: ${color};`)
-  .join('\n')}
-}
-
-/* Status colours belong to the modern glyphs; a Windows 98 region drops them. */
-[data-theme='win98'] {
-${Object.keys(TONE_COLOR)
-  .map((tone) => `  --rk-icon-tone-${tone}: initial;`)
-  .join('\n')}
 }
 
 ${names
   .map((name) => {
     const tone = toneOf(name)
-    const fill = tone
-      ? `\n  background-color: var(--rk-icon-tone-${tone}, var(--rk-icon-fill));`
-      : ''
-    return `svg[data-icon='${name}'] {\n  -webkit-mask-image: var(--rk-icon-${name});\n  mask-image: var(--rk-icon-${name});${fill}\n}`
+    const fill = tone ? `\n  background-color: var(--rk-icon-tone-${tone});` : ''
+    // --rk-icon-glyphs is empty where a theme draws glyphs and `initial`
+    // elsewhere, which makes this whole declaration invalid: no mask at all.
+    const layers = `var(--rk-icon-glyphs) var(--rk-icon-${name})`
+    return `svg[data-icon='${name}'] {\n  -webkit-mask-image: ${layers};\n  mask-image: ${layers};${fill}\n}`
   })
   .join('\n\n')}
 `

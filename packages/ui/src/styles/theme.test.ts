@@ -234,10 +234,10 @@ describe('themes', () => {
     expect(css).toContain('[data-theme="win98"] {')
   })
 
-  it('carry the modern icon glyphs, and only inside the modern theme', async () => {
+  it('carry the modern icon glyphs, which draw only where a theme gives them a fill', async () => {
     const css = await build('bg-card')
     expect(css).toContain("svg[data-icon='search'] {")
-    expect(css).toMatch(/\[data-theme='modern'\] \{\s+--rk-icon-/)
+    expect(css).toMatch(/:root \{\s+--rk-icon-/)
   })
 })
 

@@ -101,8 +101,23 @@ export const style = {
 
   /** `display` of a pixel icon's pixels. */
   'icon-pixels': 'inline',
+  /**
+   * Whether the glyphs mask the icons at all. `initial` makes every glyph mask
+   * invalid, so a Windows 98 icon has no mask and nothing of it is clipped;
+   * an empty value lets them through. It is prepended to each mask image.
+   */
+  'icon-glyphs': 'initial',
   /** The fill a theme's own glyph is painted in; transparent draws nothing. */
   'icon-fill': 'transparent',
+  /**
+   * The fills of the glyphs that keep a colour: status icons and folders.
+   * Transparent in Windows 98, whose pixel icons carry their own colours.
+   */
+  'icon-tone-danger': 'transparent',
+  'icon-tone-warning': 'transparent',
+  'icon-tone-info': 'transparent',
+  'icon-tone-success': 'transparent',
+  'icon-tone-folder': 'transparent',
 } as const
 
 /** Names of every style switch. */

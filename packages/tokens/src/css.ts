@@ -5,7 +5,7 @@ import { shadow, textShadow } from './shadow'
 import { size } from './size'
 import { spacing, spacingBase } from './spacing'
 import { style } from './style'
-import { modernDarkVars, modernLightVars, modernPalette, win98Vars, type ThemeVars } from './themes'
+import { modernDarkVars, modernLightVars, modernPalette, themeRule, win98Vars } from './themes'
 import { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
 import { zIndex } from './z-index'
 
@@ -110,27 +110,19 @@ export function buildThemeCss(): string {
     '}',
     '',
     '/* Windows 98 inside a page in another theme. */',
-    block('[data-theme="win98"]', 'light', win98Vars),
+    themeRule('[data-theme="win98"]', 'light', win98Vars),
     '',
     '/* The modern theme. */',
-    block('[data-theme="modern"]', 'light', modernLightVars),
+    themeRule('[data-theme="modern"]', 'light', modernLightVars),
     '',
     '@media (prefers-color-scheme: dark) {',
-    indent(block('[data-theme="modern"]:not([data-color-scheme="light"])', 'dark', modernDarkVars)),
+    indent(
+      themeRule('[data-theme="modern"]:not([data-color-scheme="light"])', 'dark', modernDarkVars)
+    ),
     '}',
     '',
-    block('[data-theme="modern"][data-color-scheme="dark"]', 'dark', modernDarkVars),
+    themeRule('[data-theme="modern"][data-color-scheme="dark"]', 'dark', modernDarkVars),
     '',
-  ].join('\n')
-}
-
-/** A rule that declares a theme's variables and its colour scheme. */
-function block(selector: string, scheme: 'light' | 'dark', values: ThemeVars): string {
-  return [
-    `${selector} {`,
-    `  color-scheme: ${scheme};`,
-    ...Object.entries(values).map(([name, value]) => `  ${name}: ${value};`),
-    '}',
   ].join('\n')
 }
 

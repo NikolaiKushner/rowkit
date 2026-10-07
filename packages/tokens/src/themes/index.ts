@@ -98,3 +98,83 @@ export const modernDarkVars: ThemeVars = Object.fromEntries(
     ...vars(modernDarkShadow, '--rk-shadow-'),
   }).filter(([name, value]) => modernLightVars[name as `--${string}`] !== value)
 )
+
+/** A theme of your own, for {@link defineTheme}. */
+export interface ThemeDefinition {
+  /** Its name: the page switches to it with `data-theme="<name>"`. Lowercase, digits and dashes. */
+  name: string
+  /**
+   * The theme it starts from. Every value it does not set comes from there,
+   * so a theme is as small as what it changes. Default `modern`.
+   */
+  extends?: ThemeName
+  /** Values for the light scheme — for a theme without a dark one, its only scheme. */
+  light?: ThemeVars
+  /**
+   * Values for the dark scheme, on top of the light ones. A theme built on
+   * `modern` inherits its dark scheme; set `dark: false` to have none.
+   */
+  dark?: ThemeVars | false
+}
+
+/** A rule declaring a theme's values and its colour scheme. */
+export function themeRule(selector: string, scheme: 'light' | 'dark', values: ThemeVars): string {
+  return [
+    `${selector} {`,
+    `  color-scheme: ${scheme};`,
+    ...Object.entries(values).map(([name, value]) => `  ${name}: ${value};`),
+    '}',
+  ].join('\n')
+}
+
+/**
+ * The stylesheet for a theme of your own.
+ *
+ * Every value is declared on the theme's element — the base theme's as well
+ * as yours — because a variable that uses `var()` is resolved where it is
+ * declared; that is also what lets themes nest. The dark scheme follows the
+ * system unless `data-color-scheme` on the same element fixes it, exactly as
+ * the modern theme's does.
+ *
+ * @example
+ * ```ts
+ * import { defineTheme } from '@rowkit/tokens'
+ *
+ * const css = defineTheme({
+ *   name: 'acme',
+ *   light: { '--color-control-primary': '#5b3df5', '--radius-md': '10px' },
+ * })
+ * ```
+ */
+export function defineTheme(theme: ThemeDefinition): string {
+  if (!/^[a-z][a-z0-9-]*$/.test(theme.name)) {
+    throw new Error(`defineTheme: "${theme.name}" is not a theme name (lowercase, digits, dashes)`)
+  }
+  const base = theme.extends ?? 'modern'
+  const unknown = [...Object.keys(theme.light ?? {}), ...Object.keys(theme.dark || {})].filter(
+    (name) => !(name in win98Vars)
+  )
+  if (unknown.length > 0) {
+    throw new Error(`defineTheme: no rowkit token is called ${unknown.join(', ')}`)
+  }
+
+  const selector = `[data-theme="${theme.name}"]`
+  const light = { ...(base === 'modern' ? modernLightVars : win98Vars), ...theme.light }
+  const rules = [themeRule(selector, 'light', light)]
+
+  if (theme.dark !== false && (base === 'modern' || theme.dark !== undefined)) {
+    const dark = { ...(base === 'modern' ? modernDarkVars : {}), ...theme.dark }
+    rules.push(
+      [
+        '@media (prefers-color-scheme: dark) {',
+        themeRule(`${selector}:not([data-color-scheme="light"])`, 'dark', dark)
+          .split('\n')
+          .map((line) => `  ${line}`)
+          .join('\n'),
+        '}',
+      ].join('\n'),
+      themeRule(`${selector}[data-color-scheme="dark"]`, 'dark', dark)
+    )
+  }
+  return `${rules.join('\n\n')}\n`
+}

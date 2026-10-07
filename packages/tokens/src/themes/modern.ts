@@ -432,7 +432,13 @@ export const modernStyle: Record<StyleName, string> = {
   'radio-dot-r': '3px',
   'radio-edge': '1px',
   'icon-pixels': 'none',
+  'icon-glyphs': ' ',
   'icon-fill': 'currentColor',
+  'icon-tone-danger': 'var(--color-danger-solid)',
+  'icon-tone-warning': 'var(--color-warning-solid)',
+  'icon-tone-info': 'var(--color-primary-solid)',
+  'icon-tone-success': 'var(--color-success-solid)',
+  'icon-tone-folder': 'var(--color-primary-solid)',
 }
 
 /** Typefaces: the platform's own. Nothing to load. */

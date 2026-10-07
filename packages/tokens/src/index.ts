@@ -66,10 +66,12 @@ export {
   modernRadius,
   modernSize,
   modernStyle,
+  defineTheme,
   themeNames,
+  themeRule,
   win98Vars,
 } from './themes'
-export type { ModernPaletteName, ThemeName, ThemeVars } from './themes'
+export type { ModernPaletteName, ThemeDefinition, ThemeName, ThemeVars } from './themes'
 
 export { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
 export type { FontSizeName } from './typography'

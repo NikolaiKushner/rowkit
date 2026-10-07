@@ -27,7 +27,7 @@ Note there is no `.css` on either subpath. The export is `rowkit/styles`.
 
 ## Typeface (recommended)
 
-rowkit's token stack leads with **PT Sans**, the closest open match to Tahoma,
+For the Windows 98 theme, rowkit's token stack leads with **PT Sans**, the closest open match to Tahoma,
 the Windows face that succeeded MS Sans Serif, and sets code and fixed-width
 numbers in **VT323**, drawn after the Fixedsys terminal font. The library does
 not ship the font files — load them once in the app:
@@ -48,10 +48,37 @@ PT Sans covers Latin and Cyrillic. Skip the imports and text falls through to
 system faces (Tahoma, then Microsoft Sans Serif and Verdana; Lucida Console for
 code). Override `--font-sans` / `--font-mono` if you want a different face.
 
-## One theme
+The modern theme uses the platform's own face (San Francisco on Apple
+devices, Segoe UI on Windows) and loads nothing.
 
-rowkit ships a single theme. There is no dark mode and no `.dark` class to set;
-rebrand by repointing the semantic tokens instead.
+## Themes
+
+rowkit ships two themes — **Windows 98**, the default, and **modern**, in light
+and dark — and you can make your own. A theme is chosen by an attribute; the
+components do not change:
+
+```html
+<html data-theme="modern" data-color-scheme="dark"></html>
+```
+
+To adjust a theme — your brand colour, corners, density, typeface — set a few
+variables after `rowkit/styles`. For a named theme of your own, light and dark,
+`defineTheme()` from `@rowkit/tokens` writes the whole stylesheet from the
+values you change:
+
+```ts
+import { defineTheme } from '@rowkit/tokens'
+
+export const acme = defineTheme({
+  name: 'acme',
+  extends: 'modern',
+  light: { '--color-control-primary': '#5b3df5', '--radius-md': '10px' },
+})
+```
+
+[Themes](/foundations/themes) has the whole guide: switching without a flash
+on load, light and dark, every value a theme can change, icons, and a live
+builder to try your own.
 
 ## Nuxt
 
