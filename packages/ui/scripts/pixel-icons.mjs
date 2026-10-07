@@ -118,10 +118,10 @@ export function optimizeMarkup(markup) {
 }
 
 /** Turns a Figma SVG export into the markup an icon component renders. */
-function svgToTemplate(svg, currentColor) {
+function svgToTemplate(svg, currentColor, key) {
   let out = svg
     .replace(/ id="[^"]*"/g, '')
-    .replace('<svg ', '<svg aria-hidden="true" focusable="false" ')
+    .replace('<svg ', `<svg data-icon="${key}" aria-hidden="true" focusable="false" `)
   if (currentColor) out = out.replaceAll('fill="black"', 'fill="currentColor"')
   return optimizeMarkup(out)
 }
@@ -132,7 +132,12 @@ async function importIcon(file, name, description, currentColor) {
   const colourNote = currentColor
     ? 'Drawn in `currentColor`, so it greys out with a disabled control.'
     : 'Decorative: whatever it marks is said in words or ARIA elsewhere.'
-  const body = svgToTemplate(svg, currentColor)
+  // The name a theme's own glyph is keyed by: `Search32` → `search-32`.
+  const key = name
+    .replace(/(?<!^)(?=[A-Z])/g, '-')
+    .replace(/(\d+)$/, '-$1')
+    .toLowerCase()
+  const body = svgToTemplate(svg, currentColor, key)
     .trim()
     .split('\n')
     .map((line) => `  ${line}`)
@@ -154,6 +159,7 @@ ${body}
   const target = join(iconsDir, `${name}Icon.vue`)
   await writeFile(target, component, 'utf8')
   console.log(`wrote ${target}`)
+  console.log(`add its modern glyph as src/icons/modern/${key}.svg, then run pnpm icons:modern`)
 }
 
 async function optimizeAll() {

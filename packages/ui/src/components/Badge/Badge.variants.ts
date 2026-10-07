@@ -12,7 +12,7 @@ export const badgeVariants = cva(
   // Windows 98 has no badge. This is a flat label in the system palette: a
   // 1px border, no bevel, square corners, the UI face at its regular weight.
   // Not interactive — no hover, no focus.
-  'inline-flex max-w-full items-center gap-1 border align-middle font-sans text-ui font-normal',
+  'inline-flex max-w-full items-center gap-1 rounded-pill border align-middle font-sans text-ui font-normal',
   {
     variants: {
       /** Status family. */
@@ -132,7 +132,7 @@ export const badgeVariants = cva(
  * the text colour instead, so it shows against the fill. Yellow on white or
  * silver is too faint to see, so the warning dot gets a black outline.
  */
-export const badgeDotVariants = cva('size-[5px] shrink-0', {
+export const badgeDotVariants = cva('size-[5px] shrink-0 rounded-pill', {
   variants: {
     variant: {
       neutral: 'bg-neutral-solid',

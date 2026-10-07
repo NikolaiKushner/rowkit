@@ -15,7 +15,10 @@ import { cva, type VariantProps } from 'class-variance-authority'
 export const inputFrameVariants = cva(
   [
     'relative flex w-full items-center gap-1 py-0.5',
-    'bg-input font-sans text-ui text-foreground shadow-sunken',
+    'rounded-md bg-input font-sans text-ui text-foreground shadow-sunken',
+    // A theme that rings the whole field rings the frame, not the input in it.
+    'has-[input:focus-visible]:focus-outer',
+    'transition-[box-shadow,outline-color] duration-(--rk-duration-control)',
     // Disabled: silver well, grey embossed text. Read-only: silver well,
     // black text that can still be selected and copied.
     'has-[input:disabled]:bg-surface-disabled has-[input:disabled]:text-text-disabled',
@@ -25,9 +28,9 @@ export const inputFrameVariants = cva(
   {
     variants: {
       size: {
-        sm: 'h-[26px] px-1',
-        md: 'h-[28px] px-1',
-        lg: 'h-[33px] px-1.5',
+        sm: 'h-control-sm px-field-px',
+        md: 'h-control-md px-field-px',
+        lg: 'h-control-lg px-field-px-lg',
       },
       // Spin and drop buttons sit 2px from the bevel, not 4px.
       hasButtons: {
@@ -48,8 +51,8 @@ export const inputFrameVariants = cva(
  */
 export const inputVariants = cva([
   'h-full min-w-0 flex-1 bg-transparent p-px text-inherit',
-  'outline-none focus-visible:outline-1 focus-visible:-outline-offset-1',
-  'focus-visible:outline-dotted focus-visible:outline-ring',
+  'outline-none focus-visible:focus-label focus-visible:-outline-offset-1',
+  'focus-visible:outline-ring',
   // #404040: 10:1 on white. The Windows 98 grey (#808080) reads as disabled
   // and fails 4.5:1.
   'placeholder:text-text-subtle',
@@ -67,8 +70,8 @@ export const inputVariants = cva([
  */
 export const inputButtonVariants = cva(
   [
-    'flex w-4 shrink-0 items-center justify-center bg-card text-foreground',
-    'shadow-raised data-pressed:shadow-pressed',
+    'flex w-4 shrink-0 items-center justify-center rounded-xs bg-control text-control-foreground',
+    'shadow-raised data-pressed:bg-control-active data-pressed:shadow-pressed',
     'data-disabled:pointer-events-none data-disabled:text-text-disabled',
   ],
   {

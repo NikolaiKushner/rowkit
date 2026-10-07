@@ -10,6 +10,7 @@ defineOptions({ name: 'RkDocument32Icon' })
 
 <template>
   <svg
+    data-icon="document-32"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

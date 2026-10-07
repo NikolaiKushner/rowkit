@@ -128,7 +128,7 @@ describe('Toaster', () => {
       await nextTick()
       const title = document.querySelector('[data-slot="toast-title"]')
       expect(title?.textContent?.trim()).toBe('Export started')
-      expect(title?.classList.contains('font-bold')).toBe(true)
+      expect(title?.classList.contains('font-strong')).toBe(true)
     })
 
     it('keeps a danger toast until it is closed', () => {

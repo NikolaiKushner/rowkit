@@ -10,6 +10,7 @@ defineOptions({ name: 'RkDocumentIcon' })
 
 <template>
   <svg
+    data-icon="document"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

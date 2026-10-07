@@ -10,6 +10,7 @@ defineOptions({ name: 'RkTriangleUpIcon' })
 
 <template>
   <svg
+    data-icon="triangle-up"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

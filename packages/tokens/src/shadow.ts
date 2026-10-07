@@ -59,6 +59,26 @@ export const shadow = {
   /** A thin raised edge: a flat toolbar button while hovered. */
   'raised-thin': bevel([hl, sh]),
 
+  // Roles. In Windows 98 each is one of the bevels above, or nothing; they are
+  // separate tokens so a theme without bevels can draw each part its own way.
+
+  /** A list dropped from a trigger. Windows 98 frames it with a border, not a shadow. */
+  popover: 'none',
+  /** A data table's frame: the sunken well its rows sit in. */
+  table: bevel([sh, hl], [dark, light]),
+  /** A data table's column header: a raised button. */
+  header: bevel([hl, dark], [light, sh]),
+  /** A window's caption button. */
+  caption: bevel([hl, dark], [light, sh]),
+  /** The strip of a status bar, behind its sections. */
+  statusbar: 'none',
+  /** The edge between a title bar and the window under it. */
+  titlebar: 'none',
+  /** A checked check box: the same sunken well as an unchecked one, in Windows 98. */
+  checked: bevel([sh, hl], [dark, light]),
+  /** A scroll bar's thumb. */
+  'scroll-thumb': bevel([hl, dark], [light, sh]),
+
   /** The edge of a sticky table column while rows scroll under it. */
   'scroll-x': `inset -1px 0 ${sh}`,
   /**

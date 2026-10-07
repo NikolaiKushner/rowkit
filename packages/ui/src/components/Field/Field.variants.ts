@@ -79,9 +79,22 @@ export const fieldLabelVariants = cva('flex gap-0.5', {
     },
   },
   compoundVariants: [
-    { layout: 'left', size: 'sm', class: 'pt-[5px]' },
-    { layout: 'left', size: 'md', class: 'pt-1.5' },
-    { layout: 'left', size: 'lg', class: 'pt-2' },
+    // Half the room the control leaves around a line of text, in whole pixels.
+    {
+      layout: 'left',
+      size: 'sm',
+      class: 'pt-[round(down,calc((var(--spacing-control-sm)-var(--text-ui--line-height))/2),1px)]',
+    },
+    {
+      layout: 'left',
+      size: 'md',
+      class: 'pt-[round(down,calc((var(--spacing-control-md)-var(--text-ui--line-height))/2),1px)]',
+    },
+    {
+      layout: 'left',
+      size: 'lg',
+      class: 'pt-[round(down,calc((var(--spacing-control-lg)-var(--text-ui--line-height))/2),1px)]',
+    },
   ],
   defaultVariants: { size: 'md', layout: 'top', disabled: false },
 })

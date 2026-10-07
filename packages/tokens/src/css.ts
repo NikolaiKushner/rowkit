@@ -2,7 +2,10 @@ import { colorPrimitives, semanticColor } from './color'
 import { duration, easing } from './motion'
 import { radiusBase, radiusCss } from './radius'
 import { shadow, textShadow } from './shadow'
+import { size } from './size'
 import { spacing, spacingBase } from './spacing'
+import { style } from './style'
+import { modernDarkVars, modernLightVars, modernPalette, win98Vars, type ThemeVars } from './themes'
 import { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
 import { zIndex } from './z-index'
 
@@ -13,8 +16,22 @@ import { zIndex } from './z-index'
  * the stylesheet from them, so the two cannot drift. `css.test.ts` asserts that
  * every token in every scale reaches the output.
  *
- * There is one theme. Semantic tokens point at primitives, so a consumer
- * rebrands by repointing a semantic token rather than editing a literal colour.
+ * Two themes. Windows 98 is the default, carried by `:root`; the modern theme
+ * is switched on by `data-theme="modern"` on any element, and its dark scheme
+ * by the system or by `data-color-scheme="dark"` on that same element. A theme
+ * is a set of custom property values and nothing else, so themes nest: a
+ * region marked `data-theme="win98"` inside a modern page is Windows 98.
+ *
+ * One thing makes that work, and it is easy to break. A custom property whose
+ * value contains `var()` is resolved on the element that declares it, and
+ * descendants inherit the result. A theme therefore re-declares every token it
+ * changes on its own element; repointing a primitive at `:root` would not reach
+ * a semantic token that has already been resolved there.
+ *
+ * Shadows take one more step. Tailwind copies a `--shadow-*` value into each
+ * `shadow-*` utility rather than referencing it, so a theme could never change
+ * one. The `@theme` entry is therefore `var(--rk-shadow-*)`, and the value
+ * lives in that variable.
  *
  * @returns The complete stylesheet, ready to write to disk.
  */
@@ -33,6 +50,9 @@ export function buildThemeCss(): string {
     `  --spacing: ${spacingBase};`,
     ...entries(spacing, (k) => `--spacing-${k}`),
     '',
+    section('component sizes — in the spacing namespace, so h-control-md and friends exist'),
+    ...entries(size, (k) => `--spacing-${k}`),
+    '',
     section('typography'),
     ...entries(fontFamily, (k) => `--font-${k}`),
     ...fontSizeEntries(),
@@ -43,8 +63,8 @@ export function buildThemeCss(): string {
     section('radii — multiples of --radius, declared in :root below'),
     ...entries(radiusCss, (k) => `--radius-${k}`),
     '',
-    section('bevels — box shadows'),
-    ...entries(shadow, (k) => `--shadow-${k}`),
+    section('bevels — box shadows, each read from --rk-shadow-* so a theme can change it'),
+    ...Object.keys(shadow).map((k) => `  --shadow-${k}: var(--rk-shadow-${k});`),
     ...entries(textShadow, (k) => `--text-shadow-${k}`),
     '',
     section('motion'),
@@ -78,7 +98,47 @@ export function buildThemeCss(): string {
     `  --radius: ${radiusBase};`,
     '}',
     '',
+    "/* The values behind the shadow tokens, and the style switches. Windows 98's. */",
+    ':root {',
+    ...entries(shadow, (k) => `--rk-shadow-${k}`),
+    ...entries(style, (k) => `--rk-${k}`),
+    '}',
+    '',
+    '/* The modern palette. Only the modern theme references it. */',
+    ':root {',
+    ...entries(modernPalette, (k) => `--color-modern-${k}`),
+    '}',
+    '',
+    '/* Windows 98 inside a page in another theme. */',
+    block('[data-theme="win98"]', 'light', win98Vars),
+    '',
+    '/* The modern theme. */',
+    block('[data-theme="modern"]', 'light', modernLightVars),
+    '',
+    '@media (prefers-color-scheme: dark) {',
+    indent(block('[data-theme="modern"]:not([data-color-scheme="light"])', 'dark', modernDarkVars)),
+    '}',
+    '',
+    block('[data-theme="modern"][data-color-scheme="dark"]', 'dark', modernDarkVars),
+    '',
   ].join('\n')
+}
+
+/** A rule that declares a theme's variables and its colour scheme. */
+function block(selector: string, scheme: 'light' | 'dark', values: ThemeVars): string {
+  return [
+    `${selector} {`,
+    `  color-scheme: ${scheme};`,
+    ...Object.entries(values).map(([name, value]) => `  ${name}: ${value};`),
+    '}',
+  ].join('\n')
+}
+
+function indent(text: string): string {
+  return text
+    .split('\n')
+    .map((line) => `  ${line}`)
+    .join('\n')
 }
 
 function header(): string {

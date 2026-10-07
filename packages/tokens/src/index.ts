@@ -24,7 +24,10 @@ import { colorPrimitives, semanticColor, vga, win98 } from './color'
 import { duration, easing } from './motion'
 import { radius, radiusBase } from './radius'
 import { shadow, textShadow } from './shadow'
+import { size } from './size'
 import { spacing, spacingBase } from './spacing'
+import { style } from './style'
+import { modernDarkVars, modernLightVars, win98Vars } from './themes'
 import { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
 import { zIndex } from './z-index'
 
@@ -42,6 +45,31 @@ export type { ShadowName, TextShadowName } from './shadow'
 
 export { spacing, spacingBase } from './spacing'
 export type { SpacingName } from './spacing'
+
+export { size } from './size'
+export type { SizeName } from './size'
+
+export { style } from './style'
+export type { StyleName } from './style'
+
+export {
+  modernDarkColor,
+  modernDarkShadow,
+  modernDarkVars,
+  modernFont,
+  modernFontSize,
+  modernFontWeight,
+  modernLightColor,
+  modernLightShadow,
+  modernLightVars,
+  modernPalette,
+  modernRadius,
+  modernSize,
+  modernStyle,
+  themeNames,
+  win98Vars,
+} from './themes'
+export type { ModernPaletteName, ThemeName, ThemeVars } from './themes'
 
 export { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
 export type { FontSizeName } from './typography'
@@ -70,6 +98,8 @@ export const tokens = {
   },
   spacing,
   spacingBase,
+  size,
+  style,
   font: {
     family: fontFamily,
     size: fontSize,
@@ -85,6 +115,11 @@ export const tokens = {
   motion: {
     duration,
     easing,
+  },
+  /** Each theme as the variables it declares. */
+  themes: {
+    win98: win98Vars,
+    modern: { light: modernLightVars, dark: modernDarkVars },
   },
 } as const
 

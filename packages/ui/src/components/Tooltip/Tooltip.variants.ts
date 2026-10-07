@@ -13,7 +13,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * few lines is documentation, and documentation belongs in the page.
  */
 export const tooltipContentVariants = cva([
-  'z-tooltip max-w-[240px] border border-border-strong bg-tooltip-bg px-1 py-px',
+  'z-tooltip max-w-[240px] rounded-sm border border-tooltip-border bg-tooltip-bg px-tooltip-px py-tooltip-py shadow-popover',
   'font-sans text-ui text-foreground break-words',
 ])
 

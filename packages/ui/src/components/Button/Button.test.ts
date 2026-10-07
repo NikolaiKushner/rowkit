@@ -23,10 +23,13 @@ describe('Button', () => {
     expect(classes).toContain(expected)
   })
 
-  it('draws every state with a bevel, never with a transition', () => {
+  it('draws every state with a shadow token, and times changes by the theme', () => {
+    // The transition lasts `--rk-duration-control`: 0ms in Windows 98, so
+    // states still switch instantly there.
     const classes = mount(Button, { slots: { default: 'x' } }).classes()
     expect(classes).toContain('active:shadow-pressed')
-    expect(classes.some((c) => c.startsWith('transition'))).toBe(false)
+    expect(classes).toContain('duration-(--rk-duration-control)')
+    expect(classes.some((c) => /^duration-(?!\(--rk-)/.test(c))).toBe(false)
   })
 
   it('renders icon sizes as squares', () => {
@@ -35,7 +38,7 @@ describe('Button', () => {
       slots: { default: 'x' },
       attrs: { 'aria-label': 'Open' },
     }).classes()
-    expect(classes).toContain('size-[30px]')
+    expect(classes).toContain('size-icon-md')
   })
 
   it('lets a consumer class beat the variant class', () => {
@@ -52,18 +55,23 @@ describe('Button', () => {
     // Padded right and bottom at rest, left and top while held: same box.
     expect(content.classes()).toEqual(
       expect.arrayContaining([
-        'pr-px',
-        'pb-px',
-        'group-active/button:pl-px',
-        'group-active/button:pt-px',
+        'pr-(--rk-press-shift)',
+        'pb-(--rk-press-shift)',
+        'group-active/button:pl-(--rk-press-shift)',
+        'group-active/button:pt-(--rk-press-shift)',
       ])
     )
   })
 
   it('draws the focus ring around the label', () => {
     const ring = mount(Button, { slots: { default: 'x' } }).get('[data-slot="button-focus"]')
-    expect(ring.classes()).toContain('group-focus-visible/button:outline-dotted')
+    expect(ring.classes()).toContain('group-focus-visible/button:focus-label')
     expect(ring.text()).toBe('x')
+  })
+
+  it('rings the whole button too, for a theme that rings the control', () => {
+    const classes = mount(Button, { slots: { default: 'x' } }).classes()
+    expect(classes).toContain('focus-visible:focus-outer')
   })
 
   describe('pressed', () => {

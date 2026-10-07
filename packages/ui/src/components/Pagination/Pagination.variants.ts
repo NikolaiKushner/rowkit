@@ -29,8 +29,8 @@ export const paginationNavVariants = cva('flex items-center gap-0.5')
 export const paginationItemVariants = cva('px-1', {
   variants: {
     size: {
-      sm: 'min-w-[21px]',
-      md: 'min-w-[26px]',
+      sm: 'min-w-control-xs',
+      md: 'min-w-control-sm',
     },
   },
   defaultVariants: { size: 'md' },
@@ -70,8 +70,8 @@ export const paginationEllipsisVariants = cva(
   {
     variants: {
       size: {
-        sm: 'h-[21px] min-w-[21px]',
-        md: 'h-[26px] min-w-[26px]',
+        sm: 'h-control-xs min-w-control-xs',
+        md: 'h-control-sm min-w-control-sm',
       },
     },
     defaultVariants: { size: 'md' },

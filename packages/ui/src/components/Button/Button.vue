@@ -5,6 +5,7 @@ import { cn } from '../../utils/cn'
 import HourglassIcon from '../../icons/HourglassIcon.vue'
 import {
   buttonContentVariants,
+  buttonFocusOuter,
   buttonFocusVariants,
   buttonPressedState,
   buttonVariants,
@@ -56,7 +57,7 @@ const isNativeButton = computed(() => props.as === 'button' && !props.asChild)
  * the element itself, inset past the bevel.
  */
 const asChildFocus =
-  'focus-visible:outline-1 focus-visible:-outline-offset-4 focus-visible:outline-dotted focus-visible:outline-ring'
+  'focus-visible:focus-ring focus-visible:-outline-offset-4 focus-visible:outline-ring'
 
 function onClickCapture(event: MouseEvent): void {
   if (props.loading || props.disabled) {
@@ -83,7 +84,7 @@ function onClickCapture(event: MouseEvent): void {
           block: props.block,
         }),
         buttonPressedState,
-        props.asChild && asChildFocus,
+        props.asChild ? asChildFocus : buttonFocusOuter,
         props.class
       )
     "

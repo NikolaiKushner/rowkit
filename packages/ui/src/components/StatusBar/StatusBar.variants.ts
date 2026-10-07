@@ -6,7 +6,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * the others leave; give the rest a width with `class`.
  */
 export const statusBarVariants = cva([
-  'flex h-[27px] w-full items-stretch gap-0.5 bg-card p-0.5',
+  'flex h-statusbar w-full items-stretch gap-0.5 bg-card p-0.5 shadow-statusbar',
   'font-sans text-ui text-foreground',
   '[&>[data-slot=status-bar-section]:first-child]:flex-1',
 ])

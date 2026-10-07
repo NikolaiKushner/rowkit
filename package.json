@@ -31,6 +31,7 @@
     "docs:agents": "node packages/ui/scripts/generate-agents.mjs",
     "icons:import": "node packages/ui/scripts/pixel-icons.mjs import",
     "icons:optimize": "node packages/ui/scripts/pixel-icons.mjs optimize",
+    "icons:modern": "node packages/ui/scripts/modern-icons.mjs",
     "docs:dev": "vitepress dev docs",
     "docs:build": "pnpm build && vitepress build docs",
     "docs:preview": "vitepress preview docs"

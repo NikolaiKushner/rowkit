@@ -18,8 +18,8 @@ export const scrollAreaMainVariants = cva('flex min-h-0 min-w-0 flex-auto')
 export const scrollAreaViewportVariants = cva([
   'min-h-0 min-w-0 flex-auto overflow-auto',
   '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
-  'outline-none focus-visible:outline-1 focus-visible:-outline-offset-1',
-  'focus-visible:outline-dotted focus-visible:outline-ring',
+  'outline-none focus-visible:focus-ring focus-visible:-outline-offset-1',
+  'focus-visible:outline-ring',
 ])
 
 /**
@@ -33,15 +33,15 @@ export const scrollAreaContentVariants = cva('w-fit min-w-full')
 export const scrollAreaScrollbarVariants = cva('flex shrink-0 touch-none select-none', {
   variants: {
     orientation: {
-      vertical: 'w-4 flex-col',
-      horizontal: 'h-4 min-w-0 flex-auto',
+      vertical: 'w-scrollbar flex-col',
+      horizontal: 'h-scrollbar min-w-0 flex-auto',
     },
   },
   defaultVariants: { orientation: 'vertical' },
 })
 
 /** The row under the viewport: the horizontal bar and the corner. */
-export const scrollAreaFootVariants = cva('flex h-4 shrink-0')
+export const scrollAreaFootVariants = cva('flex h-scrollbar shrink-0')
 
 /**
  * An arrow button: 16×16, raised, the 8px triangle centred. Held, it goes flat
@@ -49,27 +49,33 @@ export const scrollAreaFootVariants = cva('flex h-4 shrink-0')
  * to scroll, the triangle is grey.
  */
 export const scrollAreaButtonVariants = cva([
-  'flex size-4 shrink-0 items-center justify-center bg-card text-foreground shadow-raised',
-  'data-pressed:pt-px data-pressed:pl-px',
+  'flex size-scroll-button shrink-0 items-center justify-center overflow-hidden',
+  'bg-control text-control-foreground shadow-raised',
+  'data-pressed:pt-(--rk-press-shift) data-pressed:pl-(--rk-press-shift)',
   'data-pressed:shadow-[inset_0_0_0_1px_var(--color-bevel-shadow)]',
   'data-disabled:text-text-disabled',
 ])
 
 /** The track: the white-and-silver dither the thumb slides along. */
-export const scrollAreaTrackVariants = cva('relative min-h-0 min-w-0 flex-auto bg-dither')
+export const scrollAreaTrackVariants = cva(
+  'relative min-h-0 min-w-0 flex-auto bg-scroll-track bg-(image:--rk-dither-image) bg-size-[2px_2px]'
+)
 
 /** The thumb: raised, its length the share of the content in view. */
-export const scrollAreaThumbVariants = cva('absolute bg-card shadow-raised', {
-  variants: {
-    orientation: {
-      vertical: 'inset-x-0 top-0',
-      horizontal: 'inset-y-0 left-0',
+export const scrollAreaThumbVariants = cva(
+  'absolute rounded-pill border-(length:--spacing-scroll-inset) border-transparent bg-scroll-thumb bg-clip-padding shadow-scroll-thumb',
+  {
+    variants: {
+      orientation: {
+        vertical: 'inset-x-0 top-0',
+        horizontal: 'inset-y-0 left-0',
+      },
     },
-  },
-  defaultVariants: { orientation: 'vertical' },
-})
+    defaultVariants: { orientation: 'vertical' },
+  }
+)
 
 /** Where the two bars meet: plain face. */
-export const scrollAreaCornerVariants = cva('size-4 shrink-0 bg-card')
+export const scrollAreaCornerVariants = cva('size-scrollbar shrink-0 bg-scroll-track')
 
 export type ScrollAreaScrollbarVariants = VariantProps<typeof scrollAreaScrollbarVariants>

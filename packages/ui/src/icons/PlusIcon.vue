@@ -10,6 +10,7 @@ defineOptions({ name: 'RkPlusIcon' })
 
 <template>
   <svg
+    data-icon="plus"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

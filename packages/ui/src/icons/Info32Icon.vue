@@ -10,6 +10,7 @@ defineOptions({ name: 'RkInfo32Icon' })
 
 <template>
   <svg
+    data-icon="info-32"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

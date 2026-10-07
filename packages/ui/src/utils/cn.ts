@@ -24,11 +24,21 @@ import { extendTailwindMerge } from 'tailwind-merge'
  */
 const twMerge = extendTailwindMerge({
   extend: {
+    // Component sizes live in the spacing namespace (`h-control-md`,
+    // `min-w-button-min-md`). Unknown to tailwind-merge, `min-w-0` and
+    // `min-w-button-min-md` would both survive and stylesheet order would pick.
+    theme: {
+      spacing: Object.keys(tokens.size),
+    },
     classGroups: {
       shadow: [{ shadow: Object.keys(tokens.shadow) }],
       // `text-ui` reads as a colour to tailwind-merge, which would then drop
       // it in favour of `text-foreground` beside it.
       'font-size': [{ text: Object.keys(tokens.font.size) }],
+      // `font-strong` reads as a font family to tailwind-merge, which would
+      // then drop `font-sans` beside it.
+      'font-weight': [{ font: Object.keys(tokens.font.weight) }],
+      rounded: [{ rounded: Object.keys(tokens.radius) }],
       z: [{ z: Object.keys(tokens.zIndex) }],
       duration: [{ duration: Object.keys(tokens.motion.duration) }],
       ease: [{ ease: Object.keys(tokens.motion.easing) }],

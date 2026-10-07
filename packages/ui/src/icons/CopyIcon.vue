@@ -10,6 +10,7 @@ defineOptions({ name: 'RkCopyIcon' })
 
 <template>
   <svg
+    data-icon="copy"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

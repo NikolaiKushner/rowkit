@@ -10,6 +10,7 @@ defineOptions({ name: 'RkWarningIcon' })
 
 <template>
   <svg
+    data-icon="warning"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

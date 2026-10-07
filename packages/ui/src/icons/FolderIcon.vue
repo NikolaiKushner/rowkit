@@ -10,6 +10,7 @@ defineOptions({ name: 'RkFolderIcon' })
 
 <template>
   <svg
+    data-icon="folder"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

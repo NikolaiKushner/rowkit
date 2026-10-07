@@ -10,6 +10,7 @@ defineOptions({ name: 'RkErrorIcon' })
 
 <template>
   <svg
+    data-icon="error"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

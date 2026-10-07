@@ -236,6 +236,57 @@ export const semanticColor = {
   'danger-subtle': ref('vga-white'),
   'danger-on-subtle': ref('vga-maroon'),
   'danger-border': ref('vga-maroon'),
+
+  // Roles. Each names what a component paints rather than how Windows 98
+  // paints it, so a theme can give it its own fill. In Windows 98 most of them
+  // are the silver face: the bevel says pressed or default, not the colour.
+
+  /** A plain button, a spin or drop button, a table's sort header. */
+  control: ref('vga-silver'),
+  'control-foreground': ref('vga-black'),
+  'control-hover': ref('vga-silver'),
+  'control-active': ref('vga-silver'),
+  /** The default button of a form or dialog — Enter's target. */
+  'control-primary': ref('vga-silver'),
+  'control-primary-foreground': ref('vga-black'),
+  'control-primary-hover': ref('vga-silver'),
+  'control-primary-active': ref('vga-silver'),
+  /** A flat toolbar button while hovered and while held. */
+  'control-ghost-hover': ref('vga-silver'),
+  'control-ghost-active': ref('vga-silver'),
+  /** The face of a latched toggle, under its pattern. */
+  'control-latched': ref('vga-silver'),
+  /** The box of a checked checkbox or radio, and the mark inside it. */
+  checked: ref('vga-white'),
+  'on-checked': ref('vga-black'),
+  /** A list that drops from a trigger: a select's options. */
+  popover: ref('vga-white'),
+  'popover-border': ref('vga-black'),
+  /** The ring a theme draws around a focused control, outside its edge. */
+  'focus-ring': ref('vga-black'),
+  /** A window's caption buttons; one fill per button, for themes that colour them. */
+  caption: ref('vga-silver'),
+  'caption-foreground': ref('vga-black'),
+  'caption-close': ref('vga-silver'),
+  'caption-minimize': ref('vga-silver'),
+  'caption-maximize': ref('vga-silver'),
+  'caption-inactive': ref('vga-silver'),
+  /** A data table's column headers. */
+  'table-header': ref('vga-silver'),
+  'table-header-foreground': ref('vga-black'),
+  /** Every other row of a data table. Windows 98 does not stripe. */
+  'table-stripe': ref('vga-white'),
+  /** The channel a progress bar or a scroll thumb runs in, and what fills it. */
+  track: ref('vga-silver'),
+  progress: ref('vga-navy'),
+  'scroll-thumb': ref('vga-silver'),
+  /** The channel a scroll bar's thumb runs in, under its pattern. */
+  'scroll-track': ref('vga-silver'),
+  /** The frame of a tooltip. */
+  'tooltip-border': ref('vga-black'),
+  /** The inside of a group box, and the strip behind its legend. */
+  groupbox: ref('vga-silver'),
+  'groupbox-legend': ref('vga-silver'),
 } as const
 
 /** Names of every semantic colour token. */

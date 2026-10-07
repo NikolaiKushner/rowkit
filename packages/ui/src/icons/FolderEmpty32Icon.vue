@@ -10,6 +10,7 @@ defineOptions({ name: 'RkFolderEmpty32Icon' })
 
 <template>
   <svg
+    data-icon="folder-empty-32"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

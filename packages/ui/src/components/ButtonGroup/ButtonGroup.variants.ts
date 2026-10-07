@@ -13,8 +13,17 @@ export const buttonGroupVariants = cva(
   {
     variants: {
       orientation: {
-        horizontal: 'flex-row items-center',
-        vertical: 'flex-col items-stretch',
+        // Joined buttons share their inner corners, in a theme that rounds them.
+        horizontal: [
+          'flex-row items-center',
+          '[&>[data-slot=button]:not(:first-child)]:rounded-l-none',
+          '[&>[data-slot=button]:not(:last-child)]:rounded-r-none',
+        ].join(' '),
+        vertical: [
+          'flex-col items-stretch',
+          '[&>[data-slot=button]:not(:first-child)]:rounded-t-none',
+          '[&>[data-slot=button]:not(:last-child)]:rounded-b-none',
+        ].join(' '),
       },
     },
     defaultVariants: {

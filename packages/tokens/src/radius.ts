@@ -57,6 +57,11 @@ export const radius = {
   ) as { [K in keyof typeof radiusFactor]: string }),
   /** Circle. The only rounded shape Windows 98 draws: radio buttons, and a round skeleton. */
   full: PILL,
+  /**
+   * A capsule, where the theme draws one: a chip, a progress bar, a caption
+   * button. Square in Windows 98, whatever `--radius` is.
+   */
+  pill: '0rem',
 } as const
 
 /**
@@ -70,6 +75,7 @@ export const radiusCss = {
     Object.entries(radiusFactor).map(([name, factor]) => [name, expression(factor)])
   ) as { [K in keyof typeof radiusFactor]: string }),
   full: PILL,
+  pill: '0rem',
 } as const
 
 /** Names of every radius token. */

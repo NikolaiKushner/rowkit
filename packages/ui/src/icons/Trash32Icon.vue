@@ -10,6 +10,7 @@ defineOptions({ name: 'RkTrash32Icon' })
 
 <template>
   <svg
+    data-icon="trash-32"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

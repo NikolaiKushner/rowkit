@@ -64,6 +64,7 @@ const stockScales = [
   ['leading', 'leading', Object.keys(tokens.font.lineHeight)],
   ['font family', 'font', Object.keys(tokens.font.family)],
   ['spacing', 'p', Object.keys(tokens.spacing)],
+  ['component sizes', 'h', Object.keys(tokens.size)],
 ] as const
 
 describe('token scales collide within themselves', () => {
@@ -101,6 +102,15 @@ describe('semantic colour utilities collide within a property', () => {
       expect(cn(`text-${size}`, 'text-foreground')).toBe(`text-${size} text-foreground`)
       expect(cn('text-foreground', `text-${size}`)).toBe(`text-foreground text-${size}`)
     }
+  })
+
+  it('lets a plain size beat a component size on the same property', () => {
+    // A link button drops the minimum width every other button has.
+    expect(cn('min-w-button-min-md px-button-px-md', 'min-w-0 px-0')).toBe('min-w-0 px-0')
+  })
+
+  it('keeps the strong weight beside the family', () => {
+    expect(cn('font-sans', 'font-strong')).toBe('font-sans font-strong')
   })
 
   it('keeps the disabled emboss beside the disabled colour', () => {

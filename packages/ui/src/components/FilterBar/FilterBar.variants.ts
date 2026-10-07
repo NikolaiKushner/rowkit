@@ -7,7 +7,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * result count and «Clear filters» all sit in it.
  */
 export const filterBarVariants = cva(
-  'flex flex-wrap items-center gap-1 bg-card p-1 font-sans text-ui text-foreground',
+  'flex flex-wrap items-center gap-1 rounded-lg bg-card p-1 font-sans text-ui text-foreground',
   {
     variants: {
       size: {
@@ -35,14 +35,14 @@ export const filterBarChipsVariants = cva('contents')
  */
 export const filterBarChipVariants = cva(
   [
-    'inline-flex max-w-full items-center gap-1 border border-border bg-input pl-1.5',
+    'inline-flex max-w-full items-center gap-1 rounded-pill border border-border bg-input pl-1.5',
     'data-disabled:text-text-disabled data-disabled:text-shadow-disabled',
   ],
   {
     variants: {
       size: {
-        sm: 'h-[23px]',
-        md: 'h-[26px]',
+        sm: 'h-chip-sm',
+        md: 'h-chip-md',
       },
       /** A chip the user cannot clear is padded evenly, with no ✕. */
       removable: {
@@ -59,9 +59,10 @@ export const filterBarChipVariants = cva(
  * ring around it; disabled, the glyph turns grey.
  */
 export const filterBarChipRemoveVariants = cva([
-  'inline-flex size-[13px] shrink-0 cursor-default items-center justify-center text-foreground',
-  'outline-none focus-visible:outline-1 focus-visible:-outline-offset-1',
-  'focus-visible:outline-dotted focus-visible:outline-ring',
+  'inline-flex size-check shrink-0 cursor-default items-center justify-center rounded-pill text-foreground',
+  'hover:bg-control-ghost-hover',
+  'outline-none focus-visible:focus-ring focus-visible:-outline-offset-1',
+  'focus-visible:outline-ring',
   'disabled:text-text-disabled',
 ])
 

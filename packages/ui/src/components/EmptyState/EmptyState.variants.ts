@@ -26,7 +26,7 @@ export const emptyStateIconVariants = cva('flex size-8 shrink-0 items-center jus
 export const emptyStateBodyVariants = cva('flex min-w-0 flex-1 flex-col items-start gap-1.5')
 
 /** Bold: 13/16 at `sm` and `md`, 14/18 at `lg`. */
-export const emptyStateTitleVariants = cva('font-bold text-foreground', {
+export const emptyStateTitleVariants = cva('font-strong text-foreground', {
   variants: {
     size: {
       sm: 'text-heading',

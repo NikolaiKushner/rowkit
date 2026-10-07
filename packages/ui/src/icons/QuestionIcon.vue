@@ -10,6 +10,7 @@ defineOptions({ name: 'RkQuestionIcon' })
 
 <template>
   <svg
+    data-icon="question"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

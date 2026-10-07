@@ -10,6 +10,7 @@ defineOptions({ name: 'RkBook32Icon' })
 
 <template>
   <svg
+    data-icon="book-32"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

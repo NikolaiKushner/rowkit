@@ -10,6 +10,7 @@ defineOptions({ name: 'RkSearch32Icon' })
 
 <template>
   <svg
+    data-icon="search-32"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

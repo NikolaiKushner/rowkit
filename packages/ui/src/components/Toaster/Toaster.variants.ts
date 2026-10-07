@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority'
-import { captionButtonVariants } from '../captionButton.variants'
+import { captionButtonClasses } from '../captionButton.variants'
 
 /**
  * The viewport. One per app, portalled to `<body>` at `z-toast` — above a modal,
@@ -32,10 +32,11 @@ export const toasterViewportVariants = cva(
  * or error. It appears and goes instantly; nothing slides.
  */
 export const toastVariants = cva([
-  'pointer-events-auto flex w-full items-start gap-2 bg-card py-2 pr-1 pl-2',
+  'pointer-events-auto flex w-full items-start gap-2 rounded-lg bg-card py-2 pr-1 pl-2',
   'font-sans text-ui text-foreground shadow-window',
-  'outline-none focus-visible:outline-1 focus-visible:-outline-offset-4',
-  'focus-visible:outline-dotted focus-visible:outline-ring',
+  'motion-safe:animate-(--rk-animate-overlay-in)',
+  'outline-none focus-visible:focus-ring focus-visible:-outline-offset-4',
+  'focus-visible:outline-ring',
   // The swipe handler in Toaster.vue drives this custom property.
   'data-[swipe=move]:translate-x-(--rk-toast-swipe-x)',
   'data-[swipe=cancel]:translate-x-0',
@@ -44,7 +45,7 @@ export const toastVariants = cva([
 /** The title, the message and the action, stacked. */
 export const toastBodyVariants = cva('flex min-w-0 flex-1 flex-col items-start gap-1 break-words')
 
-export const toastTitleVariants = cva('font-bold')
+export const toastTitleVariants = cva('font-strong')
 
 export const toastMessageVariants = cva('')
 
@@ -52,6 +53,10 @@ export const toastMessageVariants = cva('')
 export const toastActionVariants = cva('pt-0.5')
 
 /** The caption button: the same 20×18 ✕ as a dialog's title bar. */
-export const toastCloseVariants = captionButtonVariants
+export const toastCloseVariants = cva([
+  ...captionButtonClasses,
+  'focus-visible:outline-ring',
+  '[&_svg]:opacity-100',
+])
 
 export type ToasterVariants = VariantProps<typeof toasterViewportVariants>

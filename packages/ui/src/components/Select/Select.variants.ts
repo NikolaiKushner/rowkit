@@ -15,16 +15,18 @@ import { cva, type VariantProps } from 'class-variance-authority'
 export const selectTriggerVariants = cva(
   [
     'relative flex w-full items-center gap-1 py-0.5 pr-0.5',
-    'bg-input font-sans text-ui text-foreground shadow-sunken',
+    'rounded-md bg-input font-sans text-ui text-foreground shadow-sunken',
+    'has-[input:focus-visible]:focus-outer',
+    'transition-[box-shadow,outline-color] duration-(--rk-duration-control)',
     'has-[input:disabled]:bg-surface-disabled has-[input:disabled]:text-text-disabled',
     'has-[input:disabled]:text-shadow-disabled',
   ],
   {
     variants: {
       size: {
-        sm: 'h-[26px] pl-1',
-        md: 'h-[28px] pl-1',
-        lg: 'h-[33px] pl-1.5',
+        sm: 'h-control-sm pl-field-px',
+        md: 'h-control-md pl-field-px',
+        lg: 'h-control-lg pl-field-px-lg',
       },
     },
     defaultVariants: { size: 'md' },
@@ -41,8 +43,8 @@ export const selectTriggerVariants = cva(
  */
 export const selectInputVariants = cva([
   'h-full min-w-0 flex-1 truncate bg-transparent p-px text-inherit',
-  'outline-none focus-visible:outline-1 focus-visible:-outline-offset-1',
-  'focus-visible:outline-dotted focus-visible:outline-ring',
+  'outline-none focus-visible:focus-label focus-visible:-outline-offset-1',
+  'focus-visible:outline-ring',
   'placeholder:text-text-subtle',
   'read-only:cursor-default disabled:cursor-default',
   // Tabbing in selects the text; in a read-only box that is the browser's
@@ -59,7 +61,8 @@ export const selectInputVariants = cva([
  */
 export const selectButtonVariants = cva([
   'flex w-4 shrink-0 cursor-default items-center justify-center self-stretch',
-  'bg-card text-foreground shadow-raised data-pressed:shadow-pressed',
+  'rounded-xs bg-control text-control-foreground shadow-raised',
+  'data-pressed:bg-control-active data-pressed:shadow-pressed',
   'disabled:text-text-disabled',
 ])
 
@@ -72,14 +75,15 @@ export const selectButtonVariants = cva([
  * dialog (`z-modal`), or the list opens underneath it.
  */
 export const selectContentVariants = cva([
-  'z-popover w-(--rk-select-trigger-width) border border-bevel-dark bg-input',
-  'font-sans text-ui text-foreground',
+  'z-popover w-(--rk-select-trigger-width) rounded-lg border border-popover-border bg-popover',
+  'p-popover-inset font-sans text-ui text-foreground shadow-popover',
+  '[backdrop-filter:var(--rk-popover-backdrop)] motion-safe:animate-(--rk-animate-overlay-in)',
 ])
 
 /**
  * The scrolling list inside the frame: eight 22px rows, then it scrolls.
  */
-export const selectListVariants = cva('scrollbar-win98 max-h-44 overflow-y-auto')
+export const selectListVariants = cva('scrollbar-themed max-h-44 overflow-y-auto')
 
 /**
  * One option: a 16px row with the text where the field's text sits.
@@ -88,13 +92,13 @@ export const selectListVariants = cva('scrollbar-win98 max-h-44 overflow-y-auto'
  * option. Disabled is grey embossed text.
  */
 export const selectItemVariants = cva([
-  'flex h-[22px] cursor-default select-none items-center px-1 outline-none',
+  'flex h-item cursor-default select-none items-center rounded-sm px-1 outline-none',
   'data-highlighted:bg-surface-selected data-highlighted:text-on-selected',
   'data-disabled:pointer-events-none data-disabled:text-text-disabled',
   'data-disabled:text-shadow-disabled',
 ])
 
 /** The loading and empty rows: a line of subtle text in the list. */
-export const selectMessageVariants = cva('flex h-[22px] items-center px-1 text-text-subtle')
+export const selectMessageVariants = cva('flex h-item items-center px-1 text-text-subtle')
 
 export type SelectVariants = VariantProps<typeof selectTriggerVariants>

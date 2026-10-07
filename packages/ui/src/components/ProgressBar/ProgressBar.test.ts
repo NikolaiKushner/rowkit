@@ -33,12 +33,13 @@ describe('ProgressBar', () => {
     expect(fill(under)).toBe('0%')
   })
 
-  it('rounds the fill down to whole 10px blocks where the browser can', () => {
+  it('rounds the fill down to whole blocks where the browser can', () => {
+    // `--spacing-progress-period` is 10px in Windows 98: a block and its gap.
     const classes = mount(ProgressBar, { props: { value: 50 } })
       .find('[data-slot="progress-bar-fill"]')
       .classes()
     expect(classes).toContain(
-      'supports-[width:round(down,1%,1px)]:w-[round(down,var(--rk-progress),10px)]'
+      'supports-[width:round(down,1%,1px)]:w-[round(down,var(--rk-progress),var(--spacing-progress-period))]'
     )
   })
 

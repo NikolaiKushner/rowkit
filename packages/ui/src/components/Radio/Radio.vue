@@ -6,6 +6,7 @@ import {
   radioInputClass,
   radioLabelVariants,
   radioMarkFocusClass,
+  radioMarkOuterFocusClass,
   radioMarkVariants,
   radioVariants,
 } from './Radio.variants'
@@ -58,7 +59,9 @@ function onChange(): void {
         :class="radioInputClass"
         @change="onChange"
       />
-      <RadioMark :class="cn(radioMarkVariants(), !hasLabel && radioMarkFocusClass)" />
+      <RadioMark
+        :class="cn(radioMarkVariants(), hasLabel ? radioMarkOuterFocusClass : radioMarkFocusClass)"
+      />
     </span>
     <span v-if="hasLabel" data-slot="radio-label" :class="radioLabelVariants()">
       <slot>{{ props.label }}</slot>

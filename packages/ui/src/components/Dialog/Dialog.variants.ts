@@ -7,7 +7,7 @@ import { captionButtonClasses } from '../captionButton.variants'
  * scroll lock. `z-overlay` sits below `z-modal` — asserted in the token
  * package's stacking test.
  */
-export const dialogOverlayVariants = cva('fixed inset-0 z-overlay')
+export const dialogOverlayVariants = cva('fixed inset-0 z-overlay bg-(--rk-overlay-bg)')
 
 /**
  * The window: a silver face in the window bevel, 2px of frame around the
@@ -17,7 +17,8 @@ export const dialogContentVariants = cva(
   [
     'fixed left-1/2 top-1/2 z-modal -translate-x-1/2 -translate-y-1/2',
     'flex max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] flex-col',
-    'group/dialog bg-card p-0.5 font-sans text-ui text-foreground shadow-window',
+    'group/dialog rounded-xl bg-card p-frame font-sans text-ui text-foreground shadow-window',
+    'motion-safe:data-[state=open]:animate-(--rk-animate-overlay-in)',
     'focus-visible:outline-none',
   ],
   {
@@ -43,8 +44,9 @@ export const dialogContentVariants = cva(
  * laid over it. Grey while another dialog is open above this one.
  */
 export const dialogTitleBarVariants = cva([
-  'flex h-[22px] shrink-0 items-center justify-end px-0.5',
-  'bg-linear-to-r from-titlebar-from to-titlebar-to',
+  'group/titlebar flex h-titlebar shrink-0 items-center justify-end px-titlebar-px',
+  'rounded-t-xl bg-linear-to-r from-titlebar-from to-titlebar-to shadow-titlebar',
+  '[&>[data-glyph=close]]:order-(--rk-close-order) before:flex-1 before:content-[""]',
   'group-data-inactive/dialog:from-titlebar-inactive-from',
   'group-data-inactive/dialog:to-titlebar-inactive-to',
 ])
@@ -67,8 +69,9 @@ export const dialogHeaderVariants = cva(
  * on the right, the same plus the 20px button and the 4px gap.
  */
 export const dialogTitleVariants = cva([
-  'absolute top-0.5 right-7 left-1 h-[22px] truncate',
-  'text-ui leading-[22px] font-bold text-titlebar-foreground',
+  'absolute top-frame right-title-inset-end left-title-inset-start h-titlebar truncate',
+  'text-ui leading-(--spacing-titlebar) font-strong text-titlebar-foreground',
+  '[text-align:var(--rk-titlebar-align)]',
   'group-data-inactive/dialog:text-titlebar-inactive-foreground',
 ])
 
@@ -85,7 +88,7 @@ export const dialogDescriptionVariants = cva('text-ui text-foreground')
  * control would otherwise be cut along its bottom edge.
  */
 export const dialogBodyVariants = cva(
-  'scrollbar-win98 min-h-0 flex-1 overflow-y-auto px-3 pt-3 pb-1 text-ui text-foreground'
+  'scrollbar-themed min-h-0 flex-1 overflow-y-auto px-3 pt-3 pb-1 text-ui text-foreground'
 )
 
 /**
@@ -94,7 +97,7 @@ export const dialogBodyVariants = cva(
  * the window face is one plane.
  */
 export const dialogFooterVariants = cva(
-  'flex shrink-0 flex-wrap items-center justify-end gap-1.5 bg-card px-3 pt-2 pb-3'
+  'flex shrink-0 flex-wrap items-center justify-end gap-1.5 rounded-b-xl bg-card px-3 pt-2 pb-3'
 )
 
 /**

@@ -10,6 +10,7 @@ defineOptions({ name: 'RkSuccessIcon' })
 
 <template>
   <svg
+    data-icon="success"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

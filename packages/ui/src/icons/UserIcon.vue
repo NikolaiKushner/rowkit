@@ -10,6 +10,7 @@ defineOptions({ name: 'RkUserIcon' })
 
 <template>
   <svg
+    data-icon="user"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

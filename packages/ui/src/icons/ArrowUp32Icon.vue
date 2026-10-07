@@ -10,6 +10,7 @@ defineOptions({ name: 'RkArrowUp32Icon' })
 
 <template>
   <svg
+    data-icon="arrow-up-32"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

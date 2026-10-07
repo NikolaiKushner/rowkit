@@ -1,0 +1,109 @@
+/**
+ * Style switches: how a theme draws a state, beyond its colours and sizes.
+ *
+ * Windows 98 and a modern theme differ in more than values. One marks focus
+ * with a dotted rectangle around a button's label, the other with a ring
+ * around the whole button; one shifts a held button's label a pixel, the other
+ * darkens its face; one fills a latched toggle with a checker pattern. Each of
+ * those differences is a variable here, emitted as `--rk-<name>`, and the
+ * components are written against the variables. A theme sets them; no
+ * component knows which theme it is drawn in.
+ *
+ * They are not Tailwind theme tokens — nothing generates a utility from them —
+ * so they are declared on `:root` and read with arbitrary values
+ * (`pr-(--rk-press-shift)`) or by the utilities in `rowkit/styles`.
+ *
+ * The values here are Windows 98's.
+ */
+
+/** The Windows 98 checker: white and silver, one pixel each, white in the top-left. */
+const dither = [
+  'conic-gradient(',
+  'var(--color-card) 0 25%, var(--color-bevel-highlight) 0 50%, ',
+  'var(--color-card) 0 75%, var(--color-bevel-highlight) 0)',
+].join('')
+
+export const style = {
+  // Focus. Three rings, for three places a ring can go; a theme turns each on
+  // or off by its width. The colours are `--color-ring` and `--color-focus-ring`.
+
+  /** The ring drawn around a control's label, inside it. Windows 98's dotted rectangle. */
+  'focus-label-width': '1px',
+  /** The ring drawn on the focused element itself — a row, a scrolling region, a toast. */
+  'focus-ring-width': '1px',
+  'focus-ring-style': 'dotted',
+  /** The ring drawn around a control's edge, outside it. Windows 98 has none. */
+  'focus-outer-width': '0px',
+  'focus-outer-offset': '0px',
+
+  // Pressing.
+
+  /** How far a held button's label moves down and right. */
+  'press-shift': '1px',
+  /** A brightness filter on a held caption button. `1` leaves it alone. */
+  'press-brightness': '1',
+
+  // Patterns and motion.
+
+  /** The pattern over a latched toggle and a scroll track. */
+  'dither-image': dither,
+  /** The pattern of a loading placeholder, and how it moves. */
+  'loading-image': dither,
+  'animate-loading': 'rk-dither 800ms steps(1) infinite',
+  /** How long a control takes to change state. Windows 98 changes instantly. */
+  'duration-control': '0ms',
+  /** How a dialog, a list or a toast arrives. */
+  'animate-overlay-in': 'none',
+
+  // Edges.
+
+  /** The light second line of an etched separator. Zero leaves a single line. */
+  'etch-width': '1px',
+
+  // Windows.
+
+  /** Where the caption buttons sit in the title bar: `0` after the title, `-1` before it. */
+  'caption-order': '0',
+  /** Where the close button sits among them: `0` last, `-1` first. */
+  'close-order': '0',
+  /** Where the title sits: `start`, or `center`. */
+  'titlebar-align': 'start',
+  /** Space kept clear opposite the caption buttons, so a centred title is centred on the bar. */
+  'titlebar-balance': '0px',
+  /** The opacity of a caption button's glyph at rest; hovering the title bar shows it. */
+  'caption-glyph-opacity': '1',
+
+  // Lists and scroll bars.
+
+  /** What a modal dialog lays over the page behind it. */
+  'overlay-bg': 'transparent',
+
+  /** A backdrop filter behind a dropped list. */
+  'popover-backdrop': 'none',
+  /** Whether a scroll bar has arrow buttons: `block`, or `none`. */
+  'scrollbar-buttons': 'block',
+
+  // Check boxes and option buttons.
+
+  /** A multiplier on small glyphs — a check mark, a caption glyph — for a theme whose glyphs are not pixel art. */
+  'glyph-scale': '1',
+  /**
+   * An option button drawn by CSS rather than by its pixels: how much of the
+   * well and the dot to paint (`0%` paints neither), the dot's radius and the
+   * edge's width.
+   */
+  'radio-fill': '0%',
+  'radio-dot-r': '0px',
+  'radio-edge': '0px',
+
+  // Icons. A theme can draw its own icon set over rowkit's pixel icons: it
+  // hides the pixels, fills the icon's box and masks it with its own glyph.
+
+  /** `display` of a pixel icon's pixels. */
+  'icon-pixels': 'inline',
+  /** The fill a theme's own glyph is painted in; transparent draws nothing. */
+  'icon-fill': 'transparent',
+} as const
+
+/** Names of every style switch. */
+export type StyleName = keyof typeof style
