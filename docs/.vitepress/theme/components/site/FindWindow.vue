@@ -174,7 +174,7 @@ const optionId = (index: number) => `rk-find-option-${String(index)}`
           ref="list"
           role="listbox"
           aria-label="Results"
-          class="scrollbar-win98 m-0 min-h-0 flex-1 list-none overflow-y-auto p-0"
+          class="scrollbar-themed m-0 min-h-0 flex-1 list-none overflow-y-auto p-0"
         >
           <li
             v-for="(result, index) in results"

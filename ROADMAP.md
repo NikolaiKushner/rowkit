@@ -90,7 +90,23 @@ it; `background` is `#C0C0C0`, with teal `#008080` as a separate `desktop`
 token. rowkit.dev gets a VitePress theme written from scratch, in English, set
 in PT Sans throughout.
 
-### 2. Close the visual-QA blind spot
+### 2. A second theme: modern
+
+rowkit gets a second theme beside Windows 98 — the look of a current desktop
+operating system, light and dark — switched by `data-theme="modern"`. It is
+the proof that the look is the tokens' and not the components'.
+
+1. Done in code: every component reads its look from tokens (role colours,
+   sizes, shadows, radii and `--rk-*` style switches), Windows 98 unchanged
+   pixel for pixel; a draft modern theme from platform guidelines; Storybook
+   and rowkit.dev switch between the two.
+2. Next: the designer draws the modern theme in the Figma file — Variables with
+   a mode per theme and scheme, every component, the site's modern desktop.
+   Its values then replace the draft, token for token.
+3. Then: the modern theme becomes the default, Windows 98 the second theme
+   (`data-theme="win98"`), in its own minor release.
+
+### 3. Close the visual-QA blind spot
 
 `pnpm visual:check` screenshots a default matrix, and two entries in it —
 `overlay-toaster--variants` and `overlay-tooltip--placements` — render only
@@ -101,7 +117,7 @@ never actually been reviewed by the process that exists to review them.
 Give those stories a `play` function that opens the overlay before the shot, or
 add always-open variants to the matrix.
 
-### 3. Two inconsistencies to settle in the redesign
+### 4. Two inconsistencies to settle in the redesign
 
 Both are decisions, not bugs. Win98 offers no precedent for either, so the
 Figma file has to decide them rather than inherit them:
@@ -112,7 +128,7 @@ Figma file has to decide them rather than inherit them:
   Dark mode, where it was worst, is gone. Win98 has no invalid field at all, so
   the redesign draws one quiet treatment that matches destructive elsewhere.
 
-### 4. Harden the documented patterns
+### 5. Harden the documented patterns
 
 The three pattern pages are currently written from the library outward. They
 should be rewritten from an application inward — which requires item 1 of the

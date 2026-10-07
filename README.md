@@ -28,11 +28,19 @@ A product interface is a set of components that have to agree: controls, overlay
 
 ## What it looks like
 
-rowkit has one theme: Windows 98. Bevels, the grey face and navy selection come from tokens, so every component agrees without extra classes.
+rowkit ships two themes from one set of components: **Windows 98**, the default, and **modern**, in light and dark. A theme is token values and nothing else — the same table, the same markup, one attribute apart.
+
+![The rowkit.dev desktop switching from Windows 98 to the modern theme, light and then dark: the same Users table, About window and install command in each](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/themes.gif)
+
+```html
+<html data-theme="modern" data-color-scheme="dark">
+```
+
+Every colour, size, corner, shadow and state is a token — the bevels and the dotted focus ring of Windows 98 included — so a brand is a handful of variables on top of either theme. How it works, and how to write your own: [Themes](https://rowkit.dev/foundations/themes). The modern theme's values are a draft until its Figma file is drawn.
 
 ![The Components window: buttons and a toggle group, inputs and a select, badges, checkboxes and radios, pagination with a progress bar, and a field with an error](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/components.png)
 
-The docs at [rowkit.dev](https://rowkit.dev) open every page in an Explorer window — folder tree on the left, the address bar shows where you are.
+The docs at [rowkit.dev](https://rowkit.dev) switch with it: in Windows 98 every page opens in an Explorer window, folder tree on the left; in the modern theme the site is a modern desktop, with a menu bar, a Dock and Finder-style windows. [`?theme=modern`](https://rowkit.dev/?theme=modern) opens it that way.
 
 ![rowkit.dev: an Explorer window with the docs folder tree and the DataTable page with a live example](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/docs.png)
 

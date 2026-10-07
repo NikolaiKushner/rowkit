@@ -61,6 +61,10 @@ jobs:
       - name: Test
         run: pnpm test
 
+      # The browser tests and their a11y gate again, in the modern theme.
+      - name: Test in the modern theme
+        run: pnpm test:a11y:modern
+
       # A budget nobody checks is decoration. Runs after Build because it
       # measures the real dist, not a re-bundle of source.
       - name: Bundle size

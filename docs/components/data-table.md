@@ -412,7 +412,7 @@ a column keeps its `width`. Columns that do not fit the frame scroll sideways
 rather than squeezing; a table narrower than the frame still fills it.
 
 **Two kinds of scroll bar.** By default the body uses the browser's own bar,
-restyled as Windows 98 by `scrollbar-win98`: exact in Chromium and Safari,
+restyled to the theme by `scrollbar-themed`: exact in Chromium and Safari,
 colours only in Firefox. `scrollbars="drawn"` puts the body in a
 [`ScrollArea`](/components/scroll-area) instead, whose bars rowkit draws and
 which look the same everywhere. Either way the bars sit beside the cells,

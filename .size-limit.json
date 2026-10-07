@@ -17,6 +17,6 @@
     "name": "@rowkit/tokens (brotli)",
     "path": "packages/tokens/dist/index.js",
     "import": "*",
-    "limit": "3 kB"
+    "limit": "6 kB"
   }
 ]

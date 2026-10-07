@@ -71,7 +71,7 @@ thumb.
 
 ## When not to use
 
-- **When the browser's bar will do.** The `scrollbar-win98` utility restyles it
+- **When the browser's bar will do.** The `scrollbar-themed` utility restyles it
   with no script at all, and rowkit's own `DataTable`, `DialogBody`, `Select`
   list and `WindowBody` already use it. Only Firefox shows the difference. See
   [Scrollbar](/foundations/scrollbar).

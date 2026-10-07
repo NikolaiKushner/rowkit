@@ -228,6 +228,7 @@ export default defineConfig({
       {
         text: 'Foundations · Tokens',
         items: [
+          { text: 'Themes', link: '/foundations/themes' },
           { text: 'Tokens', link: '/foundations/tokens' },
           { text: 'Icons', link: '/foundations/icons' },
           { text: 'Scrollbar', link: '/foundations/scrollbar' },

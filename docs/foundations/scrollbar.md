@@ -1,12 +1,14 @@
 # Scrollbar
 
-The Windows 98 scroll bar, 16px thick: raised arrow buttons at each end, a
-dithered track, and a raised thumb whose length is the share of the content in
-view. It is a utility, `scrollbar-win98`, on the element that scrolls.
+The theme's scroll bar, as a utility on the element that scrolls:
+`scrollbar-themed`. In Windows 98 it is 16px thick, with raised arrow buttons at
+each end, a dithered track, and a raised thumb whose length is the share of the
+content in view; in the modern theme, a thin rounded thumb on a clear track.
+`scrollbar-win98`, its first name, still works.
 
 ```vue
 <template>
-  <div class="scrollbar-win98 h-64 overflow-y-auto" tabindex="0" role="region" aria-label="Log">
+  <div class="scrollbar-themed h-64 overflow-y-auto" tabindex="0" role="region" aria-label="Log">
     …
   </div>
 </template>
@@ -18,7 +20,7 @@ it an `overflow-*` class).
 
 <DemoBox>
   <div class="inline-block bg-input p-0.5 shadow-sunken">
-    <div class="scrollbar-win98 h-40 w-80 overflow-y-scroll px-1 text-ui" tabindex="0" role="region" aria-label="Example">
+    <div class="scrollbar-themed h-40 w-80 overflow-y-scroll px-1 text-ui" tabindex="0" role="region" aria-label="Example">
       <p v-for="n in 20" :key="n" class="m-0">Line {{ n }} of a long list.</p>
     </div>
   </div>

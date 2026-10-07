@@ -40,7 +40,9 @@ component, a change to an existing one, or the Windows 98 design.
   New surface belongs when a product interface is awkward without it. There is
   no fixed component count.
 
-**Visual direction:** Windows 98. Grey `#C0C0C0` face, two-pixel bevels (raised, pressed, sunken), navy `#000080` selection and title-bar gradient, square corners, no soft shadows, no blur, next to no motion. PT Sans replaces Geist (OFL, Latin and Cyrillic, regular and bold; apps load the font, rowkit does not ship it). Controls follow Win98 sizes on desktop and grow to ≥ 24px touch targets on touch screens. One light theme — there is no dark mode. The style, not the assets: no Microsoft logos, Windows flag or original system icons. Consumers still rebrand via tokens (`--color-primary-*`). Every component is redrawn; the pre-redesign look is legacy, not a reference.
+**Visual direction:** two themes from one set of components — **Windows 98**, the default, and **modern** (a current desktop OS look, light and dark; a draft until its Figma file exists). A theme is token values only: see [`docs/foundations/themes.md`](./docs/foundations/themes.md).
+
+Windows 98: Grey `#C0C0C0` face, two-pixel bevels (raised, pressed, sunken), navy `#000080` selection and title-bar gradient, square corners, no soft shadows, no blur, next to no motion. PT Sans replaces Geist (OFL, Latin and Cyrillic, regular and bold; apps load the font, rowkit does not ship it). Controls follow Win98 sizes on desktop and grow to ≥ 24px touch targets on touch screens. Windows 98 has one light scheme; the modern theme has light and dark (`data-color-scheme`). The style, not the assets: no Microsoft logos, Windows flag or original system icons. Consumers still rebrand via tokens (`--color-primary-*`). Every component is redrawn; the pre-redesign look is legacy, not a reference.
 
 ## Stack
 
@@ -51,6 +53,7 @@ component, a change to an existing one, or the Windows 98 design.
 ## Rules
 
 1. **No hardcoded design values.** Colour, space, radius, shadow, and z-index come from a token. If a token is missing, propose one.
+   This includes how a theme draws a state. A component never names Windows 98 (or modern) in its classes: fills are role tokens (`bg-control`, `bg-checked`), sizes are size tokens (`h-control-md`), and structure that differs between themes is a style switch (`--rk-press-shift`, `focus-label` / `focus-ring` / `focus-outer`, `--rk-caption-order`). A new difference between themes is a new token in `packages/tokens`, with a value in every theme.
 2. **Behaviour you own, you test.** Keyboard, focus and dismiss behaviour gets an interaction test, and `addon-a11y` stays a gate.
 3. **Parts, composed by the consumer.** The consumer places the parts that change: root, trigger, content, title, description. Parts that always travel together — portal, overlay, close — belong inside `DialogContent`. A `mode` prop that redraws the layout is the thing to avoid. Details are in `docs/conventions.md`.
 4. **`data-slot` on each public part**, kebab-cased (`dialog`, `dialog-title`), and `data-state` on parts that open and close.
@@ -72,14 +75,14 @@ A single element (`Button`, `Badge`, `Input`, `Skeleton`, `EmptyState`) is one V
 
 A component is not finished until all of these are true:
 
-1. Renders all variants correctly in the Windows 98 theme
+1. Renders all variants correctly in both themes, the modern one in light and dark
 2. Full keyboard support, and that support is documented
 3. `addon-a11y` passes with zero violations
 4. All props typed and JSDoc'd
 5. Stories cover every variant, every state, and — for an assembly — the parts composed by the consumer
 6. Interaction test for the primary behavior
 7. Docs page written, including a **"when not to use"** section
-8. **Visual QA:** `pnpm visual:check <Component>` (Storybook must be running), then **Read the PNGs** and fix anything that looks wrong: blurred bevel edges, fractional pixels, an invisible focus rectangle. Green tests are not enough.
+8. **Visual QA:** `pnpm visual:check <Component>` (Storybook must be running), then **Read the PNGs** and fix anything that looks wrong: blurred bevel edges, fractional pixels, an invisible focus rectangle. Switch the Theme and Scheme controls in the Storybook toolbar and look again. Green tests are not enough.
 
 ## How to work on this
 
@@ -107,7 +110,8 @@ Settled for now. Revisit one when it gets in the way, with a reason — see "How
 - **The set is the professional toolkit.** Components are added until a product interface can be built from rowkit. There is no fixed count, and tables are one part of that set, not the boundary of it.
 - **MIT license.**
 - **Tokens as a separate package**, so they can be consumed without importing components.
-- **Windows 98 is the only theme.** It replaces the previous restrained look entirely, and dark mode is dropped. Semantic token names stay; their values change.
+- **Two themes, by attribute.** `data-theme="win98" | "modern"` on any element (default Windows 98), `data-color-scheme` for the modern theme's dark. Each theme declares every value on its own element, so themes nest. No `dark:` variant and no `.dark` class.
+- **The modern theme's values are a draft** from platform guidelines, until the designer's Figma file replaces them. Its icons are Lucide outlines (ISC, see `packages/ui/THIRD_PARTY_NOTICES.md`) drawn over the pixel icons with CSS masks.
 
 ## Commands
 
@@ -122,6 +126,9 @@ pnpm size         # bundle budget, brotli
 pnpm storybook    # then, in another terminal:
 pnpm visual:check # screenshot default stories → .visual-check/
 pnpm visual:check Button  # scoped to one component
+
+pnpm test:a11y:modern  # the browser tests and a11y gate in the modern theme
+pnpm icons:modern     # regenerate the modern glyph CSS after changing src/icons/modern
 
 pnpm docs:props   # regenerate the props tables after touching a prop or its JSDoc
 pnpm docs:agents  # regenerate packages/ui/AGENTS.md, likewise
