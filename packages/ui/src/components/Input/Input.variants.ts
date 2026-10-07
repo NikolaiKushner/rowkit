@@ -70,8 +70,8 @@ export const inputVariants = cva([
  */
 export const inputButtonVariants = cva(
   [
-    'flex w-4 shrink-0 items-center justify-center rounded-xs bg-control text-control-foreground',
-    'shadow-raised data-pressed:bg-control-active data-pressed:shadow-pressed',
+    'flex w-4 shrink-0 items-center justify-center rounded-xs bg-field-button text-control-foreground',
+    'shadow-field-button data-pressed:shadow-pressed',
     'data-disabled:pointer-events-none data-disabled:text-text-disabled',
   ],
   {

@@ -76,6 +76,8 @@ export const shadow = {
   titlebar: 'none',
   /** A checked check box: the same sunken well as an unchecked one, in Windows 98. */
   checked: bevel([sh, hl], [dark, light]),
+  /** A button inside a field: raised, in Windows 98. */
+  'field-button': bevel([hl, dark], [light, sh]),
   /** A scroll bar's thumb. */
   'scroll-thumb': bevel([hl, dark], [light, sh]),
 

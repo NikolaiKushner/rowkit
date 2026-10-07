@@ -9,7 +9,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * placement are reset here and drawn again.
  */
 export const groupBoxVariants = cva([
-  'relative isolate m-0 flex min-w-0 flex-col gap-2 border-0 bg-card px-3 pt-groupbox-pt pb-3',
+  'relative isolate m-0 flex min-w-0 flex-col gap-2 border-0 bg-groupbox-face px-3 pt-groupbox-pt pb-3',
   'font-sans text-ui text-foreground',
 ])
 
@@ -20,7 +20,7 @@ export const groupBoxFrameVariants = cva(
 
 /** The legend: on the silver face, 2px either side, cutting the top line 8px in. */
 export const groupBoxLegendVariants = cva(
-  'absolute top-0 left-groupbox-legend-x max-w-[calc(100%-1rem)] truncate bg-groupbox-legend px-groupbox-legend-px py-0'
+  'absolute top-0 left-groupbox-legend-x max-w-[calc(100%-1rem)] truncate bg-groupbox-face px-groupbox-legend-px py-0'
 )
 
 export type GroupBoxVariants = VariantProps<typeof groupBoxVariants>

@@ -61,8 +61,8 @@ export const selectInputVariants = cva([
  */
 export const selectButtonVariants = cva([
   'flex w-4 shrink-0 cursor-default items-center justify-center self-stretch',
-  'rounded-xs bg-control text-control-foreground shadow-raised',
-  'data-pressed:bg-control-active data-pressed:shadow-pressed',
+  'rounded-xs bg-field-button text-control-foreground shadow-field-button',
+  'data-pressed:shadow-pressed',
   'disabled:text-text-disabled',
 ])
 

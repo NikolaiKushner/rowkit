@@ -107,6 +107,7 @@ export const dialogFooterVariants = cva(
 export const dialogCloseVariants = cva([
   ...captionButtonClasses,
   'focus-visible:outline-titlebar-foreground',
+  'group-data-inactive/dialog:data-[glyph]:bg-caption-inactive',
 ])
 
 export type DialogVariants = VariantProps<typeof dialogContentVariants>

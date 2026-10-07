@@ -216,7 +216,8 @@ export const modernLightColor: Record<SemanticColorName, string> = {
   'scroll-track': p('transparent'),
   'tooltip-border': p('ink-15'),
   groupbox: p('ink-4'),
-  'groupbox-legend': p('transparent'),
+  'groupbox-face': p('transparent'),
+  'field-button': p('transparent'),
 }
 
 /** Semantic colours, dark. */
@@ -236,7 +237,7 @@ export const modernDarkColor: Record<SemanticColorName, string> = {
   foreground: p('gray-100'),
   'muted-foreground': p('gray-250'),
   'text-subtle': p('gray-400'),
-  'text-disabled': p('gray-700'),
+  'text-disabled': p('gray-500'),
   link: p('blue-link-dark'),
 
   border: p('gray-750'),
@@ -313,6 +314,7 @@ export const modernLightShadow: Record<ShadowName, string> = {
   statusbar: `inset 0 1px 0 ${p('gray-300')}`,
   titlebar: `inset 0 -1px 0 ${p('gray-250')}`,
   'scroll-thumb': 'none',
+  'field-button': 'none',
   checked: `inset 0 0 0 1px ${p('ink-10')}`,
   'scroll-x': `inset -1px 0 ${p('gray-300')}`,
   'sticky-header': `inset 0 -1px 0 ${p('gray-300')}`,

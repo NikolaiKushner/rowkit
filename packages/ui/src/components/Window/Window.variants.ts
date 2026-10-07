@@ -48,7 +48,8 @@ export const windowControlsVariants = cva([
 export const windowButtonVariants = cva([
   ...captionButtonClasses,
   'focus-visible:outline-titlebar-foreground',
-  'group-data-inactive/window:bg-caption-inactive',
+  // The extra `data-[glyph]` (always there) beats the per-glyph fill.
+  'group-data-inactive/window:data-[glyph]:bg-caption-inactive',
   'disabled:pointer-events-none disabled:text-text-disabled',
   'disabled:[&_svg]:drop-shadow-[1px_1px_0_var(--color-text-disabled-emboss)]',
 ])

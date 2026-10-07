@@ -284,9 +284,14 @@ export const semanticColor = {
   'scroll-track': ref('vga-silver'),
   /** The frame of a tooltip. */
   'tooltip-border': ref('vga-black'),
-  /** The inside of a group box, and the strip behind its legend. */
+  /**
+   * The inside of a group box's frame, and the face around it — behind the
+   * legend and the frame's edge. Both the window's silver in Windows 98.
+   */
   groupbox: ref('vga-silver'),
-  'groupbox-legend': ref('vga-silver'),
+  'groupbox-face': ref('vga-silver'),
+  /** The buttons inside a field: a select's drop button, a number's spin buttons. */
+  'field-button': ref('vga-silver'),
 } as const
 
 /** Names of every semantic colour token. */

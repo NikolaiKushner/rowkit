@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { expect } from 'storybook/test'
+import { px } from './token'
 
 /**
  * The Windows 98 scroll bar: the `scrollbar-win98` utility on an element that
@@ -48,8 +49,9 @@ export const Vertical: Story = {
   play: async ({ canvasElement }) => {
     const el = canvasElement.querySelector<HTMLElement>('[role="region"]')!
     // The box has no border (the bevel is a shadow), so the gap between its
-    // offset and client widths is the scroll bar alone. A native bar is 15px.
-    await expect(el.offsetWidth - el.clientWidth).toBe(16)
+    // offset and client widths is the scroll bar alone. A native bar is 15px;
+    // the theme's is `--spacing-scrollbar`, 16px in Windows 98.
+    await expect(el.offsetWidth - el.clientWidth).toBe(px('--spacing-scrollbar'))
   },
 }
 
@@ -62,7 +64,7 @@ export const Horizontal: Story = {
     ),
   play: async ({ canvasElement }) => {
     const el = canvasElement.querySelector<HTMLElement>('[role="region"]')!
-    await expect(el.offsetHeight - el.clientHeight).toBe(16)
+    await expect(el.offsetHeight - el.clientHeight).toBe(px('--spacing-scrollbar'))
   },
 }
 

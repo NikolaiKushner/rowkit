@@ -30,9 +30,10 @@ defineSlots<{
   default?: () => unknown
 }>()
 
-/** An arrow button's length along the bar, and one arrow step. */
-const BUTTON = 16
+/** One arrow step. */
 const LINE = 16
+/** An arrow button's length along the bar where the theme does not say (Windows 98's). */
+const BUTTON = 16
 /** The shortest thumb Windows 98 draws. Below it, the track shows none. */
 const MIN_THUMB = 8
 /** Hold an arrow or the track: one step at once, then a step every 50ms after 500ms. */
@@ -61,6 +62,15 @@ const showX = computed(() => props.scrollbars === 'always' || axes.x.overflow)
 const showY = computed(() => props.scrollbars === 'always' || axes.y.overflow)
 const scrollable = computed(() => axes.x.overflow || axes.y.overflow)
 
+/**
+ * An arrow button's length along the bar: the theme's `--spacing-scroll-button`,
+ * which is zero in a theme whose scroll bars have no arrows.
+ */
+function buttonLength(el: HTMLElement): number {
+  const value = Number.parseFloat(getComputedStyle(el).getPropertyValue('--spacing-scroll-button'))
+  return Number.isFinite(value) ? value : BUTTON
+}
+
 function metrics(el: HTMLElement, axis: Axis) {
   return axis === 'y'
     ? { client: el.clientHeight, size: el.scrollHeight, position: el.scrollTop }
@@ -86,7 +96,7 @@ function measure(): void {
     const state = axes[axis]
     // A fraction of a pixel left over from zoom or rounding is not overflow.
     state.overflow = size - client > 1
-    const track = client - 2 * BUTTON
+    const track = client - 2 * buttonLength(el)
     const thumb = Math.min(track, Math.max(MIN_THUMB, Math.round((track * client) / size)))
     if (!state.overflow || track < MIN_THUMB) {
       state.thumb = 0
@@ -238,7 +248,7 @@ function onPointerMove(event: PointerEvent): void {
     // The thumb travels the track less its own length; the content, its
     // length less the viewport. One maps onto the other.
     const { client, size } = metrics(el, current.axis)
-    const range = client - 2 * BUTTON - axes[current.axis].thumb
+    const range = client - 2 * buttonLength(el) - axes[current.axis].thumb
     if (range <= 0) return
     const moved = (current.axis === 'y' ? event.clientY : event.clientX) - current.startPointer
     setPosition(current.axis, current.startPosition + (moved * (size - client)) / range)
