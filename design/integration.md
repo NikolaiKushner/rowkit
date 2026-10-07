@@ -151,6 +151,7 @@
 
 - [ ] Changeset: новые токены, `ProgressBar indeterminate`, изменения modern. `@rowkit/tokens` — minor, `rowkit` — minor.
 - [ ] Страница Themes и Tokens на сайте — новые токены. AGENTS.md — новые стиль-переключатели.
+- [ ] Описание токенов — в коде, рядом со значениями: это шаг 0 плана [agent-theming.md](./agent-theming.md) (темы через агента), делаем вместе.
 - [ ] README GIF тем — переснять после шагов 2–5.
 - [ ] Отметить в Figma (обложка или Theme decisions), что handoff принят.
 
