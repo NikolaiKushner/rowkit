@@ -173,7 +173,7 @@
 - [x] 6.1 Полоса в меню «Пуск» (`wordmark alone`): новый wordmark.
 - [x] 6.2 README: hero с `<picture>` light/dark (оба README), бейдж npm цветом бренда; og-image и github-social-preview из Figma. Превью репозитория GitHub загружается вручную в Settings → Social preview.
 - [x] 6.3 README: новые картинки — рамки datatable / components / docs собраны по Figma вокруг настоящих скриншотов (сайт 1440×900, сетка компонентов из Storybook). Экспорты `datatable` / `components` / `docs` — это рамки под настоящие скриншоты: снимаем их со сторибука и сайта.
-- [ ] Onest (OFL) — только для бренд-графики. В UI-темы он не идёт.
+- [x] Onest (OFL) — только для бренд-графики (картинки README собраны им), в UI-темы и на сайт не подключён.
 
 ## Шаг 7. Документация и выпуск
 
