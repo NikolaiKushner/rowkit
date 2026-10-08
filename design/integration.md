@@ -139,7 +139,10 @@
 
 - [x] 5.1 Каркас главной: MenuBar и MenuBarItem, ThemeSwitcher (segmented + кнопка схемы), Dock и DockTile, Window/About (полоса Look), Terminal, Wallpaper. Win98 — 0 отличий.
   - Вопрос дизайнеру: плитки Dock (30×48) и иконка в About (48×64) — узкие, не квадратные: ширина плитки равна иконке, отступ только сверху и снизу. Сделано как нарисовано; если задумывались квадраты 48×48 и 64×64 — поправим.
-- [ ] Сверить остальное: меню rowkit / Components / Data / Scheme (5.2), Window/LiveDemo (5.3), Window/Finder, Sidebar, SidebarItem, SearchField (5.4).
+- [x] 5.2 Меню: MenuItem (строки 24px, колонка галочки вместо иконок, заголовок «By area», подменю), меню rowkit, Components → Data, Scheme. Win98 — 0 отличий, в том числе с открытыми меню.
+  - Вопрос дизайнеру: меню схемы. Подпись в «Theme switch» — «click the button», а в «Behaviour» — клик переключает Auto → Light → Dark, меню по долгому нажатию или ↓. Сделано по «Behaviour».
+  - Вопрос дизайнеру: подменю Theme в меню rowkit не нарисовано. Сделано: Windows 98 / Modern, разделитель, Auto / Light / Dark — с галочкой у выбранного.
+- [ ] Сверить остальное: Window/LiveDemo (5.3), Window/Finder, Sidebar, SidebarItem, SearchField (5.4).
 - [ ] Сделать новое:
   - Spotlight — поиск в трёх состояниях: пустой, результаты, ничего не найдено. Сейчас поиск — окно Find.
   - Alert/NotFound — 404.

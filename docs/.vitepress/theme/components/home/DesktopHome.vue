@@ -79,7 +79,8 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
     <h1 class="sr-only">rowkit — a professional Vue 3 toolkit</h1>
 
     <!-- The desktop, at 1280px and up. -->
-    <main class="relative min-h-0 flex-1 max-xl:hidden">
+    <!-- Isolated in modern, so a sticky table header stays under the menu bar's menus. -->
+    <main class="relative min-h-0 flex-1 max-xl:hidden modern:isolate">
       <!-- Icons down the left in Windows 98; the Dock along the bottom in the modern theme. -->
       <nav aria-label="Shortcuts" class="absolute top-4 left-4 flex flex-col gap-3 modern:hidden">
         <DesktopIcon

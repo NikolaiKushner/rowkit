@@ -33,10 +33,24 @@
   --rk-terminal-fg: #e5e5e7;
 }
 
-/* The menu bar: translucent, a hairline under it, no bevel. */
+/*
+ * The menu bar: translucent, a hairline under it, no bevel. The glass is drawn
+ * by a layer behind its content rather than by the bar itself: an element with
+ * a backdrop filter is the backdrop of everything inside it, and the menus
+ * that drop from the bar would blur only the bar.
+ */
 [data-theme='modern'] .rk-taskbar {
-  background: var(--color-popover);
+  position: relative;
+  background: none;
   box-shadow: inset 0 -1px 0 var(--color-border);
+}
+
+[data-theme='modern'] .rk-taskbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--color-popover);
   backdrop-filter: var(--rk-popover-backdrop);
 }
 

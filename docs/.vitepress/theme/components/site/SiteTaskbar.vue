@@ -84,7 +84,7 @@ function closeStart(focusStart: boolean): void {
       type="button"
       aria-haspopup="menu"
       :aria-expanded="startOpen"
-      class="flex h-[27px] shrink-0 items-center gap-1 pr-1.5 pl-0.5 font-bold text-ui text-foreground outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring modern:h-[22px] modern:gap-1.5 modern:rounded-[5px] modern:pr-2 modern:pl-1.5 modern:pt-0 modern:font-strong modern:shadow-none modern:hover:bg-control-ghost-hover modern:focus-visible:focus-outer"
+      class="flex h-[27px] shrink-0 items-center gap-1 pr-1.5 pl-0.5 font-bold text-ui text-foreground outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring modern:h-[22px] modern:gap-1.5 modern:rounded-[5px] modern:pr-2 modern:pl-1.5 modern:pt-0 modern:font-strong modern:shadow-none modern:aria-expanded:bg-control-ghost-active modern:hover:bg-control-ghost-hover modern:focus-visible:focus-outer"
       :class="startOpen ? 'pt-px pl-[3px] shadow-pressed' : 'shadow-raised active:shadow-pressed'"
       @click="toggleStart"
     >

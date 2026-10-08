@@ -107,7 +107,7 @@ const goForward = () => history.forward()
 <template>
   <div class="rk-desktop relative isolate flex h-dvh flex-col overflow-hidden bg-background">
     <SiteWallpaper />
-    <Window class="min-h-0 flex-1 modern:m-3">
+    <Window class="min-h-0 flex-1 modern:m-3 modern:isolate">
       <WindowTitleBar :title="windowTitle">
         <template #icon>
           <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" />

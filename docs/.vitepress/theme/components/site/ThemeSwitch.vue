@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { nextTick, ref } from 'vue'
+import { nextTick, onBeforeUnmount, ref, useId } from 'vue'
 import { withBase } from 'vitepress'
 import { Button } from 'rowkit'
+import SiteMenu from './SiteMenu.vue'
+import { schemeMenu } from './menu'
 import {
   setSiteScheme,
   setSiteTheme,
@@ -18,7 +20,9 @@ import {
  * rendered and the theme hides one, so the first paint is already right.
  *
  * Modern (Figma SiteModern/ThemeSwitcher): a segmented control, one tab stop
- * with ← → between the themes, and an icon button that cycles the scheme.
+ * with ← → between the themes, and an icon button that cycles the scheme —
+ * Auto, Light, Dark. A long press or ↓ on it opens the scheme menu instead
+ * (Figma SiteModern/Menu/Scheme).
  */
 const NEXT: Record<SiteScheme, SiteScheme> = { system: 'light', light: 'dark', dark: 'system' }
 const LABEL: Record<SiteScheme, string> = { system: 'Auto', light: 'Light', dark: 'Dark' }
@@ -51,6 +55,69 @@ function choose(theme: SiteTheme): void {
     ;(visible(root.value?.parentNode ?? undefined) ?? visible(document))?.focus()
   })
 }
+
+/* The scheme menu. */
+const schemeButton = ref<HTMLButtonElement>()
+const schemeMenuRef = ref<{ focusFirst: () => void; focusPanel: () => void }>()
+const schemeOpen = ref(false)
+const schemeId = useId()
+let pressTimer: ReturnType<typeof setTimeout> | undefined
+let pressed = false
+
+function openSchemeMenu(fromKeyboard: boolean): void {
+  schemeOpen.value = true
+  document.addEventListener('pointerdown', onOutside, true)
+  void nextTick(() =>
+    fromKeyboard ? schemeMenuRef.value?.focusFirst() : schemeMenuRef.value?.focusPanel()
+  )
+}
+
+function closeSchemeMenu(focusButton: boolean): void {
+  schemeOpen.value = false
+  document.removeEventListener('pointerdown', onOutside, true)
+  if (focusButton) schemeButton.value?.focus()
+}
+
+function onOutside(event: PointerEvent): void {
+  const target = event.target as Node
+  if (root.value?.contains(target)) return
+  closeSchemeMenu(false)
+}
+
+// Held for half a second, the button opens the menu, and the release does not cycle.
+function onSchemeDown(event: PointerEvent): void {
+  if (event.button !== 0) return
+  pressed = false
+  clearTimeout(pressTimer)
+  pressTimer = setTimeout(() => {
+    pressed = true
+    openSchemeMenu(false)
+  }, 500)
+}
+
+function onSchemeUp(): void {
+  clearTimeout(pressTimer)
+}
+
+function onSchemeClick(): void {
+  if (pressed) {
+    pressed = false
+    return
+  }
+  if (schemeOpen.value) closeSchemeMenu(false)
+  setSiteScheme(NEXT[siteScheme.value])
+}
+
+function onSchemeKeydown(event: KeyboardEvent): void {
+  if (event.key !== 'ArrowDown') return
+  event.preventDefault()
+  openSchemeMenu(true)
+}
+
+onBeforeUnmount(() => {
+  clearTimeout(pressTimer)
+  document.removeEventListener('pointerdown', onOutside, true)
+})
 
 function onSegmentKeydown(event: KeyboardEvent): void {
   const step = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[event.key]
@@ -98,19 +165,40 @@ function onSegmentKeydown(event: KeyboardEvent): void {
           {{ theme.label }}
         </button>
       </div>
-      <button
-        type="button"
-        class="flex size-[22px] items-center justify-center rounded-[5px] text-muted-foreground outline-none hover:bg-control-ghost-hover focus-visible:focus-outer active:bg-control-ghost-active"
-        :aria-label="`Colour scheme: ${LABEL[siteScheme]}. Change`"
-        :title="`Colour scheme: ${LABEL[siteScheme]}`"
-        @click="setSiteScheme(NEXT[siteScheme])"
-      >
-        <span
-          aria-hidden="true"
-          class="size-4 bg-current [mask-size:contain]"
-          :style="{ maskImage: `url(${withBase(`/icons/modern/${ICON[siteScheme]}.svg`)})` }"
+      <div class="relative">
+        <button
+          :id="schemeId"
+          ref="schemeButton"
+          type="button"
+          aria-haspopup="menu"
+          :aria-expanded="schemeOpen"
+          class="flex size-[22px] items-center justify-center rounded-[5px] text-muted-foreground outline-none hover:bg-control-ghost-hover focus-visible:focus-outer active:bg-control-ghost-active aria-expanded:bg-control-ghost-active"
+          :aria-label="`Colour scheme: ${LABEL[siteScheme]}. Change`"
+          :title="`Colour scheme: ${LABEL[siteScheme]}`"
+          @click="onSchemeClick"
+          @keydown="onSchemeKeydown"
+          @pointerdown="onSchemeDown"
+          @pointerup="onSchemeUp"
+          @pointerleave="onSchemeUp"
+          @contextmenu.prevent
+        >
+          <span
+            aria-hidden="true"
+            class="size-4 bg-current [mask-size:contain]"
+            :style="{ maskImage: `url(${withBase(`/icons/modern/${ICON[siteScheme]}.svg`)})` }"
+          />
+        </button>
+        <SiteMenu
+          v-if="schemeOpen"
+          ref="schemeMenuRef"
+          :entries="schemeMenu()"
+          :labelledby="schemeId"
+          class="absolute top-[calc(100%+3px)] left-0 z-50"
+          @close="() => closeSchemeMenu(true)"
+          @prev="() => {}"
+          @next="() => {}"
         />
-      </button>
+      </div>
     </div>
   </div>
 </template>
