@@ -76,8 +76,16 @@ export const buttonVariants = cva(
           'bg-control text-danger-on-subtle shadow-raised hover:bg-control-hover',
           'focus-visible:shadow-raised-default active:bg-control-active active:shadow-pressed',
         ].join(' '),
-        /** Blue underlined text that acts. Still a `<button>`; navigation is a real link. */
-        link: 'bg-transparent text-link [text-decoration-line:var(--rk-link-decoration)]',
+        /**
+         * Blue text that acts. Still a `<button>`; navigation is a real link.
+         * Windows 98 underlines it always; a theme that does not
+         * (`--rk-link-decoration: none`) still underlines it under the pointer
+         * and on focus, so it reads as a link the moment it matters.
+         */
+        link: [
+          'bg-transparent text-link [text-decoration-line:var(--rk-link-decoration)]',
+          'hover:underline focus-visible:underline',
+        ].join(' '),
       },
       size: {
         xs: 'h-control-xs min-w-button-min-xs px-button-px-xs',

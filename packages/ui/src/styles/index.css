@@ -54,13 +54,20 @@
   }
 }
 
-/* An indeterminate progress bar: its 30% segment from just off the left to just off the right. */
+/* An indeterminate progress bar, modern: its 30% segment from just off the left to just off the right. */
 @keyframes rk-progress-slide {
   from {
     translate: -100%;
   }
   to {
     translate: calc(100% / 0.3);
+  }
+}
+
+/* An indeterminate progress bar, Windows 98: the blocks step right, one period a step. */
+@keyframes rk-progress-march {
+  to {
+    translate: calc(var(--rk-progress-steps, 18) * var(--spacing-progress-period));
   }
 }
 

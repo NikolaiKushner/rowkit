@@ -164,6 +164,8 @@ export const size = {
   /** One block of the fill, and the block plus the gap after it. Equal values draw a solid bar. */
   'progress-block': '8px',
   'progress-period': '10px',
+  /** The segment an indeterminate bar moves along the track: four blocks in Windows 98. */
+  'progress-segment': '38px',
 
   /** A scroll bar's thickness, and the side of its arrow buttons (zero hides them). */
   scrollbar: '16px',

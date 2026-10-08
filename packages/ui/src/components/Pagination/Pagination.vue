@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<PaginationProps>(), {
   showEdges: true,
   hidePageSize: false,
   hideSummary: false,
-  pageSizeLabel: 'Rows per page',
+  pageSizeLabel: 'Rows per page:',
   label: 'Pagination',
   previousLabel: 'Back',
   nextLabel: 'Next',

@@ -28,7 +28,8 @@ describe('ProgressBar', () => {
       expect(el.attributes('data-state')).toBe('indeterminate')
       const bar = el.find('[data-slot="progress-bar-fill"]')
       expect(bar.classes()).toContain('motion-safe:animate-(--rk-animate-progress)')
-      expect(bar.classes()).toContain('motion-reduce:w-[40%]')
+      expect(bar.classes()).toContain('w-progress-segment')
+      expect(bar.classes()).toContain('motion-reduce:translate-x-(--rk-progress-middle)')
     }
   })
 

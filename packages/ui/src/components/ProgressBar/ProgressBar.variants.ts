@@ -2,10 +2,11 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
  * The Windows 98 block progress bar, as in the Figma file: 18px tall in the
- * thin sunken status bevel, 2px of padding around the blocks.
+ * thin sunken status bevel, 2px of padding around the blocks, which sit
+ * centred in the height that is left (3px from the top).
  */
 export const progressBarVariants = cva(
-  'relative h-progress w-full overflow-hidden rounded-pill bg-track p-progress-inset shadow-status'
+  'relative flex h-progress w-full items-center overflow-hidden rounded-pill bg-track p-progress-inset shadow-status'
 )
 
 /**
@@ -22,11 +23,15 @@ export const progressBarFillVariants = cva(
   {
     variants: {
       /**
-       * Unknown progress: a segment 30% of the track wide travels across it.
-       * With reduced motion it stands still, filling the first 40%.
+       * Unknown progress: a segment (`--spacing-progress-segment`) travels
+       * across the track. With reduced motion it stands still in the middle,
+       * at the offset `ProgressBar` measures (`--rk-progress-middle`).
        */
       indeterminate: {
-        true: ['w-[30%] motion-safe:animate-(--rk-animate-progress)', 'motion-reduce:w-[40%]'],
+        true: [
+          'w-progress-segment motion-safe:animate-(--rk-animate-progress)',
+          'motion-reduce:translate-x-(--rk-progress-middle)',
+        ],
         false: [
           'w-(--rk-progress) transition-[width] duration-(--rk-duration-control)',
           'supports-[width:round(down,1%,1px)]:w-[round(down,var(--rk-progress),var(--spacing-progress-period))]',

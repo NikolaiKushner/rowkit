@@ -460,6 +460,7 @@ export const modernSize: Record<SizeName, string> = {
   'progress-fill': '6px',
   'progress-block': '1px',
   'progress-period': '1px',
+  'progress-segment': '30%',
   scrollbar: '10px',
   'scroll-button': '0px',
   'scroll-inset': '2px',

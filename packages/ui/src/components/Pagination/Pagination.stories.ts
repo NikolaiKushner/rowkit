@@ -194,7 +194,7 @@ export const ChangingPageSize: Story = {
 
     await expect(canvas.getByText('81–90 of 247')).toBeInTheDocument()
 
-    await userEvent.click(canvas.getByLabelText('Rows per page'))
+    await userEvent.click(canvas.getByLabelText('Rows per page:'))
     await userEvent.click(await within(document.body).findByRole('option', { name: '25' }))
 
     // Still page 9, now showing rows 201–225. The component moved nothing.

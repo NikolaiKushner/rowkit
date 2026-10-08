@@ -138,7 +138,7 @@ Nothing animates.
 | `showEdges`       | `boolean`           | `true`                    | Always show the first and last page, with ellipses between.                 |
 | `hidePageSize`    | `boolean`           | `false`                   | Hides the rows-per-page control.                                            |
 | `hideSummary`     | `boolean`           | `false`                   | Hides the "1–10 of 247" summary.                                            |
-| `pageSizeLabel`   | `string`            | `'Rows per page'`         | Label for the rows-per-page control.                                        |
+| `pageSizeLabel`   | `string`            | `'Rows per page:'`        | Label for the rows-per-page control.                                        |
 | `label`           | `string`            | `'Pagination'`            | Accessible name for the navigation region.                                  |
 | `previousLabel`   | `string`            | `'Back'`                  | Label of the previous-page button, shown beside its ◀ and used as its name. |
 | `nextLabel`       | `string`            | `'Next'`                  | Label of the next-page button, shown beside its ▶ and used as its name.     |

@@ -55,8 +55,14 @@ export const style = {
    * theme with a spinner glyph turns it.
    */
   'animate-busy': 'none',
-  /** An indeterminate progress bar's segment travelling across the track. */
-  'animate-progress': 'rk-progress-slide 2s steps(20) infinite',
+  /**
+   * An indeterminate progress bar's segment travelling across the track.
+   * Windows 98 moves its four blocks one block every 100ms and starts again
+   * at the left; `ProgressBar` sets `--rk-progress-steps` to the number of
+   * steps that fit the track it measures.
+   */
+  'animate-progress':
+    'rk-progress-march calc(var(--rk-progress-steps, 18) * 100ms) steps(var(--rk-progress-steps, 18)) infinite',
   /** How long a control takes to change state. Windows 98 changes instantly. */
   'duration-control': '0ms',
   /** How a dialog, a list or a toast arrives. */

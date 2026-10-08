@@ -424,7 +424,7 @@ handling.
 - `showEdges: boolean` — default `true`. Always show the first and last page, with ellipses between.
 - `hidePageSize: boolean` — default `false`. Hides the rows-per-page control.
 - `hideSummary: boolean` — default `false`. Hides the "1–10 of 247" summary.
-- `pageSizeLabel: string` — default `'Rows per page'`. Label for the rows-per-page control.
+- `pageSizeLabel: string` — default `'Rows per page:'`. Label for the rows-per-page control.
 - `label: string` — default `'Pagination'`. Accessible name for the navigation region.
 - `previousLabel: string` — default `'Back'`. Label of the previous-page button, shown beside its ◀ and used as its name.
 - `nextLabel: string` — default `'Next'`. Label of the next-page button, shown beside its ▶ and used as its name.
