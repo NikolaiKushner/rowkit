@@ -136,7 +136,8 @@ onBeforeUnmount(stopRepeat)
     <span v-if="$slots.leading" class="flex shrink-0 items-center">
       <slot name="leading" />
     </span>
-    <SearchIcon v-else-if="props.type === 'search'" class="shrink-0" />
+    <!-- Subtle, as the design draws it; Windows 98's pixel magnifier keeps its own colours. -->
+    <SearchIcon v-else-if="props.type === 'search'" class="shrink-0 text-text-subtle" />
 
     <input
       v-bind="$attrs"

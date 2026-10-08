@@ -87,6 +87,12 @@ export const selectContentVariants = cva([
 ])
 
 /**
+ * The strip at the top of a searchable list that holds its search box: the
+ * window face around a sunken field in Windows 98, a plain inset elsewhere.
+ */
+export const selectSearchVariants = cva('mb-select-search-gap bg-select-search p-select-search-p')
+
+/**
  * The scrolling list inside the frame: eight 22px rows, then it scrolls.
  */
 export const selectListVariants = cva('scrollbar-themed max-h-44 overflow-y-auto')

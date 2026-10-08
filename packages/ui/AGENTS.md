@@ -494,7 +494,7 @@ handling.
 
 **Props**
 
-- `searchable: boolean` — default `false`. Lets the trigger accept text and filters the list.
+- `searchable: boolean` — default `false`. Puts a search box at the top of the list, which takes focus as it opens and filters the options.
 - `manualFilter: boolean` — default `false`. Hands filtering to the consumer.
 - `disabled: boolean` — default `false`. Disables the control. A surrounding disabled `Field` also disables it.
 - `invalid: boolean` — default `false`. Marks the value invalid. A `Field` with an `error` also sets it.
@@ -529,6 +529,7 @@ handling.
 **Props**
 
 - `emptyText: string` — default `'No results found'`. Shown when no option matches the search term.
+- `searchLabel: string` — default `'Search'`. Names the search box of a searchable list, and is its placeholder.
 - `loading: boolean` — default `false`. Shows a loading row in place of the list. For async options.
 - `loadingText: string` — default `'Loading…'`. Text shown while `loading`.
 - `class: string`. Additional classes for the panel, merged so a consumer's utility wins.

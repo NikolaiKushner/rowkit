@@ -299,6 +299,8 @@ export const semanticColor = {
   'toast-close-foreground': ref('vga-black'),
   /** «Loading…» in a dropped list: plain text in Windows 98, the subtle grey elsewhere. */
   'loading-foreground': ref('vga-black'),
+  /** The strip that holds a searchable list's search box: the window face in Windows 98, nothing elsewhere. */
+  'select-search': ref('vga-silver'),
   /** A pager's buttons: raised command buttons in Windows 98, flat elsewhere. */
   pager: ref('vga-silver'),
   'pager-hover': ref('vga-silver'),

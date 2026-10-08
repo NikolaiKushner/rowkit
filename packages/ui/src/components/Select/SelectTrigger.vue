@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, useId, watch } from 'vue'
+import { computed, onMounted, ref, useId } from 'vue'
 import ErrorIcon from '../../icons/ErrorIcon.vue'
 import TriangleDownIcon from '../../icons/TriangleDownIcon.vue'
 import TriangleUpIcon from '../../icons/TriangleUpIcon.vue'
@@ -28,40 +28,17 @@ const anchor = ref<HTMLElement>()
 const input = ref<HTMLInputElement>()
 onMounted(() => {
   select.anchor.value = anchor.value
+  select.control.value = input.value
 })
 
-function displayValue(): string {
-  if (select.model.value === undefined) return ''
-  return select.labels.get(String(select.model.value)) ?? ''
-}
-
 /*
- * The box shows the selected label while shut. While open and searchable it
- * holds what the user is typing, and closing puts the label back — Escape or
- * a click away leaves the value as it was.
+ * The box always shows the selected label. A searchable select is searched in
+ * a box at the top of its list, which takes focus while the list is open, so
+ * the control itself is never typed into.
  */
-const inputValue = ref(displayValue())
-
-watch(
-  () =>
-    [
-      select.model.value,
-      select.open.value,
-      select.labels.get(String(select.model.value ?? '')),
-    ] as const,
-  () => {
-    if (!select.open.value) inputValue.value = displayValue()
-  },
-  { immediate: true, flush: 'sync' }
+const inputValue = computed(() =>
+  select.model.value === undefined ? '' : (select.labels.get(String(select.model.value)) ?? '')
 )
-
-function onInput(event: Event): void {
-  inputValue.value = (event.target as HTMLInputElement).value
-  select.setOpen(true)
-  // Only edits made while open are a search; seeding the box with the label
-  // is not something a consumer should have to filter out of a fetch.
-  select.searchTerm.value = inputValue.value
-}
 
 /* Type-ahead for the read-only select: letters jump to the matching option. */
 let typed = ''
@@ -91,8 +68,7 @@ function onKeyDown(event: KeyboardEvent): void {
       return
     case 'Home':
     case 'End':
-      // In a searchable box these move the text cursor; leave them alone.
-      if (!isOpen || select.searchable.value) return
+      if (!isOpen) return
       event.preventDefault()
       select.move(event.key === 'Home' ? 'first' : 'last')
       return
@@ -112,15 +88,21 @@ function onKeyDown(event: KeyboardEvent): void {
       if (isOpen) select.setOpen(false)
       return
     default:
-      if (
-        !select.searchable.value &&
-        event.key.length === 1 &&
-        !event.ctrlKey &&
-        !event.metaKey &&
-        !event.altKey
-      ) {
+      if (event.key.length !== 1 || event.ctrlKey || event.metaKey || event.altKey) return
+      if (!select.searchable.value) {
         typeAhead(event.key)
+        return
       }
+      // A letter typed on a searchable control opens the list and starts the
+      // search with it; the search box takes the rest.
+      if (event.key === ' ' && !isOpen) {
+        event.preventDefault()
+        select.setOpen(true)
+        return
+      }
+      event.preventDefault()
+      select.searchTerm.value = event.key
+      select.setOpen(true)
   }
 }
 
@@ -197,17 +179,16 @@ function onButtonClick(): void {
       aria-haspopup="listbox"
       :aria-expanded="select.open.value"
       :aria-controls="select.open.value ? select.listboxId : undefined"
-      :aria-autocomplete="select.searchable.value ? 'list' : 'none'"
-      :aria-activedescendant="select.activeDescendant.value"
+      aria-autocomplete="none"
+      :aria-activedescendant="select.searchable.value ? undefined : select.activeDescendant.value"
       :aria-invalid="select.isInvalid.value ? 'true' : undefined"
       :aria-describedby="select.describedBy.value"
       :aria-required="select.isRequired.value ? 'true' : undefined"
       :value="inputValue"
       :placeholder="props.placeholder"
-      :readonly="!select.searchable.value"
+      readonly
       :disabled="select.isDisabled.value"
       :class="selectInputVariants()"
-      @input="onInput"
       @keydown="onKeyDown"
       @pointerdown="onPointerDown"
       @click="onClick"

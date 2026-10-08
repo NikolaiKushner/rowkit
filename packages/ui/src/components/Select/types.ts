@@ -22,7 +22,7 @@ export interface SelectOption<TValue = string> {
  */
 export interface SelectProps {
   /**
-   * Lets the trigger accept text and filters the list.
+   * Puts a search box at the top of the list, which takes focus as it opens and filters the options.
    *
    * Worth turning on somewhere around twenty options. Below that the search
    * box costs a keystroke and saves nothing.
@@ -64,6 +64,8 @@ export interface SelectTriggerProps {
 export interface SelectContentProps {
   /** Shown when no option matches the search term. */
   emptyText?: string
+  /** Names the search box of a searchable list, and is its placeholder. */
+  searchLabel?: string
   /** Shows a loading row in place of the list. For async options. */
   loading?: boolean
   /** Text shown while `loading`. */

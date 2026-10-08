@@ -102,8 +102,19 @@ function move(to: 'first' | 'last' | 'next' | 'previous'): void {
   highlighted.value = list[index]?.value
 }
 
+const control = ref<HTMLElement>()
+const panel = ref<HTMLElement>()
+
+/*
+ * A searchable list takes focus into its search box while open. When it
+ * closes with focus still inside — an option chosen, Escape, Tab — focus goes
+ * back to the control, so the user is where they started.
+ */
 function setOpen(value: boolean): void {
   if (value && isDisabled.value) return
+  if (!value && open.value && panel.value?.contains(document.activeElement)) {
+    control.value?.focus()
+  }
   open.value = value
 }
 
@@ -166,6 +177,8 @@ provide(selectContextKey, {
   activeDescendant,
   listboxId,
   anchor: ref<HTMLElement>(),
+  control,
+  panel,
   setOpen,
   dragging,
   startDrag,

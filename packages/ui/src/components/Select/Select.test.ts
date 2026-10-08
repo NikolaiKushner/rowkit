@@ -77,6 +77,20 @@ async function open(wrapper: VueWrapper) {
   await nextTick()
 }
 
+/** The search box at the top of an open searchable list. */
+function searchBox(): HTMLInputElement {
+  const input = document.querySelector<HTMLInputElement>('[data-slot="select-search"] input')
+  if (!input) throw new Error('no search box rendered')
+  return input
+}
+
+async function search(term: string) {
+  const input = searchBox()
+  input.value = term
+  input.dispatchEvent(new Event('input'))
+  await nextTick()
+}
+
 function optionElements(): HTMLElement[] {
   return [...document.querySelectorAll<HTMLElement>('[role="option"]')]
 }
@@ -116,9 +130,9 @@ describe('Select', () => {
       expect(wrapper.find('button').attributes('aria-label')).toBe('Show options')
     })
 
-    it('makes a non-searchable select read-only rather than typable', () => {
+    it('keeps the control read-only, searchable or not: the search box is in the list', () => {
       expect(control(mountSelect()).attributes('readonly')).toBeDefined()
-      expect(control(mountSelect({ searchable: true })).attributes('readonly')).toBeUndefined()
+      expect(control(mountSelect({ searchable: true })).attributes('readonly')).toBeDefined()
     })
   })
 
@@ -173,9 +187,10 @@ describe('Select', () => {
   it('publishes the search term so options can be fetched', async () => {
     const wrapper = mountSelect({ searchable: true })
     await open(wrapper)
-    await control(wrapper).setValue('inv')
+    await search('inv')
 
     expect(wrapper.emitted('update:searchTerm')?.at(-1)).toEqual(['inv'])
+    wrapper.unmount()
   })
 
   it('shows the loading text instead of the list', async () => {
@@ -339,8 +354,7 @@ describe('searching', () => {
       ],
     })
     await open(wrapper)
-    await control(wrapper).setValue('EMI')
-    await nextTick()
+    await search('EMI')
     const shown = optionElements().filter((el) => el.style.display !== 'none')
     expect(shown.map((el) => el.textContent?.trim())).toEqual(['Émile'])
   })
@@ -348,18 +362,92 @@ describe('searching', () => {
   it('shows the empty text when nothing matches', async () => {
     const wrapper = mountSelect({ searchable: true })
     await open(wrapper)
-    await control(wrapper).setValue('zzz')
-    await nextTick()
-    expect(document.body.textContent).toContain('No results')
+    await search('zzz')
+    expect(document.body.textContent).toContain('No results found')
+    wrapper.unmount()
   })
 
-  it('puts the selected label back when the search is abandoned', async () => {
+  it('moves focus into the search box as the list opens', async () => {
+    const wrapper = mountSelect({ searchable: true })
+    await open(wrapper)
+    await nextTick()
+    expect(document.activeElement).toBe(searchBox())
+    wrapper.unmount()
+  })
+
+  it('makes the search box the combobox that owns the list', async () => {
+    const wrapper = mountSelect({ searchable: true, modelValue: 'invited' })
+    await open(wrapper)
+    const box = searchBox()
+    expect(box.getAttribute('role')).toBe('combobox')
+    expect(box.getAttribute('aria-label')).toBe('Search')
+    expect(box.getAttribute('aria-controls')).toBe(document.querySelector('[role="listbox"]')?.id)
+    const invited = optionElements().find((item) => item.textContent?.includes('Invited'))
+    expect(box.getAttribute('aria-activedescendant')).toBe(invited?.id)
+    // The control no longer points at the highlight: focus is not there.
+    expect(control(wrapper).attributes('aria-activedescendant')).toBeUndefined()
+    wrapper.unmount()
+  })
+
+  it('chooses with the arrows and Enter from the search box, then returns focus', async () => {
+    const wrapper = mountSelect({ searchable: true })
+    await open(wrapper)
+    await nextTick()
+    const box = searchBox()
+    box.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+    box.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+    await nextTick()
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['invited'])
+    expect(document.activeElement).toBe(control(wrapper).element)
+    wrapper.unmount()
+  })
+
+  it('closes on Escape from the search box, keeping the value and the focus', async () => {
     const wrapper = mountSelect({ searchable: true, modelValue: 'active' })
     await open(wrapper)
-    await control(wrapper).setValue('inv')
-    await control(wrapper).trigger('keydown', { key: 'Escape' })
     await nextTick()
+    await search('inv')
+    searchBox().dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    await nextTick()
+    expect(control(wrapper).attributes('aria-expanded')).toBe('false')
     expect(control(wrapper).element.value).toBe('Active')
+    expect(document.activeElement).toBe(control(wrapper).element)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    wrapper.unmount()
+  })
+
+  it('opens and starts the search with a letter typed on the control', async () => {
+    const wrapper = mountSelect({ searchable: true })
+    await control(wrapper).trigger('keydown', { key: 'i' })
+    await nextTick()
+    await nextTick()
+    expect(searchBox().value).toBe('i')
+    expect(wrapper.emitted('update:searchTerm')?.at(-1)).toEqual(['i'])
+    wrapper.unmount()
+  })
+
+  it('keeps the Field label, error and description on the control, not the search box', async () => {
+    const wrapper = mount(
+      defineComponent({
+        components: { Field, Select: SelectComponent, SelectTrigger, SelectContent },
+        template: `
+          <Field label="Country" error="Pick one">
+            <Select searchable><SelectTrigger /><SelectContent /></Select>
+          </Field>
+        `,
+      }),
+      { attachTo: document.body }
+    )
+    const input = wrapper.find('input')
+    await input.trigger('click')
+    await nextTick()
+    await nextTick()
+    const box = searchBox()
+    expect(box.id).not.toBe(input.attributes('id'))
+    expect(box.getAttribute('aria-describedby')).toBeNull()
+    expect(box.getAttribute('aria-invalid')).toBeNull()
+    expect(input.attributes('aria-describedby')).toBeDefined()
+    wrapper.unmount()
   })
 })
 

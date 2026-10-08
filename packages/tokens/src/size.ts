@@ -114,6 +114,9 @@ export const size = {
   'select-message-px': '6px',
   'select-message-py': '6px',
   'select-message-gap': '6px',
+  /** The strip around a searchable list's search box, and the space under it. */
+  'select-search-p': '2px',
+  'select-search-gap': '0px',
   /**
    * The buttons inside a number or date field: their height (Windows 98's
    * fill the well) and the date field's glyph.

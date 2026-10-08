@@ -35,6 +35,10 @@ export interface SelectContext {
   listboxId: string
   /** The box the panel is positioned against and sized to. */
   anchor: Ref<HTMLElement | undefined>
+  /** The combobox in the trigger: where focus goes back to when a searchable list closes. */
+  control: Ref<HTMLElement | undefined>
+  /** The open panel, while it is open. */
+  panel: Ref<HTMLElement | undefined>
 
   setOpen: (open: boolean) => void
   /**
