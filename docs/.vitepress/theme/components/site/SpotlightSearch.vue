@@ -45,7 +45,16 @@ watch(query, (value) => {
 const results = computed<FindResult[]>(() => {
   void indexReady.value
   const term = searched.value.trim()
-  return term ? find(term, tree.value).slice(0, 12) : recent(recentPaths.value, tree.value)
+  if (!term) return recent(recentPaths.value, tree.value)
+  // Three groups of three at most, as the design lists them: the best of each
+  // section, not a long scroll.
+  const perGroup = new Map<string, number>()
+  return find(term, tree.value).filter((result) => {
+    const seen = perGroup.get(result.group)
+    if (seen === undefined && perGroup.size === 3) return false
+    perGroup.set(result.group, (seen ?? 0) + 1)
+    return (seen ?? 0) < 3
+  })
 })
 
 /** Results in groups, in the order the groups first appear. */
@@ -59,7 +68,8 @@ const groups = computed(() => {
   return [...byName.values()]
 })
 
-watch(results, () => (active.value = 0))
+// Results highlight their first row, for Return; the recent pages wait for an arrow.
+watch(results, () => (active.value = searched.value.trim() ? 0 : -1), { immediate: true })
 
 watch(finding, (open) => {
   if (!open) return
@@ -82,6 +92,9 @@ function open(index: number): void {
   const result = results.value[index]
   if (!result) return
   finding.value = false
+  // The next search starts empty, on the pages opened recently.
+  query.value = ''
+  searched.value = ''
   void router.go(result.href)
 }
 
@@ -107,7 +120,7 @@ function onKeydown(event: KeyboardEvent): void {
       scrollIntoView()
       break
     case 'ArrowUp':
-      if (count) active.value = (active.value - 1 + count) % count
+      if (count) active.value = active.value <= 0 ? count - 1 : active.value - 1
       scrollIntoView()
       break
     case 'Enter':
@@ -158,7 +171,7 @@ const status = computed(() => {
           aria-autocomplete="list"
           aria-controls="rk-spotlight-results"
           :aria-expanded="results.length > 0"
-          :aria-activedescendant="results.length ? optionId(active) : undefined"
+          :aria-activedescendant="active >= 0 && results.length ? optionId(active) : undefined"
           class="min-w-0 flex-1 border-0 bg-transparent p-0 text-[22px] leading-7 text-foreground caret-control-primary outline-none placeholder:text-text-subtle"
           @keydown="onKeydown"
         />

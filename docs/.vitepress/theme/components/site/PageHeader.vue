@@ -2,6 +2,7 @@
 import { computed, type Component } from 'vue'
 import { Book32Icon, Computer32Icon, Document32Icon, Folder32Icon } from 'rowkit'
 import type { NavNode } from './useSiteNav'
+import { siteTheme } from './useSiteTheme'
 
 /**
  * The page header in the Windows 98 «web view» style: the section's 32px icon
@@ -18,9 +19,12 @@ const icons: Record<string, Component> = {
   'Foundations · Tokens': Computer32Icon,
 }
 
-// By the top folder; a folder's own page, by the folder itself.
-const icon = computed(
-  () => icons[(props.current?.path[0] ?? props.current)?.text ?? ''] ?? Document32Icon
+// By the top folder; a folder's own page, by the folder itself. The modern
+// theme draws a folder for every page (Figma Site/WebViewHeader).
+const icon = computed(() =>
+  siteTheme.value === 'modern'
+    ? Folder32Icon
+    : (icons[(props.current?.path[0] ?? props.current)?.text ?? ''] ?? Document32Icon)
 )
 </script>
 

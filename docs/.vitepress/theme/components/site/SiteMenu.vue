@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
+import { useRoute } from 'vitepress'
 import { CheckGlyphIcon, TriangleRightIcon } from 'rowkit'
 import { isExternal, type MenuEntry, type MenuItem } from './menu'
 import { siteTheme } from './useSiteTheme'
+import { normalize } from './useSiteNav'
 
 /**
  * A Windows 98 menu panel: the window bevel, items, etched separators, and
@@ -229,6 +231,13 @@ const itemClass = computed(() =>
     : 'h-[25px] w-full gap-1.5 pl-0.5 pr-1 min-w-[196px] modern:h-6 modern:min-w-0 modern:gap-1 modern:rounded-[5px] modern:pr-2 modern:pl-1.5'
 )
 
+// The page on screen, checked in the modern theme's menus as the design draws it.
+const route = useRoute()
+const isCurrent = (entry: MenuItem) =>
+  entry.href !== undefined &&
+  !isExternal(entry.href) &&
+  normalize(entry.href) === normalize(route.path)
+
 const isLit = (entry: MenuItem, index: number) =>
   (active.value === index || openSub.value === entry.id) && entry.disabled !== true
 </script>
@@ -270,6 +279,7 @@ const isLit = (entry: MenuItem, index: number) =>
           :data-index="index"
           :role="entry.checked === undefined ? 'menuitem' : 'menuitemradio'"
           :aria-checked="entry.checked"
+          :aria-current="isCurrent(entry) ? 'page' : undefined"
           tabindex="-1"
           :aria-haspopup="entry.children ? 'menu' : undefined"
           :aria-expanded="entry.children && !drill ? openSub === entry.id : undefined"
@@ -287,7 +297,7 @@ const isLit = (entry: MenuItem, index: number) =>
             :class="size === 'start' ? 'size-8' : 'size-4'"
           >
             <component :is="entry.icon" v-if="entry.icon && siteTheme !== 'modern'" />
-            <CheckGlyphIcon v-if="entry.checked" class="win98:hidden" />
+            <CheckGlyphIcon v-if="entry.checked || isCurrent(entry)" class="win98:hidden" />
           </span>
           <span class="min-w-0 flex-1 truncate">{{ entry.text }}</span>
           <span
@@ -304,6 +314,7 @@ const isLit = (entry: MenuItem, index: number) =>
           :data-index="index"
           :role="entry.checked === undefined ? 'menuitem' : 'menuitemradio'"
           :aria-checked="entry.checked"
+          :aria-current="isCurrent(entry) ? 'page' : undefined"
           tabindex="-1"
           :aria-haspopup="entry.children ? 'menu' : undefined"
           :aria-expanded="entry.children && !drill ? openSub === entry.id : undefined"
@@ -321,7 +332,7 @@ const isLit = (entry: MenuItem, index: number) =>
             :class="size === 'start' ? 'size-8' : 'size-4'"
           >
             <component :is="entry.icon" v-if="entry.icon && siteTheme !== 'modern'" />
-            <CheckGlyphIcon v-if="entry.checked" class="win98:hidden" />
+            <CheckGlyphIcon v-if="entry.checked || isCurrent(entry)" class="win98:hidden" />
           </span>
           <span class="min-w-0 flex-1 truncate">{{ entry.text }}</span>
           <span
