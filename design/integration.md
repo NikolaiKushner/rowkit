@@ -180,7 +180,7 @@
 - [x] 7.1 Changeset (`.changeset/design-handoff.md`): новые токены, `ProgressBar indeterminate`, изменения modern, README пакета. `@rowkit/tokens` — minor, `rowkit` — minor.
 - [ ] Страница Themes и Tokens на сайте — новые токены. AGENTS.md — новые стиль-переключатели.
 - [ ] Описание токенов — в коде, рядом со значениями: это шаг 2 плана [agent-theming.md](./agent-theming.md) (темы через агента), делаем вместе.
-- [ ] README GIF тем — переснять после шагов 2–5.
+- [x] 7.3 README GIF тем переснят: главная в Win98 → modern light → modern dark, новый знак и Dock, 960×600, 8 с.
 - [ ] Отметить в Figma (обложка или Theme decisions), что handoff принят.
 
 ## Проверки после каждого шага
