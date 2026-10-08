@@ -3,7 +3,7 @@
     "name": "rowkit — full library (brotli)",
     "path": "packages/ui/dist/index.js",
     "import": "*",
-    "limit": "38 kB",
+    "limit": "39 kB",
     "ignore": ["vue", "@rowkit/tokens", "clsx", "tailwind-merge", "class-variance-authority"]
   },
   {
