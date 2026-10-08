@@ -67,16 +67,12 @@ attribute works on any element, not only `<html>`, and themes nest.
 
 To adjust a theme — your brand colour, corners, density, typeface — set a few
 variables after `rowkit/styles`. For a named theme of your own, light and dark,
-`defineTheme()` from `@rowkit/tokens` writes the whole stylesheet from the
-values you change. rowkit depends on that package already; add it to your own
-dependencies to import from it:
-
-```bash
-pnpm add @rowkit/tokens@beta
-```
+`defineTheme()` from `rowkit/theme` writes the whole stylesheet from the
+values you change. Nothing else to install: it comes with rowkit, and matches
+the components you render.
 
 ```ts
-import { defineTheme } from '@rowkit/tokens'
+import { defineTheme } from 'rowkit/theme'
 
 export const acme = defineTheme({
   name: 'acme',

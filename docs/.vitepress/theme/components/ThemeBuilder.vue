@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, h, ref, type FunctionalComponent } from 'vue'
-import { defineTheme, type ThemeVars } from '@rowkit/tokens'
+import { defineTheme, type ThemeValues } from 'rowkit/theme'
 import {
   Badge,
   Button,
@@ -46,12 +46,12 @@ const DENSITY: Record<Exclude<Density, 'regular'>, number[]> = {
   roomy: [28, 32, 40, 48, 36, 44],
 }
 
-const vars = computed<ThemeVars>(() => {
+const vars = computed<ThemeValues>(() => {
   const a = accent.value
   const toward = (other: string, share: number) =>
     `color-mix(in srgb, ${a} ${String(share)}%, ${other})`
   const r = radius.value
-  const out: ThemeVars = {
+  const out: ThemeValues = {
     '--color-control-primary': a,
     '--color-control-primary-hover': toward('black', 90),
     '--color-control-primary-active': toward('black', 78),
@@ -106,19 +106,26 @@ const css = computed(() =>
   })
 )
 
-/** What a reader copies: the call, not the 200 lines it expands to. */
+/**
+ * What a reader copies: the call, not the 200 lines it expands to — and the
+ * same call the preview makes, so the dark scheme keeps the accent too.
+ */
 const source = computed(() => {
-  const lines = Object.entries(vars.value).map(([k, v]) => `    '${k}': '${v}',`)
+  const lines = Object.entries(vars.value).map(([k, v]) => `  '${k}': '${String(v)}',`)
   return [
-    "import { defineTheme } from '@rowkit/tokens'",
+    "import { defineTheme } from 'rowkit/theme'",
+    '',
+    'const values = {',
+    ...lines,
+    '}',
     '',
     'export const css = defineTheme({',
     `  name: '${NAME}',`,
     `  extends: '${base.value}',`,
-    '  light: {',
-    ...lines,
-    '  },',
-    ...(base.value === 'win98' ? ['  dark: false,'] : ['  dark: { /* the same accent */ },']),
+    '  light: values,',
+    base.value === 'win98'
+      ? '  dark: false,'
+      : '  dark: values, // the accent carries into the dark scheme',
     '})',
   ].join('\n')
 })

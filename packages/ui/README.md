@@ -86,7 +86,7 @@ Two themes from one set of components: **Windows 98**, the default, and **modern
 `data-theme` works on any element, and themes nest. Without `data-color-scheme` the modern theme follows the system's light or dark setting. Every colour, size, corner, shadow and state is a token, so the look is yours to change — adjust a few variables, or define a complete theme of your own, light and dark, in one call:
 
 ```ts
-import { defineTheme } from '@rowkit/tokens'
+import { defineTheme } from 'rowkit/theme'
 
 export const acme = defineTheme({
   name: 'acme', // <html data-theme="acme">

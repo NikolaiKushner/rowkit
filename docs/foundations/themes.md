@@ -107,14 +107,14 @@ them on the theme's own selector, in a stylesheet loaded after `rowkit/styles`:
 
 ### Define your own theme
 
-`defineTheme()` from `@rowkit/tokens` turns a few values into a complete theme:
+`defineTheme()` from `rowkit/theme` turns a few values into a complete theme:
 it starts from Windows 98 or modern, lays your values over it, and writes the
 stylesheet — every variable declared, both schemes, the dark one following the
 system unless the page fixes it.
 
 ```js
 // src/theme.js
-import { defineTheme } from '@rowkit/tokens'
+import { defineTheme } from 'rowkit/theme'
 
 export const acme = defineTheme({
   name: 'acme',
@@ -145,8 +145,13 @@ export const acme = defineTheme({
 | `light`   | Your values for the light scheme, or for the only scheme of a theme without a dark one.                                                                                                          |
 | `dark`    | What changes in the dark scheme, on top of `light`. A theme built on `modern` inherits modern's dark scheme; `dark: false` gives it none. A theme built on `win98` has none unless you pass one. |
 
-It checks what it is given: a token rowkit does not have (`'--color-brnad'`)
-throws, so a typo fails the build instead of quietly doing nothing.
+It checks what it is given. Token names are typed, so an editor completes them
+and underlines a typo (`'--color-brnad'`); at run time an unknown token throws,
+so even untyped code fails the build instead of quietly doing nothing.
+
+`rowkit/theme` comes with rowkit — nothing else to install — and always matches
+the components you render. Without the components, the same function is in
+`@rowkit/tokens`.
 
 **Ship the CSS** in one of two ways.
 

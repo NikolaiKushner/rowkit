@@ -3,7 +3,7 @@
 [![npm](https://img.shields.io/npm/v/@rowkit/tokens/beta?color=D63A1F)](https://www.npmjs.com/package/@rowkit/tokens)
 [![license](https://img.shields.io/npm/l/@rowkit/tokens)](https://github.com/NikolaiKushner/rowkit/blob/main/LICENSE)
 
-The design tokens behind [rowkit](https://www.npmjs.com/package/rowkit) — colour, shadows, sizes, corners, type, layers and motion for its two themes: **Windows 98**, the default, and **modern**, in light and dark. Plus `defineTheme()`, to make a theme of your own.
+The design tokens behind [rowkit](https://www.npmjs.com/package/rowkit) — colour, shadows, sizes, corners, type, layers and motion for its two themes: **Windows 98**, the default, and **modern**, in light and dark. Plus `defineTheme()`, to make a theme of your own (with rowkit installed, import it from `rowkit/theme` — the same function, matched to the components).
 
 Usable on its own. Nothing here depends on Vue, so a chart library, a design tool or an email template can read the same values the components use.
 

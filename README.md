@@ -42,7 +42,7 @@ rowkit ships two themes from one set of components: **Windows 98**, the default,
 Every colour, size, corner, shadow and state is a token — the bevels and the dotted focus ring of Windows 98 included — so the look is yours to change. Adjust a few variables for your brand, or define a complete theme of your own, light and dark, in one call:
 
 ```ts
-import { defineTheme } from '@rowkit/tokens'
+import { defineTheme } from 'rowkit/theme'
 
 export const acme = defineTheme({
   name: 'acme', // <html data-theme="acme">
