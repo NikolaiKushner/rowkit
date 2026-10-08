@@ -27,7 +27,7 @@ A professional Vue 3 toolkit — the components a product interface is built fro
 
 A product interface is a set of components that have to agree: controls, overlays, tables, filters, empty and loading states. rowkit is that set, built as one toolkit — typed, with its own behaviour layer, from one token package. What is published today is the part already finished. The rest of the set is the plan in the [roadmap](./ROADMAP.md), not a second library to go and find.
 
-![A Users window: toolbar with New, Export and Delete, a FilterBar with one chip, a sorted DataTable with two selected rows and status badges, and Pagination in the status bar](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/datatable.png)
+![DataTable side by side in Windows 98 and the modern theme: the live demo on rowkit.dev — a toolbar, a FilterBar with one chip, a sorted table with a selected row and status badges, and Pagination in the status bar](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/datatable.png)
 
 ## What it looks like
 
@@ -53,11 +53,11 @@ export const acme = defineTheme({
 
 How it works, every value you can change, and a live builder: [Themes](https://rowkit.dev/foundations/themes). The modern theme's values are a draft until its Figma file is drawn.
 
-![The Components window: buttons and a toggle group, inputs and a select, badges, checkboxes and radios, pagination with a progress bar, and a field with an error](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/components.png)
+![The same components in Windows 98 and the modern theme: buttons and a button group, inputs and a select, badges, checkboxes and radios, pagination with a progress bar and a status bar, and a field with an error](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/components.png)
 
 The docs at [rowkit.dev](https://rowkit.dev) switch with it: in Windows 98 every page opens in an Explorer window, folder tree on the left; in the modern theme the site is a modern desktop, with a menu bar, a Dock and Finder-style windows. [`?theme=modern`](https://rowkit.dev/?theme=modern) opens it that way.
 
-![rowkit.dev: an Explorer window with the docs folder tree and the DataTable page with a live example](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/docs.png)
+![rowkit.dev in Windows 98 and the modern theme: the DataTable page with the folder tree and a live example, as an Explorer window and as a Finder window](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/docs.png)
 
 ## Install
 

@@ -172,7 +172,7 @@
   - Modern — `modern-tile` и Dock-иконка 1024.
 - [x] 6.1 Полоса в меню «Пуск» (`wordmark alone`): новый wordmark.
 - [x] 6.2 README: hero с `<picture>` light/dark (оба README), бейдж npm цветом бренда; og-image и github-social-preview из Figma. Превью репозитория GitHub загружается вручную в Settings → Social preview.
-- [ ] 6.3 README: новые картинки. Экспорты `datatable` / `components` / `docs` — это рамки под настоящие скриншоты: снимаем их со сторибука и сайта.
+- [x] 6.3 README: новые картинки — рамки datatable / components / docs собраны по Figma вокруг настоящих скриншотов (сайт 1440×900, сетка компонентов из Storybook). Экспорты `datatable` / `components` / `docs` — это рамки под настоящие скриншоты: снимаем их со сторибука и сайта.
 - [ ] Onest (OFL) — только для бренд-графики. В UI-темы он не идёт.
 
 ## Шаг 7. Документация и выпуск
