@@ -81,7 +81,7 @@ const isExternal = (tile: Tile) => !!tile.href && /^https?:/.test(tile.href)
         @click="emit('open', tile.window)"
       >
         <span
-          class="flex h-12 items-center justify-center rounded-xl bg-card shadow-raised transition-transform group-hover:-translate-y-1 motion-reduce:transition-none [&_svg]:size-[30px]"
+          class="flex size-12 items-center justify-center rounded-xl bg-card shadow-raised transition-transform group-hover:-translate-y-1 motion-reduce:transition-none [&_svg]:size-[30px]"
         >
           <img
             v-if="!tile.icon"
@@ -109,7 +109,7 @@ const isExternal = (tile: Tile) => !!tile.href && /^https?:/.test(tile.href)
         class="group flex w-12 flex-col items-center gap-[3px] rounded-xl text-foreground no-underline outline-none focus-visible:focus-outer"
       >
         <span
-          class="flex h-12 items-center justify-center rounded-xl bg-card shadow-raised transition-transform group-hover:-translate-y-1 motion-reduce:transition-none [&_svg]:size-[30px]"
+          class="flex size-12 items-center justify-center rounded-xl bg-card shadow-raised transition-transform group-hover:-translate-y-1 motion-reduce:transition-none [&_svg]:size-[30px]"
         >
           <img
             v-if="!tile.icon"

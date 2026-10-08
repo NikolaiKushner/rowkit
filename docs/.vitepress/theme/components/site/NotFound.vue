@@ -120,7 +120,7 @@ const goHome = () => void router.go(withBase('/'))
       >
         <span class="relative mb-3.5 size-16">
           <span
-            class="absolute inset-y-0 left-2 flex items-center rounded-xl bg-card shadow-raised"
+            class="absolute inset-0 flex items-center justify-center rounded-xl bg-card shadow-raised"
           >
             <img :src="withBase('/mark-48.svg')" alt="" width="48" height="48" class="block" />
           </span>

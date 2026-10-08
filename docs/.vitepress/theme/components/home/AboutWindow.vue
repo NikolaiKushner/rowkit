@@ -32,7 +32,7 @@ defineEmits<{ close: [] }>()
     </WindowTitleBar>
     <WindowBody class="flex items-start gap-4 p-4 modern:p-5">
       <span
-        class="shrink-0 modern:flex modern:h-16 modern:items-center modern:rounded-xl modern:bg-card modern:shadow-raised"
+        class="shrink-0 modern:flex modern:size-16 modern:items-center modern:justify-center modern:rounded-xl modern:bg-card modern:shadow-raised"
       >
         <!-- The mark as each theme reads it: pixels in Windows 98, the vector on a tile in modern. -->
         <img
