@@ -166,7 +166,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onPointerDown,
 
 <template>
   <nav ref="root" aria-label="Main" class="relative z-30 bg-card px-0.5 py-px">
-    <ul role="menubar" aria-label="Main" class="m-0 flex list-none items-center p-0">
+    <ul role="menubar" aria-label="Main" class="m-0 flex list-none items-center p-0 modern:gap-0.5">
       <li v-for="(item, index) in bar" :key="item.text" role="none" class="relative">
         <a
           v-if="item.href"

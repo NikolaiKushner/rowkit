@@ -4,25 +4,33 @@
  * the Windows 98 site is untouched by this file.
  */
 
-/* A wallpaper rather than a flat colour: a soft gradient over the desktop token. */
+/*
+ * The wallpaper (Figma SiteModern/Wallpaper): the desktop colour under three
+ * blurred ellipses, drawn by SiteWallpaper. Their colours, light and dark.
+ */
 [data-theme='modern'] .rk-desktop {
-  background:
-    radial-gradient(120% 90% at 15% 0%, #ffffff66, transparent 60%),
-    radial-gradient(90% 80% at 100% 100%, #0071e333, transparent 60%), var(--color-desktop);
+  background: var(--color-desktop);
+  --rk-wallpaper-a: var(--color-modern-white);
+  --rk-wallpaper-b: var(--color-modern-blue);
+  --rk-wallpaper-c: var(--color-modern-blue-link-dark);
 }
 
 @media (prefers-color-scheme: dark) {
   [data-theme='modern']:not([data-color-scheme='light']) .rk-desktop {
-    background:
-      radial-gradient(120% 90% at 15% 0%, #2997ff26, transparent 60%),
-      radial-gradient(90% 80% at 100% 100%, #5e5ce633, transparent 60%), var(--color-desktop);
+    --rk-wallpaper-a: #22345f;
+    --rk-wallpaper-c: #4b2f7a;
   }
 }
 
 [data-theme='modern'][data-color-scheme='dark'] .rk-desktop {
-  background:
-    radial-gradient(120% 90% at 15% 0%, #2997ff26, transparent 60%),
-    radial-gradient(90% 80% at 100% 100%, #5e5ce633, transparent 60%), var(--color-desktop);
+  --rk-wallpaper-a: #22345f;
+  --rk-wallpaper-c: #4b2f7a;
+}
+
+/* The Terminal on the home page: the same in light and dark. */
+[data-theme='modern'] {
+  --rk-terminal-bg: #1e1e1e;
+  --rk-terminal-fg: #e5e5e7;
 }
 
 /* The menu bar: translucent, a hairline under it, no bevel. */
@@ -30,6 +38,30 @@
   background: var(--color-popover);
   box-shadow: inset 0 -1px 0 var(--color-border);
   backdrop-filter: var(--rk-popover-backdrop);
+}
+
+/* Menu-bar items (Figma SiteModern/MenuBarItem): rounded ghost buttons, grey while open. */
+:root[data-theme='modern'] .rk-bar-item {
+  padding: 0 8px;
+  border-radius: 5px;
+}
+
+:root[data-theme='modern'] .rk-bar-item:hover {
+  background: var(--color-control-ghost-hover);
+  box-shadow: none;
+}
+
+:root[data-theme='modern'] .rk-bar-item-open,
+:root[data-theme='modern'] .rk-bar-item-open:hover {
+  background: var(--color-control-ghost-active);
+  box-shadow: none;
+}
+
+:root[data-theme='modern'] .rk-bar-item:focus-visible:not(.rk-bar-item-open) {
+  background: none;
+  color: var(--color-foreground);
+  outline: var(--rk-focus-outer-width) solid var(--color-focus-ring);
+  outline-offset: var(--rk-focus-outer-offset);
 }
 
 /* The folder tree as a sidebar: rounded selection, no [+]/[−] boxes or dotted rings. */

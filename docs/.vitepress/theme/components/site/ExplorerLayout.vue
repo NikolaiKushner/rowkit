@@ -29,6 +29,7 @@ import SiteTaskbar from './SiteTaskbar.vue'
 import SiteToolbarButton from './SiteToolbarButton.vue'
 import { siteTheme } from './useSiteTheme'
 import { canGoBack, canGoForward, normalize, recordVisit, stepOf, useSiteNav } from './useSiteNav'
+import SiteWallpaper from './SiteWallpaper.vue'
 
 /**
  * A docs page as a Windows 98 Explorer window, maximized above the taskbar:
@@ -104,7 +105,8 @@ const goForward = () => history.forward()
 </script>
 
 <template>
-  <div class="rk-desktop flex h-dvh flex-col overflow-hidden bg-background">
+  <div class="rk-desktop relative isolate flex h-dvh flex-col overflow-hidden bg-background">
+    <SiteWallpaper />
     <Window class="min-h-0 flex-1 modern:m-3">
       <WindowTitleBar :title="windowTitle">
         <template #icon>

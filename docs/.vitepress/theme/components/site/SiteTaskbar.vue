@@ -29,15 +29,21 @@ defineEmits<{ task: [] }>()
 
 // The clock renders on the client only; the server's time would be wrong by
 // the time anyone read it, and would not match on hydration.
+// The modern menu bar puts the date before it, as a Mac does: «Tue 7 Oct».
 const time = ref('')
+const date = ref('')
 let timer: ReturnType<typeof setInterval> | undefined
 
 function tick(): void {
-  time.value = new Date().toLocaleTimeString([], {
+  const now = new Date()
+  time.value = now.toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
   })
+  date.value = now
+    .toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+    .replace(',', '')
 }
 
 onMounted(() => {
@@ -71,14 +77,14 @@ function closeStart(focusStart: boolean): void {
     window's menus move up into it, and there is no task button.
   -->
   <footer
-    class="rk-taskbar flex h-[34px] shrink-0 items-center gap-1 bg-card p-0.5 modern:order-first modern:z-40 modern:h-7 modern:gap-2 modern:px-2 modern:py-0"
+    class="rk-taskbar flex h-[34px] shrink-0 items-center gap-1 bg-card p-0.5 modern:order-first modern:z-40 modern:h-7 modern:gap-0.5 modern:px-3 modern:py-0"
   >
     <button
       ref="start"
       type="button"
       aria-haspopup="menu"
       :aria-expanded="startOpen"
-      class="flex h-[27px] shrink-0 items-center gap-1 pr-1.5 pl-0.5 font-bold text-ui text-foreground outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring modern:h-6 modern:rounded-sm modern:px-2 modern:pt-0 modern:font-strong modern:shadow-none modern:hover:bg-control-ghost-hover modern:focus-visible:focus-outer"
+      class="flex h-[27px] shrink-0 items-center gap-1 pr-1.5 pl-0.5 font-bold text-ui text-foreground outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring modern:h-[22px] modern:gap-1.5 modern:rounded-[5px] modern:pr-2 modern:pl-1.5 modern:pt-0 modern:font-strong modern:shadow-none modern:hover:bg-control-ghost-hover modern:focus-visible:focus-outer"
       :class="startOpen ? 'pt-px pl-[3px] shadow-pressed' : 'shadow-raised active:shadow-pressed'"
       @click="toggleStart"
     >
@@ -114,23 +120,25 @@ function closeStart(focusStart: boolean): void {
     <div class="flex-1" />
     <ThemeSwitch />
     <div
-      class="flex h-[27px] shrink-0 items-center gap-1.5 px-1.5 text-ui text-foreground shadow-status modern:shadow-none"
+      class="flex h-[27px] shrink-0 items-center gap-1.5 px-1.5 text-ui text-foreground shadow-status modern:h-[22px] modern:gap-3.5 modern:pr-0 modern:pl-3 modern:shadow-none"
     >
       <a
         href="https://github.com/NikolaiKushner/rowkit/releases"
         target="_blank"
         rel="noreferrer"
-        class="text-foreground no-underline"
+        class="text-foreground no-underline modern:text-muted-foreground"
         >v{{ version }}</a
       >
       <a
         href="https://github.com/NikolaiKushner/rowkit"
         target="_blank"
         rel="noreferrer"
-        class="text-foreground underline"
+        class="text-foreground underline modern:no-underline"
         >GitHub</a
       >
-      <time class="min-w-[28px] tabular-nums">{{ time }}</time>
+      <time class="min-w-[28px] tabular-nums"
+        ><span class="win98:hidden">{{ date }}&ensp;</span>{{ time }}</time
+      >
     </div>
   </footer>
 </template>

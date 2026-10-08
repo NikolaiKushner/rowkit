@@ -21,7 +21,10 @@ import {
   WindowButton,
   WindowTitleBar,
 } from 'rowkit'
+import SiteDock from '../site/SiteDock.vue'
 import SiteTaskbar from '../site/SiteTaskbar.vue'
+import SiteWallpaper from '../site/SiteWallpaper.vue'
+import ThemeSwitch from '../site/ThemeSwitch.vue'
 import CommandPrompt from './CommandPrompt.vue'
 import EditUserDialog from './EditUserDialog.vue'
 import DesktopIcon from './DesktopIcon.vue'
@@ -69,16 +72,16 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
 </script>
 
 <template>
-  <div class="rk-desktop flex h-dvh flex-col overflow-hidden bg-desktop font-sans text-ui">
+  <div
+    class="rk-desktop relative isolate flex h-dvh flex-col overflow-hidden bg-desktop font-sans text-ui"
+  >
+    <SiteWallpaper />
     <h1 class="sr-only">rowkit — a professional Vue 3 toolkit</h1>
 
     <!-- The desktop, at 1280px and up. -->
     <main class="relative min-h-0 flex-1 max-xl:hidden">
       <!-- Icons down the left in Windows 98; the Dock along the bottom in the modern theme. -->
-      <nav
-        aria-label="Shortcuts"
-        class="absolute top-4 left-4 flex flex-col gap-3 modern:top-auto modern:bottom-3 modern:left-1/2 modern:z-10 modern:-translate-x-1/2 modern:flex-row modern:gap-2 modern:rounded-2xl modern:border modern:border-popover-border modern:bg-popover modern:p-2 modern:shadow-popover modern:[backdrop-filter:var(--rk-popover-backdrop)]"
-      >
+      <nav aria-label="Shortcuts" class="absolute top-4 left-4 flex flex-col gap-3 modern:hidden">
         <DesktopIcon
           v-for="item in shortcuts"
           :key="item.label"
@@ -181,25 +184,45 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
         </StatusBar>
       </Window>
 
-      <div class="absolute top-6 right-6 flex w-[400px] flex-col gap-12">
+      <SiteDock
+        :running="open"
+        class="absolute bottom-2.5 left-1/2 z-10 -translate-x-1/2 win98:hidden"
+        @open="(name) => (open[name] = true)"
+      />
+
+      <div class="absolute top-6 right-6 flex w-[400px] flex-col gap-12 modern:gap-6">
         <Window v-show="open.about">
           <WindowTitleBar title="About rowkit">
             <template #icon>
               <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" />
             </template>
             <template #controls>
+              <!-- Modern draws all three lights on every window; Windows 98, close alone. -->
+              <WindowButton
+                glyph="minimize"
+                label="Minimize About rowkit"
+                class="win98:hidden"
+                @click="open.about = false"
+              />
+              <WindowButton glyph="maximize" label="Maximize" disabled class="win98:hidden" />
               <WindowButton glyph="close" label="Close About rowkit" @click="open.about = false" />
             </template>
           </WindowTitleBar>
-          <WindowBody class="flex items-start gap-4 p-4">
-            <img :src="withBase('/mark-48.svg')" alt="" width="48" height="48" class="shrink-0" />
+          <WindowBody class="flex items-start gap-4 p-4 modern:p-5">
+            <span
+              class="shrink-0 modern:flex modern:h-16 modern:items-center modern:rounded-xl modern:bg-card modern:shadow-raised"
+            >
+              <img :src="withBase('/mark-48.svg')" alt="" width="48" height="48" class="block" />
+            </span>
             <div class="flex flex-col gap-2">
               <img :src="withBase('/logo.svg')" alt="rowkit" width="160" height="32" />
               <p class="m-0 text-doc text-foreground">
                 A professional Vue 3 toolkit — the components a product interface is built from.
               </p>
-              <p class="m-0 text-muted-foreground">Version {{ version }} on npm · MIT licence</p>
-              <div class="flex gap-1.5">
+              <p class="m-0 text-muted-foreground modern:text-text-subtle">
+                Version {{ version }} on npm · MIT licence
+              </p>
+              <div class="flex gap-1.5 modern:gap-2 modern:pt-1.5">
                 <Button as="a" :href="withBase('/installation')">Get started</Button>
                 <Button as="a" :href="withBase('/components/')" variant="secondary">
                   Components
@@ -207,6 +230,13 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
               </div>
             </div>
           </WindowBody>
+          <!-- The look switch again, where About says what the toolkit is. Modern only. -->
+          <div
+            class="flex items-center gap-3 border-t border-border bg-background px-5 pt-3 pb-3.5 win98:hidden"
+          >
+            <span class="font-strong text-foreground">Look</span>
+            <ThemeSwitch />
+          </div>
         </Window>
 
         <CommandPrompt v-show="open.prompt" closable @close="open.prompt = false" />
