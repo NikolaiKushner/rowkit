@@ -6,6 +6,13 @@ type ShikiTheme = Exclude<NonNullable<NonNullable<UserConfig['markdown']>['theme
 const { vga } = tokens.color
 
 /**
+ * Every colour is a variable, so the code follows the site's theme: the
+ * Windows 98 IDE's colours, or the modern theme's light and dark ones. The
+ * values live in `theme/modern.css`; the Windows 98 ones fall back to VGA.
+ */
+const code = (role: string, fallback: string) => `var(--rk-code-${role}, ${fallback})`
+
+/**
  * Code colours as a Windows 98 IDE drew them — Visual C++ 6 and Visual Basic 6:
  * keywords blue, comments green, everything else black, plus maroon strings,
  * teal numbers and navy tags so a Vue template reads at a glance.
@@ -20,13 +27,13 @@ const { vga } = tokens.color
 export const win98Code: ShikiTheme = {
   name: 'rowkit-win98',
   type: 'light',
-  fg: vga.black,
-  bg: vga.white,
+  fg: code('fg', vga.black),
+  bg: code('bg', vga.white),
   settings: [
-    { settings: { foreground: vga.black, background: vga.white } },
+    { settings: { foreground: code('fg', vga.black), background: code('bg', vga.white) } },
     {
       scope: ['comment', 'punctuation.definition.comment'],
-      settings: { foreground: vga.green },
+      settings: { foreground: code('comment', vga.green) },
     },
     {
       scope: [
@@ -37,23 +44,26 @@ export const win98Code: ShikiTheme = {
         'variable.language',
         'constant.language',
       ],
-      settings: { foreground: vga.blue },
+      settings: { foreground: code('keyword', vga.blue) },
     },
     // `=`, `=>`, `+`: keywords by grammar, punctuation to a reader.
-    { scope: ['keyword.operator'], settings: { foreground: vga.black } },
+    { scope: ['keyword.operator'], settings: { foreground: code('fg', vga.black) } },
     {
       scope: ['keyword.operator.new', 'keyword.operator.expression', 'keyword.operator.typeof'],
-      settings: { foreground: vga.blue },
+      settings: { foreground: code('keyword', vga.blue) },
     },
     {
       scope: ['string', 'punctuation.definition.string'],
-      settings: { foreground: vga.maroon },
+      settings: { foreground: code('string', vga.maroon) },
     },
-    { scope: ['constant.numeric'], settings: { foreground: vga.teal } },
+    { scope: ['constant.numeric'], settings: { foreground: code('number', vga.teal) } },
     {
       scope: ['entity.name.tag', 'punctuation.definition.tag', 'support.class.component'],
-      settings: { foreground: vga.navy },
+      settings: { foreground: code('tag', vga.navy) },
     },
-    { scope: ['entity.other.attribute-name'], settings: { foreground: vga.teal } },
+    {
+      scope: ['entity.other.attribute-name'],
+      settings: { foreground: code('attribute', vga.teal) },
+    },
   ],
 }

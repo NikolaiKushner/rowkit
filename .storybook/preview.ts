@@ -6,7 +6,45 @@ import '@fontsource/pt-sans/700.css'
 import '@fontsource/vt323/400.css'
 import './preview.css'
 
+type Theme = 'win98' | 'modern'
+type Scheme = 'system' | 'light' | 'dark'
+
+/**
+ * The theme the stories open in. Windows 98 is rowkit's default; set
+ * `VITE_RK_THEME=modern` to run the browser tests (and their a11y gate) in the
+ * modern theme instead.
+ */
+const initialTheme: Theme = import.meta.env.VITE_RK_THEME === 'modern' ? 'modern' : 'win98'
+
 const preview: Preview = {
+  globalTypes: {
+    theme: {
+      description: 'rowkit theme',
+      toolbar: {
+        title: 'Theme',
+        icon: 'paintbrush',
+        items: [
+          { value: 'win98', title: 'Windows 98' },
+          { value: 'modern', title: 'Modern' },
+        ],
+        dynamicTitle: true,
+      },
+    },
+    scheme: {
+      description: 'Colour scheme, for themes that have a dark one',
+      toolbar: {
+        title: 'Scheme',
+        icon: 'mirror',
+        items: [
+          { value: 'system', title: 'System' },
+          { value: 'light', title: 'Light' },
+          { value: 'dark', title: 'Dark' },
+        ],
+        dynamicTitle: true,
+      },
+    },
+  },
+  initialGlobals: { theme: initialTheme, scheme: 'system' },
   parameters: {
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
     docs: { theme },
@@ -22,7 +60,14 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (story) => {
+    (story, context) => {
+      // The theme goes on <html>, as an app sets it, so overlays teleported to
+      // <body> are themed too.
+      const root = document.documentElement
+      root.dataset.theme = (context.globals.theme as Theme | undefined) ?? initialTheme
+      const scheme = (context.globals.scheme as Scheme | undefined) ?? 'system'
+      if (scheme === 'system') delete root.dataset.colorScheme
+      else root.dataset.colorScheme = scheme
       // Paint the iframe body too — otherwise screenshots show a bare page
       // around a short story root and look broken.
       document.body.style.background = 'var(--color-background)'

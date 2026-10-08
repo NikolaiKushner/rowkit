@@ -10,6 +10,7 @@ defineOptions({ name: 'RkComputerIcon' })
 
 <template>
   <svg
+    data-icon="computer"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

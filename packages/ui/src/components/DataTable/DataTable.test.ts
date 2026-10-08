@@ -316,23 +316,26 @@ describe('DataTable', () => {
     expect(el.attributes('role')).toBeUndefined()
   })
 
-  it('never highlights rows on hover — Windows 98 rows have none', () => {
+  it('highlights the row under the pointer in the theme’s row-hover colour', () => {
+    // `table-row-hover` is the row's own white in Windows 98, which has no
+    // hover, and a light tint in the modern theme.
     for (const el of [setup(), setup({ hoverable: true })]) {
-      expect(
-        el
-          .find('tbody tr')
-          .classes()
-          .some((c) => c.startsWith('hover:'))
-      ).toBe(false)
+      const hovers = el
+        .find('tbody tr')
+        .classes()
+        .filter((c) => c.startsWith('hover:'))
+      expect(hovers).toEqual(['hover:bg-table-row-hover'])
     }
   })
 
   it('draws the frame as a sunken white well, outside the scroll container', () => {
     const el = setup()
     const frame = el.get('[data-slot="data-table-frame"]')
-    expect(frame.classes()).toEqual(expect.arrayContaining(['bg-input', 'shadow-sunken']))
+    // `shadow-table` is the sunken bevel in Windows 98, drawn on a layer over
+    // the frame so rows that reach the edge do not cover it.
+    expect(frame.classes()).toEqual(expect.arrayContaining(['bg-input', 'after:shadow-table']))
     expect(frame.find('[data-slot="data-table-scroll"]').exists()).toBe(true)
-    expect(el.get('[data-slot="data-table-scroll"]').classes()).not.toContain('shadow-sunken')
+    expect(el.get('[data-slot="data-table-scroll"]').classes()).not.toContain('shadow-table')
   })
 
   it('has no grid lines between rows', () => {
@@ -566,7 +569,8 @@ describe('DataTable', () => {
     })
 
     it('shows the dotted focus rectangle on a clickable row', () => {
-      expect(clickable().find('tbody tr').classes()).toContain('focus-visible:outline-dotted')
+      // `focus-ring` is the dotted rectangle in Windows 98.
+      expect(clickable().find('tbody tr').classes()).toContain('focus-visible:focus-ring')
     })
   })
 

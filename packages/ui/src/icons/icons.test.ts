@@ -39,4 +39,26 @@ describe('the shipped icons', async () => {
     const source = await readFile(join(iconsDir, file), 'utf8')
     expect(source).toContain('aria-hidden="true"')
   })
+
+  it.each(files.filter((file) => file !== 'RadioMark.vue'))(
+    '%s names itself for a theme’s own glyph, and the modern theme has one',
+    async (file) => {
+      const source = await readFile(join(iconsDir, file), 'utf8')
+      const key = /data-icon="([a-z0-9-]+)"/.exec(source)?.[1]
+      expect(key, 'data-icon on the <svg>').toBeDefined()
+      const glyphs = await readdir(join(iconsDir, 'modern'))
+      expect(glyphs, `src/icons/modern/${String(key)}.svg`).toContain(`${String(key)}.svg`)
+    }
+  )
+})
+
+describe('the modern glyph stylesheet', () => {
+  it('is up to date with src/icons/modern', async () => {
+    // Run `pnpm icons:modern` after changing a glyph.
+    const css = await readFile(join(iconsDir, '../styles/modern-icons.css'), 'utf8')
+    const glyphs = (await readdir(join(iconsDir, 'modern'))).filter((name) => name.endsWith('.svg'))
+    for (const glyph of glyphs) {
+      expect(css).toContain(`svg[data-icon='${glyph.slice(0, -'.svg'.length)}']`)
+    }
+  })
 })

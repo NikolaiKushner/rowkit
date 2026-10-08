@@ -10,6 +10,7 @@ defineOptions({ name: 'RkMaximizeGlyphIcon' })
 
 <template>
   <svg
+    data-icon="maximize-glyph"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

@@ -2,7 +2,7 @@
 
 rowkit is a professional Vue 3 toolkit: the components a product interface is
 built from. What is published today — tables, filters, controls, overlays — is
-the part already finished. The rest of the set is the plan in
+the part already built. The rest of the set is the plan in
 [the roadmap](/roadmap), not a build in progress.
 
 ## The problem it exists for
@@ -48,6 +48,14 @@ in [`@rowkit/tokens`](https://github.com/NikolaiKushner/rowkit/tree/main/package
 which you can install on its own. Contrast pairings are asserted in that
 package's tests, not eyeballed. This site is styled from the same tokens.
 
+**Two themes, and yours.** rowkit ships Windows 98 and a modern theme in light
+and dark, switched by one attribute — the components, their props and their
+markup do not change. Because the whole look is tokens, you can make it yours
+the same way: adjust a few values for your brand, or define a complete theme
+of your own — colour, corners, density, typeface, shadows, focus, icons — with
+one `defineTheme()` call. [Themes](/foundations/themes) shows how, with a live
+builder.
+
 **State you own.** Sort, selection, page, filters — all `v-model`, none held
 internally. A component reports what happened and your application decides what
 follows, which is what makes server-driven and client-driven usage identical
@@ -87,8 +95,12 @@ unpublished components are on the roadmap, not missing by design.
 
 ## Status
 
-**1.0 beta.** The API is stabilising toward 1.0.0, every component has reached the
-project's definition of done, and breaking changes are still possible between betas.
+**1.0 beta.** The API is stabilising toward 1.0.0, and breaking changes are still
+possible between betas. Each component page says where that component stands:
+**Stable** has met every point of the project's
+[definition of done](/contributing#what-a-finished-component-looks-like) — both
+themes, keyboard, the accessibility gate, stories, tests, docs and a visual
+check; **New** is published and usable, and has not been through all of it yet.
 
 Version <NpmVersion /> is on npm, published from CI with provenance attestation. The source
 and the working backlog are on [GitHub](https://github.com/NikolaiKushner/rowkit).
@@ -99,6 +111,8 @@ and the working backlog are on [GitHub](https://github.com/NikolaiKushner/rowkit
   is the step people miss
 - [API conventions](/conventions) — the rules every component follows, decided
   once
+- [Themes](/foundations/themes) — switch between Windows 98 and modern, and
+  make a theme of your own
 - [Tokens](/foundations/tokens) — every colour, space and layer, rendered live
   from the package
 - [Components](/components/button) — what is already built

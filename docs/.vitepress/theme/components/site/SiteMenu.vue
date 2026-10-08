@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
-import { TriangleRightIcon } from 'rowkit'
+import { useRoute } from 'vitepress'
+import { CheckGlyphIcon, TriangleRightIcon } from 'rowkit'
 import { isExternal, type MenuEntry, type MenuItem } from './menu'
+import { siteTheme } from './useSiteTheme'
+import { normalize } from './useSiteNav'
 
 /**
  * A Windows 98 menu panel: the window bevel, items, etched separators, and
@@ -11,7 +14,11 @@ import { isExternal, type MenuEntry, type MenuItem } from './menu'
  * a screen reader reads the item the eye sees.
  *
  * `size="start"` draws the Start menu's 34px items with 32px icons; a
- * submenu is always the 20px kind. With `drill`, a submenu replaces the panel
+ * submenu is always the 20px kind.
+ *
+ * Modern (Figma SiteModern/MenuItem): a rounded glass panel, 24px rounded
+ * rows with no icons — a check-mark column instead, filled for the chosen
+ * one of a set — the shortcut in grey, and headings over groups of items. With `drill`, a submenu replaces the panel
  * instead of opening beside it — the Start menu on a phone.
  */
 const props = withDefaults(
@@ -221,8 +228,18 @@ function onKeydown(event: KeyboardEvent): void {
 const itemClass = computed(() =>
   props.size === 'start'
     ? 'h-[34px] gap-2 pl-1 pr-1.5 py-px w-[200px]'
-    : 'h-[25px] w-full gap-1.5 pl-0.5 pr-1 min-w-[196px]'
+    : 'h-[25px] w-full gap-1.5 pl-0.5 pr-1 min-w-[196px] modern:h-6 modern:min-w-0 modern:gap-1 modern:rounded-[5px] modern:pr-2 modern:pl-1.5'
 )
+
+// The page on screen, checked in the modern theme's menus as the design draws it.
+const route = useRoute()
+const isCurrent = (entry: MenuItem) =>
+  entry.href !== undefined &&
+  !isExternal(entry.href) &&
+  normalize(entry.href) === normalize(route.path)
+
+const isLit = (entry: MenuItem, index: number) =>
+  (active.value === index || openSub.value === entry.id) && entry.disabled !== true
 </script>
 
 <template>
@@ -232,15 +249,23 @@ const itemClass = computed(() =>
     tabindex="-1"
     :aria-labelledby="labelledby"
     :aria-label="label"
-    class="m-0 flex list-none flex-col bg-card p-0.5 shadow-window outline-none"
+    class="m-0 flex list-none flex-col bg-card p-0.5 shadow-window outline-none modern:rounded-[10px] modern:bg-popover modern:p-[5px] modern:shadow-[0_10px_30px_rgb(0_0_0/0.15),0_0_0_1px_rgb(0_0_0/0.1)] modern:[backdrop-filter:var(--rk-popover-backdrop)]"
+    :class="nested ? 'modern:min-w-[200px]' : 'modern:min-w-[220px]'"
     @keydown="onKeydown"
   >
     <template v-for="(entry, index) in entries" :key="entry.id">
       <li
         v-if="entry.kind === 'separator'"
         role="separator"
-        class="h-0.5 shadow-[inset_0_1px_var(--color-bevel-shadow),inset_0_-1px_var(--color-bevel-highlight)]"
+        class="h-0.5 shadow-[inset_0_1px_var(--color-bevel-shadow),inset_0_-1px_var(--color-bevel-highlight)] modern:mx-2 modern:my-1 modern:h-px modern:bg-border modern:shadow-none"
       />
+      <li
+        v-else-if="entry.kind === 'header'"
+        role="presentation"
+        class="flex h-[22px] items-center gap-1 pr-2 pl-1.5 font-strong text-ui text-text-subtle"
+      >
+        <span class="size-3.5 shrink-0" />{{ entry.text }}
+      </li>
       <li v-else role="none" class="relative" @pointerenter="onHover(index)">
         <!--
           A link or a native button, written out: the site registers rowkit's
@@ -252,7 +277,9 @@ const itemClass = computed(() =>
           :target="isExternal(entry.href) ? '_blank' : undefined"
           :rel="isExternal(entry.href) ? 'noreferrer' : undefined"
           :data-index="index"
-          role="menuitem"
+          :role="entry.checked === undefined ? 'menuitem' : 'menuitemradio'"
+          :aria-checked="entry.checked"
+          :aria-current="isCurrent(entry) ? 'page' : undefined"
           tabindex="-1"
           :aria-haspopup="entry.children ? 'menu' : undefined"
           :aria-expanded="entry.children && !drill ? openSub === entry.id : undefined"
@@ -260,28 +287,34 @@ const itemClass = computed(() =>
           class="flex cursor-default items-center border-0 text-left text-ui text-foreground no-underline outline-none"
           :class="[
             itemClass,
-            (active === index || openSub === entry.id) && !entry.disabled
-              ? 'bg-surface-selected text-on-selected'
-              : 'bg-transparent',
+            isLit(entry, index) ? 'bg-surface-selected text-on-selected' : 'bg-transparent',
             entry.disabled ? 'text-text-disabled text-shadow-disabled' : '',
           ]"
           @click="emit('close', false)"
         >
           <span
-            class="relative flex shrink-0 items-center justify-center"
+            class="relative flex shrink-0 items-center justify-center modern:size-3.5"
             :class="size === 'start' ? 'size-8' : 'size-4'"
           >
-            <component :is="entry.icon" v-if="entry.icon" />
+            <component :is="entry.icon" v-if="entry.icon && siteTheme !== 'modern'" />
+            <CheckGlyphIcon v-if="entry.checked || isCurrent(entry)" class="win98:hidden" />
           </span>
           <span class="min-w-0 flex-1 truncate">{{ entry.text }}</span>
-          <span v-if="entry.shortcut" class="shrink-0">{{ entry.shortcut }}</span>
-          <TriangleRightIcon v-if="entry.children" class="shrink-0" />
+          <span
+            v-if="entry.shortcut"
+            class="shrink-0"
+            :class="!isLit(entry, index) && 'modern:text-text-subtle'"
+            >{{ entry.shortcut }}</span
+          >
+          <TriangleRightIcon v-if="entry.children" class="shrink-0 modern:size-[9px]" />
         </a>
         <button
           v-else
           type="button"
           :data-index="index"
-          role="menuitem"
+          :role="entry.checked === undefined ? 'menuitem' : 'menuitemradio'"
+          :aria-checked="entry.checked"
+          :aria-current="isCurrent(entry) ? 'page' : undefined"
           tabindex="-1"
           :aria-haspopup="entry.children ? 'menu' : undefined"
           :aria-expanded="entry.children && !drill ? openSub === entry.id : undefined"
@@ -289,22 +322,26 @@ const itemClass = computed(() =>
           class="flex cursor-default items-center border-0 text-left text-ui text-foreground no-underline outline-none"
           :class="[
             itemClass,
-            (active === index || openSub === entry.id) && !entry.disabled
-              ? 'bg-surface-selected text-on-selected'
-              : 'bg-transparent',
+            isLit(entry, index) ? 'bg-surface-selected text-on-selected' : 'bg-transparent',
             entry.disabled ? 'text-text-disabled text-shadow-disabled' : '',
           ]"
           @click="choose(index, false)"
         >
           <span
-            class="relative flex shrink-0 items-center justify-center"
+            class="relative flex shrink-0 items-center justify-center modern:size-3.5"
             :class="size === 'start' ? 'size-8' : 'size-4'"
           >
-            <component :is="entry.icon" v-if="entry.icon" />
+            <component :is="entry.icon" v-if="entry.icon && siteTheme !== 'modern'" />
+            <CheckGlyphIcon v-if="entry.checked || isCurrent(entry)" class="win98:hidden" />
           </span>
           <span class="min-w-0 flex-1 truncate">{{ entry.text }}</span>
-          <span v-if="entry.shortcut" class="shrink-0">{{ entry.shortcut }}</span>
-          <TriangleRightIcon v-if="entry.children" class="shrink-0" />
+          <span
+            v-if="entry.shortcut"
+            class="shrink-0"
+            :class="!isLit(entry, index) && 'modern:text-text-subtle'"
+            >{{ entry.shortcut }}</span
+          >
+          <TriangleRightIcon v-if="entry.children" class="shrink-0 modern:size-[9px]" />
         </button>
         <SiteMenu
           v-if="entry.children && openSub === entry.id && !drill"
@@ -312,7 +349,7 @@ const itemClass = computed(() =>
           :entries="entry.children"
           :label="entry.text"
           nested
-          class="absolute top-[-3px] left-full z-10"
+          class="absolute top-[-3px] left-full z-10 modern:top-[-5px] modern:left-[calc(100%+1px)]"
           :style="subStyle"
           @close="(focus) => emit('close', focus)"
           @back="onBack"

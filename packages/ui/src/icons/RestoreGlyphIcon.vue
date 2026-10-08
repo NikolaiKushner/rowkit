@@ -10,6 +10,7 @@ defineOptions({ name: 'RkRestoreGlyphIcon' })
 
 <template>
   <svg
+    data-icon="restore-glyph"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

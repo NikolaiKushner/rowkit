@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import { useRouter, withBase } from 'vitepress'
-import { DocumentIcon, FolderIcon, FolderOpenIcon } from 'rowkit'
+import { DocumentIcon, FolderIcon, FolderOpenIcon, TriangleRightIcon } from 'rowkit'
 import type { NavNode } from './useSiteNav'
 
 /**
@@ -125,7 +125,12 @@ function onKeydown(event: KeyboardEvent, index: number): void {
 </script>
 
 <template>
-  <ul ref="list" role="tree" aria-label="Contents" class="m-0 list-none px-0.5 py-1">
+  <ul
+    ref="list"
+    role="tree"
+    aria-label="Contents"
+    class="m-0 list-none px-0.5 py-1 modern:flex modern:flex-col modern:gap-px modern:p-0"
+  >
     <li
       v-for="(row, index) in rows"
       :key="row.node.id"
@@ -135,14 +140,14 @@ function onKeydown(event: KeyboardEvent, index: number): void {
       :aria-expanded="row.folder ? row.expanded : undefined"
       :aria-current="row.node.id === current?.id ? 'page' : undefined"
       :tabindex="row.node.id === tabStop ? 0 : -1"
-      class="group flex h-[22px] cursor-default items-center gap-1 outline-none"
-      :style="{ paddingLeft: `${2 + row.depth * 16}px` }"
+      class="group flex h-[22px] cursor-default items-center gap-1 pl-[calc(2px+var(--depth)*16px)] outline-none modern:h-6 modern:gap-1.5 modern:rounded-[5px] modern:pr-2 modern:pl-[calc(6px+var(--depth)*16px)] modern:focus-visible:focus-outer modern:focus-visible:[outline-offset:calc(var(--rk-focus-outer-width)*-1)] modern:aria-[current=page]:bg-surface-selected modern:aria-[current=page]:text-on-selected modern:aria-[current=page]:[--rk-icon-tone-folder:currentColor]"
+      :style="{ '--depth': row.depth }"
       @keydown="onKeydown($event, index)"
       @focus="focused = row.node.id"
     >
       <!-- The [+]/[−] box: 9px, white, a 1px grey frame. A page has none. -->
       <span
-        class="relative size-[9px] shrink-0"
+        class="relative size-[9px] shrink-0 modern:hidden"
         :class="row.folder && 'border border-border bg-input'"
         @click="row.folder && toggle(row)"
       >
@@ -153,6 +158,18 @@ function onKeydown(event: KeyboardEvent, index: number): void {
             class="absolute top-px left-[3px] h-[5px] w-px bg-foreground"
           />
         </template>
+      </span>
+      <!-- The modern sidebar's disclosure triangle, in place of the [+]/[−] box: 9px wide on a folder, 12 on a page. -->
+      <span
+        class="flex h-3 shrink-0 items-center justify-center text-text-subtle group-aria-[current=page]:text-on-selected win98:hidden [&_svg]:size-[9px]"
+        :class="row.folder ? 'w-[9px]' : 'w-3'"
+        @click="row.folder && toggle(row)"
+      >
+        <TriangleRightIcon
+          v-if="row.folder"
+          class="transition-transform duration-(--rk-duration-control)"
+          :class="row.expanded && 'rotate-90'"
+        />
       </span>
       <FolderOpenIcon v-if="row.folder && row.expanded" class="shrink-0" />
       <FolderIcon v-else-if="row.folder" class="shrink-0" />

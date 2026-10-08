@@ -178,6 +178,7 @@ const describedBy = computed(() => (hasDescription.value ? dialog.descriptionId 
             <button
               type="button"
               data-slot="dialog-close"
+              data-glyph="close"
               :aria-label="props.closeLabel"
               :class="dialogCloseVariants()"
               @click="dialog.setOpen(false)"

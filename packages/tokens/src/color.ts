@@ -198,44 +198,166 @@ export const semanticColor = {
   //
   // `neutral` completes the family so a component's variant matrix has no
   // special case: a neutral Badge reads the same token names as a danger one.
+  /** Neutral fill: a solid neutral badge, and anything filled in the neutral colour. */
   'neutral-solid': ref('vga-black'),
+  /** Neutral fill under the pointer. */
   'neutral-solid-hover': ref('vga-black'),
+  /** Text and icons on the neutral fill. */
   'neutral-on-solid': ref('vga-white'),
+  /** Neutral tint: the face of a subtle neutral badge or callout. */
   'neutral-subtle': ref('vga-white'),
+  /** Neutral text and icons, on its tint and on the page. */
   'neutral-on-subtle': ref('vga-black'),
+  /** The edge of a subtle or outlined neutral badge. */
   'neutral-border': ref('vga-gray'),
 
+  /** Primary fill — the accent: a solid primary badge, a selected item, the default action in a theme that colours it. */
   'primary-solid': ref('vga-navy'),
+  /** Primary fill under the pointer. */
   'primary-solid-hover': ref('vga-navy'),
+  /** Text and icons on the primary fill. */
   'primary-on-solid': ref('vga-white'),
+  /** Primary tint: the face of a subtle primary badge or callout. */
   'primary-subtle': ref('vga-white'),
+  /** Primary text and icons, on its tint and on the page. */
   'primary-on-subtle': ref('vga-navy'),
+  /** The edge of a subtle or outlined primary badge. */
   'primary-border': ref('vga-navy'),
 
+  /** Success fill: a solid success badge, and anything filled in the success colour. */
   'success-solid': ref('vga-green'),
+  /** Success fill under the pointer. */
   'success-solid-hover': ref('vga-green'),
+  /** Text and icons on the success fill. */
   'success-on-solid': ref('vga-white'),
+  /** Success tint: the face of a subtle success badge or callout. */
   'success-subtle': ref('vga-white'),
+  /** Success text and icons, on its tint and on the page. */
   'success-on-subtle': ref('vga-green'),
+  /** The edge of a subtle or outlined success badge. */
   'success-border': ref('vga-green'),
 
   /**
-   * Yellow carries black, never white: white on `#ffff00` is 1.07:1. Its edge
-   * is olive, because yellow on silver has almost no edge of its own.
+   * Warning fill: a solid warning badge, and anything filled in the warning colour. Yellow carries black, never white: white on `#ffff00` is 1.07:1;
+   * its edge is olive, because yellow on silver has almost no edge of its own.
    */
   'warning-solid': ref('vga-yellow'),
+  /** Warning fill under the pointer. */
   'warning-solid-hover': ref('vga-yellow'),
+  /** Text and icons on the warning fill. */
   'warning-on-solid': ref('vga-black'),
+  /** Warning tint: the face of a subtle warning badge or callout. */
   'warning-subtle': ref('vga-white'),
+  /** Warning text and icons, on its tint and on the page. */
   'warning-on-subtle': ref('vga-black'),
+  /** The edge of a subtle or outlined warning badge. */
   'warning-border': ref('vga-olive'),
 
+  /** Danger fill: a solid danger badge, and anything filled in the danger colour. */
   'danger-solid': ref('vga-maroon'),
+  /** Danger fill under the pointer. */
   'danger-solid-hover': ref('vga-maroon'),
+  /** Text and icons on the danger fill. */
   'danger-on-solid': ref('vga-white'),
+  /** Danger tint: the face of a subtle danger badge or callout. */
   'danger-subtle': ref('vga-white'),
+  /** Danger text and icons, on its tint and on the page. */
   'danger-on-subtle': ref('vga-maroon'),
+  /** The edge of a subtle or outlined danger badge. */
   'danger-border': ref('vga-maroon'),
+
+  // Roles. Each names what a component paints rather than how Windows 98
+  // paints it, so a theme can give it its own fill. In Windows 98 most of them
+  // are the silver face: the bevel says pressed or default, not the colour.
+
+  /** A plain button, a spin or drop button, a table's sort header. */
+  control: ref('vga-silver'),
+  /** Text and icons on a plain button. */
+  'control-foreground': ref('vga-black'),
+  /** A plain button under the pointer. */
+  'control-hover': ref('vga-silver'),
+  /** A plain button while it is held. */
+  'control-active': ref('vga-silver'),
+  /** The default button of a form or dialog — Enter's target. */
+  'control-primary': ref('vga-silver'),
+  /** Text and icons on the default button. */
+  'control-primary-foreground': ref('vga-black'),
+  /** The default button under the pointer. */
+  'control-primary-hover': ref('vga-silver'),
+  /** The default button while it is held. */
+  'control-primary-active': ref('vga-silver'),
+  /** A flat toolbar button while hovered and while held. */
+  'control-ghost-hover': ref('vga-silver'),
+  'control-ghost-active': ref('vga-silver'),
+  /** The face of a latched toggle, under its pattern. */
+  'control-latched': ref('vga-silver'),
+  /** A latched default button. A toggle is never the default, but if one latches it keeps its colour. */
+  'control-primary-latched': ref('vga-silver'),
+  /** The box of a checked checkbox or radio, and the mark inside it. */
+  checked: ref('vga-white'),
+  'on-checked': ref('vga-black'),
+  /** A list that drops from a trigger: a select's options. */
+  popover: ref('vga-white'),
+  'popover-border': ref('vga-black'),
+  /** The ring a theme draws around a focused control, outside its edge. */
+  'focus-ring': ref('vga-black'),
+  /** A window's caption buttons; one fill per button, for themes that colour them. */
+  caption: ref('vga-silver'),
+  'caption-foreground': ref('vga-black'),
+  'caption-close': ref('vga-silver'),
+  'caption-minimize': ref('vga-silver'),
+  'caption-maximize': ref('vga-silver'),
+  'caption-inactive': ref('vga-silver'),
+  /** A data table's column headers. */
+  'table-header': ref('vga-silver'),
+  'table-header-foreground': ref('vga-black'),
+  /** Every other row of a data table. Windows 98 does not stripe. */
+  'table-stripe': ref('vga-white'),
+  /** A data table row under the pointer. Windows 98 does not highlight it. */
+  'table-row-hover': ref('vga-white'),
+  /** The channel a progress bar or a scroll thumb runs in, and what fills it. */
+  track: ref('vga-silver'),
+  progress: ref('vga-navy'),
+  'scroll-thumb': ref('vga-silver'),
+  /** The channel a scroll bar's thumb runs in, under its pattern. */
+  'scroll-track': ref('vga-silver'),
+  /** The frame of a tooltip. */
+  'tooltip-border': ref('vga-black'),
+  /**
+   * The inside of a group box's frame, and the face around it — behind the
+   * legend and the frame's edge. Both the window's silver in Windows 98.
+   */
+  groupbox: ref('vga-silver'),
+  'groupbox-face': ref('vga-silver'),
+  /** A toast's ✕: the caption button's silver in Windows 98, a soft grey disc elsewhere. */
+  'toast-close': ref('vga-silver'),
+  'toast-close-foreground': ref('vga-black'),
+  /** «Loading…» in a dropped list: plain text in Windows 98, the subtle grey elsewhere. */
+  'loading-foreground': ref('vga-black'),
+  /** The strip that holds a searchable list's search box: the window face in Windows 98, nothing elsewhere. */
+  'select-search': ref('vga-silver'),
+  /** A pager's buttons: raised command buttons in Windows 98, flat elsewhere. */
+  pager: ref('vga-silver'),
+  'pager-hover': ref('vga-silver'),
+  'pager-active': ref('vga-silver'),
+  /** The strip a filter bar sits on. */
+  'filter-bar': ref('vga-silver'),
+  /** A filter chip: its face, its edge and its text. */
+  chip: ref('vga-white'),
+  'chip-border': ref('vga-gray'),
+  'chip-foreground': ref('vga-black'),
+  /** The face of a chip's ✕ at rest: the chip's own white in Windows 98. */
+  'chip-remove': ref('vga-white'),
+  /**
+   * The value of a read-only field that holds focus — a drop-down list's —
+   * highlighted the way Windows 98 marks it, and the text on it.
+   */
+  'field-highlight': ref('vga-navy'),
+  'on-field-highlight': ref('vga-white'),
+  /** The text caret in a field. */
+  'field-caret': ref('vga-black'),
+  /** The buttons inside a field: a select's drop button, a number's spin buttons. */
+  'field-button': ref('vga-silver'),
 } as const
 
 /** Names of every semantic colour token. */

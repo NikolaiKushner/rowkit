@@ -104,6 +104,17 @@ A task with a known size gets a progress bar and a count, not a placeholder —
 and a Cancel. The words beside the bar say how far along it is; blocks alone
 do not.
 
+A task whose size is not known yet — waiting on a server that reports no
+progress, counting files before copying them — gets the same bar without a
+`value`. Leave it out, or pass `null`, and `ProgressBar` shows a segment
+travelling along the track. Say in words what is happening beside it, and
+give it a `value` as soon as there is one.
+
+```vue
+<!-- `copied` stays null until the count of files is known. -->
+<ProgressBar :value="copied" :max="total" aria-label="Copying files" />
+```
+
 <DemoBox layout="stack">
   <PatternLongTask />
 </DemoBox>
@@ -136,13 +147,19 @@ with the margin and a stack of equal bars reads as a table.
 
 ## Motion
 
-The skeleton's dither steps one pixel sideways every 400ms, behind
-`motion-safe:`, so it is absent entirely for anyone who has asked for reduced
-motion — the shapes stay, the step goes, and nothing else changes. That is the
-right trade for an _ambient_ loop, which carries no information the still shape
-does not.
+The skeleton's loop is behind `motion-safe:`: in Windows 98 its dither steps one
+pixel sideways every 400ms, in the modern theme it pulses. For anyone who has
+asked for reduced motion it is absent entirely — the shapes stay, the movement
+goes, and nothing else changes. That is the right trade for an _ambient_ loop,
+which carries no information the still shape does not. An indeterminate
+`ProgressBar` is gated the same way: with reduced motion its segment stands
+still in the middle of the track.
 
-`Button`'s loading state is a still hourglass, as Windows 98 drew it, so there
-is nothing there to gate. `styles/motion.test.ts` keeps the rule honest: an
-ungated looping animation fails the build unless it is exempted by name, with a
-written reason.
+In Windows 98, `Button`'s loading state is a still hourglass, as Windows 98
+drew it. The modern theme draws a spinner there and turns it
+(`--rk-animate-busy`). That rotation is not gated: it is the only visible sign
+that a request is in flight, so stopping it would remove information rather
+than motion, and it is small and centred. Screen readers get the same state
+from `aria-busy`. `styles/motion.test.ts` keeps the rule honest: an ungated
+looping animation fails the build unless it is exempted by name, with a
+written reason — the busy mark is one of them.

@@ -5,7 +5,9 @@
 A region with Windows 98 scroll bars that rowkit draws itself: raised arrow
 buttons, a dithered track and a raised thumb, identical in every browser. The
 content scrolls natively (wheel, touchpad, touch, keyboard); only the bars are
-drawn. They sit beside and below the content, never over it.
+drawn. They sit beside and below the content, never over it. In the modern
+theme the bars are 10px thin, with no arrow buttons and a clear track, and
+the thumb is a rounded translucent bar 2px in from the edge.
 
 <script setup>
 import ScrollAreaBasic from '../examples/scroll-area/ScrollAreaBasic.vue'
@@ -71,7 +73,7 @@ thumb.
 
 ## When not to use
 
-- **When the browser's bar will do.** The `scrollbar-win98` utility restyles it
+- **When the browser's bar will do.** The `scrollbar-themed` utility restyles it
   with no script at all, and rowkit's own `DataTable`, `DialogBody`, `Select`
   list and `WindowBody` already use it. Only Firefox shows the difference. See
   [Scrollbar](/foundations/scrollbar).

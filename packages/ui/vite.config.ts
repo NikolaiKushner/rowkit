@@ -50,7 +50,11 @@ export default defineConfig({
     sourcemap: true,
     cssCodeSplit: false,
     lib: {
-      entry: fileURLToPath(new URL('src/index.ts', import.meta.url)),
+      entry: {
+        index: fileURLToPath(new URL('src/index.ts', import.meta.url)),
+        // `rowkit/theme`: defineTheme from the tokens rowkit itself depends on.
+        theme: fileURLToPath(new URL('src/theme.ts', import.meta.url)),
+      },
       formats: ['es'],
     },
     rollupOptions: {

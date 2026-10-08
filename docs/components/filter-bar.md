@@ -62,8 +62,12 @@ As drawn in the Figma file: a toolbar on the silver face, 4px of padding and
 4px between items, everything in one row that wraps when the chips run out of
 room — search field, your controls, the chips, the result count, then «Clear
 filters» as a command button. A chip is flat: white, a 1px grey border, no
-bevel, 19px tall at `sm` and 21px at `md`. Its ✕ is a flat 13px target with a
+bevel, 23px tall at `sm` and 26px at `md`. Its ✕ is a flat 13px target with a
 dotted focus ring.
+
+In the modern theme the bar has no toolbar face and no padding, its items 8px
+apart. A chip is a pale blue capsule with blue text, 24px tall at `sm` and
+28px at `md`, and its ✕ a 16px round target.
 
 ## Anatomy
 

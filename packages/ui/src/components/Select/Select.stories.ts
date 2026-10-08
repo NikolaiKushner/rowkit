@@ -7,6 +7,7 @@ import SelectContent from './SelectContent.vue'
 import SelectItem from './SelectItem.vue'
 import SelectTrigger from './SelectTrigger.vue'
 import type { SelectOption } from './types'
+import { px } from '../../stories/token'
 
 const statuses: SelectOption<string>[] = [
   { label: 'Active', value: 'active' },
@@ -91,7 +92,7 @@ const meta: Meta<SelectArgs> = {
     disabled: false,
     invalid: false,
     size: 'md',
-    emptyText: 'No results',
+    emptyText: 'No results found',
   },
   argTypes: {
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
@@ -391,8 +392,13 @@ export const FocusRingIsVisible: Story = {
     await userEvent.tab()
     await expect(trigger).toHaveFocus()
 
-    const focused = getComputedStyle(trigger)
-    await expect(focused.outlineStyle).toBe('dotted')
-    await expect(focused.outlineWidth).toBe('1px')
+    // Windows 98 rings the text, dotted; a theme that rings the control
+    // (`--rk-focus-outer-width`) rings the frame around it instead.
+    const frame = trigger.closest<HTMLElement>('[data-slot="select-trigger"]') ?? trigger
+    const ringed = px('--rk-focus-outer-width') > 0 ? frame : trigger
+    const focused = getComputedStyle(ringed)
+    await expect(focused.outlineStyle).not.toBe('none')
+    await expect(Number.parseFloat(focused.outlineWidth)).toBeGreaterThan(0)
+    if (ringed === trigger) await expect(focused.outlineStyle).toBe('dotted')
   },
 }

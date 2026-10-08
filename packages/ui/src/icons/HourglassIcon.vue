@@ -10,6 +10,7 @@ defineOptions({ name: 'RkHourglassIcon' })
 
 <template>
   <svg
+    data-icon="hourglass"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

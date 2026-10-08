@@ -23,6 +23,7 @@ import {
   toastBodyVariants,
   toastTitleVariants,
   toastCloseVariants,
+  toastIconVariants,
   toasterViewportVariants,
   toastMessageVariants,
   toastVariants,
@@ -455,24 +456,30 @@ onBeforeUnmount(() => {
           @pointercancel="onPointerCancel"
         >
           <!-- The face is the same for every variant; the icon carries the status. -->
-          <SuccessIcon v-if="item.variant === 'success'" data-slot="toast-icon" class="shrink-0" />
+          <SuccessIcon
+            v-if="item.variant === 'success'"
+            data-slot="toast-icon"
+            :class="toastIconVariants()"
+          />
           <WarningIcon
             v-else-if="item.variant === 'warning'"
             data-slot="toast-icon"
-            class="shrink-0"
+            :class="toastIconVariants()"
           />
           <ErrorIcon
             v-else-if="item.variant === 'danger'"
             data-slot="toast-icon"
-            class="shrink-0"
+            :class="toastIconVariants()"
           />
-          <InfoIcon v-else data-slot="toast-icon" class="shrink-0" />
+          <InfoIcon v-else data-slot="toast-icon" :class="toastIconVariants()" />
 
           <div :class="toastBodyVariants()">
             <span v-if="item.title" data-slot="toast-title" :class="toastTitleVariants()">
               {{ item.title }}
             </span>
-            <span :class="toastMessageVariants()">{{ item.message }}</span>
+            <span :class="toastMessageVariants({ underTitle: Boolean(item.title) })">{{
+              item.message
+            }}</span>
             <div v-if="item.action" :class="toastActionVariants()">
               <Button variant="secondary" size="sm" @click="runAction(item)">
                 {{ item.action.label }}

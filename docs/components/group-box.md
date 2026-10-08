@@ -50,6 +50,10 @@ As drawn in the Figma file: the etched groove, its top line 6px down, the
 legend 8px in with 2px of silver either side so it cuts the line. Content
 starts 16px from the top and 12px from the other sides, 8px apart.
 
+In the modern theme there is no groove: the content sits on a faintly tinted
+panel with rounded corners and a hairline edge, and the legend, in semibold,
+sits above the panel rather than on its edge.
+
 ## When to use
 
 - A section of a form: an address, notification settings, a set of radios.

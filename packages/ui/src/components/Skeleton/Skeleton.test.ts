@@ -3,15 +3,17 @@ import { describe, expect, it } from 'vitest'
 import Skeleton from './Skeleton.vue'
 
 describe('Skeleton', () => {
-  it('renders an 11px dithered text bar by default', () => {
+  it('renders an 11px loading bar by default', () => {
+    // `bg-loading` is the dither in Windows 98.
     const el = mount(Skeleton)
-    expect(el.classes()).toEqual(expect.arrayContaining(['bg-dither', 'h-[11px]']))
+    expect(el.classes()).toEqual(expect.arrayContaining(['bg-loading', 'h-[11px]']))
   })
 
-  it('has square corners, except the circle', () => {
+  it('takes its corners from the radius tokens — square in Windows 98 — except the circle', () => {
     for (const variant of ['text', 'rect'] as const) {
       const classes = mount(Skeleton, { props: { variant } }).classes()
-      expect(classes.some((c) => c.startsWith('rounded'))).toBe(false)
+      expect(classes.filter((c) => c.startsWith('rounded'))).toHaveLength(1)
+      expect(classes).not.toContain('rounded-full')
     }
     expect(mount(Skeleton, { props: { variant: 'circle' } }).classes()).toContain('rounded-full')
   })
@@ -29,12 +31,12 @@ describe('Skeleton', () => {
   })
 
   describe('motion', () => {
-    it('steps the dither only when motion is safe, and never pulses', () => {
-      // A bare `animate-dither` would loop regardless of the user's setting.
+    it('moves only when motion is safe, as the theme says', () => {
+      // A bare animation would loop regardless of the user's setting. Which
+      // one — the dither stepping, or a pulse — is `--rk-animate-loading`.
       const classes = mount(Skeleton).classes()
-      expect(classes).toContain('motion-safe:animate-dither')
-      expect(classes).not.toContain('animate-dither')
-      expect(classes.some((c) => c.includes('pulse'))).toBe(false)
+      expect(classes).toContain('motion-safe:animate-(--rk-animate-loading)')
+      expect(classes.filter((c) => c.includes('animate-'))).toHaveLength(1)
     })
 
     it('drops the animation entirely when disabled', () => {
@@ -77,13 +79,13 @@ describe('Skeleton', () => {
     it('makes the root a container rather than a bar', () => {
       const el = mount(Skeleton, { props: { lines: 2 } })
       expect(el.classes()).toContain('flex')
-      expect(el.classes()).not.toContain('bg-dither')
+      expect(el.classes()).not.toContain('bg-loading')
     })
 
     it('stays a single bar at one line', () => {
       const el = mount(Skeleton, { props: { lines: 1 } })
       expect(el.findAll('span')).toHaveLength(0)
-      expect(el.classes()).toContain('bg-dither')
+      expect(el.classes()).toContain('bg-loading')
     })
 
     it('ignores lines for non-text variants', () => {

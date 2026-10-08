@@ -12,7 +12,7 @@ export const badgeVariants = cva(
   // Windows 98 has no badge. This is a flat label in the system palette: a
   // 1px border, no bevel, square corners, the UI face at its regular weight.
   // Not interactive — no hover, no focus.
-  'inline-flex max-w-full items-center gap-1 border align-middle font-sans text-ui font-normal',
+  'inline-flex max-w-full items-center gap-1 rounded-pill border align-middle font-sans text-ui font-normal',
   {
     variants: {
       /** Status family. */
@@ -32,8 +32,8 @@ export const badgeVariants = cva(
       // 15px and 17px tall: the 13px line plus the border, and 1px of air at
       // `md`. `sm` fits a table row without pushing its height up.
       size: {
-        sm: 'px-1 py-0',
-        md: 'px-1.5 py-px',
+        sm: 'px-badge-px-sm py-0',
+        md: 'px-badge-px-md py-px',
       },
     },
     compoundVariants: [
@@ -128,11 +128,11 @@ export const badgeVariants = cva(
 )
 
 /**
- * The dot: a 5×5 square in the variant's colour. On a solid badge it takes
+ * The dot: a 5×5 square in the variant's colour (a 6px circle in the modern theme). On a solid badge it takes
  * the text colour instead, so it shows against the fill. Yellow on white or
  * silver is too faint to see, so the warning dot gets a black outline.
  */
-export const badgeDotVariants = cva('size-[5px] shrink-0', {
+export const badgeDotVariants = cva('size-badge-dot shrink-0 rounded-pill', {
   variants: {
     variant: {
       neutral: 'bg-neutral-solid',

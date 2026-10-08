@@ -29,6 +29,9 @@ const require = createRequire(import.meta.url)
  * distinction has stopped being applied.
  */
 const exemptions: Record<string, string> = {
+  'animate-busy':
+    "The loading button's busy mark, as animate-spin below: the turning is what " +
+    'says a request is in flight. `none` in Windows 98, whose hourglass stands still.',
   'animate-spin':
     'Button spinner. The rotation is the only visible signal that a request is in ' +
     'flight, so gating it would remove information rather than motion. Small, ' +

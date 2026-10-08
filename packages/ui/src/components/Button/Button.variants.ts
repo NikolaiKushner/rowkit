@@ -1,19 +1,23 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 /**
- * A Windows 98 command button.
+ * A command button.
  *
- * Every state is drawn with a bevel, never with a colour change: the face
- * stays silver, and the shadow stack says raised, pressed or default. States
- * switch instantly — no transitions.
+ * In Windows 98 every state is drawn with a bevel, never with a colour change:
+ * the face stays silver, and the shadow stack says raised, pressed or default.
+ * States switch instantly. Every one of those is a token, so the modern theme
+ * draws the same states its own way — a blue default button, a darker face
+ * while held, a short transition — from the same classes.
  *
  * ## Anatomy
  *
  * The root carries the face and the bevel. Inside it, `button-content` holds
  * the 1px that moves when the button is pressed: padded right and bottom at
  * rest, left and top while held, so the label shifts down-right without the
- * button changing size. Inside that, `button-focus` is the dotted focus ring,
- * which hugs the label rather than the whole face. Both are styled from the
+ * button changing size. Inside that, `button-focus` is Windows 98's dotted
+ * focus ring, which hugs the label rather than the whole face; a theme that
+ * rings the whole button does it on the root instead (`buttonFocusOuter`).
+ * Both are styled from the
  * root through the `group/button` name, so the root's own state (`:active`,
  * `:focus-visible`, `aria-pressed`) drives them.
  *
@@ -25,7 +29,8 @@ import { cva, type VariantProps } from 'class-variance-authority'
 export const buttonVariants = cva(
   [
     'group/button relative inline-flex shrink-0 items-center justify-center whitespace-nowrap select-none',
-    'bg-card font-sans text-ui text-foreground outline-none',
+    'rounded-md font-sans text-ui outline-none',
+    'transition-[color,background-color,box-shadow] duration-(--rk-duration-control)',
     // An icon passed as a bare <svg> has no intrinsic size in a flex row and
     // collapses. Sized here so a caller never has to remember, and skipped when
     // the caller has already said what size they want.
@@ -45,37 +50,52 @@ export const buttonVariants = cva(
          * there at rest, not only on focus.
          */
         default: [
-          'shadow-raised-default active:shadow-pressed',
-          'disabled:shadow-raised aria-disabled:shadow-raised',
+          'bg-control-primary text-control-primary-foreground shadow-raised-default',
+          '[--rk-latched-fill:var(--color-control-primary-latched)]',
+          'hover:bg-control-primary-hover',
+          'active:bg-control-primary-active active:shadow-pressed',
+          'disabled:bg-control disabled:shadow-raised aria-disabled:bg-control aria-disabled:shadow-raised',
         ].join(' '),
         /** A plain raised button. Takes the black frame when focused. */
-        secondary: 'shadow-raised focus-visible:shadow-raised-default active:shadow-pressed',
+        secondary: [
+          'bg-control text-control-foreground shadow-raised hover:bg-control-hover',
+          'focus-visible:shadow-raised-default active:bg-control-active active:shadow-pressed',
+        ].join(' '),
         /**
          * A flat toolbar button: no face until hovered, then a thin raised
          * bevel; a thin sunken one while held.
          */
         ghost: [
-          'bg-transparent',
-          'hover:bg-card hover:shadow-raised-thin',
-          'active:bg-card active:shadow-status',
+          'bg-transparent text-control-foreground',
+          'hover:bg-control-ghost-hover hover:shadow-raised-thin',
+          'active:bg-control-ghost-active active:shadow-status',
+          'aria-pressed:shadow-latched-ghost aria-pressed:hover:shadow-latched-ghost',
         ].join(' '),
         /** Raised, with a maroon label. Status is in the word too, never in colour alone. */
         destructive: [
-          'text-danger-on-subtle shadow-raised',
-          'focus-visible:shadow-raised-default active:shadow-pressed',
+          'bg-control text-danger-on-subtle shadow-raised hover:bg-control-hover',
+          'focus-visible:shadow-raised-default active:bg-control-active active:shadow-pressed',
         ].join(' '),
-        /** Blue underlined text that acts. Still a `<button>`; navigation is a real link. */
-        link: 'bg-transparent text-link underline',
+        /**
+         * Blue text that acts. Still a `<button>`; navigation is a real link.
+         * Windows 98 underlines it always; a theme that does not
+         * (`--rk-link-decoration: none`) still underlines it under the pointer
+         * and on focus, so it reads as a link the moment it matters.
+         */
+        link: [
+          'bg-transparent text-link [text-decoration-line:var(--rk-link-decoration)]',
+          'hover:underline focus-visible:underline',
+        ].join(' '),
       },
       size: {
-        xs: 'h-[21px] min-w-12 px-1.5',
-        sm: 'h-[26px] min-w-16 px-2',
-        default: 'h-[28px] min-w-[92px] px-3',
-        lg: 'h-[33px] min-w-[108px] px-4',
-        'icon-xs': 'size-[25px] p-0',
-        'icon-sm': 'size-[27px] p-0',
-        icon: 'size-[30px] p-0',
-        'icon-lg': 'size-[34px] p-0',
+        xs: 'h-control-xs min-w-button-min-xs px-button-px-xs',
+        sm: 'h-control-sm min-w-button-min-sm px-button-px-sm',
+        default: 'h-control-md min-w-button-min-md px-button-px-md',
+        lg: 'h-control-lg min-w-button-min-lg px-button-px-lg',
+        'icon-xs': 'size-icon-xs p-0',
+        'icon-sm': 'size-icon-sm p-0',
+        icon: 'size-icon-md p-0',
+        'icon-lg': 'size-icon-lg p-0',
       },
       block: {
         true: 'w-full',
@@ -112,17 +132,27 @@ export const buttonVariants = cva(
 export const buttonPressedState = [
   'aria-pressed:bg-dither aria-pressed:shadow-pressed aria-pressed:hover:shadow-pressed',
   // The current page of a pager: pressed in, but not latched — no dither.
+  'aria-[current=page]:bg-control-latched',
   'aria-[current=page]:shadow-pressed aria-[current=page]:hover:shadow-pressed',
 ].join(' ')
 
-/** The 1px that moves when the button is held down. */
+/**
+ * The ring a theme draws around the whole button when it is focused. Applied
+ * by `Button` itself rather than kept in `buttonVariants`, because a button
+ * rendered `as-child` has no label to ring and draws its own.
+ */
+export const buttonFocusOuter = 'focus-visible:focus-outer'
+
+/** The pixel that moves when the button is held down (`--rk-press-shift`; none in a theme that does not shift). */
 export const buttonContentVariants = cva(
   [
-    'flex min-w-0 items-center pr-px pb-px',
-    'group-active/button:pt-px group-active/button:pr-0 group-active/button:pb-0 group-active/button:pl-px',
-    'group-aria-pressed/button:pt-px group-aria-pressed/button:pr-0 group-aria-pressed/button:pb-0 group-aria-pressed/button:pl-px',
-    'group-aria-[current=page]/button:pt-px group-aria-[current=page]/button:pr-0',
-    'group-aria-[current=page]/button:pb-0 group-aria-[current=page]/button:pl-px',
+    'flex min-w-0 items-center pr-(--rk-press-shift) pb-(--rk-press-shift)',
+    'group-active/button:pt-(--rk-press-shift) group-active/button:pr-0',
+    'group-active/button:pb-0 group-active/button:pl-(--rk-press-shift)',
+    'group-aria-pressed/button:pt-(--rk-press-shift) group-aria-pressed/button:pr-0',
+    'group-aria-pressed/button:pb-0 group-aria-pressed/button:pl-(--rk-press-shift)',
+    'group-aria-[current=page]/button:pt-(--rk-press-shift) group-aria-[current=page]/button:pr-0',
+    'group-aria-[current=page]/button:pb-0 group-aria-[current=page]/button:pl-(--rk-press-shift)',
   ],
   {
     variants: {
@@ -132,7 +162,10 @@ export const buttonContentVariants = cva(
         secondary: '',
         ghost: '',
         destructive: '',
-        link: 'group-active/button:pt-0 group-active/button:pr-px group-active/button:pb-px group-active/button:pl-0',
+        link: [
+          'group-active/button:pt-0 group-active/button:pr-(--rk-press-shift)',
+          'group-active/button:pb-(--rk-press-shift) group-active/button:pl-0',
+        ].join(' '),
       },
     },
     defaultVariants: { variant: 'default' },
@@ -146,8 +179,8 @@ export const buttonContentVariants = cva(
 export const buttonFocusVariants = cva(
   [
     'flex min-w-0 items-center gap-1',
-    'group-focus-visible/button:outline-1 group-focus-visible/button:-outline-offset-1',
-    'group-focus-visible/button:outline-ring group-focus-visible/button:outline-dotted',
+    'group-focus-visible/button:focus-label group-focus-visible/button:-outline-offset-1',
+    'group-focus-visible/button:outline-ring',
   ],
   {
     variants: {
@@ -161,8 +194,21 @@ export const buttonFocusVariants = cva(
         icon: 'p-px',
         'icon-lg': 'p-px',
       },
+      /**
+       * A link is text, so a theme that rings the whole control rings the
+       * text: the ring hugs the label (inside the dotted ring's padding),
+       * with small corners, rather than the button's full height.
+       */
+      link: {
+        true: [
+          'relative after:pointer-events-none after:absolute after:inset-x-0.5 after:inset-y-px after:rounded-xs',
+          "group-focus-visible/button:after:content-['']",
+          'group-focus-visible/button:after:shadow-[0_0_0_var(--rk-focus-outer-width)_var(--color-focus-ring)]',
+        ],
+        false: '',
+      },
     },
-    defaultVariants: { size: 'default' },
+    defaultVariants: { size: 'default', link: false },
   }
 )
 

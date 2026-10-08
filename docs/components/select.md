@@ -33,9 +33,11 @@ runs. The code is the file the demo is built from, so the two cannot differ.
 
 ### Searchable
 
-`searchable` lets the trigger take text and filters the list. Worth turning on
-somewhere around twenty options; below that it costs a keystroke and saves
-nothing.
+`searchable` puts a search box at the top of the dropped list. It takes focus
+as the list opens, and what you type filters the options; the control itself
+stays read-only. A letter typed on the closed control opens the list and
+starts the search with it. Worth turning on somewhere around twenty options;
+below that it costs a keystroke and saves nothing.
 
 <DemoBox>
   <SelectSearchable />
@@ -93,7 +95,8 @@ a newer question is ignored.
 
 ### Sizes
 
-`size` on the `SelectTrigger`: `sm`, `md` (Windows 98's 23px) and `lg`.
+`size` on the `SelectTrigger`: `sm`, `md` (28px, Windows 98's own at Large
+Fonts) and `lg` — the same heights as Input and Button.
 
 <DemoBox>
   <SelectSizes />
@@ -103,12 +106,12 @@ a newer question is ignored.
 
 ## Anatomy
 
-| Part            | Purpose                                                               |
-| --------------- | --------------------------------------------------------------------- |
-| `Select`        | Root. Holds `v-model` and, when searching, `v-model:searchTerm`       |
-| `SelectTrigger` | The combobox input and the drop button. Read-only unless `searchable` |
-| `SelectContent` | Portalled listbox, width-matched to the control                       |
-| `SelectItem`    | One option. `label` is what the closed trigger shows                  |
+| Part            | Purpose                                                         |
+| --------------- | --------------------------------------------------------------- |
+| `Select`        | Root. Holds `v-model` and, when searching, `v-model:searchTerm` |
+| `SelectTrigger` | The combobox input and the drop button. Always read-only        |
+| `SelectContent` | Portalled listbox, width-matched to the control; the search box |
+| `SelectItem`    | One option. `label` is what the closed trigger shows            |
 
 ## Props
 
@@ -116,14 +119,14 @@ a newer question is ignored.
 
 <!-- @props SelectProps -->
 
-| Prop           | Type      | Default | Description                                                            |
-| -------------- | --------- | ------- | ---------------------------------------------------------------------- |
-| `searchable`   | `boolean` | `false` | Lets the trigger accept text and filters the list.                     |
-| `manualFilter` | `boolean` | `false` | Hands filtering to the consumer.                                       |
-| `disabled`     | `boolean` | `false` | Disables the control. A surrounding disabled `Field` also disables it. |
-| `invalid`      | `boolean` | `false` | Marks the value invalid. A `Field` with an `error` also sets it.       |
-| `required`     | `boolean` | `false` | Marks the control required. A required `Field` also sets it.           |
-| `name`         | `string`  | —       | Name submitted with a native form.                                     |
+| Prop           | Type      | Default | Description                                                                                      |
+| -------------- | --------- | ------- | ------------------------------------------------------------------------------------------------ |
+| `searchable`   | `boolean` | `false` | Puts a search box at the top of the list, which takes focus as it opens and filters the options. |
+| `manualFilter` | `boolean` | `false` | Hands filtering to the consumer.                                                                 |
+| `disabled`     | `boolean` | `false` | Disables the control. A surrounding disabled `Field` also disables it.                           |
+| `invalid`      | `boolean` | `false` | Marks the value invalid. A `Field` with an `error` also sets it.                                 |
+| `required`     | `boolean` | `false` | Marks the control required. A required `Field` also sets it.                                     |
+| `name`         | `string`  | —       | Name submitted with a native form.                                                               |
 
 <!-- /@props -->
 
@@ -145,12 +148,13 @@ a newer question is ignored.
 
 <!-- @props SelectContentProps -->
 
-| Prop          | Type      | Default        | Description                                                            |
-| ------------- | --------- | -------------- | ---------------------------------------------------------------------- |
-| `emptyText`   | `string`  | `'No results'` | Shown when no option matches the search term.                          |
-| `loading`     | `boolean` | `false`        | Shows a loading row in place of the list. For async options.           |
-| `loadingText` | `string`  | `'Loading…'`   | Text shown while `loading`.                                            |
-| `class`       | `string`  | —              | Additional classes for the panel, merged so a consumer's utility wins. |
+| Prop          | Type      | Default              | Description                                                            |
+| ------------- | --------- | -------------------- | ---------------------------------------------------------------------- |
+| `emptyText`   | `string`  | `'No results found'` | Shown when no option matches the search term.                          |
+| `searchLabel` | `string`  | `'Search'`           | Names the search box of a searchable list, and is its placeholder.     |
+| `loading`     | `boolean` | `false`              | Shows a loading row in place of the list. For async options.           |
+| `loadingText` | `string`  | `'Loading…'`         | Text shown while `loading`.                                            |
+| `class`       | `string`  | —                    | Additional classes for the panel, merged so a consumer's utility wins. |
 
 <!-- /@props -->
 
@@ -203,14 +207,20 @@ The item slot replaces the row. It receives `{ selected }`. `SelectContent`'s
 
 ## Keyboard
 
-| Key                              | Behaviour                                      |
-| -------------------------------- | ---------------------------------------------- |
-| <kbd>Tab</kbd>                   | Moves focus to the control                     |
-| <kbd>↓</kbd> / <kbd>↑</kbd>      | Opens the panel, then moves the highlight      |
-| <kbd>Home</kbd> / <kbd>End</kbd> | First / last option (when not `searchable`)    |
-| <kbd>Enter</kbd>                 | Selects the highlighted option                 |
-| <kbd>Esc</kbd>                   | Closes without changing the value              |
-| Text keys                        | Filter when `searchable`; else jump to a match |
+| Key                              | Behaviour                                               |
+| -------------------------------- | ------------------------------------------------------- |
+| <kbd>Tab</kbd>                   | Moves focus to the control                              |
+| <kbd>↓</kbd> / <kbd>↑</kbd>      | Opens the panel, then moves the highlight               |
+| <kbd>Home</kbd> / <kbd>End</kbd> | First / last option; in the search box, the text cursor |
+| <kbd>Enter</kbd>                 | Selects the highlighted option and closes               |
+| <kbd>Esc</kbd>                   | Closes without changing the value                       |
+| <kbd>Tab</kbd> in the search box | Closes and moves on, as Tab from the control would      |
+| Text keys                        | Search when `searchable`; else jump to a match          |
+
+When `searchable`, opening the list moves focus into its search box, and
+closing it — by choosing, <kbd>Esc</kbd> or <kbd>Tab</kbd> — brings focus back
+to the control. A letter typed on the closed control opens the list and starts
+the search with it.
 
 Disabled options are skipped by the highlight but stay visible, so the list
 does not reflow as state changes.
@@ -229,10 +239,19 @@ The Windows 98 drop-down list. The control is Input's white well in a sunken
 bevel, with the raised drop button at its end: a form of inputs and selects
 lines up to the pixel. With focus and a value, the value shows in navy with
 white text. The list hangs directly under the control, as wide as it: white,
-in a 1px black frame, 16px rows, eight before it scrolls. The highlighted
-option is navy; there is no check mark, because the highlight opens on the
-selected option. Invalid is quiet, as on Input: the error mark in the control,
-nothing red. Nothing animates.
+in a 1px black frame, 22px rows, eight before it scrolls. The highlighted
+option is navy, and the selected one carries a check mark beside its label. A
+searchable list holds its search box — a sunken field with the magnifier,
+named and labelled by `searchLabel` («Search») — on a silver strip above the
+options. While `loading`, the list shows «Loading…» beside the hourglass;
+with nothing to match, «No results found» in grey. Invalid is quiet, as on
+Input: the error mark in the control, nothing red. Nothing animates.
+
+In the modern theme the control is a rounded field with stacked up and down
+arrows, ringed in blue on focus; a focused value is not highlighted. The list
+is a rounded, translucent panel with a soft shadow that fades in, its rows
+28px tall, the highlighted one blue. Invalid adds a 1px red frame inside the
+control to the error mark, and the loading mark is a turning spinner.
 
 ## Accessibility
 
@@ -240,14 +259,19 @@ The control is an `<input role="combobox">`, not a button: one tab stop that
 keeps the field's label. The drop button is an extra pointer target, out of the tab
 order. Options never take focus — it stays in the control, and the list follows
 it through `aria-activedescendant`, which exists only while the list is open.
+In a searchable select the search box is the combobox while the list is open:
+it is named by `searchLabel`, owns the listbox and carries
+`aria-activedescendant`. The field's label, error and description stay on the
+control.
 
 - A non-searchable select supports type-ahead: typing the start of a label
   opens the list and highlights the first match.
 - The list paints above an open dialog (`z-popover`), and flips above the
   control when there is no room below.
 
-- A non-searchable select is a `readonly` input, so it does not raise a mobile
-  keyboard but keeps the combobox semantics.
+- The control is a `readonly` input, so it does not raise a mobile keyboard
+  but keeps the combobox semantics. A searchable list raises the keyboard
+  only for its search box.
 - The panel is width-matched to the control, so a list of truncated labels is
   never the only thing on offer.
 - The highlight is driven by `data-highlighted`, which follows the keyboard as

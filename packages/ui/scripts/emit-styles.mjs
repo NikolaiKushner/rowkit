@@ -14,7 +14,17 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const packageDir = join(dirname(fileURLToPath(import.meta.url)), '..')
-const source = await readFile(join(packageDir, 'src/styles/index.css'), 'utf8')
+const stylesDir = join(packageDir, 'src/styles')
+const ICONS_IMPORT = "@import './modern-icons.css';"
+const index = await readFile(join(stylesDir, 'index.css'), 'utf8')
+if (!index.includes(ICONS_IMPORT)) throw new Error(`index.css no longer has ${ICONS_IMPORT}`)
+
+// The source keeps the modern theme's icons in their own generated file; the
+// package ships one stylesheet, so they are inlined where they are imported.
+const source = index.replace(
+  ICONS_IMPORT,
+  (await readFile(join(stylesDir, 'modern-icons.css'), 'utf8')).trim()
+)
 
 const css = `${source}
 /*

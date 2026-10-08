@@ -4,6 +4,13 @@ The Windows 98 pixel icons from the Figma set, in the VGA palette, every pixel
 on the integer grid. Each size is drawn separately: 8px glyphs for controls,
 16px icons for buttons and lists, 32px icons for system messages.
 
+The modern theme draws the designer's own outline glyphs instead. The
+components and their markup stay the same: the theme hides the pixels and
+paints its glyph over the same box with a CSS mask. The glyphs live in
+`packages/ui/src/icons/modern/`, one SVG per icon, and `pnpm icons:modern`
+turns them into the stylesheet. How a theme of your own keeps the pixels,
+uses the outlines or draws its own is on [Themes](./themes.md#icons).
+
 ```vue
 <script setup>
 import { Button, PlusIcon, TrashIcon } from 'rowkit'
@@ -19,13 +26,17 @@ import { Button, PlusIcon, TrashIcon } from 'rowkit'
 
 ## Rules
 
-- **Never scale them** except by a whole number. A 16px icon at 20px smears
-  every pixel across two; draw or pick another size instead.
+- **Never scale the pixel icons** except by a whole number. A 16px icon at
+  20px smears every pixel across two; draw or pick another size instead. The
+  modern outlines are vectors and scale freely, but a component sized for
+  Windows 98 has to look right in both themes.
 - **They are decorative.** Every icon is `aria-hidden`. Say what it means in
   the button's label, or with `aria-label` on an icon-only button.
 - **Glyphs follow the text colour.** Single-colour glyphs — the triangles,
   ✕, ✓, the title-bar glyphs, `PlusIcon` — are drawn in `currentColor`, so
-  they grey out with a disabled control. The rest keep their palette.
+  they grey out with a disabled control. The rest keep their palette. In the
+  modern theme every outline is drawn in the text colour, except the status
+  icons and the folders, which keep a tone of their own.
 
 ## 16 × 16
 

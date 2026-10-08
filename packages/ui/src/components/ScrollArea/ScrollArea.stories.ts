@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import type { ConcreteComponent } from 'vue'
 import { expect, userEvent, waitFor } from 'storybook/test'
 import RawScrollArea from './ScrollArea.vue'
+import { px } from '../../stories/token'
 
 // ESLint cannot type a `.vue` import, so the component is given its shape here.
 const ScrollArea = RawScrollArea as unknown as ConcreteComponent
@@ -57,8 +58,8 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const { root, viewport, bar } = parts(canvasElement)
     const vertical = bar('vertical')
-    // The bar takes its own 16px: the content is never under it.
-    await expect(vertical.el.getBoundingClientRect().width).toBe(16)
+    // The bar takes its own width (16px in Windows 98): the content is never under it.
+    await expect(vertical.el.getBoundingClientRect().width).toBe(px('--spacing-scrollbar'))
     await expect(viewport.getBoundingClientRect().right).toBe(
       vertical.el.getBoundingClientRect().left
     )

@@ -5,6 +5,7 @@ import { cn } from '../../utils/cn'
 import HourglassIcon from '../../icons/HourglassIcon.vue'
 import {
   buttonContentVariants,
+  buttonFocusOuter,
   buttonFocusVariants,
   buttonPressedState,
   buttonVariants,
@@ -56,7 +57,7 @@ const isNativeButton = computed(() => props.as === 'button' && !props.asChild)
  * the element itself, inset past the bevel.
  */
 const asChildFocus =
-  'focus-visible:outline-1 focus-visible:-outline-offset-4 focus-visible:outline-dotted focus-visible:outline-ring'
+  'focus-visible:focus-ring focus-visible:-outline-offset-4 focus-visible:outline-ring'
 
 function onClickCapture(event: MouseEvent): void {
   if (props.loading || props.disabled) {
@@ -83,7 +84,7 @@ function onClickCapture(event: MouseEvent): void {
           block: props.block,
         }),
         buttonPressedState,
-        props.asChild && asChildFocus,
+        props.asChild ? asChildFocus : props.variant === 'link' ? undefined : buttonFocusOuter,
         props.class
       )
     "
@@ -101,8 +102,20 @@ function onClickCapture(event: MouseEvent): void {
       data-slot="button-content"
       :class="buttonContentVariants({ variant: props.variant })"
     >
-      <span data-slot="button-focus" :class="buttonFocusVariants({ size: props.size })">
-        <HourglassIcon v-if="props.loading" />
+      <span
+        data-slot="button-focus"
+        :class="buttonFocusVariants({ size: props.size, link: props.variant === 'link' })"
+      >
+        <!--
+          The hourglass, or a theme's spinner: the busy glyph stands in for the
+          hourglass's own (`--rk-icon-hourglass`) and turns where the theme
+          says so. Windows 98 draws its pixels and keeps them still.
+        -->
+        <HourglassIcon
+          v-if="props.loading"
+          data-slot="button-busy"
+          class="[--rk-icon-hourglass:var(--rk-icon-spinner)] animate-(--rk-animate-busy)"
+        />
         <span v-else-if="$slots.leading" class="flex shrink-0 items-center">
           <slot name="leading" />
         </span>

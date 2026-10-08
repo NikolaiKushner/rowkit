@@ -153,22 +153,31 @@ describe('the radius scale resolves', () => {
 
 describe('the scroll bar', () => {
   it('draws every part from tokens', async () => {
-    const css = await build('scrollbar-win98')
-    expect(css, 'scrollbar-win98 generated no rule').toContain('.scrollbar-win98 {')
+    const css = await build('scrollbar-themed')
+    expect(css, 'scrollbar-themed generated no rule').toContain('.scrollbar-themed {')
     for (const part of ['', '-track', '-thumb', '-corner', '-button:single-button']) {
       expect(css).toContain(`&::-webkit-scrollbar${part} {`)
     }
-    expect(css).toContain('box-shadow: var(--shadow-raised)')
+    expect(css).toContain('box-shadow: var(--rk-shadow-scroll-thumb)')
+    expect(css).toContain('display: var(--rk-scrollbar-buttons)')
     expect(css).toContain('var(--color-foreground)')
-    const rule = css.slice(css.indexOf('.scrollbar-win98 {'))
+    const start = css.indexOf('.scrollbar-themed {')
+    // The rule alone: the theme's palette follows the utilities in the output.
+    const rule = css.slice(start, css.indexOf('\n  }\n', start))
     expect(rule, 'a hex colour bypasses the tokens').not.toMatch(/#[0-9a-f]{3,6}\b/i)
+  })
+
+  it('keeps its first name, scrollbar-win98, working', async () => {
+    const css = await build('scrollbar-win98')
+    expect(css).toContain('.scrollbar-win98 {')
+    expect(css).toContain('&::-webkit-scrollbar-thumb {')
   })
 
   it('resets the standard properties that would switch the webkit parts off', async () => {
     // Chromium drops every ::-webkit-scrollbar rule once an element has a
     // standard scrollbar-color or scrollbar-width — and scrollbar-color
     // inherits, so one app-wide rule would silently restore the native bar.
-    const css = await build('scrollbar-win98')
+    const css = await build('scrollbar-themed')
     expect(css).toContain('scrollbar-color: auto')
     expect(css).toContain('scrollbar-width: auto')
     expect(css).toMatch(/@supports not selector\(::-webkit-scrollbar\)\s*{\s*scrollbar-color:/)
@@ -201,21 +210,34 @@ describe('shadows', () => {
     expect(await build(utility)).toContain(`.${utility} {`)
   })
 
-  it('draws a bevel from hard inset lines in the bevel colours', async () => {
-    // Shadows are the one scale Tailwind inlines rather than referencing, so
-    // the assertion is on the value. Every edge has to keep its var(), or a
-    // theme that repoints a bevel colour would leave the bevels behind.
+  it('draws a shadow from its theme variable, not from a copied value', async () => {
+    // Tailwind copies a shadow token's value into the utility. Were that the
+    // bevel itself, no theme could change it; the token is `var(--rk-shadow-*)`
+    // so the utility follows whatever the theme declares.
     const css = await build('shadow-raised')
-    expect(css).toContain('inset -1px -1px var(--tw-shadow-color, var(--color-bevel-dark))')
-    expect(css).toContain('inset 2px 2px var(--tw-shadow-color, var(--color-bevel-light))')
+    expect(css).toContain('--tw-shadow: var(--rk-shadow-raised)')
+  })
+
+  it('declares the Windows 98 bevel from hard inset lines in the bevel colours', async () => {
+    const css = await build('shadow-raised')
+    expect(css).toMatch(/--rk-shadow-raised: inset -1px -1px var\(--color-bevel-dark\)/)
+    expect(css).toContain('inset 2px 2px var(--color-bevel-light)')
   })
 })
 
-describe('one theme', () => {
-  it('ships no dark-mode overrides', async () => {
-    // rowkit has a single theme. A `.dark` block surviving in the token
-    // stylesheet would invite consumers to build on a theme that is gone.
-    expect(await build('bg-card')).not.toContain('.dark')
+describe('themes', () => {
+  it('switch by attribute, with no dark class', async () => {
+    // A `.dark` block would be a second switch beside `data-color-scheme`.
+    const css = await build('bg-card')
+    expect(css).not.toContain('.dark')
+    expect(css).toContain('[data-theme="modern"] {')
+    expect(css).toContain('[data-theme="win98"] {')
+  })
+
+  it('carry the modern icon glyphs, which draw only where a theme gives them a fill', async () => {
+    const css = await build('bg-card')
+    expect(css).toContain("svg[data-icon='search'] {")
+    expect(css).toMatch(/:root \{\s+--rk-icon-/)
   })
 })
 

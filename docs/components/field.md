@@ -119,6 +119,10 @@ asterisk when required, the control, then the hint in subtle grey or the error
 4px at `sm`, 6px at `md`, 8px at `lg`. Disabled, the label turns grey and
 embossed like the control's text.
 
+In the modern theme the gaps are 6px at every size, a label beside the control
+sits 12px from it, and the error icon lines up with the first line of a
+message that wraps. Invalid also draws a 1px red frame inside the control.
+
 `layout="left"` is the Windows 98 property-dialog arrangement: the label beside
 the control, 8px from it, its text level with the control's, and the hint or
 error under the control. Set `--rk-field-label-width` on a container to line
@@ -212,8 +216,9 @@ like `w-56` sizes what the user sees. Unrecognised attributes (`autocomplete`,
 The type decides what else is in the frame: `search` adds the magnifier and
 clears on Escape, `number` adds spin buttons that repeat while held, `date`
 adds a drop button that opens the browser's date picker. An invalid field
-shows the red error mark at its end and nothing else changes colour — the
-message is the Field's job.
+shows the red error mark at its end. In Windows 98 nothing else changes
+colour; the modern theme adds a 1px red frame inside the field. The message is
+the Field's job.
 
 ### How state combines
 

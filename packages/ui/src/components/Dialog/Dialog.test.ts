@@ -280,14 +280,25 @@ describe('Dialog', () => {
       el.unmount()
     })
 
-    it('opens and closes instantly, over no backdrop', async () => {
+    it('animates and dims only as far as the theme says', async () => {
       // Windows 98 has no window animation and draws nothing behind a
-      // dialog: the layer behind it only catches clicks.
+      // dialog: `--rk-animate-overlay-in` is `none` and `--rk-overlay-bg`
+      // transparent there. The layer behind it only catches clicks.
       await setup()
       const overlay = document.querySelector('[data-slot="dialog-overlay"]')
-      expect(dialog()?.className).not.toContain('animate-')
+      expect(dialog()?.className).toContain(
+        'motion-safe:data-[state=open]:animate-(--rk-animate-overlay-in)'
+      )
+      expect(
+        dialog()?.className.replace(
+          'motion-safe:data-[state=open]:animate-(--rk-animate-overlay-in)',
+          ''
+        )
+      ).not.toContain('animate-')
       expect(overlay?.className).not.toContain('animate-')
-      expect(overlay?.className).not.toMatch(/\bbg-/)
+      expect(overlay?.className.split(' ').filter((c) => c.startsWith('bg-'))).toEqual([
+        'bg-(--rk-overlay-bg)',
+      ])
     })
   })
 

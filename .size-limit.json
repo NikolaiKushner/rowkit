@@ -3,7 +3,7 @@
     "name": "rowkit — full library (brotli)",
     "path": "packages/ui/dist/index.js",
     "import": "*",
-    "limit": "38 kB",
+    "limit": "39 kB",
     "ignore": ["vue", "@rowkit/tokens", "clsx", "tailwind-merge", "class-variance-authority"]
   },
   {
@@ -14,9 +14,22 @@
     "ignore": ["vue", "@rowkit/tokens", "clsx", "tailwind-merge", "class-variance-authority"]
   },
   {
+    "name": "rowkit/theme — defineTheme with every theme's values (brotli)",
+    "path": "packages/ui/dist/theme.js",
+    "import": "{ defineTheme }",
+    "limit": "6 kB",
+    "ignore": ["vue"]
+  },
+  {
     "name": "@rowkit/tokens (brotli)",
     "path": "packages/tokens/dist/index.js",
     "import": "*",
-    "limit": "3 kB"
+    "limit": "7 kB"
+  },
+  {
+    "name": "@rowkit/tokens/reference — every token described (brotli)",
+    "path": "packages/tokens/dist/reference.js",
+    "import": "*",
+    "limit": "14 kB"
   }
 ]

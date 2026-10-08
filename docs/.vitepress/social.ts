@@ -22,7 +22,8 @@ export const sharedHead: HeadConfig[] = [
     'meta',
     {
       property: 'og:image:alt',
-      content: 'A Windows 98 window titled rowkit, and a Command Prompt running pnpm add rowkit.',
+      content:
+        'The rowkit logo, «Vue 3 components for product interfaces», and a Users table in Windows 98, modern light and modern dark.',
     },
   ],
   ['meta', { name: 'twitter:card', content: 'summary_large_image' }],

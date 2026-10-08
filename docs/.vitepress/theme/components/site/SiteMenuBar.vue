@@ -3,9 +3,17 @@ import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useRoute, withBase } from 'vitepress'
 import { DocumentIcon } from 'rowkit'
 import SiteMenu from './SiteMenu.vue'
-import { folder, folderMenu, fromTree, type MenuEntry } from './menu'
+import {
+  componentsMenu,
+  folder,
+  folderMenu,
+  fromTree,
+  searchShortcut,
+  type MenuEntry,
+} from './menu'
 import { openFind } from './useFind'
 import { useSiteNav } from './useSiteNav'
+import { siteTheme } from './useSiteTheme'
 
 /**
  * The menu bar under the title bar: Guide · Components · Patterns · Storybook
@@ -32,7 +40,13 @@ const bar = computed<BarItem[]>(() => {
   const contributing = page('Contributing')
   return [
     { text: 'Guide', entries: menu('Guide') },
-    { text: 'Components', entries: folderMenu(folder(tree.value, 'Components'), 'All components') },
+    {
+      text: 'Components',
+      entries:
+        siteTheme.value === 'modern'
+          ? componentsMenu(folder(tree.value, 'Components'))
+          : folderMenu(folder(tree.value, 'Components'), 'All components'),
+    },
     { text: 'Patterns', entries: menu('Patterns') },
     { text: 'Storybook', href: 'https://storybook.rowkit.dev' },
     { text: 'Decisions', entries: menu('Decisions') },
@@ -74,7 +88,15 @@ const bar = computed<BarItem[]>(() => {
           href: 'https://github.com/NikolaiKushner/rowkit',
         },
         { kind: 'separator', id: 'help-sep' },
-        { kind: 'item', id: 'find', text: 'Find…', shortcut: 'Ctrl+K', action: openFind },
+        siteTheme.value === 'modern'
+          ? {
+              kind: 'item',
+              id: 'find',
+              text: 'Search…',
+              shortcut: searchShortcut(),
+              action: openFind,
+            }
+          : { kind: 'item', id: 'find', text: 'Find…', shortcut: 'Ctrl+K', action: openFind },
       ],
     },
   ]
@@ -166,7 +188,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onPointerDown,
 
 <template>
   <nav ref="root" aria-label="Main" class="relative z-30 bg-card px-0.5 py-px">
-    <ul role="menubar" aria-label="Main" class="m-0 flex list-none items-center p-0">
+    <ul role="menubar" aria-label="Main" class="m-0 flex list-none items-center p-0 modern:gap-0.5">
       <li v-for="(item, index) in bar" :key="item.text" role="none" class="relative">
         <a
           v-if="item.href"
@@ -203,7 +225,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onPointerDown,
           ref="menus"
           :entries="item.entries"
           :labelledby="`rk-menu-${String(index)}`"
-          class="absolute top-full left-0"
+          class="absolute top-full left-0 modern:top-[calc(100%+3px)]"
           @close="close"
           @prev="step(index, -1, true)"
           @next="step(index, 1, true)"

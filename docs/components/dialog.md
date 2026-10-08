@@ -127,7 +127,7 @@ follows the content, capped to the screen.
 | `DialogTitle`       | Accessible name (`aria-labelledby`), drawn in the title bar           |
 | `DialogDescription` | Supporting text. Omit it and nothing is announced as a description    |
 | `DialogBody`        | The only scrolling region                                             |
-| `DialogFooter`      | Command buttons, right-aligned. The default button first              |
+| `DialogFooter`      | Command buttons, right-aligned. The default button first in the code  |
 
 ## Props
 
@@ -252,6 +252,11 @@ but is laid over the bar, bold and white, cut off with an ellipsis before the
 ✕. Anything else in the header — a description, an eyebrow — starts below
 the bar.
 
+In the modern theme the bar is the window's light grey title bar: the title
+centred, the ✕ a red traffic light at its left end. The footer shows the
+default button last, on the right (`--rk-footer-direction`), while the code
+keeps it first, so one footer reads right in both themes.
+
 **`v-model:open` is optional.** Bind it when the page opens or closes the
 dialog — a successful submit is a one-line flip of your own ref. Leave it
 unbound and the root holds the state, so `DialogTrigger` still toggles.
@@ -299,10 +304,12 @@ two — `aria-modal` alone is inconsistently honoured by screen readers.
 set to an empty string rather than pointing at an element that was never
 rendered. Some readers announce a broken reference as a blank.
 
-**No motion, no backdrop.** The window appears and goes instantly, as Windows
-98 drew it, so there is nothing for `prefers-reduced-motion` to remove. Nothing
-is drawn behind it either: an invisible layer catches the click outside and
-holds the scroll lock, and the page stays as it was.
+**No motion, no backdrop, in Windows 98.** The window appears and goes
+instantly, as Windows 98 drew it. Nothing is drawn behind it either: an
+invisible layer catches the click outside and holds the scroll lock, and the
+page stays as it was. In the modern theme the same layer dims the page, and
+the window fades and grows in over 160ms — `motion-safe:` only, so it is
+instant for anyone who has asked for reduced motion.
 
 ## Under SSR
 

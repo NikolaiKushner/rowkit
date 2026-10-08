@@ -31,7 +31,7 @@ body:
     attributes:
       label: rowkit version
       description: '`npm ls rowkit`, or the `version` export.'
-      placeholder: 0.1.0
+      placeholder: 1.0.0-beta.1
     validations:
       required: true
 
@@ -43,6 +43,18 @@ body:
         - Vue + Vite
         - Nuxt
         - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      options:
+        - Windows 98
+        - Modern, light
+        - Modern, dark
+        - A theme of my own
     validations:
       required: true
 

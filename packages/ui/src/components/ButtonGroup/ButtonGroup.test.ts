@@ -24,7 +24,12 @@ describe('ButtonGroup', () => {
     }).classes()
     expect(classes).toContain('flex-row')
     // Windows 98 toolbar buttons keep their own bevels; nothing is merged.
-    expect(classes.some((c) => c.includes('rounded') || c.includes('-ml-px'))).toBe(false)
+    // Joined buttons only square their inner corners, for a theme that rounds them.
+    expect(classes.some((c) => c.includes('-ml-px'))).toBe(false)
+    expect(classes.filter((c) => c.includes('rounded'))).toEqual([
+      '[&>[data-slot=button]:not(:first-child)]:rounded-l-none',
+      '[&>[data-slot=button]:not(:last-child)]:rounded-r-none',
+    ])
     expect(classes.some((c) => /^gap-/.test(c))).toBe(false)
   })
 

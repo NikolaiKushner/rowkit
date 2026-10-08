@@ -1,6 +1,6 @@
 # rowkit
 
-[![npm](https://img.shields.io/npm/v/rowkit/beta?color=000080)](https://www.npmjs.com/package/rowkit)
+[![npm](https://img.shields.io/npm/v/rowkit/beta?color=D63A1F)](https://www.npmjs.com/package/rowkit)
 [![license](https://img.shields.io/npm/l/rowkit)](https://github.com/NikolaiKushner/rowkit/blob/main/LICENSE)
 
 A professional Vue 3 toolkit — the components a product interface is built from.
@@ -9,7 +9,12 @@ No behaviour library underneath — focus, dismissal and positioning are rowkit'
 
 **[Documentation](https://rowkit.dev)** · **[Storybook](https://storybook.rowkit.dev)** · **[GitHub](https://github.com/NikolaiKushner/rowkit)**
 
-![rowkit — a Windows 98 desktop with a «Welcome to rowkit» window, a Users table with selection and status badges, a toast and the taskbar](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero.png)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero-dark.png" />
+    <img src="https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero.png" alt="rowkit — the same Users table in Windows 98, modern light, modern dark and a theme of your own, under the rowkit logo" width="100%" />
+  </picture>
+</p>
 
 ## Install
 
@@ -70,6 +75,28 @@ const rows = useClientSort(users, sort, columns)
 
 The table reports the sort and renders what it is handed — it never reorders its own rows, which is what keeps a server-paged table honest. `useClientSort` does the local case.
 
+## Themes
+
+Two themes from one set of components: **Windows 98**, the default, and **modern**, in light and dark. A theme is token values and nothing else — the same components, the same props, the same markup, one attribute apart.
+
+```html
+<html data-theme="modern" data-color-scheme="dark"></html>
+```
+
+`data-theme` works on any element, and themes nest. Without `data-color-scheme` the modern theme follows the system's light or dark setting. Every colour, size, corner, shadow and state is a token, so the look is yours to change — adjust a few variables, or define a complete theme of your own, light and dark, in one call:
+
+```ts
+import { defineTheme } from 'rowkit/theme'
+
+export const acme = defineTheme({
+  name: 'acme', // <html data-theme="acme">
+  extends: 'modern',
+  light: { '--color-control-primary': '#5b3df5', '--radius-md': '10px' },
+})
+```
+
+How it works, every value you can change, and a live builder: [Themes](https://rowkit.dev/foundations/themes).
+
 ## What you get
 
 - **Columns typed against your row.** `DataTable<TRow>` constrains every column's `key` to `keyof TRow`. Sorting names a field too, so a sort referring to a column that does not exist also fails to compile.
@@ -84,9 +111,9 @@ The table reports the sort and renders what it is handed — it never reorders i
 - **Forms:** `Field` · `Input` · `Select` · `Checkbox` · `Radio` · `Badge`
 - **Data:** `DataTable` · `Pagination` · `FilterBar` · `EmptyState` · `Skeleton`
 - **Overlays:** `Dialog` · `Toast` · `Tooltip`
-- **Icons:** the Windows 98 pixel set, 42 icons at 8, 16 and 32px.
+- **Icons:** the Windows 98 pixel set, 42 icons at 8, 16 and 32px. The modern theme draws its own outline glyph over each one.
 
-That is the whole library. If you need forty components covering every case, [Nuxt UI](https://ui.nuxt.com) and [shadcn-vue](https://www.shadcn-vue.com) are better answers — and rowkit composes with either.
+That is what is published today. Menus, dates, sheets, a command palette and the rest of a product interface are not in this release yet — they are the plan in the [roadmap](https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md), built to the same standard before they ship.
 
 ## For coding agents
 
@@ -100,4 +127,4 @@ That is the whole library. If you need forty components covering every case, [Nu
 
 MIT © Nikolai Kushner
 
-The look is rowkit's own drawing of the Windows 98 interface, from its Figma file. rowkit is not affiliated with Microsoft and ships no Microsoft artwork — no Windows flag, no logos.
+The Windows 98 theme is rowkit's own drawing of the Windows 98 interface, from its Figma file. rowkit is not affiliated with Microsoft and ships no Microsoft artwork — no Windows flag, no logos.

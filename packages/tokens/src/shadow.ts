@@ -59,6 +59,51 @@ export const shadow = {
   /** A thin raised edge: a flat toolbar button while hovered. */
   'raised-thin': bevel([hl, sh]),
 
+  // Roles. In Windows 98 each is one of the bevels above, or nothing; they are
+  // separate tokens so a theme without bevels can draw each part its own way.
+
+  /** A list dropped from a trigger. Windows 98 frames it with a border, not a shadow. */
+  popover: 'none',
+  /** A data table's frame: the sunken well its rows sit in. */
+  table: bevel([sh, hl], [dark, light]),
+  /** A data table's column header: a raised button. */
+  header: bevel([hl, dark], [light, sh]),
+  /** A window's caption button. */
+  caption: bevel([hl, dark], [light, sh]),
+  /** The strip of a status bar, behind its sections. */
+  statusbar: 'none',
+  /** The edge between a title bar and the window under it. */
+  titlebar: 'none',
+  /** A checked check box: the same sunken well as an unchecked one, in Windows 98. */
+  checked: bevel([sh, hl], [dark, light]),
+  /** A button inside a field while held, or while its list is open: pressed in, in Windows 98. */
+  'field-button-pressed': bevel([dark, hl], [sh, light]),
+  /** A flat toolbar button that is latched on: pressed in, in Windows 98. */
+  'latched-ghost': bevel([dark, hl], [sh, light]),
+  /** A checked check box in a selected table row: its usual well, in Windows 98. */
+  'checked-selected': bevel([sh, hl], [dark, light]),
+  /** A toast's ✕: a caption button, raised, in Windows 98. */
+  'toast-close': bevel([hl, dark], [light, sh]),
+  /**
+   * A pager's buttons: a raised command button, its focused frame, and pressed
+   * in while held or while it is the current page. Flat in a theme that draws
+   * the pager as a row of plain numbers.
+   */
+  pager: bevel([hl, dark], [light, sh]),
+  'pager-focus': [
+    `inset -1px -1px ${dark}`,
+    `inset 1px 1px ${dark}`,
+    `inset -2px -2px ${dark}`,
+    `inset 2px 2px ${hl}`,
+    `inset -3px -3px ${sh}`,
+    `inset 3px 3px ${light}`,
+  ].join(', '),
+  'pager-pressed': bevel([dark, hl], [sh, light]),
+  /** A button inside a field: raised, in Windows 98. */
+  'field-button': bevel([hl, dark], [light, sh]),
+  /** A scroll bar's thumb. */
+  'scroll-thumb': bevel([hl, dark], [light, sh]),
+
   /** The edge of a sticky table column while rows scroll under it. */
   'scroll-x': `inset -1px 0 ${sh}`,
   /**

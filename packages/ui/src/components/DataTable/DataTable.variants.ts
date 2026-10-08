@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority'
+import { radioFace } from '../Radio/Radio.variants'
 
 /**
  * The root: the visible caption above the frame. A consumer class lands here,
@@ -12,21 +13,24 @@ export const dataTableRootVariants = cva('flex w-full min-h-0 flex-col gap-1')
  *
  * The bevel is on its own element, outside the scroll container: an inset
  * shadow paints under the content, so on the scrolling element itself the rows
- * and the sticky header would slide over it.
+ * and the sticky header would slide over it. It is drawn on a layer over the
+ * frame, so a theme whose frame has no padding (`--spacing-frame: 0`) keeps
+ * its edge above the rows that reach it.
  */
-export const dataTableFrameVariants = cva(
-  'flex min-h-0 flex-1 flex-col bg-input p-0.5 shadow-sunken'
-)
+export const dataTableFrameVariants = cva([
+  'relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-input p-frame',
+  "after:pointer-events-none after:absolute after:inset-0 after:z-sticky after:rounded-[inherit] after:shadow-table after:content-['']",
+])
 
 /**
  * The scroll container. A table wider than its frame scrolls here rather than
  * pushing the page sideways, which is what makes a sticky column meaningful.
  */
 export const dataTableWrapperVariants = cva([
-  'scrollbar-win98 relative min-h-0 w-full flex-1 overflow-auto',
+  'scrollbar-themed relative min-h-0 w-full flex-1 overflow-auto',
   // Focusable when it actually scrolls, so focus has to be visible.
-  'outline-none focus-visible:outline-1 focus-visible:-outline-offset-1',
-  'focus-visible:outline-dotted focus-visible:outline-ring',
+  'outline-none focus-visible:focus-ring focus-visible:-outline-offset-1',
+  'focus-visible:outline-ring',
 ])
 
 /**
@@ -87,14 +91,14 @@ export const dataTableHeaderRowVariants = cva('relative z-sticky')
  * lets the rows scroll through it.
  */
 export const dataTableHeaderCellVariants = cva(
-  'bg-card align-middle font-normal whitespace-nowrap text-foreground shadow-raised',
+  'bg-table-header align-middle font-normal whitespace-nowrap text-table-header-foreground shadow-header',
   {
     variants: {
       size: {
         // `h-*` on a table cell is the CSS minimum row height (min-height is
         // ignored on `display: table-cell`).
-        sm: 'h-[22px] px-1 py-0',
-        md: 'h-[27px] px-1 py-0',
+        sm: 'h-row-sm px-table-header-px py-0',
+        md: 'h-row-md px-table-header-px py-0',
       },
       align: {
         start: 'text-start',
@@ -140,14 +144,14 @@ export const dataTableHeaderCellVariants = cva(
  */
 export const dataTableSortButtonVariants = cva(
   [
-    'group/sort flex w-full cursor-pointer items-center bg-card px-1 text-inherit',
-    'shadow-raised outline-none active:shadow-pressed',
+    'group/sort flex w-full cursor-pointer items-center bg-table-header px-table-header-px text-inherit',
+    'shadow-header outline-none active:shadow-pressed',
   ],
   {
     variants: {
       size: {
-        sm: 'h-[22px]',
-        md: 'h-[27px]',
+        sm: 'h-row-sm',
+        md: 'h-row-md',
       },
       align: {
         start: 'justify-start',
@@ -161,14 +165,14 @@ export const dataTableSortButtonVariants = cva(
 
 /** The label and the arrow, which move together when the header is pressed. */
 export const dataTableSortContentVariants = cva(
-  'flex min-w-0 items-center gap-1 group-active/sort:translate-x-0.5 group-active/sort:translate-y-px'
+  'flex min-w-0 items-center gap-1 group-active/sort:translate-x-[calc(var(--rk-press-shift)*2)] group-active/sort:translate-y-(--rk-press-shift)'
 )
 
 /** The dotted focus ring, drawn around the label only. */
 export const dataTableSortLabelVariants = cva([
   'truncate px-px',
-  'group-focus-visible/sort:outline-1 group-focus-visible/sort:-outline-offset-1',
-  'group-focus-visible/sort:outline-dotted group-focus-visible/sort:outline-ring',
+  'group-focus-visible/sort:focus-ring group-focus-visible/sort:-outline-offset-1',
+  'group-focus-visible/sort:outline-ring',
 ])
 
 /** The 8×8 sort triangle. Only a sorted column shows one. */
@@ -179,11 +183,11 @@ export const dataTableSortIconVariants = cva('shrink-0')
  * `whitespace-nowrap`: a Windows 98 list never wraps a cell. A wrapped cell
  * breaks the fixed row height, and the row beside it no longer lines up.
  */
-export const dataTableCellVariants = cva('px-1.5 py-0 align-middle whitespace-nowrap', {
+export const dataTableCellVariants = cva('px-table-cell-px py-0 align-middle whitespace-nowrap', {
   variants: {
     size: {
-      sm: 'h-[22px]',
-      md: 'h-[27px]',
+      sm: 'h-row-sm',
+      md: 'h-row-md',
     },
     align: {
       start: 'text-start',
@@ -217,8 +221,8 @@ export const dataTableRowVariants = cva(
   [
     'bg-input',
     // A focused row gets the dotted rectangle, as a Windows 98 list draws it.
-    'outline-none focus-visible:outline-1 focus-visible:-outline-offset-1',
-    'focus-visible:outline-dotted focus-visible:outline-ring',
+    'outline-none focus-visible:focus-ring focus-visible:-outline-offset-1',
+    'focus-visible:outline-ring',
   ],
   {
     variants: {
@@ -242,8 +246,13 @@ export const dataTableRowVariants = cva(
           'bg-surface-selected text-on-selected *:text-on-selected',
           '[&_:is(.text-foreground,.text-muted-foreground)]:text-on-selected',
           'focus-visible:outline-on-selected',
+          // A checked box keeps its edge against the selected fill.
+          '[&_[data-slot=checkbox]_[data-slot=checkbox-box]]:shadow-checked-selected',
         ].join(' '),
-        false: '',
+        // Every other row, in a theme that stripes, and the row under the
+        // pointer, in a theme that highlights it (Windows 98 does neither).
+        // Not on a selected row, whose fill says it is selected.
+        false: 'even:bg-table-stripe hover:bg-table-row-hover',
       },
     },
     defaultVariants: { interactive: false, selected: false },
@@ -261,8 +270,8 @@ export const dataTableRowActionClass = ''
 export const dataTableSelectCellVariants = cva('w-7 min-w-7 px-0 text-center align-middle', {
   variants: {
     size: {
-      sm: 'h-[22px]',
-      md: 'h-[27px]',
+      sm: 'h-row-sm',
+      md: 'h-row-md',
     },
     header: {
       true: '',
@@ -295,11 +304,12 @@ export const dataTableSelectCellVariants = cva('w-7 min-w-7 px-0 text-center ali
  */
 export const dataTableCheckboxVariants = cva(
   [
-    'inline-flex size-[13px] shrink-0 cursor-pointer items-center justify-center align-middle',
-    'bg-input text-(--color-foreground) shadow-sunken',
-    'active:bg-surface-disabled',
-    'outline-none focus-visible:outline-1 focus-visible:outline-offset-1',
-    'focus-visible:outline-dotted focus-visible:outline-ring',
+    'inline-flex size-check shrink-0 cursor-pointer items-center justify-center align-middle',
+    'rounded-xs bg-input text-(--color-foreground) shadow-sunken [&_svg]:scale-(--rk-glyph-scale)',
+    'checked:bg-checked checked:text-on-checked checked:shadow-checked',
+    'active:bg-surface-disabled active:checked:bg-surface-disabled',
+    'outline-none focus-visible:focus-ring focus-visible:outline-offset-1',
+    'focus-visible:outline-ring',
     'disabled:cursor-default disabled:bg-surface-disabled disabled:text-text-disabled',
   ],
   {
@@ -318,7 +328,7 @@ export const dataTableCheckboxVariants = cva(
  * 12×12 mark, invisible, so clicks, focus, keyboard and the shared `name` stay
  * native; the mark reads its state through `peer-*`.
  */
-export const dataTableRadioVariants = cva('relative inline-flex size-3 align-middle', {
+export const dataTableRadioVariants = cva('relative inline-flex size-radio align-middle', {
   variants: {
     size: {
       sm: '',
@@ -332,13 +342,17 @@ export const dataTableRadioInputClass =
   'peer absolute inset-0 m-0 size-full cursor-pointer appearance-none opacity-0 disabled:cursor-default'
 
 export const dataTableRadioMarkClass = [
-  'pointer-events-none text-(--color-foreground)',
+  'pointer-events-none size-radio rounded-pill text-on-checked',
   '[--rk-radio-well:var(--color-input)] [--rk-radio-dot:transparent]',
-  'peer-checked:[--rk-radio-dot:currentColor]',
+  'peer-checked:[--rk-radio-dot:currentColor] peer-checked:[--rk-radio-well:var(--color-checked)]',
+  // Held and disabled win over checked, by being the more specific rule.
   'peer-active:[--rk-radio-well:var(--color-surface-disabled)]',
+  'peer-active:peer-checked:[--rk-radio-well:var(--color-surface-disabled)]',
   'peer-disabled:[--rk-radio-well:var(--color-surface-disabled)] peer-disabled:text-text-disabled',
-  'peer-focus-visible:outline-1 peer-focus-visible:outline-offset-1',
-  'peer-focus-visible:outline-dotted peer-focus-visible:outline-ring',
+  'peer-disabled:peer-checked:[--rk-radio-well:var(--color-surface-disabled)]',
+  'peer-focus-visible:focus-ring peer-focus-visible:outline-offset-1',
+  'peer-focus-visible:outline-ring',
+  radioFace,
 ].join(' ')
 
 /**
@@ -349,14 +363,14 @@ export const dataTableRadioMarkClass = [
  */
 export const dataTableSummaryCellVariants = cva(
   [
-    'sticky bottom-0 pt-0.5 font-bold',
+    'sticky bottom-0 pt-0.5 font-strong',
     'bg-[linear-gradient(var(--color-bevel-shadow)_0_1px,var(--color-bevel-highlight)_1px_2px,var(--color-input)_2px)]',
   ],
   {
     variants: {
       size: {
-        sm: 'h-6',
-        md: 'h-[29px]',
+        sm: 'h-[calc(var(--spacing-row-sm)+2px)]',
+        md: 'h-[calc(var(--spacing-row-md)+2px)]',
       },
       /** A pinned summary cell paints over the summary cells scrolling under it. */
       pinned: {

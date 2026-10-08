@@ -80,6 +80,12 @@ export const fontWeight = {
   normal: '400',
   /** Window titles, headings, the default button. */
   bold: '700',
+  /**
+   * The weight a theme gives emphasis: titles, headings, a table's totals.
+   * Components use this rather than `bold`, so a theme can make emphasis
+   * semibold without changing what `font-bold` means in the app around it.
+   */
+  strong: '700',
 } as const
 
 /** Letter spacing. Windows 98 sets every size at the face's own spacing. */

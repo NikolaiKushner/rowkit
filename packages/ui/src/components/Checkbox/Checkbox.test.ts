@@ -59,7 +59,17 @@ describe('Checkbox', () => {
     const el = mount(Checkbox, { attrs: { 'aria-label': 'x' } })
     expect(el.find('[data-slot="checkbox-label"]').exists()).toBe(false)
     expect(el.find('[data-slot="checkbox-box"]').classes().join(' ')).toContain(
-      'group-has-[input:focus-visible]/checkbox:outline-dotted'
+      'group-has-[input:focus-visible]/checkbox:focus-ring'
+    )
+  })
+
+  it('rings the box of a labelled check box for a theme that rings the control', () => {
+    const el = mount(Checkbox, { props: { label: 'x' } })
+    expect(el.get('[data-slot="checkbox-box"]').classes()).toContain(
+      'group-has-[input:focus-visible]/checkbox:focus-outer'
+    )
+    expect(el.get('[data-slot="checkbox-box"]').classes()).not.toContain(
+      'group-has-[input:focus-visible]/checkbox:focus-ring'
     )
   })
 

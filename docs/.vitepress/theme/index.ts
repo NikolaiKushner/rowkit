@@ -9,6 +9,9 @@ import DemoBox from './components/DemoBox.vue'
 import SiteLayout from './components/site/SiteLayout.vue'
 import NpmVersion from './components/NpmVersion.vue'
 import TokenGrid from './components/TokenGrid.vue'
+import TokenTable from './components/TokenTable.vue'
+import ThemeBuilder from './components/ThemeBuilder.vue'
+import ThemesSideBySide from './components/ThemesSideBySide.vue'
 import TypeSamples from './components/TypeSamples.vue'
 // The Windows 98 faces, loaded the way an app is told to load them.
 import '@fontsource/pt-sans/400.css'
@@ -43,7 +46,10 @@ export default {
     app.component('BevelTiles', BevelTiles)
     app.component('TypeSamples', TypeSamples)
     app.component('TokenGrid', TokenGrid)
+    app.component('TokenTable', TokenTable)
     app.component('NpmVersion', NpmVersion)
+    app.component('ThemeBuilder', ThemeBuilder)
+    app.component('ThemesSideBySide', ThemesSideBySide)
 
     /*
      * Vercel Analytics, guarded because `enhanceApp` runs during the static

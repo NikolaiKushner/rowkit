@@ -15,65 +15,151 @@
  * take `bg-red-500` away from the app that installed it.
  */
 @import '@rowkit/tokens/css';
+/* The modern theme's icon glyphs. Inert outside it. */
+@import './modern-icons.css';
 
 /*
  * Keyframes. Windows 98 has next to no motion: overlays, toasts and tooltips
- * appear and go instantly, so the one animation left is the skeleton's dither.
- * A keyframe is structure, not a design value, so it lives here rather than
- * in `@rowkit/tokens`.
+ * appear and go instantly, so the one animation it has is the skeleton's
+ * dither. Themes with motion name their keyframes in the `--rk-animate-*`
+ * switches, so all of them are declared here, outside `@theme`, where
+ * Tailwind emits them whether or not a utility names them.
  */
 @theme {
   /*
    * The skeleton's checker stepping 1px sideways and back, 400ms per frame.
    * `steps(1)` holds each keyframe's value for its whole interval: two
-   * frames, no tween, as a 1998 screen would have drawn it.
+   * frames, no tween, as a 1998 screen would have drawn it. Kept for apps
+   * that used it; rowkit's own skeleton reads `--rk-animate-loading`.
    */
-  --animate-dither: dither 800ms steps(1) infinite;
+  --animate-dither: rk-dither 800ms steps(1) infinite;
+}
 
-  @keyframes dither {
-    50% {
-      background-position: 1px 0;
-    }
+@keyframes rk-dither {
+  50% {
+    background-position: 1px 0;
+  }
+}
+
+@keyframes rk-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* A busy mark turning: the modern theme's spinner in a loading button. */
+@keyframes rk-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+/* An indeterminate progress bar, modern: its 30% segment from just off the left to just off the right. */
+@keyframes rk-progress-slide {
+  from {
+    translate: -100%;
+  }
+  to {
+    translate: calc(100% / 0.3);
+  }
+}
+
+/* An indeterminate progress bar, Windows 98: the blocks step right, one period a step. */
+@keyframes rk-progress-march {
+  to {
+    translate: calc(var(--rk-progress-steps, 18) * var(--spacing-progress-period));
+  }
+}
+
+@keyframes rk-overlay-in {
+  from {
+    opacity: 0;
+    scale: 0.97;
   }
 }
 
 /*
- * The Windows 98 dither: a 1px checker of white and silver, white in the
- * top-left pixel. A latched toolbar button, a scrollbar track and a skeleton
- * are filled with it.
+ * Focus. Three rings for three places, each switched on by its width in the
+ * theme (`--rk-focus-*-width`); Windows 98 draws the first two, the modern
+ * theme the last two. Offsets stay with the component: a ring around a label
+ * sits 1px inside it, a ring around a checkbox's box 1px outside.
+ */
+
+/* Around a control's label, inside the control: Windows 98's dotted rectangle. Colour: `outline-ring`. */
+@utility focus-label {
+  outline-style: dotted;
+  outline-width: var(--rk-focus-label-width);
+}
+
+/* On the focused element itself: a row, a scrolling region, a toast. Colour: `outline-ring`. */
+@utility focus-ring {
+  outline-style: var(--rk-focus-ring-style);
+  outline-width: var(--rk-focus-ring-width);
+}
+
+/* Around a control's edge, outside it, following its corners. */
+@utility focus-outer {
+  outline-style: solid;
+  outline-width: var(--rk-focus-outer-width);
+  outline-color: var(--color-focus-ring);
+  outline-offset: var(--rk-focus-outer-offset);
+}
+
+/*
+ * An invalid field's frame: a line of `--rk-invalid-width` in the danger colour
+ * inside the well, over its sunken edge. Zero in Windows 98, where the error
+ * icon alone marks the field.
+ */
+@utility field-invalid {
+  box-shadow:
+    inset 0 0 0 var(--rk-invalid-width) var(--color-danger-solid),
+    var(--rk-shadow-sunken);
+}
+
+/*
+ * A latched toggle: the Windows 98 dither, a 1px checker of white and silver,
+ * white in the top-left pixel. A theme without the pattern sets
+ * `--rk-dither-image: none` and keeps the fill.
  *
- * Drawn as a 2px conic-gradient tile rather than an image so it follows the
- * bevel tokens and stays pixel-exact at any zoom: each quadrant is one CSS
+ * The checker is a 2px conic-gradient tile rather than an image so it follows
+ * the bevel tokens and stays pixel-exact at any zoom: each quadrant is one CSS
  * pixel, and the hard stops leave nothing to interpolate.
  */
 @utility bg-dither {
-  background-color: var(--color-card);
-  background-image: conic-gradient(
-    var(--color-card) 0 25%,
-    var(--color-bevel-highlight) 0 50%,
-    var(--color-card) 0 75%,
-    var(--color-bevel-highlight) 0
-  );
+  /* A primary button sets --rk-latched-fill to latch in its own colour. */
+  background-color: var(--rk-latched-fill, var(--color-control-latched));
+  background-image: var(--rk-dither-image);
+  background-size: 2px 2px;
+}
+
+/* A loading placeholder: the dither in Windows 98, a flat fill elsewhere. */
+@utility bg-loading {
+  background-color: var(--color-track);
+  background-image: var(--rk-loading-image);
   background-size: 2px 2px;
 }
 
 /*
- * The Windows 98 scroll bar, 16px thick: raised arrow buttons, a dithered
- * track and a raised thumb whose length is the visible share. Put it on the
- * element that scrolls. rowkit's own scrolling regions (DataTable, the Dialog
- * body, the Select list, WindowBody) already carry it.
+ * The theme's scroll bar. Put it on the element that scrolls. rowkit's own
+ * scrolling regions (DataTable, the Dialog body, the Select list, WindowBody)
+ * already carry it.
+ *
+ * In Windows 98: 16px thick, raised arrow buttons, a dithered track and a
+ * raised thumb whose length is the visible share. In the modern theme: a thin
+ * rounded thumb on a clear track, no arrows. Every part reads a variable, so
+ * one rule draws both.
  *
  * It restyles the browser's scroll bar rather than drawing a new one, so wheel,
  * touch, keyboard and assistive technology scroll exactly as they always do.
- * Chromium and Safari draw every part. Firefox can only colour a scroll bar,
- * so it gets a silver thumb on a white track and its own arrows, if any.
+ * Chromium and Safari draw every part. Firefox can only colour a scroll bar
+ * and choose its width, so it gets the colours and its own arrows, if any.
  *
  * Each arrow is four 1px gradient strips — the rows of the 8px triangle icons —
  * so it follows the foreground token and greys out without an image. A held
  * arrow goes flat with a grey frame and its triangle steps 1px down and right,
  * as Windows 98 drew it.
  */
-@utility scrollbar-win98 {
+@utility scrollbar-themed {
   /*
    * Chromium ignores every `::-webkit-scrollbar` rule on an element with a
    * standard `scrollbar-color` or `scrollbar-width`, and `scrollbar-color`
@@ -84,32 +170,30 @@
   scrollbar-width: auto;
 
   @supports not selector(::-webkit-scrollbar) {
-    scrollbar-color: var(--color-card) var(--color-bevel-highlight);
+    scrollbar-color: var(--color-scroll-thumb) var(--color-scroll-track);
   }
 
   &::-webkit-scrollbar {
-    width: --spacing(4);
-    height: --spacing(4);
+    width: var(--spacing-scrollbar);
+    height: var(--spacing-scrollbar);
   }
 
   &::-webkit-scrollbar-track {
-    background-color: var(--color-card);
-    background-image: conic-gradient(
-      var(--color-card) 0 25%,
-      var(--color-bevel-highlight) 0 50%,
-      var(--color-card) 0 75%,
-      var(--color-bevel-highlight) 0
-    );
+    background-color: var(--color-scroll-track);
+    background-image: var(--rk-dither-image);
     background-size: 2px 2px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: var(--color-card);
-    box-shadow: var(--shadow-raised);
+    background-color: var(--color-scroll-thumb);
+    background-clip: padding-box;
+    border: var(--spacing-scroll-inset) solid transparent;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--rk-shadow-scroll-thumb);
   }
 
   &::-webkit-scrollbar-corner {
-    background-color: var(--color-card);
+    background-color: var(--color-scroll-track);
   }
 
   /* One arrow at each end: no doubled buttons, no track pieces drawn as buttons. */
@@ -121,12 +205,12 @@
     --rk-arrow: var(--color-foreground);
     --rk-arrow-x: 0px;
     --rk-arrow-y: 0px;
-    display: block;
-    width: --spacing(4);
-    height: --spacing(4);
-    background-color: var(--color-card);
+    display: var(--rk-scrollbar-buttons);
+    width: var(--spacing-scroll-button);
+    height: var(--spacing-scroll-button);
+    background-color: var(--color-control);
     background-repeat: no-repeat;
-    box-shadow: var(--shadow-raised);
+    box-shadow: var(--rk-shadow-raised);
   }
 
   &::-webkit-scrollbar-button:single-button:active {
@@ -139,7 +223,7 @@
     --rk-arrow: var(--color-bevel-shadow);
     --rk-arrow-x: 0px;
     --rk-arrow-y: 0px;
-    box-shadow: var(--shadow-raised);
+    box-shadow: var(--rk-shadow-raised);
   }
 
   /*
@@ -209,4 +293,9 @@
       calc(9px + var(--rk-arrow-x)) calc(7px + var(--rk-arrow-y)),
       calc(10px + var(--rk-arrow-x)) calc(8px + var(--rk-arrow-y));
   }
+}
+
+/* The first name of `scrollbar-themed`, from when Windows 98 was the only theme. */
+@utility scrollbar-win98 {
+  @apply scrollbar-themed;
 }

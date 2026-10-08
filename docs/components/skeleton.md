@@ -24,6 +24,9 @@ for things not yet there — and the checker steps one pixel sideways every
 400ms instead of pulsing. That step is behind `motion-safe:`: with «Reduce
 motion» on in the OS, the plates stay and the step goes.
 
+In the modern theme each shape is a plain grey plate with rounded corners
+that pulses gently, once every 1.6s — under the same `motion-safe:` rule.
+
 ## Examples
 
 Each example below is the whole component: copy it into a `.vue` file and it
@@ -138,7 +141,7 @@ standing for the whole area, or wrap the group yourself:
 `label` produces `role="status"` with `aria-busy="true"` — the role makes it a
 live region, and `aria-busy` is what states the content is still arriving.
 
-**Motion.** The step is `motion-safe:` only, so it never renders for anyone who
+**Motion.** The step, or the modern theme's pulse, is `motion-safe:` only, so it never renders for anyone who
 has asked for reduced motion. A looping animation is the kind that triggers
 vestibular symptoms, and it carries no information the static shape does not.
 `animated: false` turns it off for everyone.
@@ -150,5 +153,6 @@ meaningful graphics, and this is neither.
 
 **Animation timing** does not come from the motion tokens. Those cap at 320ms
 because they describe interaction feedback, where anything slower reads as lag.
-An ambient loop is a different thing: two frames of 400ms, held with
-`steps(1)` so nothing tweens between them.
+An ambient loop is a different thing: in Windows 98 two frames of 400ms, held
+with `steps(1)` so nothing tweens between them; in the modern theme a 1.6s
+pulse.

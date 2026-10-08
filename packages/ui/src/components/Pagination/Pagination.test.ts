@@ -118,10 +118,10 @@ describe('Pagination', () => {
     })
 
     it('draws the current page pressed in, through aria-current', () => {
-      // Button draws aria-current="page" with the pressed bevel; the state and
-      // the look come from the same attribute, so they cannot disagree.
+      // aria-current="page" draws the pager's pressed state; the state and the
+      // look come from the same attribute, so they cannot disagree.
       const current = setup({ page: 3 }).find('[aria-current="page"]')
-      expect(current.classes()).toContain('aria-[current=page]:shadow-pressed')
+      expect(current.classes()).toContain('aria-[current=page]:shadow-pager-pressed')
     })
 
     it('labels Back and Next with visible text that is also their name', () => {

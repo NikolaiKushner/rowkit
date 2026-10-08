@@ -47,7 +47,7 @@
     border: 0;
     font-size: inherit;
     line-height: inherit;
-    font-weight: 700;
+    font-weight: var(--font-weight-strong);
     letter-spacing: 0;
   }
 
@@ -58,7 +58,7 @@
   }
 
   .rk-page .rk-demo :where(strong) {
-    font-weight: 700;
+    font-weight: var(--font-weight-strong);
   }
 
   .rk-page .rk-demo :where(ul, ol) {
@@ -107,14 +107,14 @@
     border: 0;
     font-size: var(--text-doc-h2);
     line-height: var(--text-doc-h2--line-height);
-    font-weight: 700;
+    font-weight: var(--font-weight-strong);
     letter-spacing: 0;
   }
 
   .rk-page :where(h3, h4):not(.rk-demo *) {
     font-size: var(--text-doc-h3);
     line-height: var(--text-doc-h3--line-height);
-    font-weight: 700;
+    font-weight: var(--font-weight-strong);
     letter-spacing: 0;
   }
 
@@ -178,13 +178,13 @@
     position: relative;
     margin-left: 0;
     margin-right: 0;
-    border-radius: 0;
+    border-radius: var(--radius-lg);
     background: var(--color-input);
-    box-shadow: var(--shadow-sunken);
+    box-shadow: var(--shadow-table);
   }
 
   .rk-page div[class*='language-'] pre {
-    @apply scrollbar-win98;
+    @apply scrollbar-themed;
     /*
      * The code scrolls in its own column, which stops short of Copy — 75px
      * and 4px in, 8px between, as Figma lays them side by side — so a long
@@ -218,9 +218,9 @@
     width: 75px;
     height: 21px;
     border: 0;
-    border-radius: 0;
+    border-radius: var(--radius-sm);
     opacity: 1;
-    background: var(--color-card) url('/icons/copy-16.svg') no-repeat 13px center;
+    background: var(--color-control) url('/icons/copy-16.svg') no-repeat 13px center;
     box-shadow: var(--shadow-raised);
     font-family: var(--font-sans);
     font-size: var(--text-ui);
@@ -269,6 +269,51 @@
   }
 
   /*
+   * Modern (Figma Site/CodeBlock): 12px and 14px in, and Copy as a 74×28
+   * secondary button with the modern copy glyph.
+   */
+  /* As tall as Copy and its margins, so a one-line block still holds the button. */
+  [data-theme='modern'] .rk-page div[class*='language-']:not(.rk-demo *) {
+    min-height: 52px;
+  }
+
+  [data-theme='modern'] .rk-page div[class*='language-'] pre {
+    margin-right: 96px;
+    padding: 12px 0 12px 14px;
+  }
+
+  [data-theme='modern'] .rk-page div[class*='language-'] > button.copy {
+    top: 12px;
+    right: 14px;
+    width: 74px;
+    height: 28px;
+    border-radius: 7px;
+    background-image: none;
+    color: var(--color-control-foreground);
+  }
+
+  [data-theme='modern'] .rk-page div[class*='language-'] > button.copy::before {
+    color: var(--color-control-foreground);
+  }
+
+  [data-theme='modern'] .rk-page div[class*='language-'] > button.copy::after,
+  [data-theme='modern'] .rk-page div[class*='language-'] > button.copy.copied::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 12px;
+    display: block;
+    width: 14px;
+    height: 14px;
+    background: currentColor;
+    mask: var(--rk-icon-copy) no-repeat center / contain;
+  }
+
+  [data-theme='modern'] .rk-page div[class*='language-'] > button.copy:active {
+    padding: 0;
+  }
+
+  /*
    * Tips, warnings and dangers: a system-message panel in the window bevel,
    * the 32px icon at the left, a bold 13px title over the text.
    */
@@ -276,7 +321,7 @@
     position: relative;
     padding: 12px 12px 12px 56px;
     border: 0;
-    border-radius: 0;
+    border-radius: var(--radius-lg);
     background: var(--color-card) no-repeat 12px 12px;
     box-shadow: var(--shadow-window);
     color: var(--color-foreground);
@@ -304,7 +349,7 @@
     margin-bottom: 4px;
     font-size: var(--text-heading);
     line-height: var(--text-heading--line-height);
-    font-weight: 700;
+    font-weight: var(--font-weight-strong);
   }
 
   .rk-page .custom-block p + p {
@@ -312,11 +357,60 @@
   }
 
   /*
+   * Modern (Figma Site/Callout): a tinted panel with a 1px border, a 20px icon
+   * in the tone's colour, the title small and coloured over the text.
+   */
+  [data-theme='modern'] .rk-page .custom-block:not(.details, .rk-demo *) {
+    --rk-callout-tone: var(--color-primary-solid);
+    --rk-callout-title: var(--color-primary-on-subtle);
+    --rk-callout-glyph: var(--rk-icon-info);
+    padding: 14px 16px 14px 48px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: 10px;
+    background: var(--color-primary-subtle);
+    box-shadow: none;
+  }
+
+  [data-theme='modern'] .rk-page .custom-block:not(.details, .rk-demo *)::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    width: 20px;
+    height: 20px;
+    background: var(--rk-callout-tone);
+    mask: var(--rk-callout-glyph) no-repeat center / contain;
+  }
+
+  [data-theme='modern'] .rk-page .custom-block.warning:not(.rk-demo *) {
+    --rk-callout-tone: var(--color-warning-solid);
+    --rk-callout-title: var(--color-warning-on-subtle);
+    --rk-callout-glyph: var(--rk-icon-warning);
+    border-color: var(--color-warning-border);
+    background: var(--color-warning-subtle);
+  }
+
+  [data-theme='modern'] .rk-page .custom-block.danger:not(.rk-demo *) {
+    --rk-callout-tone: var(--color-danger-solid);
+    --rk-callout-title: var(--color-danger-on-subtle);
+    --rk-callout-glyph: var(--rk-icon-error);
+    border-color: var(--color-danger-border);
+    background: var(--color-danger-subtle);
+  }
+
+  [data-theme='modern'] .rk-page .custom-block p.custom-block-title {
+    margin-bottom: 2px;
+    font-size: var(--text-ui);
+    line-height: var(--text-ui--line-height);
+    color: var(--rk-callout-title);
+  }
+
+  /*
    * Markdown tables as DataTables: a sunken white frame, raised 22px header
    * cells, 11px text, no grid lines.
    */
   .rk-page .rk-table:not(.rk-demo *) {
-    @apply scrollbar-win98;
+    @apply scrollbar-themed;
     overflow-x: auto;
   }
 
@@ -327,9 +421,10 @@
     border: 0;
     border-collapse: separate;
     border-spacing: 0;
-    padding: 2px;
+    padding: var(--spacing-frame);
+    border-radius: var(--radius-lg);
     background: var(--color-input);
-    box-shadow: var(--shadow-sunken);
+    box-shadow: var(--shadow-table);
     font-size: var(--text-ui);
     line-height: var(--text-ui--line-height);
   }
@@ -348,10 +443,10 @@
     height: 22px;
     padding-top: 0;
     padding-bottom: 0;
-    background: var(--color-card);
-    box-shadow: var(--shadow-raised);
+    background: var(--color-table-header);
+    box-shadow: var(--shadow-header);
     font-weight: 400;
-    color: var(--color-foreground);
+    color: var(--color-table-header-foreground);
     white-space: nowrap;
   }
 
@@ -403,7 +498,7 @@
       font-family: var(--font-sans);
       font-size: var(--text-ui);
       line-height: var(--text-ui--line-height);
-      font-weight: 700;
+      font-weight: var(--font-weight-strong);
     }
 
     .rk-page .rk-props table :where(td[data-label='Type'], td[data-label='Default']),

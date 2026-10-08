@@ -6,7 +6,12 @@ import TriangleDownIcon from '../../icons/TriangleDownIcon.vue'
 import TriangleUpIcon from '../../icons/TriangleUpIcon.vue'
 import { cn } from '../../utils/cn'
 import { useFieldContext } from '../Field/context'
-import { inputButtonVariants, inputFrameVariants, inputVariants } from './Input.variants'
+import {
+  inputButtonsVariants,
+  inputButtonVariants,
+  inputFrameVariants,
+  inputVariants,
+} from './Input.variants'
 
 import type { InputProps } from './types'
 
@@ -136,7 +141,8 @@ onBeforeUnmount(stopRepeat)
     <span v-if="$slots.leading" class="flex shrink-0 items-center">
       <slot name="leading" />
     </span>
-    <SearchIcon v-else-if="props.type === 'search'" class="shrink-0" />
+    <!-- Subtle, as the design draws it; Windows 98's pixel magnifier keeps its own colours. -->
+    <SearchIcon v-else-if="props.type === 'search'" class="shrink-0 text-text-subtle" />
 
     <input
       v-bind="$attrs"
@@ -164,7 +170,7 @@ onBeforeUnmount(stopRepeat)
     <span
       v-if="props.type === 'number'"
       data-slot="input-spin"
-      class="flex flex-col self-stretch"
+      :class="cn(inputButtonsVariants({ size }), 'flex-col')"
       aria-hidden="true"
     >
       <span
@@ -191,7 +197,7 @@ onBeforeUnmount(stopRepeat)
       v-if="props.type === 'date'"
       data-slot="input-drop"
       aria-hidden="true"
-      :class="inputButtonVariants({ part: 'drop' })"
+      :class="cn(inputButtonVariants({ part: 'drop' }), inputButtonsVariants({ size }))"
       :data-pressed="pressed === 'drop' ? '' : undefined"
       :data-disabled="isLocked ? '' : undefined"
       @pointerdown.prevent="onDropDown"

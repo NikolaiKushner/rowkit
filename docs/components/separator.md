@@ -5,7 +5,7 @@
 The Windows 98 etched line: 1px of shadow beside 1px of highlight, so it reads
 as a groove cut into the silver face. Horizontal, it divides menu groups and
 dialog sections; vertical, it divides toolbar groups and stretches to their
-height.
+height. In the modern theme it is a single 1px hairline in the border grey.
 
 <script setup>
 import SeparatorBasic from '../examples/separator/SeparatorBasic.vue'

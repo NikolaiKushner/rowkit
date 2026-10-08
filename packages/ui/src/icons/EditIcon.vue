@@ -10,6 +10,7 @@ defineOptions({ name: 'RkEditIcon' })
 
 <template>
   <svg
+    data-icon="edit"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

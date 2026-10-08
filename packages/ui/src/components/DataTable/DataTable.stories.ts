@@ -6,6 +6,7 @@ import Button from '../Button/Button.vue'
 import RawDataTable from './DataTable.vue'
 import { useClientSort } from '../../composables/useClientSort'
 import type { DataTableColumn, DataTableSort } from './types'
+import { px, token } from '../../stories/token'
 
 /** A generic SFC does not satisfy the `Component` index signature of a `components` map. */
 const DataTable = RawDataTable as unknown as ConcreteComponent
@@ -428,8 +429,8 @@ async function checkStickyBoth(canvasElement: HTMLElement) {
   // The body's pinned cell lines up under its header, not under the column
   // before it.
   await expect(edge(cell).left).toBeCloseTo(edge(name).left, 0)
-  // No wrapping: the row keeps its 27px.
-  await expect(edge(cell).height).toBe(27)
+  // No wrapping: the row keeps its height (27px in Windows 98).
+  await expect(edge(cell).height).toBe(px('--spacing-row-md'))
 }
 
 /**
@@ -883,9 +884,13 @@ export const SummaryRow: Story = {
     if (!footer) throw new Error('no summary row')
     const cells = within(footer).getAllByRole('cell')
     await expect(cells.map((cell) => cell.textContent?.trim())).toEqual(['Total', '', '1,364.00'])
-    await expect(getComputedStyle(cells[0] as Element).fontWeight).toBe('700')
+    await expect(getComputedStyle(cells[0] as Element).fontWeight).toBe(
+      token('--font-weight-strong')
+    )
     // A data row's height plus the 2px etched line.
-    await expect((cells[0] as Element).getBoundingClientRect().height).toBe(29)
+    await expect((cells[0] as Element).getBoundingClientRect().height).toBe(
+      px('--spacing-row-md') + 2
+    )
   },
 }
 

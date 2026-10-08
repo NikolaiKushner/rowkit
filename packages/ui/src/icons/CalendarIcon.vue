@@ -10,6 +10,7 @@ defineOptions({ name: 'RkCalendarIcon' })
 
 <template>
   <svg
+    data-icon="calendar"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

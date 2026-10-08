@@ -7,11 +7,14 @@
 -->
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero.png" alt="rowkit — a Windows 98 desktop with a «Welcome to rowkit» window, a Users table with selection and status badges, a toast and the taskbar" width="100%" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero-dark.png" />
+    <img src="https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero.png" alt="rowkit — the same Users table in Windows 98, modern light, modern dark and a theme of your own, under the rowkit logo" width="100%" />
+  </picture>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/rowkit"><img src="https://img.shields.io/npm/v/rowkit/beta?color=000080" alt="npm" /></a>
+  <a href="https://www.npmjs.com/package/rowkit"><img src="https://img.shields.io/npm/v/rowkit/beta?color=D63A1F" alt="npm" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/rowkit" alt="license" /></a>
   <a href="https://bundlejs.com/?q=rowkit"><img src="https://img.shields.io/bundlejs/size/rowkit" alt="bundle size" /></a>
 </p>
@@ -24,17 +27,37 @@ A professional Vue 3 toolkit — the components a product interface is built fro
 
 A product interface is a set of components that have to agree: controls, overlays, tables, filters, empty and loading states. rowkit is that set, built as one toolkit — typed, with its own behaviour layer, from one token package. What is published today is the part already finished. The rest of the set is the plan in the [roadmap](./ROADMAP.md), not a second library to go and find.
 
-![A Users window: toolbar with New, Export and Delete, a FilterBar with one chip, a sorted DataTable with two selected rows and status badges, and Pagination in the status bar](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/datatable.png)
+![DataTable side by side in Windows 98 and the modern theme: the live demo on rowkit.dev — a toolbar, a FilterBar with one chip, a sorted table with a selected row and status badges, and Pagination in the status bar](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/datatable.png)
 
 ## What it looks like
 
-rowkit has one theme: Windows 98. Bevels, the grey face and navy selection come from tokens, so every component agrees without extra classes.
+rowkit ships two themes from one set of components: **Windows 98**, the default, and **modern**, in light and dark. A theme is token values and nothing else — the same table, the same markup, one attribute apart.
 
-![The Components window: buttons and a toggle group, inputs and a select, badges, checkboxes and radios, pagination with a progress bar, and a field with an error](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/components.png)
+![The rowkit.dev desktop switching from Windows 98 to the modern theme, light and then dark: the same Users table, About window and install command in each](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/themes.gif)
 
-The docs at [rowkit.dev](https://rowkit.dev) open every page in an Explorer window — folder tree on the left, the address bar shows where you are.
+```html
+<html data-theme="modern" data-color-scheme="dark">
+```
 
-![rowkit.dev: an Explorer window with the docs folder tree and the DataTable page with a live example](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/docs.png)
+Every colour, size, corner, shadow and state is a token — the bevels and the dotted focus ring of Windows 98 included — so the look is yours to change. Adjust a few variables for your brand, or define a complete theme of your own, light and dark, in one call:
+
+```ts
+import { defineTheme } from 'rowkit/theme'
+
+export const acme = defineTheme({
+  name: 'acme', // <html data-theme="acme">
+  extends: 'modern',
+  light: { '--color-control-primary': '#5b3df5', '--radius-md': '10px' },
+})
+```
+
+How it works, every value you can change, and a live builder: [Themes](https://rowkit.dev/foundations/themes).
+
+![The same components in Windows 98 and the modern theme: buttons and a button group, inputs and a select, badges, checkboxes and radios, pagination with a progress bar and a status bar, and a field with an error](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/components.png)
+
+The docs at [rowkit.dev](https://rowkit.dev) switch with it: in Windows 98 every page opens in an Explorer window, folder tree on the left; in the modern theme the site is a modern desktop, with a menu bar, a Dock and Finder-style windows. [`?theme=modern`](https://rowkit.dev/?theme=modern) opens it that way.
+
+![rowkit.dev in Windows 98 and the modern theme: the DataTable page with the folder tree and a live example, as an Explorer window and as a Finder window](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/docs.png)
 
 ## Install
 
@@ -111,7 +134,7 @@ The published components are the start of a professional toolkit, not a speciali
 
 ## Status
 
-**v0.x.** The API is stabilising toward v1.0 and breaking changes are still possible until then. Releases are cut from CI with provenance attestation, and the changelog is [changesets](https://github.com/changesets/changesets)-driven: [rowkit](./packages/ui/CHANGELOG.md) · [@rowkit/tokens](./packages/tokens/CHANGELOG.md).
+**1.0 beta**, published under the npm `beta` tag (`npm i rowkit@beta`). The API is stabilising toward 1.0.0 and breaking changes are still possible between betas. Releases are cut from CI with provenance attestation, and the changelog is [changesets](https://github.com/changesets/changesets)-driven: [rowkit](./packages/ui/CHANGELOG.md) · [@rowkit/tokens](./packages/tokens/CHANGELOG.md).
 
 ## Contributing
 

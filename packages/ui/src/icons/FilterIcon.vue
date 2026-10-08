@@ -10,6 +10,7 @@ defineOptions({ name: 'RkFilterIcon' })
 
 <template>
   <svg
+    data-icon="filter"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

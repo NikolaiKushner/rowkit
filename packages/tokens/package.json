@@ -29,6 +29,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./reference": {
+      "types": "./dist/reference.d.ts",
+      "import": "./dist/reference.js"
+    },
     "./css": "./dist/tokens.css",
     "./package.json": "./package.json"
   },
@@ -41,6 +45,7 @@
   },
   "scripts": {
     "build": "vue-tsc -b tsconfig.lib.json --force && vite build && node scripts/fix-dts-specifiers.mjs && node scripts/emit-css.mjs",
-    "typecheck": "vue-tsc -b --force"
+    "typecheck": "vue-tsc -b --force",
+    "docs:reference": "node scripts/generate-reference.mjs"
   }
 }

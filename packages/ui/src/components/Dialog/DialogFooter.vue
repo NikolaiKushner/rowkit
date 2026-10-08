@@ -8,7 +8,10 @@ defineOptions({ name: 'RkDialogFooter' })
 const props = defineProps<DialogFooterProps>()
 
 defineSlots<{
-  /** Actions. Cancel first, primary last — primary nearest the corner. */
+  /**
+   * Actions, primary first, as Windows 98 orders them. A theme may reverse
+   * them on screen: the modern theme puts the primary button last.
+   */
   default: () => unknown
 }>()
 </script>

@@ -6,6 +6,7 @@ import Button from '../Button/Button.vue'
 import Field from '../Field/Field.vue'
 import Input from '../Input/Input.vue'
 import {
+  filterBarChipRemoveRingVariants,
   filterBarChipRemoveVariants,
   filterBarChipsVariants,
   filterBarChipVariants,
@@ -179,7 +180,7 @@ watch(
           @keydown.backspace.prevent="requestRemove(chip, index)"
           @keydown.delete.prevent="requestRemove(chip, index)"
         >
-          <CloseGlyphIcon />
+          <span :class="filterBarChipRemoveRingVariants()"><CloseGlyphIcon /></span>
         </button>
       </span>
     </div>

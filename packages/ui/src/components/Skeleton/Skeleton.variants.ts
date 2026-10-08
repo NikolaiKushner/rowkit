@@ -10,16 +10,16 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * worse than no placeholder: the layout still jumps when the data lands, which
  * is the one thing a skeleton exists to prevent.
  */
-export const skeletonVariants = cva('block shrink-0 bg-dither', {
+export const skeletonVariants = cva('block shrink-0 bg-loading', {
   variants: {
     /** Geometry preset. Square corners, as everything in Windows 98 but the round controls. */
     variant: {
       /** A line of text: 11px, so it sits on the 16px line like the letters it stands in for. */
-      text: 'h-[11px] w-full',
+      text: 'h-[11px] w-full rounded-xs',
       /** Avatars. Besides the option button, the one round shape in the system. */
       circle: 'size-10 rounded-full',
       /** Thumbnails, cards, controls. */
-      rect: 'h-4 w-full',
+      rect: 'h-4 w-full rounded-md',
     },
     /**
      * Windows 98 never pulses. Animated, the checker steps 1px sideways every
@@ -27,7 +27,7 @@ export const skeletonVariants = cva('block shrink-0 bg-dither', {
      * anyone who has asked for reduced motion.
      */
     animated: {
-      true: 'motion-safe:animate-dither',
+      true: 'motion-safe:animate-(--rk-animate-loading)',
       false: '',
     },
   },

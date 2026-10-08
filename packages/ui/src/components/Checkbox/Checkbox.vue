@@ -5,6 +5,7 @@ import { cn } from '../../utils/cn'
 import {
   checkboxBarClass,
   checkboxBoxFocusClass,
+  checkboxBoxOuterFocusClass,
   checkboxBoxVariants,
   checkboxInputClass,
   checkboxLabelVariants,
@@ -62,7 +63,9 @@ const hasLabel = computed(() => props.label !== undefined || slots.default !== u
       <span
         aria-hidden="true"
         data-slot="checkbox-box"
-        :class="cn(checkboxBoxVariants(), !hasLabel && checkboxBoxFocusClass)"
+        :class="
+          cn(checkboxBoxVariants(), hasLabel ? checkboxBoxOuterFocusClass : checkboxBoxFocusClass)
+        "
       >
         <span v-if="props.indeterminate" :class="checkboxBarClass" />
         <CheckGlyphIcon v-else-if="model" />

@@ -47,8 +47,9 @@ loses data; `link` is text that acts.
 
 ### Sizes
 
-`default` is Windows 98's own 23px. `sm` and `xs` fit dense toolbars and
-table rows, `lg` is for touch and for the one big call to action on a page.
+`default` is Windows 98's own button at Large Fonts, 28px tall (32px in the
+modern theme). `sm` and `xs` fit dense toolbars and table rows, `lg` is for
+touch and for the one big call to action on a page.
 
 <DemoBox>
   <ButtonSizes />
@@ -74,8 +75,9 @@ Press either button. The button stays focused and stays clickable: loading
 sets `aria-busy` and makes the handler a no-op rather than setting `disabled`,
 so a keyboard user is not thrown back to the top of the document by their own
 action. The hourglass occupies the leading slot — with a leading icon the
-width does not change at all, and without one it fits inside the 75px minimum
-for a short label.
+width does not change at all, and without one it fits inside the 92px minimum
+for a short label. Windows 98's hourglass stands still; the modern theme draws
+a spinner there that turns.
 
 <DemoBox>
   <ButtonLoading />
@@ -157,6 +159,11 @@ Every state is a bevel. Pressed sinks the bevel and moves the label one pixel
 right and down; focus adds a dotted ring around the label (and the black frame
 on a `secondary` button); disabled greys the label and embosses it. Nothing
 fades or animates.
+
+In the modern theme the default button is solid blue and every button has
+rounded corners. Held, the face darkens rather than the label moving; focus
+is a blue ring around the whole button; states change over a short 120ms
+transition. A `link` button is underlined only under the pointer and on focus.
 
 ## Anatomy
 
@@ -249,7 +256,9 @@ pointer and the keyboard path.
 - Rendered as something other than `<button>` — a link, say — `disabled`
   becomes `aria-disabled`, because `<a>` has no `disabled` attribute and
   setting one does nothing.
-- Focus is a soft silver `border-ring` plus a translucent outer ring. Never
-  remove it; recolour `--color-ring` if you must.
+- Focus is Windows 98's dotted ring around the label (with the black frame on
+  a `secondary` or `destructive` button), or the modern theme's blue ring
+  around the whole button. Never remove it; recolour `--color-ring` and
+  `--color-focus-ring` if you must.
 - Icon-only sizes (`icon`, `icon-xs`, …) need an `aria-label` — nothing here
   invents one.

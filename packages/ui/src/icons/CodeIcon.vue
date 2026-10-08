@@ -10,6 +10,7 @@ defineOptions({ name: 'RkCodeIcon' })
 
 <template>
   <svg
+    data-icon="code"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

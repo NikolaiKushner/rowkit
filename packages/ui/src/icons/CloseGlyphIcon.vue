@@ -10,6 +10,7 @@ defineOptions({ name: 'RkCloseGlyphIcon' })
 
 <template>
   <svg
+    data-icon="close-glyph"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

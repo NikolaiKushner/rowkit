@@ -21,9 +21,10 @@ describe('GroupBox', () => {
     expect(el.attributes('aria-labelledby')).toBe(legend.attributes('id'))
   })
 
-  it('draws the etched frame 6px down, hidden from assistive technology', () => {
+  it('draws the etched frame where the theme puts it, hidden from assistive technology', () => {
+    // `top-groupbox-top` is 6px down in Windows 98: through the legend's middle.
     const frame = mount(GroupBox, { props: { legend: 'x' } }).find('[aria-hidden="true"]')
-    expect(frame.classes()).toEqual(expect.arrayContaining(['shadow-etched', 'top-1.5']))
+    expect(frame.classes()).toEqual(expect.arrayContaining(['shadow-etched', 'top-groupbox-top']))
   })
 
   it('lets the legend slot replace the prop', () => {

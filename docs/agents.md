@@ -177,7 +177,7 @@ handling.
 - `selectionLabel: string` — default `'Select'`. Accessible name for the selection column.
 - `selectAllLabel: string` — default `'Select all rows'`. Accessible name for the select-all control.
 - `size: 'sm' | 'md'` — default `'md'`. Row height: `sm` 22px for dense lists and logs, `md` 27px.
-- `hoverable: boolean` — default `false`. Kept for compatibility; has no visible effect. Windows 98 list rows have no hover, so a row that does something shows it through the cursor, the dotted focus rectangle and selection instead.
+- `hoverable: boolean` — default `false`. Kept for compatibility; has no visible effect. The row under the pointer takes the theme's `table-row-hover` colour either way: none in Windows 98, whose list rows have no hover, a light grey in the modern theme.
 - `summary: Record<string, unknown>`. A summary row — totals, averages — after the last row, keyed like the columns: `key`, or `id` for a computed column.
 - `scrollbars: 'native' | 'drawn'` — default `'native'`. Which scroll bars the body uses.
 - `class: string`. Additional classes for the root, merged so a consumer's utility wins. A height (`max-h-96`) bounds the table; the body scrolls inside the frame.
@@ -286,7 +286,7 @@ handling.
 
 **Slots**
 
-- `#default` — Actions. Cancel first, primary last — primary nearest the corner.
+- `#default` — Actions, primary first, as Windows 98 orders them. A theme may reverse them on screen: the modern theme puts the primary button last.
 
 ### Dialog
 
@@ -431,7 +431,7 @@ handling.
 - `showEdges: boolean` — default `true`. Always show the first and last page, with ellipses between.
 - `hidePageSize: boolean` — default `false`. Hides the rows-per-page control.
 - `hideSummary: boolean` — default `false`. Hides the "1–10 of 247" summary.
-- `pageSizeLabel: string` — default `'Rows per page'`. Label for the rows-per-page control.
+- `pageSizeLabel: string` — default `'Rows per page:'`. Label for the rows-per-page control.
 - `label: string` — default `'Pagination'`. Accessible name for the navigation region.
 - `previousLabel: string` — default `'Back'`. Label of the previous-page button, shown beside its ◀ and used as its name.
 - `nextLabel: string` — default `'Next'`. Label of the next-page button, shown beside its ▶ and used as its name.
@@ -455,7 +455,7 @@ handling.
 
 **Props**
 
-- `value: number` _(required)_. How far along, from 0 to `max`. Values outside are clamped.
+- `value: number` — default `null`. How far along, from 0 to `max`. Values outside are clamped. Leave it out, or pass `null`, while the amount of work is unknown: the bar shows a segment travelling along the track instead.
 - `max: number` — default `100`. The value that means done.
 - `class: string`. Additional classes, merged so a consumer's utility wins.
 
@@ -501,7 +501,7 @@ handling.
 
 **Props**
 
-- `searchable: boolean` — default `false`. Lets the trigger accept text and filters the list.
+- `searchable: boolean` — default `false`. Puts a search box at the top of the list, which takes focus as it opens and filters the options.
 - `manualFilter: boolean` — default `false`. Hands filtering to the consumer.
 - `disabled: boolean` — default `false`. Disables the control. A surrounding disabled `Field` also disables it.
 - `invalid: boolean` — default `false`. Marks the value invalid. A `Field` with an `error` also sets it.
@@ -535,7 +535,8 @@ handling.
 
 **Props**
 
-- `emptyText: string` — default `'No results'`. Shown when no option matches the search term.
+- `emptyText: string` — default `'No results found'`. Shown when no option matches the search term.
+- `searchLabel: string` — default `'Search'`. Names the search box of a searchable list, and is its placeholder.
 - `loading: boolean` — default `false`. Shows a loading row in place of the list. For async options.
 - `loadingText: string` — default `'Loading…'`. Text shown while `loading`.
 - `class: string`. Additional classes for the panel, merged so a consumer's utility wins.

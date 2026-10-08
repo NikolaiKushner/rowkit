@@ -20,6 +20,19 @@ describe('ProgressBar', () => {
     expect(el.attributes('aria-label')).toBe('Upload')
   })
 
+  it('is indeterminate without a value: no aria-valuenow, a travelling segment', () => {
+    const cases: Record<string, unknown>[] = [{}, { value: null }]
+    for (const props of cases) {
+      const el = mount(ProgressBar, { props, attrs: { 'aria-label': 'Loading' } })
+      expect(el.attributes('aria-valuenow')).toBeUndefined()
+      expect(el.attributes('data-state')).toBe('indeterminate')
+      const bar = el.find('[data-slot="progress-bar-fill"]')
+      expect(bar.classes()).toContain('motion-safe:animate-(--rk-animate-progress)')
+      expect(bar.classes()).toContain('w-progress-segment')
+      expect(bar.classes()).toContain('motion-reduce:translate-x-(--rk-progress-middle)')
+    }
+  })
+
   it('fills to the value as a share of max', () => {
     expect(fill(mount(ProgressBar, { props: { value: 3, max: 12 } }))).toBe('25%')
   })
@@ -33,12 +46,13 @@ describe('ProgressBar', () => {
     expect(fill(under)).toBe('0%')
   })
 
-  it('rounds the fill down to whole 10px blocks where the browser can', () => {
+  it('rounds the fill down to whole blocks where the browser can', () => {
+    // `--spacing-progress-period` is 10px in Windows 98: a block and its gap.
     const classes = mount(ProgressBar, { props: { value: 50 } })
       .find('[data-slot="progress-bar-fill"]')
       .classes()
     expect(classes).toContain(
-      'supports-[width:round(down,1%,1px)]:w-[round(down,var(--rk-progress),10px)]'
+      'supports-[width:round(down,1%,1px)]:w-[round(down,var(--rk-progress),var(--spacing-progress-period))]'
     )
   })
 

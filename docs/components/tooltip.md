@@ -253,5 +253,10 @@ is not snatched away mid-read.
 bubble does not fit on that side it moves to the opposite one, and it slides along
 the edge rather than being clipped.
 
-**Motion is ambient**, so it is gated behind `motion-safe:` and collapses to an
-instant show/hide under `prefers-reduced-motion`.
+**No motion.** The bubble appears after the delay and goes instantly, in
+every theme, so there is nothing for `prefers-reduced-motion` to remove.
+
+In Windows 98 the bubble is the pale yellow info face in a 1px black border,
+square, with no shadow. In the modern theme it is light grey (dark grey in
+the dark scheme), with small rounded corners, a faint border and a soft
+shadow.

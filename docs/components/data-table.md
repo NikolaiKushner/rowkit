@@ -140,9 +140,9 @@ fetch. The `empty` slot takes your own `EmptyState` with a way out.
 
 ### Dense rows for logs
 
-`size="sm"` sets 18px rows. `scrollbars="drawn"` draws the Windows 98 scroll
-bars instead of restyling the browser's, so they look the same in every
-browser.
+`size="sm"` sets 22px rows (30px in the modern theme). `scrollbars="drawn"`
+draws the Windows 98 scroll bars instead of restyling the browser's, so they
+look the same in every browser.
 
 <DemoBox layout="stack">
   <DataTableDense />
@@ -411,8 +411,13 @@ the right has no signal that the table continues past the pinned edge.
 a column keeps its `width`. Columns that do not fit the frame scroll sideways
 rather than squeezing; a table narrower than the frame still fills it.
 
+**Rows have no hover in Windows 98.** A row looks like any other until it is
+selected (navy) or focused (the dotted rectangle). The modern theme stripes
+every other row, highlights the row under the pointer, and draws a selected
+row in blue.
+
 **Two kinds of scroll bar.** By default the body uses the browser's own bar,
-restyled as Windows 98 by `scrollbar-win98`: exact in Chromium and Safari,
+restyled to the theme by `scrollbar-themed`: exact in Chromium and Safari,
 colours only in Firefox. `scrollbars="drawn"` puts the body in a
 [`ScrollArea`](/components/scroll-area) instead, whose bars rowkit draws and
 which look the same everywhere. Either way the bars sit beside the cells,

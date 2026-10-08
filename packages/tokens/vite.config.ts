@@ -26,9 +26,14 @@ export default defineConfig({
     target: 'es2022',
     sourcemap: true,
     lib: {
-      entry: fileURLToPath(new URL('src/index.ts', import.meta.url)),
+      // Two entries: the tokens, and the described reference beside them, so
+      // importing the tokens does not ship three hundred descriptions.
+      entry: {
+        index: fileURLToPath(new URL('src/index.ts', import.meta.url)),
+        reference: fileURLToPath(new URL('src/reference.ts', import.meta.url)),
+      },
       formats: ['es'],
-      fileName: () => 'index.js',
+      fileName: (_format, name) => `${name}.js`,
     },
     rollupOptions: {
       output: {

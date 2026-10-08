@@ -2,8 +2,8 @@
 
 **Stage:** 🟢 Stable
 
-Page controls for a table: a range summary, a rows-per-page control, and page
-numbers.
+Page controls for a table: a range summary at the start of the row, and at
+its end the rows-per-page control beside the page numbers.
 
 <script setup>
 import PaginationBasic from '../examples/pagination/PaginationBasic.vue'
@@ -93,21 +93,28 @@ so the extent of the list is never hidden.
 
 ## Look
 
-As drawn in the Figma Home template's status bar: Windows 98 command buttons
-2px apart — 17px tall at `sm`, 21px at `md`, page numbers square at their
-narrowest. «◀ Back» and «Next ▶» carry their label beside an 8px triangle and
-go grey and embossed on the first and last page. The current page is pressed
-in, its number shifted 1px. Focus is the button's dotted ring and black frame.
-Nothing animates.
+As drawn in the Figma Home template's status bar: the summary on the left; on
+the right, 16px apart, «Rows per page:» with the small select (56px wide, 6px
+from its label) and then the page buttons. Those are Windows 98 command
+buttons 2px apart — 21px tall at `sm`, 26px at `md`. At `md` a page number is
+square at its narrowest; at `sm` it hugs its number. «◀ Back» and «Next ▶»
+carry their label beside an 8px triangle and go grey and embossed on the first
+and last page. The current page is pressed in, its number shifted 1px. Focus
+is the button's dotted ring and black frame. Nothing animates. When the row
+runs out of room it wraps, the controls keeping together at its end.
+
+In the modern theme the page buttons are flat labels with no face until the
+pointer is over them, 10px chevrons in place of the triangles, and the current
+page on a grey rounded face.
 
 ## Anatomy
 
-| Part          | Purpose                                                        |
-| ------------- | -------------------------------------------------------------- |
-| Summary       | "1–10 of 247". Says where you are and how much there is        |
-| Rows per page | A `Select`, wired to a visible label through `Field`           |
-| Navigation    | A `<nav>` landmark holding prev, page numbers and next         |
-| Ellipsis      | Visual gap. `aria-hidden` — the numbers either side say it all |
+| Part          | Purpose                                                                |
+| ------------- | ---------------------------------------------------------------------- |
+| Summary       | "1–10 of 247". Says where you are and how much there is                |
+| Rows per page | «Rows per page:» and a small `Select`, its label wired through `Field` |
+| Navigation    | A `<nav>` landmark holding prev, page numbers and next                 |
+| Ellipsis      | Visual gap. `aria-hidden` — the numbers either side say it all         |
 
 ## When to use
 
@@ -138,7 +145,7 @@ Nothing animates.
 | `showEdges`       | `boolean`           | `true`                    | Always show the first and last page, with ellipses between.                 |
 | `hidePageSize`    | `boolean`           | `false`                   | Hides the rows-per-page control.                                            |
 | `hideSummary`     | `boolean`           | `false`                   | Hides the "1–10 of 247" summary.                                            |
-| `pageSizeLabel`   | `string`            | `'Rows per page'`         | Label for the rows-per-page control.                                        |
+| `pageSizeLabel`   | `string`            | `'Rows per page:'`        | Label for the rows-per-page control.                                        |
 | `label`           | `string`            | `'Pagination'`            | Accessible name for the navigation region.                                  |
 | `previousLabel`   | `string`            | `'Back'`                  | Label of the previous-page button, shown beside its ◀ and used as its name. |
 | `nextLabel`       | `string`            | `'Next'`                  | Label of the next-page button, shown beside its ▶ and used as its name.     |

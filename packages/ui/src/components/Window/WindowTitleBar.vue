@@ -26,7 +26,10 @@ const win = useWindowContext('WindowTitleBar')
 
 <template>
   <div data-slot="window-title-bar" :class="cn(windowTitleBarVariants(), props.class)">
-    <span v-if="$slots.icon" class="flex size-4 shrink-0 items-center justify-center">
+    <span
+      v-if="$slots.icon"
+      class="[display:var(--rk-titlebar-icon)] size-4 shrink-0 items-center justify-center"
+    >
       <slot name="icon" />
     </span>
     <span :id="win.titleId" data-slot="window-title" :class="windowTitleVariants()">

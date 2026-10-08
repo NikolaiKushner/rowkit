@@ -10,6 +10,7 @@ defineOptions({ name: 'RkCheckGlyphIcon' })
 
 <template>
   <svg
+    data-icon="check-glyph"
     aria-hidden="true"
     focusable="false"
     preserveAspectRatio="none"

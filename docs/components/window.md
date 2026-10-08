@@ -76,11 +76,16 @@ stays, Cancel puts the fields back.
 ## Look
 
 As drawn in the Figma file: the silver face in the window bevel, 2px of frame.
-The title bar is 18px of navy-to-blue gradient — the grey gradient with black
+The title bar is 22px of navy-to-blue gradient — the grey gradient with black
 text when `active` is off — holding an optional 16px icon, the bold title cut
-off with an ellipsis, and the 16×14 caption buttons: minimize and maximize
+off with an ellipsis, and the 20×18 caption buttons: minimize and maximize
 together, close 2px apart. A disabled caption button shows an embossed grey
 glyph.
+
+In the modern theme the window has rounded corners, a soft shadow and no
+frame. Its 38px title bar is light grey, with no icon and the title centred;
+the caption buttons are 12px traffic lights on the left — close, minimize,
+maximize — whose glyphs show when the pointer is over the title bar.
 
 ## Anatomy
 

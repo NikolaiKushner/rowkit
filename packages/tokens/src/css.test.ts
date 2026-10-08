@@ -4,6 +4,7 @@ import { buildThemeCss } from './css'
 import { duration, easing } from './motion'
 import { radius } from './radius'
 import { shadow, textShadow } from './shadow'
+import { size } from './size'
 import { spacing } from './spacing'
 import { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
 import { zIndex } from './z-index'
@@ -18,9 +19,9 @@ describe('generated stylesheet', () => {
     expect(themeBlock).not.toBe('')
   })
 
-  // rowkit has one theme. A `.dark` block or a `dark:` variant left behind
-  // would invite consumers to build on a theme that no longer exists.
-  it('emits no dark theme', () => {
+  // Themes are switched by `data-theme` and `data-color-scheme`. A `.dark`
+  // class or a `dark:` variant would be a second mechanism nobody maintains.
+  it('switches themes by attribute only', () => {
     expect(css).not.toContain('.dark')
     expect(css).not.toContain('@custom-variant dark')
   })
@@ -41,6 +42,7 @@ describe('every token reaches the stylesheet', () => {
     ['line heights', lineHeight, '--leading-'],
     ['radii', radius, '--radius-'],
     ['shadows', shadow, '--shadow-'],
+    ['component sizes', size, '--spacing-'],
     ['text shadows', textShadow, '--text-shadow-'],
     // These prefixes are Tailwind v4 theme namespaces, not free-form names —
     // see the note in css.ts. packages/ui/src/styles/theme.test.ts compiles

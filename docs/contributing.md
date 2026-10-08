@@ -22,7 +22,7 @@ Then whichever surface you need:
 pnpm dev          # Nuxt playground, for manual testing
 pnpm storybook    # the component workshop
 pnpm docs:dev     # this site
-pnpm test         # unit, component and browser tests
+pnpm test         # unit, component and browser tests (Windows 98)
 ```
 
 **`pnpm build` before anything else** is not optional in a fresh clone. The
@@ -33,14 +33,20 @@ errors rather than a clear one.
 ## The stages a change goes through
 
 ```bash
-pnpm lint         # eslint, type-aware
-pnpm format       # prettier
-pnpm typecheck    # vue-tsc, strict
-pnpm test         # the whole suite
-pnpm size         # bundle budget, in brotli
+pnpm lint              # eslint, type-aware
+pnpm format            # prettier
+pnpm typecheck         # vue-tsc, strict
+pnpm test              # the whole suite, in Windows 98
+pnpm test:a11y:modern  # the browser tests and the a11y gate in the modern theme
+pnpm size              # bundle budget, in brotli
 ```
 
 CI runs all of these, with **build first** — for the reason above.
+
+Then look at it. With Storybook running, `pnpm visual:check <Component>`
+screenshots its stories into `.visual-check/`. Open the images, then switch the
+Theme and Scheme controls in the Storybook toolbar and look again. Styling fails
+silently; green tests are not enough.
 
 ## Conventions
 
@@ -53,7 +59,9 @@ The rules that get work sent back:
 
 - **No hardcoded design values.** Every colour, space, radius, shadow and layer
   references a token. If none fits, propose one — `skeleton` was added exactly
-  that way.
+  that way. A component never names a theme in its classes: a difference
+  between Windows 98 and modern is a token with a value in every theme, and
+  its JSDoc comment is its description on the Tokens page.
 - **Variants live in `ComponentName.variants.ts`**, defined with `cva`. Never a
   long class string in a template.
 - **Class names are written out in full.** Tailwind finds utilities by scanning
@@ -69,31 +77,39 @@ The rules that get work sent back:
 
 ## What a finished component looks like
 
-Nothing is marked Stable until all seven are true:
+Nothing is marked Stable until all eight are true:
 
-1. Renders every variant correctly in the Windows 98 theme
+1. Renders every variant correctly in both themes, the modern one in light and
+   dark
 2. Full keyboard support, and that support is documented
 3. `addon-a11y` passes with zero violations
 4. All props typed and JSDoc'd
-5. Stories cover every variant and every state
+5. Stories cover every variant, every state and — for an assembly — the parts
+   composed by the consumer
 6. An interaction test for the primary behaviour
 7. A docs page, including a **"when not to use"** section
+8. Visual QA: `pnpm visual:check <Component>`, the screenshots looked at, in
+   both themes and both schemes — no blurred bevel edges, no fractional
+   pixels, no invisible focus ring
 
-That last one is not a formality. It is the most-read section on every page, and
+The seventh is not a formality. It is the most-read section on every page, and
 writing it is usually where a scope problem surfaces.
 
 ## Generated files
 
-Two things are derived from the source and will fail CI if edited by hand or
-left stale:
+These are derived from the source and will fail CI if edited by hand or left
+stale:
 
 ```bash
-pnpm docs:props    # the props table on every component page
-pnpm docs:agents   # AGENTS.md, which ships inside the package
+pnpm docs:props      # the props table on every component page
+pnpm docs:agents     # AGENTS.md, which ships inside the package
+pnpm docs:reference  # @rowkit/tokens/reference and the Tokens page
+pnpm icons:modern    # the modern theme's glyph stylesheet
 ```
 
-Run whichever applies after changing a prop, a JSDoc comment, an emit, a model
-or a slot, and commit the result.
+Run whichever applies — after changing a prop, a JSDoc comment, an emit, a
+model or a slot; a token or its comment; or an SVG in
+`packages/ui/src/icons/modern/` — and commit the result.
 
 ## Changesets
 
@@ -126,7 +142,10 @@ perfectly good bug report, and a screenshot beats a description.
   auto-resetting the page, auto-sorting a server-paged table. Those belong in
   the application, and there is usually a composable answer instead.
 - Icons that are not in the Figma set, or not drawn as pixel art on the
-  integer grid. Icon slots take your own icons for anything else.
+  integer grid. A new icon also needs its modern outline glyph, from the
+  designer's Icons page, in `packages/ui/src/icons/modern/` under the icon's
+  `data-icon` name; the icon tests fail without it. Icon slots take your own
+  icons for anything else.
 
 None of these are hard "no"s if the argument is good. Open an issue before
 writing the code, though — it is a poor trade to review a pull request into a

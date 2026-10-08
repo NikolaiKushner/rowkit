@@ -9,9 +9,14 @@ import { cva, type VariantProps } from 'class-variance-authority'
 export const separatorVariants = cva('shrink-0 border-0', {
   variants: {
     orientation: {
-      horizontal: 'h-0.5 w-full border-t border-b border-t-bevel-shadow border-b-bevel-highlight',
-      vertical:
-        'w-0.5 self-stretch border-r border-l border-l-bevel-shadow border-r-bevel-highlight',
+      horizontal: [
+        'h-[calc(1px+var(--rk-etch-width))] w-full border-t border-b-(length:--rk-etch-width)',
+        'border-t-bevel-shadow border-b-bevel-highlight',
+      ].join(' '),
+      vertical: [
+        'w-[calc(1px+var(--rk-etch-width))] self-stretch border-l border-r-(length:--rk-etch-width)',
+        'border-l-bevel-shadow border-r-bevel-highlight',
+      ].join(' '),
     },
   },
   defaultVariants: { orientation: 'horizontal' },
