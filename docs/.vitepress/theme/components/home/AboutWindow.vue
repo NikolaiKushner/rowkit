@@ -31,24 +31,15 @@ defineEmits<{ close: [] }>()
       </template>
     </WindowTitleBar>
     <WindowBody class="flex items-start gap-4 p-4 modern:p-5">
+      <!--
+        The app icon in modern: the mark on a tile beside the wordmark. Windows
+        98 shows the logo alone — the mark is already in it, and a second,
+        pixel one beside it read as two logos.
+      -->
       <span
-        class="shrink-0 modern:flex modern:size-16 modern:items-center modern:justify-center modern:rounded-xl modern:bg-card modern:shadow-raised"
+        class="hidden modern:flex modern:size-16 modern:shrink-0 modern:items-center modern:justify-center modern:rounded-xl modern:bg-card modern:shadow-raised"
       >
-        <!-- The mark as each theme reads it: pixels in Windows 98, the vector on a tile in modern. -->
-        <img
-          :src="withBase('/mark-win98-32.png')"
-          alt=""
-          width="32"
-          height="32"
-          class="block modern:hidden"
-        />
-        <img
-          :src="withBase('/mark-48.svg')"
-          alt=""
-          width="48"
-          height="48"
-          class="block win98:hidden"
-        />
+        <img :src="withBase('/mark-48.svg')" alt="" width="48" height="48" class="block" />
       </span>
       <div class="flex flex-col gap-2">
         <!-- The logo in Windows 98; the wordmark alone in modern, where the tile shows the mark. -->

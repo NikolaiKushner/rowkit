@@ -55,7 +55,7 @@ How it works, every value you can change, and a live builder: [Themes](https://r
 
 ![The same components in Windows 98 and the modern theme: buttons and a button group, inputs and a select, badges, checkboxes and radios, pagination with a progress bar and a status bar, and a field with an error](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/components.png)
 
-The docs at [rowkit.dev](https://rowkit.dev) switch with it: in Windows 98 every page opens in an Explorer window, folder tree on the left; in the modern theme the site is a modern desktop, with a menu bar, a Dock and Finder-style windows. [`?theme=modern`](https://rowkit.dev/?theme=modern) opens it that way.
+The docs at [rowkit.dev](https://rowkit.dev) switch with it: in Windows 98 every page opens in an Explorer window, folder tree on the left; in the modern theme the site is a modern desktop, with a menu bar, a Dock and Finder-style windows. It opens in the modern theme; [`?theme=win98`](https://rowkit.dev/?theme=win98) opens it in Windows 98.
 
 ![rowkit.dev in Windows 98 and the modern theme: the DataTable page with the folder tree and a live example, as an Explorer window and as a Finder window](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/docs.png)
 
