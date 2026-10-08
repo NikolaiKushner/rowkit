@@ -6,7 +6,8 @@ import { homeUsers, type HomeUser } from '../home-users'
 /**
  * The live demo on the home page: a Users list with search, a status filter,
  * sorting, selection, paging, and actions that really act — Export downloads
- * the selected rows, Delete removes them from this tab's copy of the list.
+ * the selected rows, Delete removes them from this tab's copy of the list,
+ * and in the modern theme New user adds one.
  */
 export function useHomeDemo() {
   const people = ref<HomeUser[]>([...homeUsers])
@@ -67,6 +68,26 @@ export function useHomeDemo() {
     selected.value = selected.value.filter((id) => !ids.includes(id))
   }
 
+  /** A row not yet in the list, for New user: saved through `add`. */
+  function blank(): HomeUser {
+    const id = Math.max(0, ...people.value.map((row) => row.id)) + 1
+    return {
+      id,
+      name: '',
+      email: '',
+      role: 'Member',
+      status: 'invited',
+      seats: 0,
+      lastActive: 'never',
+    }
+  }
+
+  /** Adds a new row and selects it, so it is easy to find in the list. */
+  function add(user: HomeUser): void {
+    people.value = [...people.value, user]
+    selected.value = [user.id]
+  }
+
   /** Writes an edited row back, by id. */
   function update(user: HomeUser): void {
     people.value = people.value.map((row) => (row.id === user.id ? user : row))
@@ -99,17 +120,27 @@ export function useHomeDemo() {
     removeFilter,
     clearFilters,
     remove,
+    blank,
+    add,
     update,
     exportSelected,
   }
 }
 
 export const columns: DataTableColumn<HomeUser>[] = [
-  { key: 'name', header: 'Name', sortable: true, width: '150px' },
+  // The modern window has 12px margins round the table; `modern.css` narrows
+  // Name and Seats there so the actions column is not cut off.
+  { key: 'name', header: 'Name', sortable: true, width: 'var(--rk-demo-name-width, 150px)' },
   { key: 'email', header: 'Email', width: '170px' },
   { key: 'role', header: 'Role', sortable: true, width: '96px' },
   { key: 'status', header: 'Status', width: '96px' },
-  { key: 'seats', header: 'Seats', sortable: true, numeric: true, width: '80px' },
+  {
+    key: 'seats',
+    header: 'Seats',
+    sortable: true,
+    numeric: true,
+    width: 'var(--rk-demo-seats-width, 80px)',
+  },
   { id: 'actions', header: 'Actions', headerSrOnly: true, width: '56px' },
 ]
 

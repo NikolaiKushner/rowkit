@@ -27,6 +27,12 @@
   --rk-wallpaper-c: #4b2f7a;
 }
 
+/* The home page's live demo: narrower Name and Seats columns, to fit inside the window's margins. */
+[data-theme='modern'] {
+  --rk-demo-name-width: 144px;
+  --rk-demo-seats-width: 64px;
+}
+
 /* The Terminal on the home page: the same in light and dark. */
 [data-theme='modern'] {
   --rk-terminal-bg: #1e1e1e;

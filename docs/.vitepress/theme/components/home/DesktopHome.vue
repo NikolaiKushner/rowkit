@@ -6,6 +6,7 @@ import {
   Button,
   CopyIcon,
   EditIcon,
+  PlusIcon,
   DataTable,
   FilterBar,
   GroupBox,
@@ -43,8 +44,29 @@ import { columns, label, tone, useHomeDemo } from './useHomeDemo'
  */
 const demo = useHomeDemo()
 
-// The row the pencil opened, in the Edit dialog.
+// The row the pencil opened, in the Edit dialog; or a new one, from New user.
 const editing = ref<HomeUser>()
+const adding = ref(false)
+
+function newUser(): void {
+  adding.value = true
+  editing.value = demo.blank()
+}
+
+function editSelected(): void {
+  editing.value = demo.pageRows.value.find((row) => demo.selected.value.includes(row.id))
+}
+
+function save(user: HomeUser): void {
+  if (adding.value) demo.add(user)
+  else demo.update(user)
+  closeEditor()
+}
+
+function closeEditor(): void {
+  editing.value = undefined
+  adding.value = false
+}
 
 const open = reactive({ demo: true, about: true, prompt: true })
 const restore = () => Object.assign(open, { demo: true, about: true, prompt: true })
@@ -108,16 +130,43 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
           </template>
         </WindowTitleBar>
 
-        <div role="toolbar" aria-label="Users" class="flex items-center gap-1 p-0.5">
-          <Button variant="ghost" :disabled="count === 0" @click="demo.exportSelected">
+        <div
+          role="toolbar"
+          aria-label="Users"
+          class="flex items-center gap-1 p-0.5 modern:gap-2 modern:px-3 modern:py-2"
+        >
+          <!-- Windows 98: Export and Delete with the count. Modern: New user, Edit and Delete. -->
+          <Button variant="ghost" class="win98:hidden" @click="newUser">
+            <template #leading><PlusIcon /></template>
+            New user
+          </Button>
+          <Button
+            variant="ghost"
+            :disabled="count === 0"
+            class="win98:hidden"
+            @click="editSelected"
+          >
+            <template #leading><EditIcon /></template>
+            Edit
+          </Button>
+          <Button
+            variant="ghost"
+            :disabled="count === 0"
+            class="modern:hidden"
+            @click="demo.exportSelected"
+          >
             <template #leading><CopyIcon /></template>
             Export {{ count }}
           </Button>
           <Button variant="ghost" :disabled="count === 0" @click="demo.remove(demo.selected.value)">
             <template #leading><TrashIcon /></template>
-            Delete {{ count }}
+            Delete<span class="modern:hidden">&nbsp;{{ count }}</span>
           </Button>
-          <Separator orientation="vertical" decorative class="mx-0.5 h-[33px]" />
+          <Separator
+            orientation="vertical"
+            decorative
+            class="mx-0.5 h-[33px] modern:mx-0 modern:h-[31px]"
+          />
           <FilterBar
             v-model:search="demo.search.value"
             label="User filters"
@@ -132,7 +181,7 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
           </FilterBar>
         </div>
 
-        <WindowBody class="flex min-h-0 flex-col px-0.5">
+        <WindowBody class="flex min-h-0 flex-col px-0.5 modern:px-3 modern:pb-3">
           <DataTable
             v-model:sort="demo.sort.value"
             v-model:selected="demo.selected.value"
@@ -143,6 +192,12 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
             :row-label="(row) => row.name"
             class="min-h-0 flex-1"
           >
+            <!-- Modern: an address longer than its column ends in an ellipsis, so the actions fit. -->
+            <template #[`cell:email`]="{ row }">
+              <span class="modern:block modern:max-w-[154px] modern:truncate" :title="row.email">{{
+                row.email
+              }}</span>
+            </template>
             <template #[`cell:status`]="{ row }">
               <Badge :variant="tone[row.status]" size="sm">{{ label[row.status] }}</Badge>
             </template>
@@ -171,6 +226,9 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
 
         <StatusBar>
           <StatusBarSection>{{ demo.range.value }} · {{ count }} selected</StatusBarSection>
+          <StatusBarSection class="w-auto win98:hidden">
+            Rows per page: {{ demo.pageSize }}
+          </StatusBarSection>
           <StatusBarSection class="w-auto py-0 pr-1">
             <Pagination
               v-model:page="demo.page.value"
@@ -299,11 +357,7 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
       </WindowBody>
     </Window>
 
-    <EditUserDialog
-      :user="editing"
-      @save="(user) => (demo.update(user), (editing = undefined))"
-      @close="editing = undefined"
-    />
+    <EditUserDialog :user="editing" :is-new="adding" @save="save" @close="closeEditor" />
 
     <SiteTaskbar :task="task" task-button @task="restore" />
   </div>

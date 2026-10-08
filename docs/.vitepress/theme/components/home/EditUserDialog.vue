@@ -21,10 +21,13 @@ import { label } from './useHomeDemo'
 /**
  * The pencil on a row of the live demo: the row's fields in a dialog, edited
  * as a copy. Save writes it back into the demo; Cancel, Escape and ✕ drop it.
+ * With `isNew`, the same form adds a user.
  */
 const props = defineProps<{
   /** The row being edited; the dialog is open while there is one. */
   user: HomeUser | undefined
+  /** The row is not in the list yet: New user rather than Edit. */
+  isNew?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -68,10 +71,10 @@ function save(): void {
 
 <template>
   <Dialog :open="user !== undefined" @update:open="(open) => !open && emit('close')">
-    <DialogContent close-label="Close Edit user">
+    <DialogContent :close-label="isNew ? 'Close New user' : 'Close Edit user'">
       <form class="contents" novalidate @submit.prevent="save">
         <DialogHeader>
-          <DialogTitle>Edit {{ user?.name }}</DialogTitle>
+          <DialogTitle>{{ isNew ? 'New user' : `Edit ${user?.name ?? ''}` }}</DialogTitle>
         </DialogHeader>
         <DialogBody class="flex flex-col gap-3">
           <Field label="Name" :error="errors.name" required>

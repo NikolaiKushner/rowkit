@@ -142,7 +142,8 @@
 - [x] 5.2 Меню: MenuItem (строки 24px, колонка галочки вместо иконок, заголовок «By area», подменю), меню rowkit, Components → Data, Scheme. Win98 — 0 отличий, в том числе с открытыми меню.
   - Вопрос дизайнеру: меню схемы. Подпись в «Theme switch» — «click the button», а в «Behaviour» — клик переключает Auto → Light → Dark, меню по долгому нажатию или ↓. Сделано по «Behaviour».
   - Вопрос дизайнеру: подменю Theme в меню rowkit не нарисовано. Сделано: Windows 98 / Modern, разделитель, Auto / Light / Dark — с галочкой у выбранного.
-- [ ] Сверить остальное: Window/LiveDemo (5.3), Window/Finder, Sidebar, SidebarItem, SearchField (5.4).
+- [x] 5.3 Window/LiveDemo (modern): кнопки New user / Edit / Delete (New user добавляет строку через тот же диалог), отступы 12px вокруг таблицы, «Rows per page: 25» в строке состояния, длинный email обрезается многоточием — колонка действий помещается. Данные демо оставлены живыми, как в коде (решение 8 октября): в макете статичный пример с другими людьми и колонкой Logins. Win98 — 0 отличий.
+- [ ] Сверить остальное: Window/Finder, Sidebar, SidebarItem, SearchField (5.4).
 - [ ] Сделать новое:
   - Spotlight — поиск в трёх состояниях: пустой, результаты, ничего не найдено. Сейчас поиск — окно Find.
   - Alert/NotFound — 404.
