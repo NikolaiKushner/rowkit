@@ -177,7 +177,7 @@
 
 ## Шаг 7. Документация и выпуск
 
-- [ ] Changeset: новые токены, `ProgressBar indeterminate`, изменения modern. `@rowkit/tokens` — minor, `rowkit` — minor.
+- [x] 7.1 Changeset (`.changeset/design-handoff.md`): новые токены, `ProgressBar indeterminate`, изменения modern, README пакета. `@rowkit/tokens` — minor, `rowkit` — minor.
 - [ ] Страница Themes и Tokens на сайте — новые токены. AGENTS.md — новые стиль-переключатели.
 - [ ] Описание токенов — в коде, рядом со значениями: это шаг 2 плана [agent-theming.md](./agent-theming.md) (темы через агента), делаем вместе.
 - [ ] README GIF тем — переснять после шагов 2–5.
