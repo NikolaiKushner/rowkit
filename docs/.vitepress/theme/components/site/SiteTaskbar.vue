@@ -81,7 +81,7 @@ function closeStart(focusStart: boolean): void {
     window's menus move up into it, and there is no task button.
   -->
   <footer
-    class="rk-taskbar flex h-[34px] shrink-0 items-center gap-1 bg-card p-0.5 modern:order-first modern:z-40 modern:h-7 modern:gap-0.5 modern:px-3 modern:py-0 modern:max-md:h-9 modern:max-md:gap-2 modern:max-md:pr-2"
+    class="rk-taskbar relative flex h-[34px] shrink-0 items-center gap-1 bg-card p-0.5 modern:order-first modern:z-40 modern:h-7 modern:gap-0.5 modern:px-3 modern:py-0 modern:max-md:h-9 modern:max-md:gap-2 modern:max-md:pr-2"
   >
     <button
       ref="start"
@@ -146,7 +146,14 @@ function closeStart(focusStart: boolean): void {
       <span class="truncate">{{ task }}</span>
     </div>
     <div class="flex-1" />
-    <ThemeSwitch />
+    <!--
+      The theme switch in the middle of the bar, where it is seen on every
+      page: the bar's centre is empty in both themes. Beside the tray below
+      1280px, where the modern menus reach the middle.
+    -->
+    <div class="xl:absolute xl:inset-x-0 xl:mx-auto xl:w-fit">
+      <ThemeSwitch />
+    </div>
     <div
       class="flex h-[27px] shrink-0 items-center gap-1.5 px-1.5 text-ui text-foreground shadow-status modern:max-md:hidden modern:h-[22px] modern:gap-3.5 modern:pr-0 modern:pl-3 modern:shadow-none"
     >
