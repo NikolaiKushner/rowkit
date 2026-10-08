@@ -25,7 +25,7 @@ const { copied, copy } = useCopyToken()
           @click="copy(`--shadow-${name}`)"
         >
           <span
-            class="block h-9 w-20"
+            class="block h-9 w-20 modern:rounded-md"
             :class="String(name).includes('sunken') ? 'bg-input' : 'bg-card'"
             :style="{ boxShadow: value }"
           />

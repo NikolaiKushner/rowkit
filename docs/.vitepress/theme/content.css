@@ -312,6 +312,55 @@
   }
 
   /*
+   * Modern (Figma Site/Callout): a tinted panel with a 1px border, a 20px icon
+   * in the tone's colour, the title small and coloured over the text.
+   */
+  [data-theme='modern'] .rk-page .custom-block:not(.details, .rk-demo *) {
+    --rk-callout-tone: var(--color-primary-solid);
+    --rk-callout-title: var(--color-primary-on-subtle);
+    --rk-callout-glyph: var(--rk-icon-info);
+    padding: 14px 16px 14px 48px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: 10px;
+    background: var(--color-primary-subtle);
+    box-shadow: none;
+  }
+
+  [data-theme='modern'] .rk-page .custom-block:not(.details, .rk-demo *)::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    width: 20px;
+    height: 20px;
+    background: var(--rk-callout-tone);
+    mask: var(--rk-callout-glyph) no-repeat center / contain;
+  }
+
+  [data-theme='modern'] .rk-page .custom-block.warning:not(.rk-demo *) {
+    --rk-callout-tone: var(--color-warning-solid);
+    --rk-callout-title: var(--color-warning-on-subtle);
+    --rk-callout-glyph: var(--rk-icon-warning);
+    border-color: var(--color-warning-border);
+    background: var(--color-warning-subtle);
+  }
+
+  [data-theme='modern'] .rk-page .custom-block.danger:not(.rk-demo *) {
+    --rk-callout-tone: var(--color-danger-solid);
+    --rk-callout-title: var(--color-danger-on-subtle);
+    --rk-callout-glyph: var(--rk-icon-error);
+    border-color: var(--color-danger-border);
+    background: var(--color-danger-subtle);
+  }
+
+  [data-theme='modern'] .rk-page .custom-block p.custom-block-title {
+    margin-bottom: 2px;
+    font-size: var(--text-ui);
+    line-height: var(--text-ui--line-height);
+    color: var(--rk-callout-title);
+  }
+
+  /*
    * Markdown tables as DataTables: a sunken white frame, raised 22px header
    * cells, 11px text, no grid lines.
    */

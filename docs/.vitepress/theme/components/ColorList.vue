@@ -15,15 +15,21 @@ const { copied, copy } = useCopyToken()
 
 <template>
   <ul class="mx-0! mt-4! mb-0! flex list-none flex-wrap gap-x-4 gap-y-2 p-0!">
-    <li v-for="(_, name) in tokens" :key="name" class="m-0! w-[250px]">
+    <li v-for="(_, name) in tokens" :key="name" class="m-0! w-[250px] modern:w-[266px]">
       <button
         type="button"
         class="flex cursor-default items-center gap-2 border-0 bg-transparent p-0 text-left outline-none focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-dotted focus-visible:outline-ring"
         :aria-label="`Copy --color-${name}`"
         @click="copy(`--color-${name}`)"
       >
-        <span class="block size-5 shrink-0 bg-card p-0.5 shadow-sunken">
-          <span class="block size-4" :style="{ background: `var(--color-${name})` }" />
+        <!-- Modern (Figma Tokens page): an 18px chip with a hairline round it. -->
+        <span
+          class="block size-5 shrink-0 bg-card p-0.5 shadow-sunken modern:size-[18px] modern:bg-transparent modern:p-0 modern:shadow-none"
+        >
+          <span
+            class="block size-4 modern:size-full modern:rounded-[3px] modern:shadow-[inset_0_0_0_1px_rgb(0_0_0/0.15)]"
+            :style="{ background: `var(--color-${name})` }"
+          />
         </span>
         <span class="font-mono text-mono whitespace-nowrap text-foreground">
           {{ copied === `--color-${name}` ? 'copied' : `--color-${name}` }}

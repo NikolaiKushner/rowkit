@@ -5,26 +5,11 @@ a current desktop operating system in light and dark. A theme is a set of
 values for rowkit's tokens and nothing else. The components are the same;
 their props, their markup and their behaviour do not change with the theme.
 
-<DemoBox>
-  <div class="grid gap-4 md:grid-cols-2">
-    <div data-theme="win98" class="flex flex-col gap-3 bg-background p-4">
-      <Field label="Name"><Input placeholder="Ada Lovelace" /></Field>
-      <Checkbox label="Send me updates" :model-value="true" />
-      <div class="flex gap-1.5"><Button>Save</Button><Button variant="secondary">Cancel</Button></div>
-    </div>
-    <div data-theme="modern" data-color-scheme="light" class="flex flex-col gap-3 rounded-lg bg-background p-4">
-      <Field label="Name"><Input placeholder="Ada Lovelace" /></Field>
-      <Checkbox label="Send me updates" :model-value="true" />
-      <div class="flex gap-1.5"><Button>Save</Button><Button variant="secondary">Cancel</Button></div>
-    </div>
-  </div>
-</DemoBox>
+## Side by side
 
-::: warning The modern theme is a draft
-Its values are assembled from platform guidelines so the theme can be built,
-tested and reviewed in code. The designed version replaces them value for value;
-nothing in your code changes when it does.
-:::
+The same form, the same props, the same markup. Only `data-theme` changes.
+
+<ThemesSideBySide />
 
 ## Switching
 
