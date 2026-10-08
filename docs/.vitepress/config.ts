@@ -119,8 +119,9 @@ export default defineConfig({
   },
 
   head: [
-    // The active title bar's navy, as the brand page sets it.
-    ['meta', { name: 'theme-color', content: '#000080' }],
+    // The brand's paper and ink (Figma Brand — rowkit, Colour), light and dark.
+    ['meta', { name: 'theme-color', content: '#FAFAF8', media: '(prefers-color-scheme: light)' }],
+    ['meta', { name: 'theme-color', content: '#111114', media: '(prefers-color-scheme: dark)' }],
     // Each size is its own pixel drawing, so the browser picks one rather than
     // scaling the 32px mark down to a blur. No SVG icon for the same reason.
     ['link', { rel: 'icon', href: '/favicon.ico', sizes: '16x16 32x32 48x48' }],

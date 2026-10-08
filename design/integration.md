@@ -160,17 +160,17 @@
 
 ## Шаг 6. Бренд (165:587, гайд 173:35331)
 
-- [ ] Экспорт по таблице «Files — docs/public». Имена и размеры те же, поэтому код сайта и Storybook почти не меняется:
+- [x] 6.1 Экспорт по таблице «Files — docs/public» (сделано: знаки, wordmark, logo, favicon + .ico, apple-touch-icon; добавлены mark-16-light, mark-32, mark-win98-16/32.png). Имена и размеры те же, поэтому код сайта и Storybook почти не меняется:
   - `mark.svg`, `mark-light.svg`, `mark-48.svg`, `mark-16.svg`, `mark-16-mono.svg`, `mark-32-mono.svg`;
   - `wordmark.svg`, `wordmark-light.svg`, `logo.svg`, `logo-light.svg`;
   - `favicon.ico` и `favicon-16/32/48.png`, `apple-touch-icon.png`;
   - `og-image.png`, `readme/github-social-preview.png`, `readme/hero.png` и `hero-dark.png` (через `<picture>`), `readme/datatable.png`, `components.png`, `docs.png`.
-- [ ] Логотип Storybook (`brand/logo-storybook`, высота 24).
-- [ ] `theme-color`: `#FAFAF8` для light и `#111114` для dark через media — вместо `#000080` в `config.ts`.
-- [ ] Знак внутри тем сайта, как app-иконка:
+- [x] 6.1 Логотип Storybook (`brand/logo-storybook`, высота 24).
+- [x] 6.1 `theme-color`: `#FAFAF8` для light и `#111114` для dark через media — в `config.ts` и в Storybook.
+- [x] 6.1 Знак внутри тем сайта, как app-иконка (решение 8 октября: Win98-сайт берёт новый пиксельный знак, хотя страница Site ещё рисует старый):
   - Win98 — пиксельные `brand/reading/win98-32` и `-16` на рабочий стол и в «Пуск»;
   - Modern — `modern-tile` и Dock-иконка 1024.
-- [ ] Полоса в меню «Пуск» (`wordmark alone`): заменить старый `start-strip`.
+- [x] 6.1 Полоса в меню «Пуск» (`wordmark alone`): новый wordmark.
 - [ ] README: hero с `<picture>` light/dark и новые картинки. Экспорты `datatable` / `components` / `docs` — это рамки под настоящие скриншоты: снимаем их со сторибука и сайта.
 - [ ] Onest (OFL) — только для бренд-графики. В UI-темы он не идёт.
 

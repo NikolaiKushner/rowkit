@@ -92,7 +92,28 @@ function closeStart(focusStart: boolean): void {
       :class="startOpen ? 'pt-px pl-[3px] shadow-pressed' : 'shadow-raised active:shadow-pressed'"
       @click="toggleStart"
     >
-      <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" />
+      <!-- The pixel mark on Start; in modern the vector, reversed on the dark bar. -->
+      <img
+        :src="withBase('/mark-win98-16.png')"
+        alt=""
+        width="16"
+        height="16"
+        class="modern:hidden"
+      />
+      <img
+        :src="withBase('/mark-16.svg')"
+        alt=""
+        width="16"
+        height="16"
+        class="win98:hidden modern-dark:hidden"
+      />
+      <img
+        :src="withBase('/mark-16-light.svg')"
+        alt=""
+        width="16"
+        height="16"
+        class="hidden modern-dark:block"
+      />
       <span class="px-px modern:hidden">Start</span>
       <span class="win98:hidden">rowkit</span>
     </button>
@@ -113,7 +134,7 @@ function closeStart(focusStart: boolean): void {
       class="flex h-[27px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring modern:hidden"
       @click="$emit('task')"
     >
-      <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" class="shrink-0" />
+      <img :src="withBase('/mark-win98-16.png')" alt="" width="16" height="16" class="shrink-0" />
       <span class="truncate">{{ task }}</span>
     </button>
     <div
@@ -121,7 +142,7 @@ function closeStart(focusStart: boolean): void {
       aria-hidden="true"
       class="flex h-[27px] w-40 min-w-0 shrink items-center gap-1 overflow-hidden bg-dither px-1 pt-px font-bold text-ui text-foreground shadow-pressed outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring modern:hidden"
     >
-      <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" class="shrink-0" />
+      <img :src="withBase('/mark-win98-16.png')" alt="" width="16" height="16" class="shrink-0" />
       <span class="truncate">{{ task }}</span>
     </div>
     <div class="flex-1" />

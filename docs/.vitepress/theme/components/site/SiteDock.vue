@@ -85,7 +85,7 @@ const isExternal = (tile: Tile) => !!tile.href && /^https?:/.test(tile.href)
         >
           <img
             v-if="!tile.icon"
-            :src="withBase('/mark.svg')"
+            :src="withBase('/mark-32.svg')"
             alt=""
             width="32"
             height="32"
@@ -113,7 +113,7 @@ const isExternal = (tile: Tile) => !!tile.href && /^https?:/.test(tile.href)
         >
           <img
             v-if="!tile.icon"
-            :src="withBase('/mark.svg')"
+            :src="withBase('/mark-32.svg')"
             alt=""
             width="32"
             height="32"

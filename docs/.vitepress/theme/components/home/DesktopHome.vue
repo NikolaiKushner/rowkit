@@ -125,7 +125,7 @@ const phoneColumns = (['name', 'status', 'role'] as const).flatMap((key) =>
       >
         <WindowTitleBar title="Live demo — DataTable, FilterBar, Pagination">
           <template #icon>
-            <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" />
+            <img :src="withBase('/mark-win98-16.png')" alt="" width="16" height="16" />
           </template>
           <template #controls>
             <WindowButton glyph="minimize" label="Minimize Live demo" @click="open.demo = false" />
@@ -359,13 +359,13 @@ const phoneColumns = (['name', 'status', 'role'] as const).flatMap((key) =>
     <Window class="min-h-0 flex-1 xl:hidden modern:hidden">
       <WindowTitleBar title="rowkit">
         <template #icon>
-          <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" />
+          <img :src="withBase('/mark-win98-16.png')" alt="" width="16" height="16" />
         </template>
       </WindowTitleBar>
       <WindowBody class="flex min-h-0 flex-col">
         <ScrollArea label="rowkit" class="min-h-0 flex-auto">
           <main class="flex flex-col gap-4 p-3">
-            <img :src="withBase('/logo.svg')" alt="rowkit" width="160" height="32" />
+            <img :src="withBase('/logo.svg')" alt="rowkit" width="167" height="32" />
             <p class="m-0 text-doc text-foreground">
               A professional Vue 3 toolkit — the components a product interface is built from.
             </p>

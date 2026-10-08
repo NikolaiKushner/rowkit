@@ -248,7 +248,7 @@ defineExpose({
       <img
         :src="withBase('/wordmark-light.svg')"
         alt=""
-        width="51"
+        width="54"
         height="14"
         class="absolute bottom-[-8px] left-1 max-w-none origin-top-left -rotate-90"
       />

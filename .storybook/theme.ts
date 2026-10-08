@@ -49,7 +49,8 @@ export default create({
 
   brandTitle: 'rowkit',
   brandUrl: 'https://rowkit.dev',
-  // Wordmark lockup — mark + “rowkit”. Served from docs/public via staticDirs.
-  brandImage: '/logo.svg',
+  // The logo drawn for the Storybook sidebar, 24px tall (Figma brand/logo-storybook).
+  // Served from docs/public via staticDirs.
+  brandImage: '/logo-storybook.svg',
   brandTarget: '_self',
 })

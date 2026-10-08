@@ -126,7 +126,7 @@ const goForward = () => history.forward()
       -->
       <WindowTitleBar :title="windowTitle" class="modern:sr-only">
         <template #icon>
-          <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" />
+          <img :src="withBase('/mark-win98-16.png')" alt="" width="16" height="16" />
         </template>
         <template v-if="siteTheme !== 'modern'" #controls>
           <WindowButton glyph="minimize" label="Minimize to the desktop" @click="toDesktop" />

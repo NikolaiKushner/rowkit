@@ -28,6 +28,23 @@
  */
 @custom-variant modern (&:where([data-theme='modern'], [data-theme='modern'] *));
 @custom-variant win98 (&:where(:root:not([data-theme='modern']), :root:not([data-theme='modern']) *));
+/* The modern theme in its dark scheme, chosen or from the system: for the brand's reversed marks. */
+@custom-variant modern-dark {
+  &:where(
+    [data-theme='modern'][data-color-scheme='dark'],
+    [data-theme='modern'][data-color-scheme='dark'] *
+  ) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(
+      [data-theme='modern']:not([data-color-scheme='light']),
+      [data-theme='modern']:not([data-color-scheme='light']) *
+    ) {
+      @slot;
+    }
+  }
+}
 
 /*
  * Tailwind skips node_modules; the demos render from source in this repo.

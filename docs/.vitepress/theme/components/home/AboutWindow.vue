@@ -16,7 +16,7 @@ defineEmits<{ close: [] }>()
   <Window>
     <WindowTitleBar title="About rowkit">
       <template #icon>
-        <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" />
+        <img :src="withBase('/mark-win98-16.png')" alt="" width="16" height="16" />
       </template>
       <template #controls>
         <!-- Modern draws all three lights on every window; Windows 98, close alone. -->
@@ -34,10 +34,45 @@ defineEmits<{ close: [] }>()
       <span
         class="shrink-0 modern:flex modern:h-16 modern:items-center modern:rounded-xl modern:bg-card modern:shadow-raised"
       >
-        <img :src="withBase('/mark-48.svg')" alt="" width="48" height="48" class="block" />
+        <!-- The mark as each theme reads it: pixels in Windows 98, the vector on a tile in modern. -->
+        <img
+          :src="withBase('/mark-win98-32.png')"
+          alt=""
+          width="32"
+          height="32"
+          class="block modern:hidden"
+        />
+        <img
+          :src="withBase('/mark-48.svg')"
+          alt=""
+          width="48"
+          height="48"
+          class="block win98:hidden"
+        />
       </span>
       <div class="flex flex-col gap-2">
-        <img :src="withBase('/logo.svg')" alt="rowkit" width="160" height="32" />
+        <!-- The logo in Windows 98; the wordmark alone in modern, where the tile shows the mark. -->
+        <img
+          :src="withBase('/logo.svg')"
+          alt="rowkit"
+          width="167"
+          height="32"
+          class="modern:hidden"
+        />
+        <img
+          :src="withBase('/wordmark.svg')"
+          alt="rowkit"
+          width="108"
+          height="28"
+          class="win98:hidden modern-dark:hidden"
+        />
+        <img
+          :src="withBase('/wordmark-light.svg')"
+          alt="rowkit"
+          width="108"
+          height="28"
+          class="hidden modern-dark:block"
+        />
         <p class="m-0 text-doc text-foreground">
           A professional Vue 3 toolkit — the components a product interface is built from.
         </p>
