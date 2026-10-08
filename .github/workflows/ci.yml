@@ -21,6 +21,36 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          # The whole history, so the next step can diff the PR against its base.
+          fetch-depth: 0
+
+      # What a PR touches decides what it has to pass. Markdown alone (notes,
+      # changesets, the README) needs formatting and nothing else. The site
+      # alone needs the build it typechecks against, lint and typecheck, but
+      # not the browser tests, the bundle budget or Storybook. Anything else —
+      # and every push to main — runs it all. docs/components/*.md and
+      # docs/agents.md count as code: unit tests check them against the source.
+      - name: What changed
+        id: changes
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          code=true
+          site=true
+          if [ "$EVENT" = pull_request ]; then
+            files=$(git diff --name-only "$BASE"...HEAD)
+            echo "$files"
+            rest=$(echo "$files" | grep -vE '^(design/|\.changeset/)|^[^/]+\.md$' || true)
+            code_files=$(echo "$rest" | grep -vE '^docs/' || true)
+            generated=$(echo "$rest" | grep -E '^docs/(components/[^/]+\.md|agents\.md)$' || true)
+            [ -z "$code_files$generated" ] && code=false
+            [ -z "$rest" ] && site=false
+          fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "site=$site" >> "$GITHUB_OUTPUT"
+          echo "code=$code site=$site"
 
       - name: Install pnpm
         # Version comes from the `packageManager` field in package.json.
@@ -43,32 +73,40 @@ jobs:
       # of it as unsafe, which is a confusing way to be told the build is
       # missing.
       - name: Build
+        if: steps.changes.outputs.site == 'true'
         run: pnpm build
 
       - name: Lint
+        if: steps.changes.outputs.site == 'true'
         run: pnpm lint
 
       - name: Check formatting
         run: pnpm format:check
 
       - name: Typecheck
+        if: steps.changes.outputs.site == 'true'
         run: pnpm typecheck
 
       # Story tests run in a real browser, so the binary has to be present.
       - name: Install Playwright Chromium
+        if: steps.changes.outputs.code == 'true'
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Test
+        if: steps.changes.outputs.code == 'true'
         run: pnpm test
 
       # The browser tests and their a11y gate again, in the modern theme.
       - name: Test in the modern theme
+        if: steps.changes.outputs.code == 'true'
         run: pnpm test:a11y:modern
 
       # A budget nobody checks is decoration. Runs after Build because it
       # measures the real dist, not a re-bundle of source.
       - name: Bundle size
+        if: steps.changes.outputs.code == 'true'
         run: pnpm size
 
       - name: Build Storybook
+        if: steps.changes.outputs.code == 'true'
         run: pnpm build-storybook
