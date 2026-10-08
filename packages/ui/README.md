@@ -1,6 +1,6 @@
 # rowkit
 
-[![npm](https://img.shields.io/npm/v/rowkit/beta?color=000080)](https://www.npmjs.com/package/rowkit)
+[![npm](https://img.shields.io/npm/v/rowkit/beta?color=D63A1F)](https://www.npmjs.com/package/rowkit)
 [![license](https://img.shields.io/npm/l/rowkit)](https://github.com/NikolaiKushner/rowkit/blob/main/LICENSE)
 
 A professional Vue 3 toolkit — the components a product interface is built from.
@@ -9,7 +9,12 @@ No behaviour library underneath — focus, dismissal and positioning are rowkit'
 
 **[Documentation](https://rowkit.dev)** · **[Storybook](https://storybook.rowkit.dev)** · **[GitHub](https://github.com/NikolaiKushner/rowkit)**
 
-![rowkit — a Windows 98 desktop with a «Welcome to rowkit» window, a Users table with selection and status badges, a toast and the taskbar](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero.png)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero-dark.png" />
+    <img src="https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero.png" alt="rowkit — the same Users table in Windows 98, modern light, modern dark and a theme of your own, under the rowkit logo" width="100%" />
+  </picture>
+</p>
 
 ## Install
 

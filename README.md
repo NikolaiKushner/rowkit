@@ -7,11 +7,14 @@
 -->
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero.png" alt="rowkit — a Windows 98 desktop with a «Welcome to rowkit» window, a Users table with selection and status badges, a toast and the taskbar" width="100%" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero-dark.png" />
+    <img src="https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/hero.png" alt="rowkit — the same Users table in Windows 98, modern light, modern dark and a theme of your own, under the rowkit logo" width="100%" />
+  </picture>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/rowkit"><img src="https://img.shields.io/npm/v/rowkit/beta?color=000080" alt="npm" /></a>
+  <a href="https://www.npmjs.com/package/rowkit"><img src="https://img.shields.io/npm/v/rowkit/beta?color=D63A1F" alt="npm" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/npm/l/rowkit" alt="license" /></a>
   <a href="https://bundlejs.com/?q=rowkit"><img src="https://img.shields.io/bundlejs/size/rowkit" alt="bundle size" /></a>
 </p>
