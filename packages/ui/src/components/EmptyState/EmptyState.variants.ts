@@ -36,13 +36,16 @@ export const emptyStateBodyVariants = cva(
   'flex w-full min-w-0 flex-1 flex-col [align-items:var(--rk-empty-align)] gap-1.5 [text-align:var(--rk-empty-align)]'
 )
 
-/** Bold: 13/16 at `sm` and `md`, 14/18 at `lg`. */
+/**
+ * The theme's heading — 16/20 bold in Windows 98, 15/20 semibold in modern —
+ * at every size: the larger sizes add room, not a larger title.
+ */
 export const emptyStateTitleVariants = cva('font-strong text-foreground', {
   variants: {
     size: {
       sm: 'text-heading',
       md: 'text-heading',
-      lg: 'text-doc-h3',
+      lg: 'text-heading',
     },
   },
   defaultVariants: { size: 'md' },

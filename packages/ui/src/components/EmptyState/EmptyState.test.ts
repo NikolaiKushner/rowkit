@@ -138,7 +138,7 @@ describe('EmptyState', () => {
     it.each([
       ['sm', 'text-heading'],
       ['md', 'text-heading'],
-      ['lg', 'text-doc-h3'],
+      ['lg', 'text-heading'],
     ] as const)('%s scales the title to %s', (size, expected) => {
       const el = mount(EmptyState, { props: { title, size } })
       expect(el.find('h2').classes()).toContain(expected)
