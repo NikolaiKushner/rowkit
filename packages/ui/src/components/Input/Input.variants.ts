@@ -68,11 +68,13 @@ export const inputVariants = cva([
 
 /**
  * A small raised button inside the frame: the spin arrows of a number field
- * and the drop button of a date field. Pressed sinks the bevel.
+ * and the drop button of a date field. Pressed sinks the bevel. The glyph is
+ * the muted text colour (black in Windows 98) at the select's arrow size.
  */
 export const inputButtonVariants = cva(
   [
-    'flex w-4 shrink-0 items-center justify-center rounded-xs bg-field-button text-control-foreground',
+    'flex w-4 shrink-0 items-center justify-center rounded-xs bg-field-button text-muted-foreground',
+    '[&_svg]:size-select-arrow',
     'shadow-field-button data-pressed:shadow-pressed',
     'data-disabled:pointer-events-none data-disabled:text-text-disabled',
   ],
@@ -83,7 +85,11 @@ export const inputButtonVariants = cva(
         // split it unevenly when it is odd — 9px over 10px, as drawn.
         increment: 'h-[calc(50%-0.5px)]',
         decrement: 'flex-1',
-        drop: 'self-stretch',
+        // A theme with glyphs shows a calendar here; Windows 98 keeps its arrow.
+        drop: [
+          'h-field-button-h self-center',
+          '[&_svg]:size-field-drop-icon! [--rk-icon-triangle-down:var(--rk-icon-calendar)]',
+        ],
       },
     },
   }

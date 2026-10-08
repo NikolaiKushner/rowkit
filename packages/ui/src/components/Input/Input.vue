@@ -164,7 +164,7 @@ onBeforeUnmount(stopRepeat)
     <span
       v-if="props.type === 'number'"
       data-slot="input-spin"
-      class="flex flex-col self-stretch"
+      class="flex h-field-button-h flex-col self-center"
       aria-hidden="true"
     >
       <span

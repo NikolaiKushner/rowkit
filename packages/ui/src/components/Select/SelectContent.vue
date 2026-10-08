@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch, type ComponentPublicInstance } from 'vue'
+import HourglassIcon from '../../icons/HourglassIcon.vue'
 import DismissableLayer from '../../primitives/DismissableLayer.vue'
 import type { PointerDownOutsideEvent } from '../../primitives/dismissableLayer'
 import { unrefElement } from '../../primitives/dom'
@@ -12,7 +13,7 @@ import type { SelectContentProps } from './types'
 defineOptions({ name: 'RkSelectContent' })
 
 const props = withDefaults(defineProps<SelectContentProps>(), {
-  emptyText: 'No results',
+  emptyText: 'No results found',
   loading: false,
   loadingText: 'Loading…',
 })
@@ -103,7 +104,12 @@ const isEmpty = computed(() => select.visibleItems.value.length === 0)
         prevented so the control does not blur mid-choice.
       -->
       <div :id="select.listboxId" role="listbox" :class="selectListVariants()" @pointerdown.prevent>
-        <div v-if="props.loading" :class="selectMessageVariants()" role="status">
+        <div v-if="props.loading" :class="selectMessageVariants({ tone: 'loading' })" role="status">
+          <!-- Windows 98's hourglass; a theme with a spinner glyph turns it. -->
+          <HourglassIcon
+            aria-hidden="true"
+            class="shrink-0 [--rk-icon-hourglass:var(--rk-icon-spinner)] motion-safe:animate-(--rk-animate-busy)"
+          />
           {{ props.loadingText }}
         </div>
 

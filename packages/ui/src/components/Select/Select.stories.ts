@@ -92,7 +92,7 @@ const meta: Meta<SelectArgs> = {
     disabled: false,
     invalid: false,
     size: 'md',
-    emptyText: 'No results',
+    emptyText: 'No results found',
   },
   argTypes: {
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },

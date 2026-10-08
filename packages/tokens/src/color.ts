@@ -297,6 +297,8 @@ export const semanticColor = {
   /** A toast's ✕: the caption button's silver in Windows 98, a soft grey disc elsewhere. */
   'toast-close': ref('vga-silver'),
   'toast-close-foreground': ref('vga-black'),
+  /** «Loading…» in a dropped list: plain text in Windows 98, the subtle grey elsewhere. */
+  'loading-foreground': ref('vga-black'),
   /** A pager's buttons: raised command buttons in Windows 98, flat elsewhere. */
   pager: ref('vga-silver'),
   'pager-hover': ref('vga-silver'),

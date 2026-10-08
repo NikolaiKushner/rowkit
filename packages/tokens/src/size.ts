@@ -94,8 +94,8 @@ export const size = {
   'item-check': '12px',
   'item-gap': '2px',
   'item-check-glyph': '7px',
-  /** The inset around a dropped list's options. */
-  'popover-inset': '0px',
+  /** The inset around a dropped list's options, inside its border: 1px in Windows 98, as Figma draws it. */
+  'popover-inset': '1px',
 
   /**
    * A data table's side padding: a header cell's, around the 1px its label's
@@ -110,6 +110,16 @@ export const size = {
   /** A select's drop arrows, and how far the down arrow tucks under an up arrow above it. */
   'select-arrow': '8px',
   'select-arrow-overlap': '0px',
+  /** «Loading…» and «No results found» in a dropped list: padding, and the gap after the busy glyph. */
+  'select-message-px': '6px',
+  'select-message-py': '6px',
+  'select-message-gap': '6px',
+  /**
+   * The buttons inside a number or date field: their height (Windows 98's
+   * fill the well) and the date field's glyph.
+   */
+  'field-button-h': '100%',
+  'field-drop-icon': '8px',
   /** A filter bar's padding and the space between its items. */
   'filter-bar-p': '0.25rem',
   'filter-bar-gap': '0.25rem',

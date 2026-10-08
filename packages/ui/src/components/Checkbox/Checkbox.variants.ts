@@ -34,6 +34,8 @@ export const checkboxBoxVariants = cva([
   // present) makes each rule the more specific one.
   'group-active/checkbox:group-data-[state]/checkbox:bg-surface-disabled',
   'group-data-disabled/checkbox:group-data-[state]/checkbox:bg-surface-disabled',
+  // Disabled keeps the field's edge, checked or not (the same bevel in Windows 98).
+  'group-data-disabled/checkbox:group-data-[state]/checkbox:shadow-sunken',
   'group-data-disabled/checkbox:group-data-[state]/checkbox:text-text-disabled',
 ])
 

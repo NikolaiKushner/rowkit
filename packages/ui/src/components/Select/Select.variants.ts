@@ -81,7 +81,7 @@ export const selectButtonVariants = cva([
  * dialog (`z-modal`), or the list opens underneath it.
  */
 export const selectContentVariants = cva([
-  'z-popover w-(--rk-select-trigger-width) rounded-lg border border-popover-border bg-popover',
+  'z-popover w-(--rk-select-trigger-width) rounded-lg border-solid border-popover-border bg-popover [border-width:var(--rk-popover-border-width)]',
   'p-popover-inset font-sans text-ui text-foreground shadow-popover',
   '[backdrop-filter:var(--rk-popover-backdrop)] motion-safe:animate-(--rk-animate-overlay-in)',
 ])
@@ -109,6 +109,15 @@ export const selectItemCheckVariants = cva(
 )
 
 /** The loading and empty rows: a line of subtle text in the list. */
-export const selectMessageVariants = cva('flex h-item items-center px-1 text-text-subtle')
+export const selectMessageVariants = cva(
+  'flex items-center gap-select-message-gap px-select-message-px py-select-message-py',
+  {
+    variants: {
+      /** «Loading…» is plain text in Windows 98; «No results found» is grey in every theme. */
+      tone: { loading: 'text-loading-foreground', empty: 'text-text-subtle' },
+    },
+    defaultVariants: { tone: 'empty' },
+  }
+)
 
 export type SelectVariants = VariantProps<typeof selectTriggerVariants>

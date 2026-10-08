@@ -84,7 +84,7 @@ function onClickCapture(event: MouseEvent): void {
           block: props.block,
         }),
         buttonPressedState,
-        props.asChild ? asChildFocus : buttonFocusOuter,
+        props.asChild ? asChildFocus : props.variant === 'link' ? undefined : buttonFocusOuter,
         props.class
       )
     "
@@ -102,7 +102,10 @@ function onClickCapture(event: MouseEvent): void {
       data-slot="button-content"
       :class="buttonContentVariants({ variant: props.variant })"
     >
-      <span data-slot="button-focus" :class="buttonFocusVariants({ size: props.size })">
+      <span
+        data-slot="button-focus"
+        :class="buttonFocusVariants({ size: props.size, link: props.variant === 'link' })"
+      >
         <!--
           The hourglass, or a theme's spinner: the busy glyph stands in for the
           hourglass's own (`--rk-icon-hourglass`) and turns where the theme

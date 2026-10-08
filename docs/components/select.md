@@ -145,12 +145,12 @@ a newer question is ignored.
 
 <!-- @props SelectContentProps -->
 
-| Prop          | Type      | Default        | Description                                                            |
-| ------------- | --------- | -------------- | ---------------------------------------------------------------------- |
-| `emptyText`   | `string`  | `'No results'` | Shown when no option matches the search term.                          |
-| `loading`     | `boolean` | `false`        | Shows a loading row in place of the list. For async options.           |
-| `loadingText` | `string`  | `'Loading…'`   | Text shown while `loading`.                                            |
-| `class`       | `string`  | —              | Additional classes for the panel, merged so a consumer's utility wins. |
+| Prop          | Type      | Default              | Description                                                            |
+| ------------- | --------- | -------------------- | ---------------------------------------------------------------------- |
+| `emptyText`   | `string`  | `'No results found'` | Shown when no option matches the search term.                          |
+| `loading`     | `boolean` | `false`              | Shows a loading row in place of the list. For async options.           |
+| `loadingText` | `string`  | `'Loading…'`         | Text shown while `loading`.                                            |
+| `class`       | `string`  | —                    | Additional classes for the panel, merged so a consumer's utility wins. |
 
 <!-- /@props -->
 

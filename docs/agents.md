@@ -535,7 +535,7 @@ handling.
 
 **Props**
 
-- `emptyText: string` — default `'No results'`. Shown when no option matches the search term.
+- `emptyText: string` — default `'No results found'`. Shown when no option matches the search term.
 - `loading: boolean` — default `false`. Shows a loading row in place of the list. For async options.
 - `loadingText: string` — default `'Loading…'`. Text shown while `loading`.
 - `class: string`. Additional classes for the panel, merged so a consumer's utility wins.

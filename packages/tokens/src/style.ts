@@ -129,6 +129,11 @@ export const style = {
 
   /** A backdrop filter behind a dropped list. */
   'popover-backdrop': 'none',
+  /**
+   * A dropped list's border. Windows 98 draws a black line; a theme that
+   * rings the list in its shadow (`--rk-shadow-popover`) sets it to zero.
+   */
+  'popover-border-width': '1px',
   /** Whether a scroll bar has arrow buttons: `block`, or `none`. */
   'scrollbar-buttons': 'block',
 

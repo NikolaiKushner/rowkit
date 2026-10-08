@@ -194,8 +194,21 @@ export const buttonFocusVariants = cva(
         icon: 'p-px',
         'icon-lg': 'p-px',
       },
+      /**
+       * A link is text, so a theme that rings the whole control rings the
+       * text: the ring hugs the label (inside the dotted ring's padding),
+       * with small corners, rather than the button's full height.
+       */
+      link: {
+        true: [
+          'relative after:pointer-events-none after:absolute after:inset-x-0.5 after:inset-y-px after:rounded-xs',
+          "group-focus-visible/button:after:content-['']",
+          'group-focus-visible/button:after:shadow-[0_0_0_var(--rk-focus-outer-width)_var(--color-focus-ring)]',
+        ],
+        false: '',
+      },
     },
-    defaultVariants: { size: 'default' },
+    defaultVariants: { size: 'default', link: false },
   }
 )
 

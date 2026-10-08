@@ -26,7 +26,8 @@ export const radioFace = [
 /**
  * The pixel-drawn round well. It reads its well and dot colours from two
  * variables: white with a black dot; silver while held or disabled, the dot
- * grey when disabled.
+ * grey when disabled. Held, a theme with colour fills the well with its
+ * pressed control colour — the pressed blue when checked.
  */
 export const radioMarkVariants = cva([
   'pointer-events-none size-radio shrink-0 rounded-pill text-on-checked',
@@ -35,7 +36,8 @@ export const radioMarkVariants = cva([
   'group-data-[state=checked]/radio:[--rk-radio-well:var(--color-checked)]',
   // Held and disabled win over checked: the extra `data-[state]` (always
   // present) makes each rule the more specific one.
-  'group-active/radio:group-data-[state]/radio:[--rk-radio-well:var(--color-surface-disabled)]',
+  'group-active/radio:group-data-[state]/radio:[--rk-radio-well:var(--color-control-active)]',
+  'group-active/radio:group-data-[state=checked]/radio:[--rk-radio-well:var(--color-control-primary-active)]',
   'group-data-disabled/radio:group-data-[state]/radio:[--rk-radio-well:var(--color-surface-disabled)]',
   'group-data-disabled/radio:text-text-disabled',
   radioFace,
