@@ -269,6 +269,51 @@
   }
 
   /*
+   * Modern (Figma Site/CodeBlock): 12px and 14px in, and Copy as a 74×28
+   * secondary button with the modern copy glyph.
+   */
+  /* As tall as Copy and its margins, so a one-line block still holds the button. */
+  [data-theme='modern'] .rk-page div[class*='language-']:not(.rk-demo *) {
+    min-height: 52px;
+  }
+
+  [data-theme='modern'] .rk-page div[class*='language-'] pre {
+    margin-right: 96px;
+    padding: 12px 0 12px 14px;
+  }
+
+  [data-theme='modern'] .rk-page div[class*='language-'] > button.copy {
+    top: 12px;
+    right: 14px;
+    width: 74px;
+    height: 28px;
+    border-radius: 7px;
+    background-image: none;
+    color: var(--color-control-foreground);
+  }
+
+  [data-theme='modern'] .rk-page div[class*='language-'] > button.copy::before {
+    color: var(--color-control-foreground);
+  }
+
+  [data-theme='modern'] .rk-page div[class*='language-'] > button.copy::after,
+  [data-theme='modern'] .rk-page div[class*='language-'] > button.copy.copied::after {
+    content: '';
+    position: absolute;
+    top: 7px;
+    left: 12px;
+    display: block;
+    width: 14px;
+    height: 14px;
+    background: currentColor;
+    mask: var(--rk-icon-copy) no-repeat center / contain;
+  }
+
+  [data-theme='modern'] .rk-page div[class*='language-'] > button.copy:active {
+    padding: 0;
+  }
+
+  /*
    * Tips, warnings and dangers: a system-message panel in the window bevel,
    * the 32px icon at the left, a bold 13px title over the text.
    */
