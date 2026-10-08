@@ -46,7 +46,9 @@ const groups = computed(() =>
 
 const columns: DataTableColumn<Row>[] = [
   { key: 'name', header: 'Name', width: '10rem' },
-  { key: 'description', header: 'Description' },
+  // Cut to the window's width rather than scrolled sideways: the full
+  // paragraph is the page itself, and the title shows it on hover.
+  { key: 'description', header: 'Description', cellClass: 'overflow-hidden text-ellipsis' },
 ]
 </script>
 
@@ -55,12 +57,20 @@ const columns: DataTableColumn<Row>[] = [
     <h2 :id="group.name.toLowerCase()" class="m-0 text-doc-h2 font-bold">
       {{ group.name }}
     </h2>
-    <DataTable :rows="group.rows" :columns="columns" :caption="`${group.name} components`">
+    <DataTable
+      :rows="group.rows"
+      :columns="columns"
+      :caption="`${group.name} components`"
+      class="[&_table]:w-full [&_table]:table-fixed"
+    >
       <template #[`cell:name`]="{ row }">
         <a :href="row.href" class="flex items-center gap-1 text-link underline">
           <DocumentIcon class="shrink-0" />
           {{ row.name }}
         </a>
+      </template>
+      <template #[`cell:description`]="{ row }">
+        <span :title="row.description">{{ row.description }}</span>
       </template>
     </DataTable>
   </section>

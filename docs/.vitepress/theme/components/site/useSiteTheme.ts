@@ -14,7 +14,9 @@ import { ref } from 'vue'
 export type SiteTheme = 'win98' | 'modern'
 export type SiteScheme = 'system' | 'light' | 'dark'
 
-export const THEME_KEY = 'rowkit-theme'
+// `-2` since the site opens in modern: a choice stored while Windows 98 was
+// the default is not kept, so every visitor starts in modern once.
+export const THEME_KEY = 'rowkit-theme-2'
 export const SCHEME_KEY = 'rowkit-scheme'
 
 export const siteTheme = ref<SiteTheme>('modern')
