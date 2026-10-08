@@ -15,9 +15,10 @@ import { themeBootScript } from './theme/components/site/useSiteTheme'
 type VitePressPlugin = NonNullable<NonNullable<UserConfig['vite']>['plugins']>[number]
 
 /**
- * rowkit.dev as a Windows 98 desktop, from the Figma Site page: the home page
- * is the desktop, every docs page an Explorer window, built from rowkit's own
- * components in `theme/components/site` and `theme/components/home`.
+ * rowkit.dev as a desktop in either theme, from the Figma Site pages: the home
+ * page is the desktop, every docs page an Explorer window in Windows 98 and a
+ * Finder window in modern, built from rowkit's own components in
+ * `theme/components/site` and `theme/components/home`.
  *
  * VitePress still renders the markdown, builds the search index and supplies
  * the `.vp-doc` content styles the site layers its own on top of.
@@ -46,8 +47,9 @@ export default defineConfig({
     theme: win98Code,
   },
 
-  // rowkit has one theme. This removes VitePress's light/dark switch and its
-  // `.dark` class, rather than leaving a toggle that restyles nothing.
+  // The site switches theme and scheme with its own control and rowkit's
+  // attributes. This removes VitePress's light/dark switch and its `.dark`
+  // class, rather than leaving a second toggle that restyles nothing.
   appearance: false,
 
   sitemap: { hostname: 'https://rowkit.dev' },
@@ -122,8 +124,8 @@ export default defineConfig({
     // The brand's paper and ink (Figma Brand — rowkit, Colour), light and dark.
     ['meta', { name: 'theme-color', content: '#FAFAF8', media: '(prefers-color-scheme: light)' }],
     ['meta', { name: 'theme-color', content: '#111114', media: '(prefers-color-scheme: dark)' }],
-    // Each size is its own pixel drawing, so the browser picks one rather than
-    // scaling the 32px mark down to a blur. No SVG icon for the same reason.
+    // Each size is its own drawing on the pixel grid (Figma Brand, Favicons), so
+    // the browser picks one rather than scaling the 32px mark down to a blur.
     ['link', { rel: 'icon', href: '/favicon.ico', sizes: '16x16 32x32 48x48' }],
     ['link', { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16.png' }],
     ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' }],

@@ -13,9 +13,7 @@ import type { StyleName } from '../style'
  * The colour scheme follows the system unless `data-color-scheme="light"` or
  * `"dark"` on the same element fixes it.
  *
- * DRAFT. These values are assembled from platform guidelines so the theme can
- * be built and reviewed in code; the Figma file supersedes them value for
- * value once the designer has drawn it.
+ * The values follow the designer's Figma file, mode for mode.
  */
 
 /** The modern palette. Eight-digit values carry alpha. */

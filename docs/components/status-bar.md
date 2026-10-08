@@ -47,9 +47,12 @@ section reads a change out — «Saving…», then «All changes saved».
 
 ## Look
 
-As drawn in the Figma file: a 22px strip, 2px of padding, sections 2px apart.
-Each section is 18px tall in the thin sunken status bevel, its text 4px in
+As drawn in the Figma file: a 27px strip, 2px of padding, sections 2px apart.
+Each section is 23px tall in the thin sunken status bevel, its text 4px in
 from either side and cut off with an ellipsis rather than wrapped.
+
+In the modern theme the sections have no borders: muted text 16px apart on a
+28px strip, under a hairline along its top.
 
 ## Anatomy
 

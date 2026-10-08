@@ -55,7 +55,8 @@ them to another colour space would only add rounding to values that are already
 exact.
 
 The names match the Figma file's variables, so `vga/silver` in the design is
-`--color-vga-silver` here.
+`--color-vga-silver` here. The modern theme draws from a palette of its own,
+declared as `--color-modern-*` and exported as `modernPalette`.
 
 <ColorPalette :vga="tokens.color.vga" :win98="tokens.color.win98" />
 
@@ -69,8 +70,12 @@ hovered row to change colour repoints `accent` and nothing else.
 
 <ColorList :tokens="tokens.color.semantic" />
 
-There is one theme, so there is one map. Contrast for every pairing is asserted
-in the package's tests — the ratios are a build gate, not a claim in a comment.
+The map above is Windows 98's. The modern theme points the same names at its
+own palette, once for light and once for dark; its values are in
+[every token a theme sets](#every-token-a-theme-sets) below, and how a theme
+is switched is on [Themes](./themes.md). Contrast for every pairing, in every
+theme and scheme, is asserted in the package's tests — the ratios are a build
+gate, not a claim in a comment.
 
 ## Spacing
 
@@ -88,11 +93,14 @@ difference between a grid showing twenty rows and one showing twelve.
 
 ## Radius
 
-Every corner is square: Windows 98 draws no rounded corners, and every radius
-in the design is 0. The scale is still there, built on one `--radius` length
-that defaults to `0rem`. Set `--radius` and every control gets corners in
-proportion, without touching a component. `full` stays a circle, for the radio
-button and a round skeleton.
+In Windows 98 every corner is square: it draws no rounded corners, and every
+radius in its design is 0. The scale is still there, built on one `--radius`
+length that defaults to `0rem`. Set `--radius` and every control gets corners
+in proportion, without touching a component. `full` stays a circle, for the
+radio button and a round skeleton.
+
+The modern theme sets each step as a length of its own: 4px for a check box,
+7px for a button or a field, 12px for a window, and `pill` a capsule.
 
 <TokenGrid :tokens="tokens.radius" prefix="--radius" />
 
@@ -103,6 +111,10 @@ side of a box, light on the top-left and dark on the bottom-right for a raised
 surface, and the other way round for a sunken one. Each bevel is a stack of hard
 inset shadows built from the four `bevel-*` colours. There is no blur, and the
 frame sits inside the box, so it never changes the box's size.
+
+The modern theme uses the same shadow names for soft shadows outside the box
+and a hairline edge, drawn in light ink in the dark scheme. Both themes set
+them as `--rk-shadow-*`; the tiles below are Windows 98's.
 
 <BevelTiles :tokens="tokens.shadow" />
 
@@ -118,23 +130,26 @@ fading it with opacity.
 
 ## Type
 
-The interface is set at 13px in **PT Sans**, the closest open face to Tahoma.
-That is Windows 98's 8pt in its "Large Fonts" mode: at the standard 96 DPI 8pt
-is 11px, which on a 1998 monitor's large pixels read fine and on today's screens
-is too small. Documentation paragraphs run at 16px. Code and fixed-width numbers
-use **VT323**, drawn after the Fixedsys terminal font, at a size that matches
-the x-height of the text beside it: 16px next to the interface, 20px next to
-documentation. The sizes are
-named after the design's text styles: `ui/body` is `text-ui`, `doc/h1` is
-`text-doc-h1`.
+In Windows 98 the interface is set at 13px in **PT Sans**, the closest open
+face to Tahoma. That is Windows 98's 8pt in its "Large Fonts" mode: at the
+standard 96 DPI 8pt is 11px, which on a 1998 monitor's large pixels read fine
+and on today's screens is too small. Documentation paragraphs run at 16px. Code
+and fixed-width numbers use **VT323**, drawn after the Fixedsys terminal font,
+at a size that matches the x-height of the text beside it: 16px next to the
+interface, 20px next to documentation. The sizes are named after the design's
+text styles: `ui/body` is `text-ui`, `doc/h1` is `text-doc-h1`.
 
 <TypeSamples :sizes="tokens.font.size" />
 
 Two weights, `normal` and `bold`, because PT Sans has two. A weight in between
 would be faked by the browser, and a faked weight is blurrier than either real
-one.
+one. Components set emphasis with `--font-weight-strong`, which is bold here.
 
-rowkit does not ship the font files. Load them in the app:
+The modern theme uses the system's own faces — `-apple-system`, Segoe UI or
+`system-ui` for text, `ui-monospace` for code — so there is nothing to load. Its interface text is also 13px, on
+an 18px line, and its `strong` weight is semibold (600).
+
+For Windows 98, rowkit does not ship the font files. Load them in the app:
 
 ```bash
 pnpm add @fontsource/pt-sans @fontsource/vt323
@@ -169,7 +184,10 @@ simply does nothing. That is not a hypothetical: it happened here, and
 
 <TokenGrid :tokens="tokens.motion.easing" prefix="--ease" />
 
-Windows 98 barely animates, so these are rarely needed. Durations are short by
+Windows 98 barely animates, so these are rarely needed there: a control
+changes state at once, and a dialog simply appears. The modern theme uses
+short transitions — 120ms on a control, 160ms for a dialog, a list or a toast
+arriving — set through its `--rk-*` style switches. Durations are short by
 intent. An interface that a person uses for six hours a
 day should acknowledge input, not perform. Anything ambient — a skeleton pulse,
 a toast sliding in — is additionally gated behind `motion-safe:`, so it is
@@ -215,5 +233,6 @@ const series = [tokens.color.vga.navy, tokens.color.vga.green, tokens.color.vga.
 
 ::: tip Rebranding
 Override a semantic token (for example `--color-primary-solid`), never a
-primitive. Every component follows.
+primitive, on the theme's own selector. Every component follows.
+[Themes](./themes.md) shows how, and how to define a theme of your own.
 :::

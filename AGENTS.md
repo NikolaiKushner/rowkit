@@ -40,9 +40,11 @@ component, a change to an existing one, or the Windows 98 design.
   New surface belongs when a product interface is awkward without it. There is
   no fixed component count.
 
-**Visual direction:** two themes from one set of components — **Windows 98**, the default, and **modern** (a current desktop OS look, light and dark; a draft until its Figma file exists). A theme is token values only: see [`docs/foundations/themes.md`](./docs/foundations/themes.md).
+**Visual direction:** two themes from one set of components — **Windows 98**, the default, and **modern** (a current desktop OS look, light and dark). A theme is token values only: see [`docs/foundations/themes.md`](./docs/foundations/themes.md).
 
-Windows 98: Grey `#C0C0C0` face, two-pixel bevels (raised, pressed, sunken), navy `#000080` selection and title-bar gradient, square corners, no soft shadows, no blur, next to no motion. PT Sans replaces Geist (OFL, Latin and Cyrillic, regular and bold; apps load the font, rowkit does not ship it). Controls follow Win98 sizes on desktop and grow to ≥ 24px touch targets on touch screens. Windows 98 has one light scheme; the modern theme has light and dark (`data-color-scheme`). The style, not the assets: no Microsoft logos, Windows flag or original system icons. Consumers still rebrand via tokens (`--color-primary-*`). Every component is redrawn; the pre-redesign look is legacy, not a reference.
+Windows 98: Grey `#C0C0C0` face, two-pixel bevels (raised, pressed, sunken), navy `#000080` selection and title-bar gradient, square corners, no soft shadows, no blur, next to no motion. PT Sans (OFL, Latin and Cyrillic, regular and bold; apps load the font, rowkit does not ship it). Controls follow Win98 sizes on desktop and grow to ≥ 24px touch targets on touch screens. Windows 98 has one light scheme; the modern theme has light and dark (`data-color-scheme`). The style, not the assets: no Microsoft logos, Windows flag or original system icons. Consumers still rebrand via tokens (`--color-primary-*`).
+
+Modern: white and grey surfaces, a blue accent, rounded corners, soft shadows, a focus ring, short transitions, the system font and the designer's outline icons; dark follows the system unless `data-color-scheme` fixes it.
 
 ## Stack
 
@@ -111,7 +113,7 @@ Settled for now. Revisit one when it gets in the way, with a reason — see "How
 - **MIT license.**
 - **Tokens as a separate package**, so they can be consumed without importing components.
 - **Two themes, by attribute.** `data-theme="win98" | "modern"` on any element (default Windows 98), `data-color-scheme` for the modern theme's dark. Each theme declares every value on its own element, so themes nest. No `dark:` variant and no `.dark` class.
-- **The modern theme follows the designer's Figma file**; `design/integration.md` tracks what is integrated. Its icons are the designer's outline glyphs, exported from the file's Icons page into `packages/ui/src/icons/modern/` and drawn over the pixel icons with CSS masks (`pnpm icons:modern`).
+- **Both themes follow the designer's Figma file.** Where code and a frame disagree, the frame wins or the difference is agreed with the designer and noted on the file's Foundations page («Theme decisions»). The modern icons are the designer's outline glyphs, exported from the file's Icons page into `packages/ui/src/icons/modern/` and drawn over the pixel icons with CSS masks (`pnpm icons:modern`).
 
 ## Commands
 
@@ -128,11 +130,13 @@ pnpm storybook    # then, in another terminal:
 pnpm visual:check # screenshot default stories → .visual-check/
 pnpm visual:check Button  # scoped to one component
 
-pnpm test:a11y:modern  # the browser tests and a11y gate in the modern theme
+pnpm test:a11y         # the browser tests and a11y gate (Windows 98)
+pnpm test:a11y:modern  # the same in the modern theme
 pnpm icons:modern     # regenerate the modern glyph CSS after changing src/icons/modern
 
 pnpm docs:props   # regenerate the props tables after touching a prop or its JSDoc
 pnpm docs:agents  # regenerate packages/ui/AGENTS.md, likewise
+pnpm docs:reference # regenerate @rowkit/tokens/reference after adding or describing a token
 ```
 
 `pnpm lint` runs ESLint twice, the code first and `docs` second, each with its
@@ -153,7 +157,7 @@ done. Styling fails silently — screenshots are how agents catch it.
 
 **Backward compatibility matters.** rowkit is a published package with semver and
 changesets, not an application. Breaking a public API is a deliberate act that
-needs a major-version changeset and a reason, never a convenience taken while
+needs a changeset that says so and a reason (in the beta, marked `minor` — rule 8), never a convenience taken while
 doing something else. Generic agent guidance often says the opposite; it is wrong
 for this repository.
 

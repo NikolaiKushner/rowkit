@@ -61,10 +61,19 @@ components do not change:
 <html data-theme="modern" data-color-scheme="dark"></html>
 ```
 
+Without `data-theme` a page is Windows 98. The modern theme follows the
+system's light or dark setting unless `data-color-scheme` fixes it. The
+attribute works on any element, not only `<html>`, and themes nest.
+
 To adjust a theme — your brand colour, corners, density, typeface — set a few
 variables after `rowkit/styles`. For a named theme of your own, light and dark,
 `defineTheme()` from `@rowkit/tokens` writes the whole stylesheet from the
-values you change:
+values you change. rowkit depends on that package already; add it to your own
+dependencies to import from it:
+
+```bash
+pnpm add @rowkit/tokens@beta
+```
 
 ```ts
 import { defineTheme } from '@rowkit/tokens'
@@ -166,7 +175,10 @@ without importing a Vue component:
 
 ```ts
 import { tokens } from '@rowkit/tokens'
+
+tokens.themes.modern.dark['--color-background'] // each theme's values, as data
 ```
 
 The TypeScript object and the `@theme` CSS are generated from one source, so they
-cannot drift.
+cannot drift. `@rowkit/tokens/reference` adds what every token is for, which
+components read it, and its value in each theme.

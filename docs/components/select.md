@@ -33,9 +33,11 @@ runs. The code is the file the demo is built from, so the two cannot differ.
 
 ### Searchable
 
-`searchable` puts a search box at the top of the list. It takes focus as the
-list opens, and what you type filters the options. Worth turning on somewhere
-around twenty options; below that it costs a keystroke and saves nothing.
+`searchable` puts a search box at the top of the dropped list. It takes focus
+as the list opens, and what you type filters the options; the control itself
+stays read-only. A letter typed on the closed control opens the list and
+starts the search with it. Worth turning on somewhere around twenty options;
+below that it costs a keystroke and saves nothing.
 
 <DemoBox>
   <SelectSearchable />
@@ -93,7 +95,8 @@ a newer question is ignored.
 
 ### Sizes
 
-`size` on the `SelectTrigger`: `sm`, `md` (Windows 98's 23px) and `lg`.
+`size` on the `SelectTrigger`: `sm`, `md` (28px, Windows 98's own at Large
+Fonts) and `lg` — the same heights as Input and Button.
 
 <DemoBox>
   <SelectSizes />
@@ -237,10 +240,18 @@ bevel, with the raised drop button at its end: a form of inputs and selects
 lines up to the pixel. With focus and a value, the value shows in navy with
 white text. The list hangs directly under the control, as wide as it: white,
 in a 1px black frame, 22px rows, eight before it scrolls. The highlighted
-option is navy, and the selected one carries a check mark. A searchable list
-holds its search box — a sunken field with the magnifier — on a silver strip
-above the options. Invalid is quiet, as on Input: the error mark in the control,
-nothing red. Nothing animates.
+option is navy, and the selected one carries a check mark beside its label. A
+searchable list holds its search box — a sunken field with the magnifier,
+named and labelled by `searchLabel` («Search») — on a silver strip above the
+options. While `loading`, the list shows «Loading…» beside the hourglass;
+with nothing to match, «No results found» in grey. Invalid is quiet, as on
+Input: the error mark in the control, nothing red. Nothing animates.
+
+In the modern theme the control is a rounded field with stacked up and down
+arrows, ringed in blue on focus; a focused value is not highlighted. The list
+is a rounded, translucent panel with a soft shadow that fades in, its rows
+28px tall, the highlighted one blue. Invalid adds a 1px red frame inside the
+control to the error mark, and the loading mark is a turning spinner.
 
 ## Accessibility
 

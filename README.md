@@ -51,7 +51,7 @@ export const acme = defineTheme({
 })
 ```
 
-How it works, every value you can change, and a live builder: [Themes](https://rowkit.dev/foundations/themes). The modern theme's values are a draft until its Figma file is drawn.
+How it works, every value you can change, and a live builder: [Themes](https://rowkit.dev/foundations/themes).
 
 ![The same components in Windows 98 and the modern theme: buttons and a button group, inputs and a select, badges, checkboxes and radios, pagination with a progress bar and a status bar, and a field with an error](https://raw.githubusercontent.com/NikolaiKushner/rowkit/main/docs/public/readme/components.png)
 
@@ -134,7 +134,7 @@ The published components are the start of a professional toolkit, not a speciali
 
 ## Status
 
-**v0.x.** The API is stabilising toward v1.0 and breaking changes are still possible until then. Releases are cut from CI with provenance attestation, and the changelog is [changesets](https://github.com/changesets/changesets)-driven: [rowkit](./packages/ui/CHANGELOG.md) · [@rowkit/tokens](./packages/tokens/CHANGELOG.md).
+**1.0 beta**, published under the npm `beta` tag (`npm i rowkit@beta`). The API is stabilising toward 1.0.0 and breaking changes are still possible between betas. Releases are cut from CI with provenance attestation, and the changelog is [changesets](https://github.com/changesets/changesets)-driven: [rowkit](./packages/ui/CHANGELOG.md) · [@rowkit/tokens](./packages/tokens/CHANGELOG.md).
 
 ## Contributing
 

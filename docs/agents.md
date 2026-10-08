@@ -177,7 +177,7 @@ handling.
 - `selectionLabel: string` — default `'Select'`. Accessible name for the selection column.
 - `selectAllLabel: string` — default `'Select all rows'`. Accessible name for the select-all control.
 - `size: 'sm' | 'md'` — default `'md'`. Row height: `sm` 22px for dense lists and logs, `md` 27px.
-- `hoverable: boolean` — default `false`. Kept for compatibility; has no visible effect. Windows 98 list rows have no hover, so a row that does something shows it through the cursor, the dotted focus rectangle and selection instead.
+- `hoverable: boolean` — default `false`. Kept for compatibility; has no visible effect. The row under the pointer takes the theme's `table-row-hover` colour either way: none in Windows 98, whose list rows have no hover, a light grey in the modern theme.
 - `summary: Record<string, unknown>`. A summary row — totals, averages — after the last row, keyed like the columns: `key`, or `id` for a computed column.
 - `scrollbars: 'native' | 'drawn'` — default `'native'`. Which scroll bars the body uses.
 - `class: string`. Additional classes for the root, merged so a consumer's utility wins. A height (`max-h-96`) bounds the table; the body scrolls inside the frame.

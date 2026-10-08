@@ -222,7 +222,12 @@ server would show it twice.
 
 ## Motion
 
-Enter and exit are ambient, so they are gated behind `motion-safe:` and collapse
-to instant under `prefers-reduced-motion`. The travel is horizontal because every
-position preset is anchored to a side edge; vertical entry would read as the
-stack reordering itself.
+In Windows 98 a toast appears and goes instantly; nothing slides. In the
+modern theme it fades and grows in over 160ms. That entry is ambient, so it is
+gated behind `motion-safe:` and collapses to instant under
+`prefers-reduced-motion`. A toast leaves at once in both themes.
+
+A toast is a small window: in Windows 98 the silver face in the window bevel,
+the same for every variant, the 16px icon saying success, warning or error.
+In the modern theme it is a white card with rounded corners and a soft shadow,
+an 18px icon in the variant's colour, and the ✕ a small grey disc.

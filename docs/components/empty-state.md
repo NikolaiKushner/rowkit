@@ -80,10 +80,14 @@ well until there is something to show.
 
 A Windows 98 system message, as drawn in the Figma file: the 32px icon on the
 left, then a bold title, the explanation and the buttons stacked beside it. At
-`sm` it fits inside a table body (12px padding, a 13px title, `size="sm"`
-buttons); `md` and `lg` fill a panel (24px padding, a 13px or 14px title).
+`sm` it fits inside a table body (12px padding, a 16px title, `size="sm"`
+buttons); `md` and `lg` fill a panel (24px padding, the same 16px title).
 Each size caps the line length at the width drawn in Figma — 280, 360 and
 440px. It sits on whatever holds it: the white body of a table, or a panel.
+
+In the modern theme the icon stacks above the text, and the title, the
+explanation and the buttons are centred under it, with more room around them
+(16, 32 and 48px of padding).
 
 ## Anatomy
 

@@ -2,7 +2,7 @@
 
 rowkit is a professional Vue 3 toolkit: the components a product interface is
 built from. What is published today — tables, filters, controls, overlays — is
-the part already finished. The rest of the set is the plan in
+the part already built. The rest of the set is the plan in
 [the roadmap](/roadmap), not a build in progress.
 
 ## The problem it exists for
@@ -95,8 +95,12 @@ unpublished components are on the roadmap, not missing by design.
 
 ## Status
 
-**1.0 beta.** The API is stabilising toward 1.0.0, every component has reached the
-project's definition of done, and breaking changes are still possible between betas.
+**1.0 beta.** The API is stabilising toward 1.0.0, and breaking changes are still
+possible between betas. Each component page says where that component stands:
+**Stable** has met every point of the project's
+[definition of done](/contributing#what-a-finished-component-looks-like) — both
+themes, keyboard, the accessibility gate, stories, tests, docs and a visual
+check; **New** is published and usable, and has not been through all of it yet.
 
 Version <NpmVersion /> is on npm, published from CI with provenance attestation. The source
 and the working backlog are on [GitHub](https://github.com/NikolaiKushner/rowkit).

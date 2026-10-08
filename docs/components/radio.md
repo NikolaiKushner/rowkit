@@ -84,6 +84,10 @@ in the system — with a 4×4 black dot when chosen. Held down, or disabled, the
 well turns silver; disabled, the dot and label turn grey and the label is
 embossed. Focus is the dotted ring around the label.
 
+In the modern theme the button is a 16px circle with a thin grey edge, 8px
+from its label; chosen, it fills blue with a white dot. Focus is a blue ring
+around the circle.
+
 ## When to use
 
 - One choice from two to about five options, all visible at once.

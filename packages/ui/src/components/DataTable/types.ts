@@ -247,9 +247,9 @@ export interface DataTableProps<TRow> {
   /** Row height: `sm` 22px for dense lists and logs, `md` 27px. */
   size?: NonNullable<DataTableVariants['size']>
   /**
-   * Kept for compatibility; has no visible effect. Windows 98 list rows have
-   * no hover, so a row that does something shows it through the cursor, the
-   * dotted focus rectangle and selection instead.
+   * Kept for compatibility; has no visible effect. The row under the pointer
+   * takes the theme's `table-row-hover` colour either way: none in Windows 98,
+   * whose list rows have no hover, a light grey in the modern theme.
    */
   hoverable?: boolean
   /**

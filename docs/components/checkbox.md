@@ -89,6 +89,10 @@ silver; disabled, the mark and label turn grey and the label is embossed.
 Focus is the dotted ring around the label alone; a check box with no visible
 label draws it around the box.
 
+In the modern theme the box is 16px with rounded corners, 8px from its label.
+Checked or partly checked, it fills blue with a white mark, and focus is a
+blue ring around the box rather than around the label.
+
 ## When to use
 
 - An on/off choice that takes effect when the form is submitted.
