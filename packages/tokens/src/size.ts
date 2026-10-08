@@ -118,11 +118,17 @@ export const size = {
   'select-search-p': '2px',
   'select-search-gap': '0px',
   /**
-   * The buttons inside a number or date field: their height (Windows 98's
-   * fill the well) and the date field's glyph.
+   * The buttons inside a number, date or select field: their height at each
+   * size, centred in the field as Figma draws them; how far they sit from the
+   * field's right edge; and the date field's glyph. A select's arrows sit
+   * `select-pr` in.
    */
-  'field-button-h': '100%',
+  'field-button-h-sm': '17px',
+  'field-button-h': '19px',
+  'field-button-h-lg': '23px',
+  'field-button-pr': '2px',
   'field-drop-icon': '8px',
+  'select-pr': '2px',
   /** A filter bar's padding and the space between its items. */
   'filter-bar-p': '0.25rem',
   'filter-bar-gap': '0.25rem',
@@ -141,6 +147,14 @@ export const size = {
   'toast-close-h': '18px',
   /** A page number's side padding. */
   'pager-px': '0.25rem',
+  /**
+   * A pager's arrows, the inset of the dotted focus ring round a page label,
+   * and how narrow a small page button may get (Windows 98 lets it hug its
+   * number; a theme can keep it square).
+   */
+  'pager-arrow': '8px',
+  'pager-focus-px': '1px',
+  'pager-min-sm': '0px',
   /** A filter chip. */
   'chip-sm': '23px',
   'chip-md': '26px',

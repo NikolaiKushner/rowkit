@@ -36,7 +36,7 @@ export const inputFrameVariants = cva(
       },
       // Spin and drop buttons sit 2px from the bevel, not 4px.
       hasButtons: {
-        true: 'pr-0.5',
+        true: 'pr-field-button-pr',
         false: '',
       },
     },
@@ -67,6 +67,21 @@ export const inputVariants = cva([
 ])
 
 /**
+ * Where the buttons of a number or date field sit: centred in the frame, as
+ * tall as each size draws them (the whole well in Windows 98).
+ */
+export const inputButtonsVariants = cva('flex self-center', {
+  variants: {
+    size: {
+      sm: 'h-field-button-h-sm',
+      md: 'h-field-button-h',
+      lg: 'h-field-button-h-lg',
+    },
+  },
+  defaultVariants: { size: 'md' },
+})
+
+/**
  * A small raised button inside the frame: the spin arrows of a number field
  * and the drop button of a date field. Pressed sinks the bevel. The glyph is
  * the muted text colour (black in Windows 98) at the select's arrow size.
@@ -86,10 +101,7 @@ export const inputButtonVariants = cva(
         increment: 'h-[calc(50%-0.5px)]',
         decrement: 'flex-1',
         // A theme with glyphs shows a calendar here; Windows 98 keeps its arrow.
-        drop: [
-          'h-field-button-h self-center',
-          '[&_svg]:size-field-drop-icon! [--rk-icon-triangle-down:var(--rk-icon-calendar)]',
-        ],
+        drop: ['[&_svg]:size-field-drop-icon! [--rk-icon-triangle-down:var(--rk-icon-calendar)]'],
       },
     },
   }

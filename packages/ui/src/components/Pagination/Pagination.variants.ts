@@ -34,16 +34,25 @@ const pagerButton = [
   'active:bg-pager-active active:shadow-pager-pressed',
   'aria-[current=page]:bg-control-latched aria-[current=page]:shadow-pager-pressed',
   'aria-[current=page]:hover:bg-control-latched aria-[current=page]:hover:shadow-pager-pressed',
+  // A disabled pager draws the current page like the rest: not pressed in,
+  // no latched face. It stays the current page to assistive technology.
+  'disabled:aria-[current=page]:bg-pager disabled:aria-[current=page]:shadow-pager',
+  'disabled:aria-[current=page]:*:data-[slot=button-content]:p-0',
+  'disabled:aria-[current=page]:*:data-[slot=button-content]:pr-(--rk-press-shift)',
+  'disabled:aria-[current=page]:*:data-[slot=button-content]:pb-(--rk-press-shift)',
+  // The dotted ring hugs the label: 1px out in Windows 98, flush elsewhere.
+  '[&_[data-slot=button-focus]]:px-pager-focus-px',
 ].join(' ')
 
 /**
- * A page number: a Windows 98 command button (21px at `sm`, 26px at `md`),
- * square at its narrowest. The current page is pressed in.
+ * A page number: a Windows 98 command button (21px tall at `sm`, 26px at
+ * `md`). At `md` it is square at its narrowest; at `sm` Windows 98 lets it
+ * hug its number (`--spacing-pager-min-sm`). The current page is pressed in.
  */
 export const paginationItemVariants = cva(['px-pager-px', pagerButton], {
   variants: {
     size: {
-      sm: 'min-w-control-xs',
+      sm: 'min-w-pager-min-sm',
       md: 'min-w-control-sm',
     },
   },
@@ -78,19 +87,24 @@ export const paginationStepLabelVariants = cva('', {
   defaultVariants: { compact: 'auto' },
 })
 
-/** The gap in a long run of pages: an ellipsis in a page-button-sized box. */
-export const paginationEllipsisVariants = cva(
-  'inline-flex shrink-0 select-none items-center justify-center',
-  {
-    variants: {
-      size: {
-        sm: 'h-control-xs min-w-control-xs',
-        md: 'h-control-sm min-w-control-sm',
-      },
+/** The gap in a long run of pages: the ellipsis alone, as wide as the character. */
+export const paginationEllipsisVariants = cva('shrink-0 select-none', {
+  variants: {
+    size: {
+      sm: '',
+      md: '',
     },
-    defaultVariants: { size: 'md' },
-  }
-)
+    /** Greyed with the page buttons beside it. */
+    disabled: {
+      true: 'text-text-disabled text-shadow-disabled',
+      false: '',
+    },
+  },
+  defaultVariants: { size: 'md', disabled: false },
+})
+
+/** «◀» and «▶»: the pixel triangles at their own 8px in Windows 98, 10px chevrons elsewhere. */
+export const paginationArrowClass = 'size-pager-arrow'
 
 /** "1–25 of 312", with digits that do not shift as the range moves. */
 export const paginationSummaryVariants = cva('text-muted-foreground tabular-nums')

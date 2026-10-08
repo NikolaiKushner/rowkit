@@ -14,7 +14,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  */
 export const selectTriggerVariants = cva(
   [
-    'relative flex w-full items-center gap-1 py-0.5 pr-0.5',
+    'relative flex w-full items-center gap-1 py-0.5 pr-select-pr',
     'rounded-md bg-input font-sans text-ui text-foreground shadow-sunken',
     'has-[input:focus-visible]:focus-outer',
     'transition-[box-shadow,outline-color] duration-(--rk-duration-control)',
@@ -62,15 +62,28 @@ export const selectInputVariants = cva([
  * triangle. Held, or while the list is open, it sinks. A theme can stack an
  * up arrow over the down one (`--rk-select-up`), as a pop-up menu's control.
  */
-export const selectButtonVariants = cva([
-  'flex w-4 shrink-0 cursor-default flex-col items-center justify-center self-stretch',
-  '[&_svg]:size-select-arrow',
-  '[&>[data-arrow=up]]:[display:var(--rk-select-up)]!',
-  '[&>[data-arrow=up]+[data-arrow=down]]:-mt-(--spacing-select-arrow-overlap)',
-  'rounded-xs bg-field-button text-control-foreground shadow-field-button',
-  'data-pressed:shadow-field-button-pressed',
-  'disabled:text-text-disabled',
-])
+export const selectButtonVariants = cva(
+  [
+    'flex w-4 shrink-0 cursor-default flex-col items-center justify-center self-center',
+    '[&_svg]:size-select-arrow',
+    '[&>[data-arrow=up]]:[display:var(--rk-select-up)]!',
+    '[&>[data-arrow=up]+[data-arrow=down]]:-mt-(--spacing-select-arrow-overlap)',
+    'rounded-xs bg-field-button text-control-foreground shadow-field-button',
+    'data-pressed:shadow-field-button-pressed',
+    'disabled:text-text-disabled',
+  ],
+  {
+    variants: {
+      /** As tall as Input's spin and drop buttons at the same size, centred. */
+      size: {
+        sm: 'h-field-button-h-sm',
+        md: 'h-field-button-h',
+        lg: 'h-field-button-h-lg',
+      },
+    },
+    defaultVariants: { size: 'md' },
+  }
+)
 
 /**
  * The list: white, a 1px black frame, attached to the bottom of the field and

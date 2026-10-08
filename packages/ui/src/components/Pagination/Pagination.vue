@@ -12,6 +12,7 @@ import TriangleLeftIcon from '../../icons/TriangleLeftIcon.vue'
 import TriangleRightIcon from '../../icons/TriangleRightIcon.vue'
 import Button from '../Button/Button.vue'
 import {
+  paginationArrowClass,
   paginationEllipsisVariants,
   paginationItemVariants,
   paginationControlsVariants,
@@ -116,10 +117,11 @@ function goTo(target: number): void {
         :label="props.pageSizeLabel"
         :size="props.size"
         :disabled="isDisabled"
-        class="[&>label]:whitespace-nowrap [&>label]:text-muted-foreground"
+        class="items-center gap-1.5 [&>label]:whitespace-nowrap [&>label]:pt-0 [&>label]:text-muted-foreground"
       >
+        <!-- The small select at every size, 56px wide, 6px from its label, which is centred on it, as drawn. -->
         <Select v-model="pageSize">
-          <SelectTrigger :size="props.size" class="w-16" />
+          <SelectTrigger size="sm" class="w-14" />
           <SelectContent>
             <SelectItem
               v-for="option in pageSizeChoices"
@@ -141,7 +143,7 @@ function goTo(target: number): void {
           :class="paginationStepVariants({ compact: compactKey })"
           @click="goTo(page - 1)"
         >
-          <template #leading><TriangleLeftIcon /></template>
+          <template #leading><TriangleLeftIcon :class="paginationArrowClass" /></template>
           <span :class="paginationStepLabelVariants({ compact: compactKey })">{{
             props.previousLabel
           }}</span>
@@ -171,7 +173,7 @@ function goTo(target: number): void {
             v-else
             data-type="ellipsis"
             aria-hidden="true"
-            :class="paginationEllipsisVariants({ size: props.size })"
+            :class="paginationEllipsisVariants({ size: props.size, disabled: isDisabled })"
           >
             …
           </div>
@@ -188,7 +190,7 @@ function goTo(target: number): void {
           <span :class="paginationStepLabelVariants({ compact: compactKey })">{{
             props.nextLabel
           }}</span>
-          <template #trailing><TriangleRightIcon /></template>
+          <template #trailing><TriangleRightIcon :class="paginationArrowClass" /></template>
         </Button>
       </nav>
     </div>
