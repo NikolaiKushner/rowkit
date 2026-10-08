@@ -25,12 +25,15 @@ const icon = computed(
 </script>
 
 <template>
-  <header class="flex flex-col gap-2">
+  <!-- Modern (Figma Site/WebViewHeader): a 48px icon, the title in semibold, a hairline under. -->
+  <header class="flex flex-col gap-2 modern:gap-3">
     <div class="flex items-center gap-3">
       <!-- 32px pixel art drawn at 2×: a whole-number scale keeps every pixel square. -->
-      <component :is="icon" class="size-16 shrink-0" />
-      <h1 class="m-0 text-doc-h1 font-bold text-foreground">{{ title }}</h1>
+      <component :is="icon" class="size-16 shrink-0 modern:size-12" />
+      <h1 class="m-0 text-doc-h1 font-bold text-foreground modern:font-strong">{{ title }}</h1>
     </div>
-    <div class="h-[3px] bg-linear-to-r from-titlebar-from to-transparent" />
+    <div
+      class="h-[3px] bg-linear-to-r from-titlebar-from to-transparent modern:h-px modern:bg-none modern:bg-border"
+    />
   </header>
 </template>

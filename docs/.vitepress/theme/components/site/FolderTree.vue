@@ -125,7 +125,12 @@ function onKeydown(event: KeyboardEvent, index: number): void {
 </script>
 
 <template>
-  <ul ref="list" role="tree" aria-label="Contents" class="m-0 list-none px-0.5 py-1">
+  <ul
+    ref="list"
+    role="tree"
+    aria-label="Contents"
+    class="m-0 list-none px-0.5 py-1 modern:flex modern:flex-col modern:gap-px modern:p-0"
+  >
     <li
       v-for="(row, index) in rows"
       :key="row.node.id"
@@ -135,8 +140,8 @@ function onKeydown(event: KeyboardEvent, index: number): void {
       :aria-expanded="row.folder ? row.expanded : undefined"
       :aria-current="row.node.id === current?.id ? 'page' : undefined"
       :tabindex="row.node.id === tabStop ? 0 : -1"
-      class="group flex h-[22px] cursor-default items-center gap-1 outline-none"
-      :style="{ paddingLeft: `${2 + row.depth * 16}px` }"
+      class="group flex h-[22px] cursor-default items-center gap-1 pl-[calc(2px+var(--depth)*16px)] outline-none modern:h-6 modern:gap-1.5 modern:rounded-[5px] modern:pr-2 modern:pl-[calc(6px+var(--depth)*16px)] modern:focus-visible:focus-outer modern:focus-visible:[outline-offset:calc(var(--rk-focus-outer-width)*-1)] modern:aria-[current=page]:bg-surface-selected modern:aria-[current=page]:text-on-selected modern:aria-[current=page]:[--rk-icon-tone-folder:currentColor]"
+      :style="{ '--depth': row.depth }"
       @keydown="onKeydown($event, index)"
       @focus="focused = row.node.id"
     >
@@ -154,9 +159,10 @@ function onKeydown(event: KeyboardEvent, index: number): void {
           />
         </template>
       </span>
-      <!-- The modern sidebar's disclosure triangle, in place of the [+]/[−] box. -->
+      <!-- The modern sidebar's disclosure triangle, in place of the [+]/[−] box: 9px wide on a folder, 12 on a page. -->
       <span
-        class="flex size-3 shrink-0 items-center justify-center text-text-subtle win98:hidden"
+        class="flex h-3 shrink-0 items-center justify-center text-text-subtle group-aria-[current=page]:text-on-selected win98:hidden [&_svg]:size-[9px]"
+        :class="row.folder ? 'w-[9px]' : 'w-3'"
         @click="row.folder && toggle(row)"
       >
         <TriangleRightIcon

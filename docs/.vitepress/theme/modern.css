@@ -84,20 +84,19 @@
   outline-offset: var(--rk-focus-outer-offset);
 }
 
-/* The folder tree as a sidebar: rounded selection, no [+]/[−] boxes or dotted rings. */
-[data-theme='modern'] .rk-tree-label {
-  border-radius: var(--radius-sm);
-  padding: 2px 6px;
+/*
+ * The folder tree as a sidebar (Figma SiteModern/SidebarItem): the whole row
+ * is the selection, drawn on the row in FolderTree; the label is plain text.
+ */
+:root[data-theme='modern'] .rk-tree-label,
+:root[data-theme='modern'] .rk-tree-label-selected {
+  padding: 0;
+  background: none;
+  color: inherit;
 }
 
-[data-theme='modern'] .rk-tree-label-selected {
-  background: var(--color-surface-selected);
-  color: var(--color-on-selected);
-}
-
-[data-theme='modern'] li[role='treeitem']:focus-visible > .rk-tree-label {
-  outline: 2px solid var(--color-focus-ring);
-  outline-offset: 0;
+:root[data-theme='modern'] li[role='treeitem']:focus-visible > .rk-tree-label {
+  outline: none;
 }
 
 /* Code colours, as a current IDE draws them: light, and dark. */
