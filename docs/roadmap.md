@@ -34,9 +34,8 @@ theme of your own — see [Themes](/foundations/themes).
 
 - Deciding which theme is the default: the plan is modern, with Windows 98 one
   attribute away
-- Theming through a coding agent: instructions that ship with the package, a
-  `rowkit/theme` entry point, and a command that checks a theme's tokens and
-  contrast
+- Theming through a coding agent: instructions that ship with the package,
+  and a command that checks a theme's tokens and contrast
 - Closing a gap in the screenshot-based visual QA: two overlay stories are
   captured without the overlay open, and the screenshots cover Windows 98 only
 - Hardening the pattern pages from real application friction rather than from

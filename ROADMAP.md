@@ -95,8 +95,9 @@ needs must ship with the package.
 1. The agent finds the instructions: a ready line for the project's
    `AGENTS.md` / `CLAUDE.md` in the README and on Installation ("For rowkit,
    read `node_modules/rowkit/AGENTS.md`"), and `llms.txt` on rowkit.dev.
-2. A `rowkit/theme` entry point with `defineTheme`, `checkTheme` and the token
-   list, so a pnpm project needs only `rowkit` and the versions cannot drift.
+2. `rowkit/theme` gains `checkTheme` and the token list. (`defineTheme` and
+   typed token names are there since beta.1, so a pnpm project needs only
+   `rowkit` and the versions cannot drift.)
 3. A generated **Theming** section in `packages/ui/AGENTS.md`: a recipe per
    project type, which base to start from, the ten to fifteen tokens that make
    a brand theme, the full list, contrast rules and how to fix them, and what
