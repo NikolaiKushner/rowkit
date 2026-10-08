@@ -11,11 +11,12 @@
     "build": "pnpm -r --filter \"./packages/*\" build",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:changed": "vitest run --changed",
     "test:coverage": "vitest run --coverage",
     "typecheck": "vue-tsc -b --force && pnpm typecheck:docs && pnpm -r --filter \"./packages/*\" typecheck",
     "typecheck:docs": "vue-tsc --noEmit -p docs/.vitepress",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint --cache --cache-location node_modules/.cache/eslint/code packages playground .storybook scripts '*.{js,mjs,ts}' && eslint --cache --cache-location node_modules/.cache/eslint/docs docs",
+    "lint:fix": "eslint --cache --cache-location node_modules/.cache/eslint/code packages playground .storybook scripts '*.{js,mjs,ts}' --fix && eslint --cache --cache-location node_modules/.cache/eslint/docs docs --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "clean": "rm -rf packages/*/dist node_modules/.tmp",
@@ -38,8 +39,16 @@
     "docs:preview": "vitepress preview docs"
   },
   "lint-staged": {
-    "*.{ts,vue}": [
-      "eslint --fix",
+    "{packages,playground,.storybook,scripts}/**/*.{ts,vue}": [
+      "eslint --cache --cache-location node_modules/.cache/eslint/code --fix",
+      "prettier --write --ignore-unknown"
+    ],
+    "docs/**/*.{ts,vue}": [
+      "eslint --cache --cache-location node_modules/.cache/eslint/docs --fix",
+      "prettier --write --ignore-unknown"
+    ],
+    "vitest.config.ts": [
+      "eslint --cache --cache-location node_modules/.cache/eslint/code --fix",
       "prettier --write --ignore-unknown"
     ],
     "*.{js,json,yaml,yml,css,md}": "prettier --write --ignore-unknown"

@@ -117,8 +117,9 @@ Settled for now. Revisit one when it gets in the way, with a reason — see "How
 
 ```bash
 pnpm build        # run first in a fresh clone; workspace deps resolve through dist
-pnpm test         # unit, component and browser tests
-pnpm lint         # eslint, type-aware
+pnpm test         # unit, component and browser tests (Windows 98)
+pnpm test:changed # only the tests that import what you changed
+pnpm lint         # eslint, type-aware; cached, so a re-run lints only changed files
 pnpm typecheck    # vue-tsc, strict
 pnpm format       # prettier
 pnpm size         # bundle budget, brotli
@@ -133,6 +134,12 @@ pnpm icons:modern     # regenerate the modern glyph CSS after changing src/icons
 pnpm docs:props   # regenerate the props tables after touching a prop or its JSDoc
 pnpm docs:agents  # regenerate packages/ui/AGENTS.md, likewise
 ```
+
+`pnpm lint` runs ESLint twice, the code first and `docs` second, each with its
+own cache. One run over the whole repo is four times slower: once the site's
+TypeScript project is open, typescript-eslint pays for it again on every
+package file. The cache skips unchanged files, which is safe for local runs but
+can miss a type change felt in a file you did not touch; CI runs with no cache.
 
 `pnpm build` before anything else is not optional. The playground, the docs and
 the type checker all resolve `rowkit` through `packages/ui/dist`, and an unbuilt
