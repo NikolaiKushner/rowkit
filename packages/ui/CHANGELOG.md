@@ -1,5 +1,255 @@
 # rowkit
 
+## 1.0.0-beta.0
+
+### Major Changes
+
+- fa23264: **rowkit 1.0 beta: the Windows 98 redesign.** Every component, the tokens and the documentation are redrawn in the style of Windows 98, and rowkit runs on its own behaviour layer. The entries below list each breaking change. This is the first 1.0 prerelease, published under the `beta` npm tag: install it with `pnpm add rowkit@beta`. The API may still change between betas; 1.0.0 is cut when it settles.
+
+### Minor Changes
+
+- aa2c23a: **Badge is now a flat Windows 98 label**, as drawn in the Figma file: square corners, a 1px border, no bevel, the UI face at its regular weight, 15px (`sm`) or 17px (`md`) tall. `subtle` is a white face with coloured text and border, `solid` fills with the colour, `outline` keeps black text and puts the colour in the border. The dot is now a 5×5 square in the variant's colour (outlined on yellow) instead of a circle in the text colour.
+- 007ff76: **New: `Separator`**, the Windows 98 etched line from the Figma file: 1px of shadow beside 1px of highlight, horizontal or vertical (vertical stretches to its row). It is `role="separator"`, or `decorative` to hide it from assistive technology. Use it between toolbar groups, menu groups and dialog sections.
+
+  **ButtonGroup is now a Windows 98 toolbar group.** Buttons sit edge to edge and keep their own bevels; ghost buttons give the flat toolbar look. Nested groups sit 4px apart, with a vertical `Separator` between them to draw the etched line.
+
+  Breaking, on 0.x so marked minor: buttons in a group no longer merge their edges (no shared border, no overlap), and nested groups are 4px apart instead of 12px.
+
+- 03f3d5c: **Button is now the Windows 98 command button**, as drawn in the Figma file.
+
+  - **Breaking: `variant="outline"` is removed.** Use `secondary`, the plain raised button. `default` is now the black-framed default button of a form or dialog, `ghost` a flat toolbar button with a thin bevel on hover, `destructive` a raised button with a maroon label, and `link` blue underlined text.
+  - **Sizes are Windows 98's own:** `xs` 17px, `sm` 21px, `default` 23px (minimum width 75px), `lg` 27px; icon sizes 20, 22, 24 and 28px.
+  - **States are bevels.** Pressed sinks the bevel and moves the label 1px right and down without changing the button's size; focus is a dotted ring around the label (plus the black frame on `secondary` and `destructive`); disabled greys and embosses the label instead of fading the button. Nothing animates.
+  - **Loading shows the hourglass** in place of the spinner.
+  - **New `pressed` prop** makes a toggle: it sets `aria-pressed`, and on is drawn pressed in over the dither. The dither is a new `bg-dither` utility in `rowkit/styles`.
+  - **Fixed: `as-child` put the button's classes on its own inner label `<span>`** instead of on your element.
+  - **Fixed: `text-ui` and the other token font sizes were dropped by class merging** whenever a text colour sat next to them, so components rendered at the inherited size.
+
+- 14237e0: **New: `Checkbox` and `Radio`**, the Windows 98 check box and option button from the Figma file. Both are native inputs inside a `<label>`: they submit with a form, `Radio`s sharing a `name` move with the arrow keys, and the label names them.
+
+  - `Checkbox`: a 13×13 sunken box with a 7×7 check; `indeterminate` draws the 7×2 bar and is announced as mixed. `v-model` is a boolean.
+  - `Radio`: the 12×12 round well with a 4×4 dot. `v-model` is the group's chosen value; bind the same ref on every option.
+
+  Held down or disabled, the box or well turns silver. Disabled labels are grey and embossed. Focus is the dotted ring round the label.
+
+- 025ff1e: **New `DataTable` prop: `scrollbars`.** `native` (the default) keeps the browser's scroll bar, restyled as Windows 98. `drawn` puts the body in a `ScrollArea`, so the bars look the same in every browser, Firefox included. The sticky header and pinned columns work with either, and the bars never cover a cell.
+- 7416079: **DataTable keeps its header still while it reloads.** Switching `loading` on after rows were shown holds every column at the width it had, so a sort, a page change or a filter no longer resizes the columns to the placeholders and back. On a first load, give columns a `width` for the same effect.
+
+  `loadingRows` now defaults to 6, as in the Figma table (was 5).
+
+- 5d379ef: **DataTable scrolls like a Windows 98 list view.**
+
+  - **Cells no longer wrap**, and the table no longer squeezes its columns to fit the frame. Every column keeps its `width`, every row keeps its 18px or 22px, and columns that do not fit scroll sideways. A table narrower than the frame still fills it. Behaviour change: long text that used to wrap now stays on one line and widens its column.
+  - **Several pinned columns stack** side by side in column order instead of all sitting at the start edge on top of each other. Only the last one draws the edge shadow.
+  - **The selection column pins** with them when the table has a pinned column, so the check boxes stay beside their rows while the table scrolls sideways.
+  - The sticky header stays over all of it while the body scrolls both ways.
+
+- dab852c: **New `DataTable` prop: `summary`**, a totals row after the last row, as in the Figma "Numbers and a total" example. Keyed like the columns, drawn in bold under an etched line, and held at the bottom while the body scrolls. A `#summary:<key>` slot replaces a cell that needs markup.
+- 150457d: **DataTable is now a Windows 98 list view**, as drawn in the Figma file.
+
+  - **A white well in a sunken bevel**, with a visible caption (`captionVisible`) above it on the window face. Rows are 18px (`sm`) or 22px (`md`) with no grid lines; a selected row is navy with white text and stays navy when the table loses focus; a focused row gets the dotted rectangle.
+  - **Column headers are raised buttons.** A sortable header sinks while held and moves its label; the sorted column shows a ▲ or ▼ after its label. Focus is a dotted ring around the label. No hover anywhere: `hoverable` no longer has a visible effect, and `dataTableRowActionClass` no longer hides row actions until hover.
+  - **Win98 check boxes and option buttons** for selection: a 13×13 sunken box with a pixel check (a bar when partly checked), and the 12×12 round option button. Both stay native underneath.
+  - **New `numeric` column option**: the mono face for figures, aligned to the end unless `align` says otherwise.
+  - **Breaking: `class` now goes on the root**, which holds the caption and the frame, instead of on the scroll container. A height such as `max-h-96` still bounds the table and makes the body scroll.
+
+  **Skeleton is a dithered plate** instead of a grey pulse: text bars are 9px to sit on the 13px line, corners are square except the circle, and `animated` steps the checker 1px every 400ms (two frames, no easing) behind `motion-safe:`.
+
+- a4a83c0: **Dialog is now a Windows 98 dialog window**, as drawn in the Figma file: a silver face in the window bevel with 2px of frame, an 18px navy-to-blue title bar holding the title in bold white, and the 16×14 ✕ caption button at its right end. Description, body and footer sit 12px in from the frame and 12px apart; footer buttons are right-aligned 6px apart, the default button first. It opens and closes instantly.
+
+  Breaking, on 0.x so marked minor:
+
+  - **The title moves into the title bar.** `DialogTitle` stays where you place it in `DialogHeader` but is drawn over the bar and cut off with an ellipsis before the ✕. Anything else in the header starts below the bar. The bar and the ✕ are drawn by `DialogContent`, so they are there whatever the header holds.
+  - **No backdrop.** The 50% scrim is gone: nothing is drawn behind the window. Clicking outside still closes it (unless `preventClose`), and page scroll is still locked.
+  - **Fixed widths.** `size` is now 320 (`sm`), 440 (`md`) or 600px (`lg`), narrowed to fit small screens, instead of `max-w-sm` / `max-w-lg` / `max-w-2xl` from the `sm` breakpoint up. A `class` that set `sm:max-w-*` on `DialogContent` should set `max-w-*` instead.
+  - **No enter or exit animation.** The `animate-overlay-*`, `animate-dialog-*`, `animate-toast-*` and `animate-tooltip-*` utilities are removed from `rowkit/styles`; no component used them any more.
+
+  Focus now opens on the first control after the title bar — the first field, or the default button that leads the footer — instead of the close button. A dialog opened from a dialog turns the one underneath inactive (grey title bar) until it closes.
+
+  `preventClose` still leaves the ✕ working (the Figma file draws it disabled): a dialog never traps the user.
+
+- f4b1653: **Breaking: dark mode is removed.** rowkit now has a single theme, the first step of the Windows 98 redesign. This is a breaking change released as a `minor` while rowkit is on 0.x.
+
+  - The token stylesheet no longer emits a `.dark` block or redefines Tailwind's `dark:` variant. Setting `class="dark"` on `<html>` now does nothing; remove any theme toggle that relied on it. `dark:` utilities in your own code fall back to Tailwind's default `prefers-color-scheme` behaviour.
+  - `semanticColorDark` and the `whiteAlpha` primitives (`--color-white-alpha-*`) are removed from `@rowkit/tokens`.
+  - `semanticColorLight` is renamed to `semanticColor`, and `tokens.color.semantic` is now that map directly rather than `{ light, dark }`. Replace `tokens.color.semantic.light` with `tokens.color.semantic`.
+
+- f4b1653: **Typeface: PT Sans replaces Geist.** `--font-sans` now leads with PT Sans, the closest open match to Tahoma, then Tahoma, Microsoft Sans Serif and Verdana. rowkit does not ship the font: add `@fontsource/pt-sans` and import its `400.css` and `700.css`. PT Sans covers Latin and Cyrillic. `--font-mono` now leads with Lucida Console, then Courier New. If you load `@fontsource-variable/geist` only for rowkit, you can drop it; to keep Geist, override `--font-sans` and `--font-mono`.
+- 348e3e8: **rowkit no longer depends on Reka UI.** Every component now runs on rowkit's own primitives. Installing rowkit no longer pulls in `reka-ui`, `@floating-ui/*`, `@vueuse/*`, `aria-hidden` or `defu`, and the full library is about 22 kB brotli including dependencies, down from about 50 kB. If your app imported anything from `reka-ui` only because rowkit brought it in, add it to your own dependencies.
+- 9e7351e: **EmptyState is now a Windows 98 system message**, as drawn in the Figma file: the 32px icon on the left, then a bold title, the explanation and the buttons stacked beside it. `sm` fits a table body (12px padding, 13px title); `md` and `lg` fill a panel (24px padding, 13px or 14px title), each capped at the width drawn in Figma (280, 360, 440px).
+
+  **`reason` now picks the icon** from the Figma set: an empty folder for `no-data`, a magnifier for `no-results`, the red error mark for `error`. `#icon` still replaces it.
+
+  DataTable centres its empty state in the table body, 16px from the header, as in the Figma table.
+
+  Breaking, on 0.x so marked minor: the layout is horizontal and left-aligned instead of a centred column; the explanation is black for every reason (an `error` no longer turns it red, the icon says it); the title uses the 13/16 and 14/18 UI headings instead of `text-sm` / `text-base` / `text-lg`; the description loses its `max-w-*` cap in favour of the root's width.
+
+- bc0a27b: **Field is restyled to the Windows 98 design** from the Figma file: the label in the regular UI face (no longer medium weight) with a maroon asterisk when required, the hint in subtle grey, and the error as the 16px error icon followed by the message in maroon. The gaps follow the control size: 4, 6 or 8px. Disabled, the label is grey and embossed instead of faded to 50%.
+
+  **New: `layout="left"`**, the Windows 98 property-dialog arrangement. The label sits beside the control with its text level with the control's text, and the hint or error goes under the control. Set `--rk-field-label-width` on a container to line up a column of labels.
+
+  The error message now has an icon in front of it, and `fieldErrorVariants`, `fieldHintVariants` and `fieldLabelVariants` drop their `size` variant, since the text is the same 11px UI face at every size.
+
+- 01bd7ae: **FilterBar is now the Windows 98 toolbar from the Figma file**: one row on the silver face with 4px of padding and gaps, wrapping when the chips run out of room — search field (200px), your controls, the chips, the result count, then «Clear filters» as a command button. Chips are flat: white, a 1px grey border, 19px (`sm`) or 21px (`md`) tall, with a flat 13px ✕ that shows a dotted focus ring. **Backspace or Delete on a chip's ✕ now removes that chip.**
+
+  Breaking, on 0.x so marked minor:
+
+  - The search box, controls, chips, count and clear button share one wrapping row instead of a controls row above a chips row. `filterBarControlsVariants` and `filterBarChipsVariants` are now layout-transparent (`contents`).
+  - The `clearLabel` default changes from "Clear all" to "Clear filters", and the button is a raised command button instead of a ghost one.
+  - `filterBarChipRemoveVariants` and `filterBarSummaryVariants` drop their `size` variant.
+
+- ed3a584: **rowkit now exports its icons**: the Windows 98 pixel set from the Figma file, 42 in all — 8px glyphs for controls and title bars (`TriangleDownIcon`, `CloseGlyphIcon`, `MaximizeGlyphIcon`, …), 16px icons for buttons and lists (`PlusIcon`, `CopyIcon`, `TrashIcon`, `FilterIcon`, `EditIcon`, `FolderIcon`, `DocumentIcon`, `UserIcon`, `CalendarIcon`, `QuestionIcon`, …) and 32px icons for system messages (`Error32Icon`, `Info32Icon`, `Warning32Icon`, `Folder32Icon`, `Book32Icon`, …). Each is the exact Figma pixel art, `aria-hidden`; single-colour glyphs are drawn in `currentColor` so they grey out with a disabled control. Show them at their own size or a whole multiple — never scaled in between. Icon slots still take your own icons.
+- 73f3417: **Input is now the Windows 98 edit box**, as drawn in the Figma file.
+
+  - **A white well in a sunken bevel**, 21, 23 or 27px tall (`sm`, `md`, `lg`) to line up with Button. Read-only and disabled fields turn silver; disabled text is grey and embossed. The placeholder is `text-subtle` (#404040).
+  - **Invalid is quiet.** The red border and ring are gone: an invalid field shows the error mark at its end, sets `aria-invalid`, and leaves the message to Field.
+  - **Types bring their own furniture.** `search` shows the magnifier and clears on Escape (without letting the key close a dialog when there was something to clear). `number` has spin buttons that step the value and repeat while held. `date` has a drop button that opens the browser's date picker. The browsers' own spinners, picker icon and clear button are hidden.
+  - **Focus is a dotted ring inside the field.**
+  - **Breaking: `class` now goes on the frame**, the box with the bevel, instead of on the `<input>`. A width such as `w-56` keeps working; a class that styled the text itself now needs a descendant selector. Other attributes still go to the `<input>`.
+
+- 0b3e59a: **Controls are sized for 13px text, as Windows 98's Large Fonts sized them.** Heights that hold a line of text grow by 16/13, the same step the text took; bevels, icons, check boxes and radio buttons keep their pixel sizes.
+
+  | part                                                     | was               | now               |
+  | -------------------------------------------------------- | ----------------- | ----------------- |
+  | `Button` `xs` / `sm` / `default` / `lg`                  | 17 / 21 / 23 / 27 | 21 / 26 / 28 / 33 |
+  | `Button` icon sizes                                      | 20 / 22 / 24 / 28 | 25 / 27 / 30 / 34 |
+  | `Button` minimum width, `default` / `lg`                 | 75 / 88           | 92 / 108          |
+  | `Input`, `Select` `sm` / `md` / `lg`                     | 21 / 23 / 27      | 26 / 28 / 33      |
+  | `Select` list items (eight show before the list scrolls) | 16                | 22                |
+  | `FilterBar` chips `sm` / `md`                            | 19 / 21           | 23 / 26           |
+  | `Pagination` buttons `sm` / `md`                         | 17 / 21           | 21 / 26           |
+  | `DataTable` rows `sm` / `md`                             | 18 / 22           | 22 / 27           |
+  | `Window` and `Dialog` title bars                         | 18                | 22                |
+  | Caption buttons (✕, minimise, maximise)                  | 16×14             | 20×18             |
+  | `StatusBar`                                              | 22                | 27                |
+  | `Skeleton` text line                                     | 9                 | 11                |
+
+- 2611965: **Text is set in Windows 98's "Large Fonts" sizes.** At 96 DPI the system's 8pt is 11px, which was readable on a 1998 monitor's large pixels and is too small on today's screens; Windows 98 offered the 120 DPI "Large Fonts" mode for the same reason. The whole ladder moves with it:
+
+  | token           | was   | now                                                    |
+  | --------------- | ----- | ------------------------------------------------------ |
+  | `text-ui`       | 11/13 | 13/16                                                  |
+  | `text-heading`  | 13/16 | 16/20                                                  |
+  | `text-mono`     | 16/16 | 16/16 — VT323 at 16px now matches 13px PT Sans exactly |
+  | `text-doc`      | 15/24 | 16/26                                                  |
+  | `text-doc-mono` | —     | 20/20, new: code beside documentation text             |
+  | `text-doc-h1`   | 24/28 | 26/30                                                  |
+  | `text-doc-h2`   | 18/22 | 19/24                                                  |
+  | `text-doc-h3`   | 14/18 | 15/20                                                  |
+
+  Bevels, borders and icons keep their pixel sizes, as they did in Windows 98.
+
+- a6c52a7: **`Pagination` fits a phone.** Below 640px, «Back» and «Next» are drawn as arrows alone, so a row such as `◀ 1 … 39 40 41 … 100 ▶` no longer runs off a narrow screen. The words stay as the buttons' accessible names, and the switch is CSS, so nothing shifts as the page loads. The new `compact` prop sets it: `'auto'` (the default) below 640px, `true` always — for a narrow side panel on a wide screen — and `false` never, which keeps the previous look everywhere.
+- c859888: **Pagination is now drawn as in the Figma Home template's status bar.** Page numbers and the «◀ Back» / «Next ▶» buttons are Windows 98 command buttons 2px apart: 17px tall at `sm`, 21px at `md`, page numbers square at their narrowest. The current page is pressed in. Back and Next go grey and embossed on the first and last page. The rows-per-page control uses `Field` with `layout="left"`.
+
+  **`Button` draws `aria-current="page"` pressed in** (no dither), so a page button or a pager built from `Button` gets the current-page look from the attribute alone.
+
+  Breaking, on 0.x so marked minor: `previousLabel` and `nextLabel` are now the visible labels of the Back and Next buttons, and their accessible names, instead of hidden `aria-label`s. Their defaults change from "Previous page" / "Next page" to "Back" / "Next".
+
+- 2662d19: **New: `ScrollArea`**, a region with Windows 98 scroll bars that rowkit draws itself, so they look the same in every browser, Firefox included. Raised arrows scroll a line and repeat while held, the track pages toward the pointer, and the thumb drags; its length is the share of the content in view. The content still scrolls natively, and the bars sit beside it rather than over it.
+
+  ```vue
+  <ScrollArea label="Event log" class="h-64 w-80">…</ScrollArea>
+  ```
+
+  `scrollbars="always"` keeps both bars on screen, greyed when there is nothing to scroll. The component exposes `viewport`, the element that scrolls.
+
+- 9aaf5a6: **New: the Windows 98 scroll bar**, as drawn in the Figma file: 16px thick, raised arrow buttons, a dithered track and a raised thumb. It is a utility, `scrollbar-win98`, in `rowkit/styles`: put it on any element that scrolls.
+
+  The `DataTable` body, `DialogBody`, the `Select` list and `WindowBody` now carry it, so their scroll bars change from the browser's default to the Windows 98 one with nothing to do on your side.
+
+  It restyles the browser's own scroll bar, so scrolling behaves exactly as before. Chromium and Safari draw every part; Firefox can only colour a scroll bar and shows a silver thumb on a white track. Setting `scrollbar-color` or `scrollbar-width` on the same element brings back the native bar in Chromium.
+
+- ed7fcf0: **`Select` is rebuilt on the WAI-ARIA combobox pattern, without Reka UI.** Released as a `minor` while rowkit is on 0.x, because the markup changes.
+
+  - Same parts and props (`Select`, `SelectTrigger`, `SelectContent`, `SelectItem`), same `v-model`, `searchTerm`, `searchable`, `manualFilter`.
+  - **Type-ahead:** in a non-searchable select, typing the start of a label opens the list and highlights the match.
+  - **Above dialogs:** the list paints at `z-popover`, so a select inside a `Dialog` no longer opens underneath it.
+  - **Positioning:** the list opens below the control, or above it when there is no room below.
+  - `aria-activedescendant` exists only while the list is open, natively — no workaround.
+  - Search matching ignores case and accents in the user's locale.
+  - The width custom property is now `--rk-select-trigger-width` (was `--reka-combobox-trigger-width`).
+
+- 0019ab5: **Select is now a Windows 98 drop-down list.** The control is Input's white well in a sunken bevel (21, 23 or 27px tall) with the raised 16px drop button and its triangle at the end; with focus and a value, the value shows in navy with white text. The list hangs directly under the control, as wide as it: white, in a 1px black frame, 16px rows, eight before it scrolls, the highlighted option navy, disabled options grey and embossed. It appears instantly.
+
+  **A mouse press now opens the list**, and dragging onto an option and releasing chooses it, as in Windows 98. Touch and pen still open it on a tap.
+
+  Breaking, on 0.x so marked minor:
+
+  - The selected option no longer shows a check mark; the highlight opens on it instead.
+  - Invalid is quiet: the error mark appears in the control, and the red border and ring are gone. The `invalid` variant is removed from `selectTriggerVariants`.
+  - The list sits flush under the control (no 4px gap) and is exactly as wide as it, with no 160px minimum.
+
+- ff55ca7: **New primitives from the Figma file:**
+
+  - **`StatusBar` and `StatusBarSection`**: the strip along the bottom of a Windows 98 window. Sunken 18px cells on a 22px silver strip; the first cell fills the width the others leave.
+  - **`GroupBox`**: the etched frame with its legend on the top line. A `fieldset` with a `legend` by default, so form sections are named for assistive technology; `as="section"` or `as="div"` for a labelled group that is not a form.
+  - **`ProgressBar`**: the block progress bar. Navy 8×12 blocks in a sunken track, rounded down to whole blocks, with `role="progressbar"` and its value range.
+
+- 7e62e51: **Toast and Tooltip now follow the Windows 98 design** from the Figma file.
+
+  - **A toast is a small window**: the silver face in a window bevel, the same for every variant, with a 16px icon that says which (information, success, warning, error). An action is a small raised button under the text; the close button is a 16×14 caption button with the ✕ glyph. Toasts appear and go instantly; nothing slides.
+  - **New `title` option** on `toast()` and its shortcuts: a bold first line above the message.
+  - **A danger toast now stays until it is closed** unless you pass a `duration`. Other variants still dismiss after 5 seconds.
+  - **A tooltip is the pale yellow info box** with a 1px black border, 11px text, up to 240px wide. No arrow, shadow, rounding or animation.
+  - **Tooltips open after 500ms** by default, both for a standalone `Tooltip` (was 300ms) and under a `TooltipProvider` (was 700ms).
+
+- fe3a592: **`Toaster` moves off Reka UI, with three deliberate behaviour changes.** Released as a `minor` while rowkit is on 0.x.
+
+  - **Escape closes only the toast that holds focus.** Previously any Escape on the page — including the one that closed a dialog — dismissed every toast.
+  - **Toasts render newest first in the DOM**, so Tab and screen-reader order start at the toast that just arrived. The visual stacking per `position` is unchanged. Tests that query toasts by index may need updating.
+  - **Announcements go through one persistent `role="status"` region** instead of an element inserted per toast, which screen readers often missed.
+
+  Also: the swipe offset custom property is now `--rk-toast-swipe-x` (was `--reka-toast-swipe-move-x`); the toast region no longer renders `aria-hidden` focusable guards, so axe's `aria-hidden-focus` rule passes and is re-enabled; and clicking a toast while a `Dialog` is open no longer counts as a click outside it.
+
+- 0b409b8: **`Tooltip` and `TooltipProvider` move off Reka UI.** Released as a `minor` while rowkit is on 0.x, because the markup changes.
+
+  - The bubble is now the `role="tooltip"` element that `aria-describedby` points at. The visually hidden copy of the text that Reka rendered inside it is gone, so the description exists once. Tests that looked for the inner span should query the bubble.
+  - `TooltipProvider` is rowkit's own, with the same props (`delayDuration`, `skipDelayDuration`, `disableHoverableContent`, `disableClosingTrigger`, `disabled`, `ignoreNonKeyboardFocus`) and defaults as before.
+  - Positioning is rowkit's own: preferred side with a 4px gap, flipped to the opposite side when it does not fit, slid along the edge to stay on screen. `data-side` still reports the side used.
+
+- ea9f9ff: **New: `Window`**, the Windows 98 window from the Figma file, in parts: `Window` (the frame, with `active` for the grey inactive title bar), `WindowTitleBar` (the 18px gradient bar with the bold title, an `#icon` and `#controls`), `WindowButton` (the 16×14 caption button with the `minimize`, `maximize`, `restore` or `close` glyph) and `WindowBody`. A `StatusBar` goes last. The window is a `section` named by its title; caption buttons are native buttons that report the click and leave what it means to you.
+- c82f79f: **The tokens are now the Windows 98 design.** Every value comes from the Figma file's variables and styles.
+
+  - **Colour.** The primitives are the VGA palette and Windows 98's system colours as exact hex: `--color-vga-*` (`silver`, `gray`, `navy`, `teal`, …) and `--color-win98-*` (`light`, `dark-gray`, `title-blue`, `title-gray`, `info`). The OKLCH ramps (`neutral`, `primary`, `success`, `warning`, `danger`, `gray`, `red`, `green`, `amber`) and `colorSteps` are removed; `tokens.color.vga` and `tokens.color.win98` replace them. Semantic names are kept, and the design adds new ones: `desktop`, `tooltip-bg`, `text-disabled-emboss`, `on-selected`, `link`, `bevel-highlight` / `-light` / `-shadow` / `-dark`, and the `titlebar-*` gradient. `input` is now the white inside of a field, not a border colour.
+  - **Bevels instead of elevation.** `shadow-raised`, `window`, `raised-default`, `pressed`, `sunken`, `status`, `etched` and `raised-thin` replace `shadow-xs` … `shadow-xl`. A new `text-shadow-disabled` draws the embossed disabled text.
+  - **Square corners.** `--radius` defaults to `0rem`, so every `rounded-*` step is 0 until you set it; `rounded-full` is unchanged.
+  - **Type.** Sizes are named after the design's text styles: `text-ui` (11/13), `text-heading`, `text-mono`, `text-doc`, `text-doc-h1` / `-h2` / `-h3`. The `xs` … `3xl` sizes, the `medium` and `semibold` weights and the `tight` and `wide` tracking are removed (Tailwind's defaults still answer to those names). `--font-mono` now leads with VT323; load `@fontsource/vt323` next to `@fontsource/pt-sans`.
+  - **No backdrop blur.** The `blur` scale is removed, and the dialog backdrop no longer blurs.
+
+  In rowkit, a selected DataTable row now has white text on navy, and an outline Badge has black text, as in the design. The rest of the components move to the new look in the next releases.
+
+### Patch Changes
+
+- e59a5b5: **`DataTable`'s selection column uses the public `Checkbox`.** Each row's check box and the select-all are now native `<input type="checkbox">`s — the same control as `Checkbox`, with `indeterminate` for a partly selected page — instead of an internal `<button role="checkbox">`. They still answer Space, still read «Select all rows» and each row's label, and a click still selects the rest when the select-all is partly checked. A test that looked for `[role="checkbox"]` or read `aria-checked` should query `input[type="checkbox"]` or use `toBeChecked()` / `toBePartiallyChecked()`. `dataTableCheckboxVariants` stays exported but is deprecated; nothing in rowkit uses it.
+
+  `Checkbox` now colours its mark through the foreground variable, so a check box inside a selected DataTable row keeps a black mark on its white box while its label turns white.
+
+- a975310: rowkit's behaviour layer is now entirely original code. The primitives that had been ported from Reka UI — focus scope, dismissable layer, presence, body scroll lock, hide-others, `as` / `as-child`, the tri-state checkbox, the page range — and the toast and tooltip behaviour are rewritten from scratch against the same tests, so `THIRD_PARTY_NOTICES.md` is no longer shipped. Public APIs and rendered output are unchanged.
+
+  A few edge cases behave slightly differently:
+
+  - A pointer pressed outside stacked layers closes every layer it is outside of, from the top down, stopping at a modal layer. Hovering a tooltip inside a dialog and then clicking the page now closes both, not just the tooltip. Escape still closes one layer at a time.
+  - An endless animation on an overlay's surface (a spinner on the dialog itself, say) no longer keeps the overlay mounted after it closes.
+  - A dismissed toast now plays the `data-state="closed"` exit animation its styles always declared, instead of vanishing at once. It leaves the queue immediately, so the next toast moves up without waiting, and it is `inert` while it fades.
+  - A `Tooltip` inside a `TooltipProvider` now waits the provider's `delayDuration`, as documented, rather than its own `delay`. On its own, `delay` still sets the timing.
+  - An open tooltip closes when the page scrolls, instead of drifting away from its trigger.
+
+- 0352fc4: rowkit is moving off Reka UI onto its own behaviour layer, one component at a time. Public APIs and rendered output stay the same.
+
+  - `Button`, `Badge`, `Skeleton` and `EmptyState` render through rowkit's own `Primitive`; `as` and `as-child` behave exactly as before, pinned against Reka's output in the test suite.
+  - `Field` renders a native `<label>`, keeping the guard that stops a double-click from selecting the label text.
+  - `DataTable`'s row and select-all checkboxes use rowkit's own tri-state checkbox: same roles, `aria-checked` and `data-state` as before, Space toggles, Enter does not.
+  - `Pagination` renders its own `<nav>` and buttons with the same labels, `aria-current` and disabled states; the page-range calculation is ported from Reka and checked against it for every input.
+  - `Dialog` runs on rowkit's own focus scope, dismissable layer, presence, scroll lock and hide-others primitives, ported from Reka. Focus moves in on open and back to the trigger on close, Tab stays inside, Escape and an outside click close it (or not, with `preventClose`), the page behind is hidden from assistive technology and does not scroll. A `Select` open inside a `Dialog` now closes on its own Escape without closing the dialog.
+
+- Updated dependencies [f4b1653]
+- Updated dependencies [f4b1653]
+- Updated dependencies [2611965]
+- Updated dependencies [fa23264]
+- Updated dependencies [c82f79f]
+  - @rowkit/tokens@1.0.0-beta.0
+
 ## 0.4.0
 
 ### Minor Changes
