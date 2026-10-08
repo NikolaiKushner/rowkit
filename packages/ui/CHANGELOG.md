@@ -1,5 +1,50 @@
 # rowkit
 
+## 1.0.0-beta.1
+
+### Minor Changes
+
+- 2202238: **The modern theme now follows its finished design.** Badges, fields, dialogs, empty states, filter chips, the pager, status bars, toasts, tables, group boxes and selects take the designer's sizes and colours; each difference is a token, so Windows 98 is unchanged.
+
+  - **`ProgressBar` without a `value` is indeterminate.** Leave `value` out, or pass `null`, while the amount of work is unknown: a segment travels along the track (`--rk-animate-progress`, `--spacing-progress-segment`). In Windows 98 it is four blocks stepping one block every 100ms, starting again at the left; with reduced motion it stands still in the middle of the track, in every theme. `aria-valuenow` is left off, as ARIA asks.
+  - **Select options show a check mark** beside the selected one, in every theme, as the design draws it. The read-only value is no longer highlighted while the list is open, and the drop button stays pressed in until it closes.
+  - **Pagination keeps the rows-per-page control beside the page buttons**, at the end of the row, as the design places it. Its label is now `Rows per page:`, with the colon both designs draw.
+  - **A `ProgressBar`'s blocks sit centred in the track**, 3px from the top in Windows 98, as the Figma file draws them (they were 1px higher).
+  - **A link button in the modern theme is underlined under the pointer and on focus**, and plain at rest; Windows 98 underlines it always. Its focus ring hugs the text rather than the full button height.
+  - **A searchable Select is searched in a box at the top of its list**, as the design draws it in both themes, rather than by typing into the control. The box takes focus as the list opens; the arrows, Enter, Escape and Tab work from it, and closing brings focus back to the control. A letter typed on the closed control opens the list and starts the search. The control is now always read-only. `SelectContent` takes `searchLabel` (default `Search`) to name the box. The magnifier in a search field is the subtle text colour in the modern theme.
+  - **Select's dropped list says what it is doing:** «Loading…» carries Windows 98's hourglass or the modern spinner, and an empty search says «No results found» (the new default `emptyText`). In Windows 98 the options sit 1px inside the list's border, as the design draws them; the modern list is ringed by its shadow alone (`--rk-popover-border-width`).
+  - **Buttons inside fields take the design's height in both themes**: 17, 19 and 23px at `sm`, `md` and `lg`, centred, for a number field's spin buttons, a date field's drop button and a select's arrows (`--spacing-field-button-h-sm`, `-h`, `-h-lg`). In Windows 98 they no longer fill the well. In the modern theme they sit 4px from the right edge, a select's arrows 6px (`--spacing-field-button-pr`, `--spacing-select-pr`).
+  - **Number and date fields, modern:** 9px spin arrows in the muted colour, and a calendar glyph on a date field (`--spacing-field-drop-icon`).
+  - **Pagination takes the design's measurements in both themes:** the rows-per-page select is the small one at every size, 56px wide, 6px from its label, which is centred on it; the arrows are their own size (8px pixel triangles in Windows 98, which were drawn at double size, 10px chevrons in modern); the ellipsis is just the character; the dotted focus ring hugs a page label (`--spacing-pager-arrow`, `--spacing-pager-focus-px`); a small page button in Windows 98 hugs its number (`--spacing-pager-min-sm`). A disabled pager draws the current page like the others and greys the ellipsis.
+  - **Option buttons and check boxes, modern:** the label sits 8px from the box, as drawn (`--spacing-check-gap`, `--spacing-check-label-px`); a held option button fills with the pressed control colour (blue when checked); a disabled check box keeps its edge.
+  - **New tokens:** colours `loading-foreground`, `select-search`, `table-row-hover`, `field-caret`, `field-highlight`, `on-field-highlight`, `control-primary-latched`, `filter-bar`, `chip`, `chip-border`, `chip-foreground`, `chip-remove`, `pager`, `pager-hover`, `pager-active`, `toast-close`, `toast-close-foreground`; shadows `latched-ghost`, `field-button-pressed`, `pager`, `pager-focus`, `pager-pressed`, `toast-close`, `checked-selected`; sizes for badges, dialogs, empty states, fields, filter bars, pagers, status bars, tables, toasts and select options; style switches `--rk-empty-direction`, `--rk-empty-align`, `--rk-footer-direction`, `--rk-invalid-width`, `--rk-field-error-align`, `--rk-link-decoration`, `--rk-legend-weight`, `--rk-titlebar-icon`, `--rk-animate-progress`.
+  - **An `EmptyState` at `lg` keeps the heading size of `md`** (16px in Windows 98). It was a pixel smaller, a slip from the move to Large Fonts; the design is corrected too.
+  - **Modern, dark:** destructive text is brighter (`#ffa0a4`, 4.7:1 on a control).
+  - **The modern theme's icons are its designer's own**, exported from the Figma file. A loading button turns a spinner in the modern theme (`--rk-animate-busy`; Windows 98's hourglass stands still), and a select shows up and down arrows there.
+  - **A new brand.** The package READMEs show the new mark and hero picture, light or dark by the reader's scheme, and the npm badge in the brand's vermilion.
+  - **`@rowkit/tokens/reference`: every token a theme sets, described.** `tokenReference` lists each CSS variable with what it is for, the components that read it and its value in Windows 98 and the modern theme's light and dark schemes. The descriptions are the comments beside the values, so they cannot drift; a separate entry point, so importing the tokens does not ship them.
+
+- d1f5412: **`rowkit/theme`: make a theme of your own with nothing else to install.** `import { defineTheme } from 'rowkit/theme'` gives you `defineTheme()`, `themeRule()` and the themes' values from the tokens rowkit itself depends on, so the theme always matches the components you render. A pnpm project could not import `@rowkit/tokens` without adding it to its own dependencies, at a version that could drift from rowkit's; it no longer needs to. `@rowkit/tokens` keeps the same functions for projects that use the tokens without the components.
+
+  - **Theme values are typed by token name.** `defineTheme()` takes `ThemeValues`: every variable a theme may set, by name (`ThemeTokenName`), so an editor completes them and a typo such as `'--color-brnad'` fails the type check, not only the run. Values built at run time as a plain record are still accepted, and an unknown name still throws.
+
+- 2c99177: **A second theme: modern, in light and dark.** Put `data-theme="modern"` on `<html>` (or any element) and rowkit draws the look of a current desktop operating system — white and grey surfaces, a blue accent, rounded corners, soft shadows, a ring around the focused control, short transitions and outline icons. It follows the system's dark setting; `data-color-scheme="light"` or `"dark"` fixes it. This is where dark comes back after beta.0 removed it: as a scheme of the modern theme, still with no `.dark` class and no `dark:` variant. Without an attribute, Windows 98 is still the default, with its one light scheme.
+
+  - **Every component now reads its look from tokens.** New role colours (`control`, `control-primary`, `checked`, `popover`, `table-header`, `track`, `caption-*` and more), size tokens in the spacing namespace (`h-control-md`, `size-check`, `h-row-md`), a `pill` radius, a `strong` font weight, and `--rk-*` style switches for how a theme draws a state. Themes nest: a `data-theme="win98"` region inside a modern page is Windows 98.
+  - **Shadow tokens are now variables a theme can set.** `--shadow-*` in `@theme` points at `--rk-shadow-*`, which holds the value. If you override a shadow, override `--rk-shadow-<name>`.
+  - **New utilities in `rowkit/styles`:** `focus-label`, `focus-ring`, `focus-outer`, `bg-loading`, and `scrollbar-themed` (`scrollbar-win98` still works).
+  - **Icons carry `data-icon`**, and the stylesheet includes the modern theme's outline glyphs, applied by CSS only inside that theme.
+  - **Make a theme of your own with `defineTheme()`** from `@rowkit/tokens`: start from `modern` or `win98`, set the values you change, get the whole stylesheet — both schemes included. It refuses a token that does not exist. `themeRule()` writes a single rule.
+  - **`@rowkit/tokens` exports the themes as data:** `tokens.themes.win98`, `tokens.themes.modern.light` and `.dark`, plus `size`, `style` and the modern palette.
+  - **Fixed: `ScrollArea` assumed 16px arrow buttons** when sizing its thumb; it reads the theme's.
+
+### Patch Changes
+
+- Updated dependencies [2202238]
+- Updated dependencies [d1f5412]
+- Updated dependencies [2c99177]
+  - @rowkit/tokens@1.0.0-beta.1
+
 ## 1.0.0-beta.0
 
 ### Major Changes
