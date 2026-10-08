@@ -53,6 +53,9 @@ export const size = {
   /** The side of a checkbox's box, and of an option button. */
   check: '13px',
   radio: '12px',
+  /** Between a check box or option button and its label, and the label's own inset (where the dotted ring sits). */
+  'check-gap': '4px',
+  'check-label-px': '1px',
 
   /** A window's or a dialog's title bar. */
   titlebar: '22px',

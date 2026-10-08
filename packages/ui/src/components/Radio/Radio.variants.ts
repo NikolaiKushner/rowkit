@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
  * 4px, then the label. The whole row is the click target.
  */
 export const radioVariants = cva([
-  'group/radio inline-flex items-center gap-1 align-middle',
+  'group/radio inline-flex items-center gap-check-gap align-middle',
   'font-sans text-ui text-foreground',
   'data-disabled:text-text-disabled',
 ])
@@ -49,7 +49,7 @@ export const radioInputClass =
 
 /** The label, with the dotted focus ring around it alone. */
 export const radioLabelVariants = cva([
-  'px-px',
+  'px-check-label-px',
   'group-has-[input:focus-visible]/radio:focus-label',
   'group-has-[input:focus-visible]/radio:-outline-offset-1',
   'group-has-[input:focus-visible]/radio:outline-ring',

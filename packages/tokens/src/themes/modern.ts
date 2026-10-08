@@ -403,6 +403,8 @@ export const modernSize: Record<SizeName, string> = {
   'field-error-gap': '6px',
   check: '16px',
   radio: '16px',
+  'check-gap': '8px',
+  'check-label-px': '0px',
   titlebar: '38px',
   'caption-w': '12px',
   'caption-h': '12px',
