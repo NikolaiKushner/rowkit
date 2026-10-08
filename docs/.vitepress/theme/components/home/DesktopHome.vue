@@ -16,7 +16,7 @@ import {
   StatusBar,
   StatusBarSection,
   TrashIcon,
-  version,
+  Input,
   Window,
   WindowBody,
   WindowButton,
@@ -25,7 +25,7 @@ import {
 import SiteDock from '../site/SiteDock.vue'
 import SiteTaskbar from '../site/SiteTaskbar.vue'
 import SiteWallpaper from '../site/SiteWallpaper.vue'
-import ThemeSwitch from '../site/ThemeSwitch.vue'
+import AboutWindow from './AboutWindow.vue'
 import CommandPrompt from './CommandPrompt.vue'
 import EditUserDialog from './EditUserDialog.vue'
 import DesktopIcon from './DesktopIcon.vue'
@@ -91,6 +91,10 @@ const compactColumns = columns.filter(
   (column) => 'key' in column && (column.key === 'name' || column.key === 'status')
 )
 const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
+// The phone's live demo (Figma Home, 390): name, status, role.
+const phoneColumns = (['name', 'status', 'role'] as const).flatMap((key) =>
+  columns.filter((column) => 'key' in column && column.key === key)
+)
 </script>
 
 <template>
@@ -250,60 +254,109 @@ const compactRows = computed(() => demo.pageRows.value.slice(0, 6))
       />
 
       <div class="absolute top-6 right-6 flex w-[400px] flex-col gap-12 modern:gap-6">
-        <Window v-show="open.about">
-          <WindowTitleBar title="About rowkit">
-            <template #icon>
-              <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" />
-            </template>
-            <template #controls>
-              <!-- Modern draws all three lights on every window; Windows 98, close alone. -->
-              <WindowButton
-                glyph="minimize"
-                label="Minimize About rowkit"
-                class="win98:hidden"
-                @click="open.about = false"
-              />
-              <WindowButton glyph="maximize" label="Maximize" disabled class="win98:hidden" />
-              <WindowButton glyph="close" label="Close About rowkit" @click="open.about = false" />
-            </template>
-          </WindowTitleBar>
-          <WindowBody class="flex items-start gap-4 p-4 modern:p-5">
-            <span
-              class="shrink-0 modern:flex modern:h-16 modern:items-center modern:rounded-xl modern:bg-card modern:shadow-raised"
-            >
-              <img :src="withBase('/mark-48.svg')" alt="" width="48" height="48" class="block" />
-            </span>
-            <div class="flex flex-col gap-2">
-              <img :src="withBase('/logo.svg')" alt="rowkit" width="160" height="32" />
-              <p class="m-0 text-doc text-foreground">
-                A professional Vue 3 toolkit — the components a product interface is built from.
-              </p>
-              <p class="m-0 text-muted-foreground modern:text-text-subtle">
-                Version {{ version }} on npm · MIT licence
-              </p>
-              <div class="flex gap-1.5 modern:gap-2 modern:pt-1.5">
-                <Button as="a" :href="withBase('/installation')">Get started</Button>
-                <Button as="a" :href="withBase('/components/')" variant="secondary">
-                  Components
-                </Button>
-              </div>
-            </div>
-          </WindowBody>
-          <!-- The look switch again, where About says what the toolkit is. Modern only. -->
-          <div
-            class="flex items-center gap-3 border-t border-border bg-background px-5 pt-3 pb-3.5 win98:hidden"
-          >
-            <span class="font-strong text-foreground">Look</span>
-            <ThemeSwitch />
-          </div>
-        </Window>
+        <AboutWindow v-show="open.about" @close="open.about = false" />
 
         <CommandPrompt v-show="open.prompt" closable @close="open.prompt = false" />
       </div>
     </main>
 
+    <!--
+      Modern below 1280px (Figma Home, 390): the windows stacked, 12px in and
+      14px apart, scrolling under the menu bar, with the Dock over the bottom.
+    -->
+    <div class="hidden min-h-0 flex-1 overflow-y-auto max-xl:modern:block">
+      <div class="mx-auto flex w-full max-w-[560px] flex-col gap-3.5 px-3 pt-3 pb-24">
+        <AboutWindow v-show="open.about" @close="open.about = false" />
+        <CommandPrompt v-show="open.prompt" closable @close="open.prompt = false" />
+        <Window v-show="open.demo">
+          <WindowTitleBar title="Live demo">
+            <template #controls>
+              <WindowButton glyph="close" label="Close Live demo" @click="open.demo = false" />
+            </template>
+          </WindowTitleBar>
+          <div role="toolbar" aria-label="Users" class="flex items-center gap-2 px-3 py-2">
+            <Button variant="ghost" size="icon-lg" aria-label="New user" @click="newUser">
+              <PlusIcon />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-lg"
+              aria-label="Edit"
+              :disabled="count === 0"
+              @click="editSelected"
+            >
+              <EditIcon />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-lg"
+              aria-label="Delete"
+              :disabled="count === 0"
+              @click="demo.remove(demo.selected.value)"
+            >
+              <TrashIcon />
+            </Button>
+            <Input
+              v-model="demo.search.value"
+              type="search"
+              size="lg"
+              aria-label="Search name or email"
+              placeholder="Search name or email…"
+              class="min-w-0 flex-1"
+            />
+          </div>
+          <FilterBar
+            label="User filters"
+            :searchable="false"
+            :filters="demo.chips.value"
+            :result-count="demo.filtered.value.length"
+            clear-label="Clear"
+            class="px-1 pb-1"
+            @remove="demo.removeFilter"
+            @clear="demo.clearFilters"
+          >
+            <template #summary="{ count: users }">{{ users }} users</template>
+          </FilterBar>
+          <WindowBody class="flex min-h-0 flex-col">
+            <DataTable
+              v-model:sort="demo.sort.value"
+              v-model:selected="demo.selected.value"
+              :rows="compactRows"
+              :columns="phoneColumns"
+              caption="Users"
+              selectable="multiple"
+              :row-label="(row) => row.name"
+            >
+              <template #[`cell:status`]="{ row }">
+                <Badge :variant="tone[row.status]" size="sm">{{ label[row.status] }}</Badge>
+              </template>
+            </DataTable>
+          </WindowBody>
+          <StatusBar>
+            <StatusBarSection class="w-auto">
+              <Pagination
+                v-model:page="demo.page.value"
+                :page-size="demo.pageSize"
+                :total="demo.filtered.value.length"
+                compact
+                hide-page-size
+                label="Users pages"
+                class="w-full"
+              />
+            </StatusBarSection>
+          </StatusBar>
+        </Window>
+      </div>
+      <SiteDock
+        :running="open"
+        compact
+        class="fixed bottom-4 left-1/2 z-10 -translate-x-1/2"
+        @open="(name) => (open[name] = true)"
+      />
+    </div>
+
     <!-- One maximized window, below 1280px. -->
-    <Window class="min-h-0 flex-1 xl:hidden">
+    <Window class="min-h-0 flex-1 xl:hidden modern:hidden">
       <WindowTitleBar title="rowkit">
         <template #icon>
           <img :src="withBase('/mark-16.svg')" alt="" width="16" height="16" />

@@ -233,7 +233,7 @@ defineExpose({
 <template>
   <div
     ref="root"
-    class="fixed bottom-[34px] left-0.5 z-50 flex bg-card p-0.5 shadow-window modern:top-7 modern:bottom-auto modern:left-2 modern:bg-transparent modern:p-0 modern:shadow-none"
+    class="fixed bottom-[34px] left-0.5 z-50 flex bg-card p-0.5 shadow-window modern:top-7 modern:bottom-auto modern:left-2 modern:bg-transparent modern:p-0 modern:shadow-none modern:max-md:top-9 modern:max-md:right-2 modern:max-md:left-auto"
   >
     <!--
       The strip: the title-bar gradient upright, the wordmark reading upward,
@@ -253,14 +253,18 @@ defineExpose({
         class="absolute bottom-[-8px] left-1 max-w-none origin-top-left -rotate-90"
       />
     </div>
-    <div class="flex flex-col" :class="narrow && 'w-[256px]'">
+    <!-- On a phone in the modern theme the glass is this column's, so the back row sits on it too. -->
+    <div
+      class="flex flex-col modern:max-md:rounded-[10px] modern:max-md:bg-popover modern:max-md:p-[5px] modern:max-md:shadow-[0_10px_30px_rgb(0_0_0/0.15),0_0_0_1px_rgb(0_0_0/0.1)] modern:max-md:[backdrop-filter:var(--rk-popover-backdrop)]"
+      :class="narrow && 'w-[256px]'"
+    >
       <button
         v-if="narrow && trail.length > 0"
         type="button"
-        class="flex h-[34px] w-full items-center gap-2 border-0 bg-transparent py-px pr-1.5 pl-1 text-left text-ui text-foreground outline-none focus-visible:bg-surface-selected focus-visible:text-on-selected"
+        class="flex h-[34px] w-full items-center gap-2 border-0 bg-transparent py-px pr-1.5 pl-1 text-left text-ui text-foreground outline-none focus-visible:bg-surface-selected focus-visible:text-on-selected modern:mb-1 modern:h-6 modern:gap-1 modern:rounded-[5px] modern:pl-1.5 modern:font-strong"
         @click="drillOut"
       >
-        <Folder32Icon class="shrink-0" />
+        <Folder32Icon v-if="siteTheme !== 'modern'" class="shrink-0" />
         ◂ {{ trail[trail.length - 1]?.text }}
       </button>
       <SiteMenu
@@ -269,7 +273,7 @@ defineExpose({
         :size="siteTheme === 'modern' ? 'menu' : 'start'"
         :drill="narrow"
         :label="siteTheme === 'modern' ? 'rowkit' : 'Start'"
-        class="win98:!bg-transparent win98:!p-0 win98:!shadow-none modern:w-[240px]"
+        class="win98:!bg-transparent win98:!p-0 win98:!shadow-none modern:w-[240px] modern:max-md:!w-full modern:max-md:!bg-transparent modern:max-md:!p-0 modern:max-md:!shadow-none modern:max-md:![backdrop-filter:none]"
         :class="narrow && '[&_[role=menuitem]]:!w-full'"
         @close="onClose"
         @drill="drillIn"

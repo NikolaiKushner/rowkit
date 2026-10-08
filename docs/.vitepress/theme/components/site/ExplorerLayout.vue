@@ -82,9 +82,13 @@ const onPopState = () => {
 }
 const onHashChange = () => scrollToHash(location.hash)
 
+// The tree over the page on a phone, in the modern theme; it goes when a page opens.
+const sidebarOpen = ref(false)
+
 watch(
   () => route.path,
   (path) => {
+    sidebarOpen.value = false
     const here = normalize(path)
     recordVisit(here, popped ? stepOf(here) : 'push')
     popped = false
@@ -112,7 +116,9 @@ const goForward = () => history.forward()
 <template>
   <div class="rk-desktop relative isolate flex h-dvh flex-col overflow-hidden bg-background">
     <SiteWallpaper />
-    <Window class="min-h-0 flex-1 modern:m-3 modern:isolate">
+    <Window
+      class="min-h-0 flex-1 modern:m-3 modern:isolate modern:max-md:m-0 modern:max-md:rounded-none modern:max-md:shadow-none"
+    >
       <!--
         The modern window has no title bar of its own: Finder draws the caption
         buttons in its toolbar. The title bar stays, out of sight, as the
@@ -167,7 +173,7 @@ const goForward = () => history.forward()
         the caption buttons, history, where you are, and search, in one 52px row.
       -->
       <div
-        class="group/titlebar flex h-[52px] shrink-0 items-center gap-2 bg-titlebar-from pr-3 pl-[18px] shadow-titlebar win98:hidden"
+        class="group/titlebar flex h-[52px] shrink-0 items-center gap-2 bg-titlebar-from pr-3 pl-[18px] shadow-titlebar max-md:h-12 max-md:px-1.5 win98:hidden"
       >
         <span
           class="flex shrink-0 items-center gap-caption-gap pr-3.5 max-md:hidden [&>[data-glyph=close]]:order-(--rk-close-order)"
@@ -176,7 +182,27 @@ const goForward = () => history.forward()
           <WindowButton glyph="maximize" label="Maximize" disabled />
           <WindowButton glyph="close" label="Close and go to the desktop" @click="toDesktop" />
         </span>
-        <div role="toolbar" aria-label="Navigation" class="flex min-w-0 flex-1 items-center gap-2">
+        <div
+          role="toolbar"
+          aria-label="Navigation"
+          class="flex min-w-0 flex-1 items-center gap-2 max-md:gap-0.5"
+        >
+          <!-- On a phone (Figma Component page, 390) the tree slides over the page from here. -->
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Contents"
+            :aria-expanded="sidebarOpen"
+            aria-controls="rk-sidebar"
+            class="md:hidden"
+            @click="sidebarOpen = !sidebarOpen"
+          >
+            <span
+              aria-hidden="true"
+              class="block size-4 bg-current [mask-size:contain]"
+              :style="{ maskImage: `url(${withBase('/icons/modern/sidebar.svg')})` }"
+            />
+          </Button>
           <Button
             variant="ghost"
             size="icon-sm"
@@ -196,13 +222,16 @@ const goForward = () => history.forward()
           >
             <TriangleRightIcon />
           </Button>
-          <span class="min-w-0 truncate text-heading font-strong text-foreground">{{ title }}</span>
-          <span class="flex-1" />
+          <span
+            class="min-w-0 truncate text-heading font-strong text-foreground max-md:flex-1 max-md:text-center"
+            >{{ title }}</span
+          >
+          <span class="flex-1 max-md:hidden" />
           <!-- Figma SiteModern/SearchField: a field to look at, a button underneath — it opens search. -->
           <button
             type="button"
             aria-keyshortcuts="Meta+K Control+K"
-            class="flex h-7 w-[200px] shrink-0 items-center gap-1.5 rounded-[7px] bg-input pr-1.5 pl-2 text-left text-ui text-text-subtle shadow-[inset_0_1px_1px_rgb(0_0_0/0.04),inset_0_0_0_1px_#86868b] outline-none focus-visible:focus-outer max-md:w-auto"
+            class="flex h-7 w-[200px] shrink-0 items-center gap-1.5 rounded-[7px] bg-input pr-1.5 pl-2 text-left text-ui text-text-subtle shadow-[inset_0_1px_1px_rgb(0_0_0/0.04),inset_0_0_0_1px_#86868b] outline-none focus-visible:focus-outer max-md:size-7 max-md:justify-center max-md:bg-transparent max-md:p-0 max-md:text-foreground max-md:shadow-none max-md:hover:bg-control-ghost-hover"
             @click="openFind"
           >
             <SearchIcon class="size-3.5 shrink-0" />
@@ -215,10 +244,20 @@ const goForward = () => history.forward()
         </div>
       </div>
 
-      <WindowBody class="flex min-h-0 gap-1 p-0.5 modern:gap-0 modern:p-0">
-        <!-- Below 768px the tree gives way to the page; the address bar still lists every page. -->
+      <WindowBody class="relative flex min-h-0 gap-1 p-0.5 modern:gap-0 modern:p-0">
+        <!--
+          Below 768px the tree gives way to the page; the address bar still
+          lists every page. In the modern theme the Contents button slides it
+          back over the page.
+        -->
         <ScrollArea
+          id="rk-sidebar"
           class="w-[260px] shrink-0 bg-input p-0.5 shadow-sunken max-md:hidden modern:w-[240px] modern:bg-muted modern:px-2 modern:pt-3 modern:pb-2 modern:shadow-[inset_-1px_0_0_var(--color-border)]"
+          :class="
+            sidebarOpen &&
+            'modern:max-md:absolute modern:max-md:inset-y-0 modern:max-md:left-0 modern:max-md:z-20 modern:max-md:block modern:max-md:w-[280px] modern:max-md:shadow-[0_10px_30px_rgb(0_0_0/0.25)]!'
+          "
+          @keydown.esc="sidebarOpen = false"
         >
           <FolderTree :tree="tree" :current="current" />
         </ScrollArea>
@@ -238,7 +277,7 @@ const goForward = () => history.forward()
             a phone the page sits 12px in, as the 390px templates draw it.
           -->
           <div
-            class="max-w-[1100px] px-3 pt-3 pb-6 contain-inline-size md:p-6 modern:md:px-10 modern:md:pt-7 modern:md:pb-10"
+            class="max-w-[1100px] px-3 pt-3 pb-6 contain-inline-size md:p-6 modern:p-5 modern:md:px-10 modern:md:pt-7 modern:md:pb-10"
           >
             <PageHeader :title="title" :current="current" />
             <PageOutline as="select" :scroller="contentArea?.viewport" class="mt-4 xl:hidden" />
@@ -255,7 +294,7 @@ const goForward = () => history.forward()
       </WindowBody>
 
       <!-- Modern (Figma Finder footer): the edit link in the link colour, the rest in grey. -->
-      <StatusBar class="modern:h-[26px] modern:px-4">
+      <StatusBar class="modern:h-[26px] modern:px-4 modern:max-md:hidden">
         <StatusBarSection>
           <a
             v-if="editLink"

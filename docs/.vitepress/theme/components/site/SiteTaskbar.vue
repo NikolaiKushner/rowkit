@@ -53,10 +53,14 @@ onMounted(() => {
 onBeforeUnmount(() => clearInterval(timer))
 
 const start = ref<HTMLButtonElement>()
+const burger = ref<HTMLButtonElement>()
+// The control that opened the menu: Start, or ☰ on a phone in the modern theme.
+const anchor = ref<HTMLButtonElement>()
 const menu = ref<{ focusFirst: () => void; focusPanel: () => void }>()
 const startOpen = ref(false)
 
 function toggleStart(event: MouseEvent): void {
+  anchor.value = event.currentTarget as HTMLButtonElement
   startOpen.value = !startOpen.value
   if (!startOpen.value) return
   // A click from Enter or Space has no pointer position.
@@ -66,7 +70,7 @@ function toggleStart(event: MouseEvent): void {
 
 function closeStart(focusStart: boolean): void {
   startOpen.value = false
-  if (focusStart) start.value?.focus()
+  if (focusStart) (anchor.value ?? start.value)?.focus()
 }
 </script>
 
@@ -77,13 +81,13 @@ function closeStart(focusStart: boolean): void {
     window's menus move up into it, and there is no task button.
   -->
   <footer
-    class="rk-taskbar flex h-[34px] shrink-0 items-center gap-1 bg-card p-0.5 modern:order-first modern:z-40 modern:h-7 modern:gap-0.5 modern:px-3 modern:py-0"
+    class="rk-taskbar flex h-[34px] shrink-0 items-center gap-1 bg-card p-0.5 modern:order-first modern:z-40 modern:h-7 modern:gap-0.5 modern:px-3 modern:py-0 modern:max-md:h-9 modern:max-md:gap-2 modern:max-md:pr-2"
   >
     <button
       ref="start"
       type="button"
       aria-haspopup="menu"
-      :aria-expanded="startOpen"
+      :aria-expanded="startOpen && anchor !== burger"
       class="flex h-[27px] shrink-0 items-center gap-1 pr-1.5 pl-0.5 font-bold text-ui text-foreground outline-none [&:focus-visible>span]:outline-1 [&:focus-visible>span]:outline-dotted [&:focus-visible>span]:outline-ring modern:h-[22px] modern:gap-1.5 modern:rounded-[5px] modern:pr-2 modern:pl-1.5 modern:pt-0 modern:font-strong modern:shadow-none modern:aria-expanded:bg-control-ghost-active modern:hover:bg-control-ghost-hover modern:focus-visible:focus-outer"
       :class="startOpen ? 'pt-px pl-[3px] shadow-pressed' : 'shadow-raised active:shadow-pressed'"
       @click="toggleStart"
@@ -92,9 +96,12 @@ function closeStart(focusStart: boolean): void {
       <span class="px-px modern:hidden">Start</span>
       <span class="win98:hidden">rowkit</span>
     </button>
-    <StartMenu v-if="startOpen" ref="menu" :anchor="start" @close="closeStart" />
+    <StartMenu v-if="startOpen" ref="menu" :anchor="anchor" @close="closeStart" />
     <Separator orientation="vertical" decorative class="h-[27px] self-center modern:hidden" />
-    <SiteMenuBar v-if="siteTheme === 'modern'" class="bg-transparent p-0 win98:hidden" />
+    <SiteMenuBar
+      v-if="siteTheme === 'modern'"
+      class="bg-transparent p-0 max-md:hidden win98:hidden"
+    />
     <!--
       The one task: this page. Active, so pressed in over the dither. Two
       elements rather than <component :is="'button'">: the site registers
@@ -120,7 +127,7 @@ function closeStart(focusStart: boolean): void {
     <div class="flex-1" />
     <ThemeSwitch />
     <div
-      class="flex h-[27px] shrink-0 items-center gap-1.5 px-1.5 text-ui text-foreground shadow-status modern:h-[22px] modern:gap-3.5 modern:pr-0 modern:pl-3 modern:shadow-none"
+      class="flex h-[27px] shrink-0 items-center gap-1.5 px-1.5 text-ui text-foreground shadow-status modern:max-md:hidden modern:h-[22px] modern:gap-3.5 modern:pr-0 modern:pl-3 modern:shadow-none"
     >
       <a
         href="https://github.com/NikolaiKushner/rowkit/releases"
@@ -140,6 +147,22 @@ function closeStart(focusStart: boolean): void {
         ><span class="win98:hidden">{{ date }}&ensp;</span>{{ time }}</time
       >
     </div>
+    <!-- Modern on a phone (Figma 390): the menus go behind ☰, which opens the rowkit menu. -->
+    <button
+      ref="burger"
+      type="button"
+      aria-haspopup="menu"
+      :aria-expanded="startOpen && anchor === burger"
+      aria-label="Menu"
+      class="hidden size-7 shrink-0 items-center justify-center rounded-[7px] text-foreground outline-none hover:bg-control-ghost-hover focus-visible:focus-outer aria-expanded:bg-control-ghost-active modern:max-md:flex"
+      @click="toggleStart"
+    >
+      <span
+        aria-hidden="true"
+        class="size-4 bg-current [mask-size:contain]"
+        :style="{ maskImage: `url(${withBase('/icons/modern/menu.svg')})` }"
+      />
+    </button>
   </footer>
 </template>
 

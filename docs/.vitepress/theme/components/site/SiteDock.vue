@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Component } from 'vue'
+import { computed, type Component } from 'vue'
 import { withBase } from 'vitepress'
 import {
   Book32Icon,
@@ -22,6 +22,8 @@ import {
 const props = defineProps<{
   /** Which home-page windows are open. Omitted away from the home page. */
   running?: { about: boolean; demo: boolean }
+  /** The phone's Dock (Figma Home, 390): rowkit, Guide, Components, Live demo, Trash. */
+  compact?: boolean
 }>()
 
 const emit = defineEmits<{ open: [window: 'about' | 'demo'] }>()
@@ -49,6 +51,12 @@ const trash: Tile = {
   icon: Trash32Icon,
 }
 
+const PHONE = ['rowkit', 'Guide', 'Components', 'Live demo']
+const shown = computed(() => [
+  ...(props.compact ? tiles.filter((tile) => PHONE.includes(tile.label)) : tiles),
+  trash,
+])
+
 const isRunning = (tile: Tile) => (tile.window ? !!props.running?.[tile.window] : false)
 const isExternal = (tile: Tile) => !!tile.href && /^https?:/.test(tile.href)
 </script>
@@ -58,7 +66,7 @@ const isExternal = (tile: Tile) => !!tile.href && /^https?:/.test(tile.href)
     aria-label="Dock"
     class="flex items-start gap-2 rounded-[18px] bg-popover px-2 pt-1.5 pb-[3px] shadow-[0_10px_30px_rgb(0_0_0/0.15),0_0_0_1px_rgb(0_0_0/0.1)] [backdrop-filter:var(--rk-popover-backdrop)]"
   >
-    <template v-for="tile in [...tiles, trash]" :key="tile.label">
+    <template v-for="tile in shown" :key="tile.label">
       <span v-if="tile === trash" aria-hidden="true" class="h-12 w-px bg-border" />
       <!--
         Two elements rather than <component :is="'button'">: the site registers
