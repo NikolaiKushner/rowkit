@@ -14,6 +14,13 @@
     "ignore": ["vue", "@rowkit/tokens", "clsx", "tailwind-merge", "class-variance-authority"]
   },
   {
+    "name": "rowkit/theme — defineTheme with every theme's values (brotli)",
+    "path": "packages/ui/dist/theme.js",
+    "import": "{ defineTheme }",
+    "limit": "6 kB",
+    "ignore": ["vue"]
+  },
+  {
     "name": "@rowkit/tokens (brotli)",
     "path": "packages/tokens/dist/index.js",
     "import": "*",

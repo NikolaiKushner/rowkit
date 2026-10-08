@@ -71,7 +71,14 @@ export {
   themeRule,
   win98Vars,
 } from './themes'
-export type { ModernPaletteName, ThemeDefinition, ThemeName, ThemeVars } from './themes'
+export type {
+  ModernPaletteName,
+  ThemeDefinition,
+  ThemeName,
+  ThemeTokenName,
+  ThemeValues,
+  ThemeVars,
+} from './themes'
 
 export { fontFamily, fontSize, fontWeight, letterSpacing, lineHeight } from './typography'
 export type { FontSizeName } from './typography'

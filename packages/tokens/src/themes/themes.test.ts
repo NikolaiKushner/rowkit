@@ -1,7 +1,21 @@
 import { describe, expect, it } from 'vitest'
 import { buildThemeCss } from '../css'
 import { parseHexAlpha } from '../../test/color'
-import { defineTheme, modernDarkVars, modernLightVars, modernPalette, win98Vars } from './index'
+import {
+  defineTheme,
+  modernDarkVars,
+  modernLightVars,
+  modernPalette,
+  win98Vars,
+  type ThemeTokenName,
+  type ThemeValues,
+} from './index'
+import { semanticColor } from '../color'
+import { radius } from '../radius'
+import { shadow } from '../shadow'
+import { size } from '../size'
+import { style } from '../style'
+import { modernFontSize } from './modern'
 
 const css = buildThemeCss()
 
@@ -82,9 +96,37 @@ describe('defineTheme', () => {
   })
 
   it('refuses a token that does not exist, and a name that cannot be an attribute value', () => {
+    // The type check refuses it first: an editor underlines the typo.
+    // @ts-expect-error -- not a rowkit token
     expect(() => defineTheme({ name: 'acme', light: { '--color-brand': 'red' } })).toThrow(
       /--color-brand/
     )
     expect(() => defineTheme({ name: 'Acme Theme' })).toThrow(/not a theme name/)
+  })
+})
+
+describe('ThemeTokenName', () => {
+  it('spells the same names the themes declare', () => {
+    // The union is built from these scales with these prefixes; so is every
+    // theme. Rebuild the names the union's way and compare.
+    const { full: _full, ...radii } = radius
+    const fromUnion = [
+      ...Object.keys(semanticColor).map((k) => `--color-${k}`),
+      ...Object.keys(shadow).map((k) => `--rk-shadow-${k}`),
+      ...Object.keys(size).map((k) => `--spacing-${k}`),
+      ...Object.keys(radii).map((k) => `--radius-${k}`),
+      ...Object.keys(style).map((k) => `--rk-${k}`),
+      '--font-sans',
+      '--font-mono',
+      ...Object.keys(modernFontSize).flatMap((k) => [`--text-${k}`, `--text-${k}--line-height`]),
+      '--font-weight-strong',
+    ]
+    expect(fromUnion.sort()).toEqual(Object.keys(win98Vars).sort())
+  })
+
+  it('takes every name a theme declares', () => {
+    const values: ThemeValues = { '--color-control-primary': '#5b3df5', '--radius-md': '10px' }
+    const name: ThemeTokenName = '--spacing-control-md'
+    expect(() => defineTheme({ name: 'typed', light: { ...values, [name]: '36px' } })).not.toThrow()
   })
 })

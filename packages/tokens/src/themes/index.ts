@@ -1,8 +1,8 @@
-import { semanticColor } from '../color'
-import { radiusCss } from '../radius'
-import { shadow } from '../shadow'
-import { size } from '../size'
-import { style } from '../style'
+import { semanticColor, type SemanticColorName } from '../color'
+import { radiusCss, type RadiusName } from '../radius'
+import { shadow, type ShadowName } from '../shadow'
+import { size, type SizeName } from '../size'
+import { style, type StyleName } from '../style'
 import { fontFamily, fontSize, fontWeight } from '../typography'
 import {
   modernDarkColor,
@@ -38,6 +38,25 @@ export type ThemeName = (typeof themeNames)[number]
 
 /** A theme as the stylesheet declares it: custom property name → value. */
 export type ThemeVars = Record<`--${string}`, string>
+
+/**
+ * The name of every variable a theme may set: the keys of {@link win98Vars},
+ * spelled out so an editor completes them and a typo fails the type check.
+ */
+export type ThemeTokenName =
+  | `--color-${SemanticColorName}`
+  | `--rk-shadow-${ShadowName}`
+  | `--spacing-${SizeName}`
+  | `--radius-${Exclude<RadiusName, 'full'>}`
+  | `--rk-${StyleName}`
+  | '--font-sans'
+  | '--font-mono'
+  | `--text-${keyof typeof modernFontSize}`
+  | `--text-${keyof typeof modernFontSize}--line-height`
+  | '--font-weight-strong'
+
+/** Values for some of a theme's variables, by name: what {@link defineTheme} takes. */
+export type ThemeValues = Partial<Record<ThemeTokenName, string>>
 
 /** Prefixes every key of a scale, turning it into custom property names. */
 function vars(scale: Record<string, string>, prefix: `--${string}`): ThemeVars {
@@ -109,12 +128,12 @@ export interface ThemeDefinition {
    */
   extends?: ThemeName
   /** Values for the light scheme — for a theme without a dark one, its only scheme. */
-  light?: ThemeVars
+  light?: ThemeValues
   /**
    * Values for the dark scheme, on top of the light ones. A theme built on
    * `modern` inherits its dark scheme; set `dark: false` to have none.
    */
-  dark?: ThemeVars | false
+  dark?: ThemeValues | false
 }
 
 /** A rule declaring a theme's values and its colour scheme. */
@@ -159,11 +178,11 @@ export function defineTheme(theme: ThemeDefinition): string {
   }
 
   const selector = `[data-theme="${theme.name}"]`
-  const light = { ...(base === 'modern' ? modernLightVars : win98Vars), ...theme.light }
+  const light: ThemeVars = { ...(base === 'modern' ? modernLightVars : win98Vars), ...theme.light }
   const rules = [themeRule(selector, 'light', light)]
 
   if (theme.dark !== false && (base === 'modern' || theme.dark !== undefined)) {
-    const dark = { ...(base === 'modern' ? modernDarkVars : {}), ...theme.dark }
+    const dark: ThemeVars = { ...(base === 'modern' ? modernDarkVars : {}), ...theme.dark }
     rules.push(
       [
         '@media (prefers-color-scheme: dark) {',
