@@ -2,7 +2,7 @@ import { shallowRef } from 'vue'
 import { withBase } from 'vitepress'
 import localSearchIndex from '@localSearchIndex'
 import MiniSearch from 'minisearch'
-import type { NavNode } from './useSiteNav'
+import { normalize, type NavNode } from './useSiteNav'
 
 /** One row of the Find window: Name · In folder · Type. */
 export interface FindResult {
@@ -11,6 +11,12 @@ export interface FindResult {
   folder: string
   type: string
   href: string
+  /** The top folder it sits in, which Spotlight groups by; «Pages» at the top. */
+  group: string
+  /** The folders above it — and the page, for a section — outermost first. */
+  trail: string[]
+  /** For a folder, how many pages it holds. */
+  pages?: number
 }
 
 interface Section {
@@ -46,6 +52,11 @@ const kinds: Record<string, string> = {
 
 const folderOf = (node: NavNode) => node.path.map((folder) => folder.text).join('\\')
 
+/** The top folder a node sits in — or, for a top folder itself, its own name. */
+function groupOf(node: NavNode): string {
+  return node.path[0]?.text ?? (node.children.length > 0 ? node.text : 'Pages')
+}
+
 function flatten(nodes: NavNode[]): NavNode[] {
   return nodes.flatMap((node) => [node, ...flatten(node.children)])
 }
@@ -80,6 +91,11 @@ export function find(query: string, tree: NavNode[]): FindResult[] {
         folder: folderOf(node),
         type: isFolder ? 'Folder' : (kinds[node.path[0]?.text ?? ''] ?? 'Page'),
         href: withBase(isFolder ? firstPage(node) : (node.link ?? '/')),
+        group: groupOf(node),
+        trail: node.path.map((folder) => folder.text),
+        ...(isFolder
+          ? { pages: flatten(node.children).filter((child) => child.link !== undefined).length }
+          : {}),
       }
     })
 
@@ -110,6 +126,8 @@ export function find(query: string, tree: NavNode[]): FindResult[] {
         folder: page ? [folderOf(page), page.text].filter(Boolean).join('\\') : path,
         type: hash ? 'Section' : 'Page',
         href: withBase(String(hit.id)),
+        group: page ? groupOf(page) : 'Pages',
+        trail: page ? [...page.path.map((folder) => folder.text), page.text] : [],
       }
     })
 
@@ -118,3 +136,24 @@ export function find(query: string, tree: NavNode[]): FindResult[] {
 }
 
 export { ready as indexReady }
+
+/** Pages as Spotlight lists them under «Recent»: the given paths, newest first. */
+export function recent(paths: string[], tree: NavNode[], limit = 3): FindResult[] {
+  const pages = flatten(tree).filter((node) => node.link !== undefined)
+  const out: FindResult[] = []
+  for (const path of [...paths].reverse()) {
+    const node = pages.find((page) => withBase(normalize(page.link ?? '')) === path)
+    if (!node || out.some((result) => result.id === `recent:${node.id}`)) continue
+    out.push({
+      id: `recent:${node.id}`,
+      name: node.text,
+      folder: folderOf(node),
+      type: 'Page',
+      href: withBase(node.link ?? '/'),
+      group: 'Recent',
+      trail: node.path.map((folder) => folder.text),
+    })
+    if (out.length === limit) break
+  }
+  return out
+}

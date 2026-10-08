@@ -88,8 +88,12 @@ export function useSiteNav() {
 const visited = ref<string[]>([])
 const position = ref(-1)
 
+/** Every page opened in this tab, in order, for Spotlight's «Recent». */
+export const recentPaths = ref<string[]>([])
+
 /** Records a navigation. Called after every route change. */
 export function recordVisit(path: string, kind: 'push' | 'back' | 'forward'): void {
+  recentPaths.value = [...recentPaths.value.filter((seen) => seen !== path), path]
   if (kind === 'back') position.value = Math.max(0, position.value - 1)
   else if (kind === 'forward')
     position.value = Math.min(visited.value.length - 1, position.value + 1)

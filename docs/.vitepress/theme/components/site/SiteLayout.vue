@@ -5,14 +5,16 @@ import DesktopHome from '../home/DesktopHome.vue'
 import ExplorerLayout from './ExplorerLayout.vue'
 import FindWindow from './FindWindow.vue'
 import NotFound from './NotFound.vue'
+import SpotlightSearch from './SpotlightSearch.vue'
 import { openFind } from './useFind'
-import { readSiteTheme } from './useSiteTheme'
+import { readSiteTheme, siteTheme } from './useSiteTheme'
 
 /**
  * Which screen a page is: the home page is the desktop, a docs page is the
  * Explorer window, a missing page the «Cannot find…» dialog on the desktop.
  *
- * Find lives here, above both screens: Ctrl+K (⌘K) or / opens it anywhere.
+ * Search lives here, above every screen: Ctrl+K (⌘K) or / opens it anywhere —
+ * the Find window in Windows 98, Spotlight in the modern theme.
  */
 const { frontmatter, page } = useData()
 
@@ -36,5 +38,6 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
   <NotFound v-if="page.isNotFound" />
   <DesktopHome v-else-if="frontmatter.layout === 'home'" />
   <ExplorerLayout v-else />
-  <FindWindow />
+  <SpotlightSearch v-if="siteTheme === 'modern'" />
+  <FindWindow v-else />
 </template>
