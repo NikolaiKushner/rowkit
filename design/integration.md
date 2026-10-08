@@ -156,7 +156,7 @@
 
 **Screens (3:57):**
 
-- [ ] Users (data / loading / no-results), Form New user, Overlays stack — modern light/dark, 1440 и 390. Сверить со страницами Patterns и с play-тестами Storybook.
+- [x] Users (data / loading / no-results), Form New user, Overlays stack — сверено 8 октября. Это страницы playground (`playground/app/pages`: users, index, overlays), нарисованные окнами на рабочем столе. Компоненты на них совпадают с кодом (шаг 4); компоновка — playground, он в библиотеку не входит, поэтому не переделываем (решение 8 октября).
 
 ## Шаг 6. Бренд (165:587, гайд 173:35331)
 
