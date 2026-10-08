@@ -198,43 +198,72 @@ export const semanticColor = {
   //
   // `neutral` completes the family so a component's variant matrix has no
   // special case: a neutral Badge reads the same token names as a danger one.
+  /** Neutral fill: a solid neutral badge, and anything filled in the neutral colour. */
   'neutral-solid': ref('vga-black'),
+  /** Neutral fill under the pointer. */
   'neutral-solid-hover': ref('vga-black'),
+  /** Text and icons on the neutral fill. */
   'neutral-on-solid': ref('vga-white'),
+  /** Neutral tint: the face of a subtle neutral badge or callout. */
   'neutral-subtle': ref('vga-white'),
+  /** Neutral text and icons, on its tint and on the page. */
   'neutral-on-subtle': ref('vga-black'),
+  /** The edge of a subtle or outlined neutral badge. */
   'neutral-border': ref('vga-gray'),
 
+  /** Primary fill — the accent: a solid primary badge, a selected item, the default action in a theme that colours it. */
   'primary-solid': ref('vga-navy'),
+  /** Primary fill under the pointer. */
   'primary-solid-hover': ref('vga-navy'),
+  /** Text and icons on the primary fill. */
   'primary-on-solid': ref('vga-white'),
+  /** Primary tint: the face of a subtle primary badge or callout. */
   'primary-subtle': ref('vga-white'),
+  /** Primary text and icons, on its tint and on the page. */
   'primary-on-subtle': ref('vga-navy'),
+  /** The edge of a subtle or outlined primary badge. */
   'primary-border': ref('vga-navy'),
 
+  /** Success fill: a solid success badge, and anything filled in the success colour. */
   'success-solid': ref('vga-green'),
+  /** Success fill under the pointer. */
   'success-solid-hover': ref('vga-green'),
+  /** Text and icons on the success fill. */
   'success-on-solid': ref('vga-white'),
+  /** Success tint: the face of a subtle success badge or callout. */
   'success-subtle': ref('vga-white'),
+  /** Success text and icons, on its tint and on the page. */
   'success-on-subtle': ref('vga-green'),
+  /** The edge of a subtle or outlined success badge. */
   'success-border': ref('vga-green'),
 
   /**
-   * Yellow carries black, never white: white on `#ffff00` is 1.07:1. Its edge
-   * is olive, because yellow on silver has almost no edge of its own.
+   * Warning fill: a solid warning badge, and anything filled in the warning colour. Yellow carries black, never white: white on `#ffff00` is 1.07:1;
+   * its edge is olive, because yellow on silver has almost no edge of its own.
    */
   'warning-solid': ref('vga-yellow'),
+  /** Warning fill under the pointer. */
   'warning-solid-hover': ref('vga-yellow'),
+  /** Text and icons on the warning fill. */
   'warning-on-solid': ref('vga-black'),
+  /** Warning tint: the face of a subtle warning badge or callout. */
   'warning-subtle': ref('vga-white'),
+  /** Warning text and icons, on its tint and on the page. */
   'warning-on-subtle': ref('vga-black'),
+  /** The edge of a subtle or outlined warning badge. */
   'warning-border': ref('vga-olive'),
 
+  /** Danger fill: a solid danger badge, and anything filled in the danger colour. */
   'danger-solid': ref('vga-maroon'),
+  /** Danger fill under the pointer. */
   'danger-solid-hover': ref('vga-maroon'),
+  /** Text and icons on the danger fill. */
   'danger-on-solid': ref('vga-white'),
+  /** Danger tint: the face of a subtle danger badge or callout. */
   'danger-subtle': ref('vga-white'),
+  /** Danger text and icons, on its tint and on the page. */
   'danger-on-subtle': ref('vga-maroon'),
+  /** The edge of a subtle or outlined danger badge. */
   'danger-border': ref('vga-maroon'),
 
   // Roles. Each names what a component paints rather than how Windows 98
@@ -243,13 +272,19 @@ export const semanticColor = {
 
   /** A plain button, a spin or drop button, a table's sort header. */
   control: ref('vga-silver'),
+  /** Text and icons on a plain button. */
   'control-foreground': ref('vga-black'),
+  /** A plain button under the pointer. */
   'control-hover': ref('vga-silver'),
+  /** A plain button while it is held. */
   'control-active': ref('vga-silver'),
   /** The default button of a form or dialog — Enter's target. */
   'control-primary': ref('vga-silver'),
+  /** Text and icons on the default button. */
   'control-primary-foreground': ref('vga-black'),
+  /** The default button under the pointer. */
   'control-primary-hover': ref('vga-silver'),
+  /** The default button while it is held. */
   'control-primary-active': ref('vga-silver'),
   /** A flat toolbar button while hovered and while held. */
   'control-ghost-hover': ref('vga-silver'),

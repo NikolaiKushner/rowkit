@@ -282,27 +282,7 @@ Every value a component draws with, in six groups. Values for both themes are on
 Style switches are what make a theme a style and not only a palette. Each one
 is a plain CSS value:
 
-| Switch                                                   | What it decides                                                | Windows 98        | Modern               |
-| -------------------------------------------------------- | -------------------------------------------------------------- | ----------------- | -------------------- |
-| `--rk-focus-label-width`                                 | The dotted ring around a control's label                       | `1px`             | `0px`                |
-| `--rk-focus-outer-width`, `--rk-focus-outer-offset`      | The ring around a control's edge                               | `0px`             | `3px`, `0px`         |
-| `--rk-focus-ring-width`, `--rk-focus-ring-style`         | The ring on a focused row, region or toast                     | `1px dotted`      | `2px solid`          |
-| `--rk-press-shift`                                       | How far a held button's label moves                            | `1px`             | `0px`                |
-| `--rk-press-brightness`                                  | Brightness of a held caption button                            | `1`               | `0.85`               |
-| `--rk-dither-image`                                      | Pattern on a latched toggle and a scroll track                 | checker           | `none`               |
-| `--rk-loading-image`, `--rk-animate-loading`             | A skeleton's pattern and motion                                | checker, stepping | `none`, pulse        |
-| `--rk-duration-control`                                  | How long a control takes to change state                       | `0ms`             | `120ms`              |
-| `--rk-animate-overlay-in`                                | How a dialog, list or toast arrives                            | `none`            | fade and scale       |
-| `--rk-overlay-bg`                                        | What a modal dialog lays over the page                         | `transparent`     | 15% black            |
-| `--rk-popover-backdrop`                                  | Backdrop filter behind a dropped list                          | `none`            | blur and saturate    |
-| `--rk-etch-width`                                        | The light second line of a separator                           | `1px`             | `0px`                |
-| `--rk-caption-order`, `--rk-close-order`                 | Caption buttons after or before the title; close last or first | `0`, `0`          | `-1`, `-1`           |
-| `--rk-titlebar-align`, `--rk-titlebar-balance`           | Title at the start or centred, and the space that centres it   | `start`, `0px`    | `center`, `60px`     |
-| `--rk-caption-glyph-opacity`                             | Caption glyphs at rest (hover shows them)                      | `1`               | `0`                  |
-| `--rk-scrollbar-buttons`                                 | Arrow buttons on a scroll bar                                  | `block`           | `none`               |
-| `--rk-glyph-scale`                                       | Scale of small glyphs: a check mark, a caption glyph           | `1`               | `1.4`                |
-| `--rk-radio-fill`, `--rk-radio-dot-r`, `--rk-radio-edge` | An option button drawn by CSS instead of pixels                | `0%`              | `100%`, `3px`, `1px` |
-| `--rk-icon-pixels`, `--rk-icon-fill`, `--rk-icon-tone-*` | Pixel icons, or outline glyphs and their colours               | pixels            | glyphs               |
+<TokenTable group="style" />
 
 ### Icons
 

@@ -20,3 +20,4 @@
 - **Modern, dark:** destructive text is brighter (`#ffa0a4`, 4.7:1 on a control).
 - **The modern theme's icons are its designer's own**, exported from the Figma file, in place of the Lucide placeholders; `THIRD_PARTY_NOTICES.md` is no longer shipped. A loading button turns a spinner in the modern theme (`--rk-animate-busy`; Windows 98's hourglass stands still), and a select shows up and down arrows there.
 - **The package README shows the new brand:** the hero picture, light or dark by the reader's scheme, and the npm badge in the brand's vermilion.
+- **`@rowkit/tokens/reference`: every token a theme sets, described.** `tokenReference` lists each CSS variable with what it is for, the components that read it and its value in Windows 98 and the modern theme's light and dark schemes. The descriptions are the comments beside the values, so they cannot drift; a separate entry point, so importing the tokens does not ship them.

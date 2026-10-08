@@ -175,6 +175,16 @@ day should acknowledge input, not perform. Anything ambient — a skeleton pulse
 a toast sliding in — is additionally gated behind `motion-safe:`, so it is
 absent entirely for anyone who has asked for reduced motion.
 
+## Every token a theme sets
+
+All of them, with what each is for and its value in Windows 98 and in the
+modern theme's light and dark schemes. Search by name or by what it does, or
+pick a component to see what its look is made of. The descriptions are the
+comments beside the values in `@rowkit/tokens`, and the same list ships as
+`@rowkit/tokens/reference`.
+
+<TokenTable searchable />
+
 ## Using them
 
 Through Tailwind, which is the normal path — every token is a theme value, so
