@@ -6,7 +6,7 @@ import BevelTiles from './components/BevelTiles.vue'
 import ColorList from './components/ColorList.vue'
 import ColorPalette from './components/ColorPalette.vue'
 import DemoBox from './components/DemoBox.vue'
-import SiteLayout from './components/site/SiteLayout.vue'
+import SiteShell from './components/site/SiteShell.vue'
 import NpmVersion from './components/NpmVersion.vue'
 import TokenGrid from './components/TokenGrid.vue'
 import TokenTable from './components/TokenTable.vue'
@@ -28,7 +28,7 @@ import './tokens.css'
  */
 export default {
   extends: DefaultTheme,
-  Layout: SiteLayout,
+  Layout: SiteShell,
   enhanceApp({ app }) {
     for (const [name, value] of Object.entries(rowkit)) {
       // Every component export is PascalCase; the composables, the `cn` helper

@@ -1,13 +1,7 @@
 /*
- * The docs site brands itself from rowkit's own tokens.
- *
- * VitePress's default theme is entirely CSS-variable driven, so mapping its
- * brand slots onto `@rowkit/tokens` means the site is a consumer of the package
- * it documents. If a token changes, the site changes — there is no second
- * palette to keep in sync, and no screenshot to go stale.
- *
- * Tailwind and rowkit's theme are imported here too, because the live demos on
- * component pages are real rowkit components and need real rowkit utilities.
+ * Tailwind and rowkit's theme, because the live demos on the docs pages are
+ * real rowkit components and need real rowkit utilities. The docs chrome is
+ * VitePress's default theme with the brand on it — see docs.css.
  *
  * The `vp-theme` layer order is *not* set here. It rides on the wrapped
  * VitePress CSS in `config.ts`, which lands above this file in the bundle — an
@@ -16,15 +10,14 @@
 
 @import 'tailwindcss';
 @import '../../../packages/ui/src/styles/index.css';
-@import './content.css';
-@import './modern.css';
+@import './docs.css';
+@import './landing.css';
 
 /*
- * The site is drawn in one rowkit theme at a time, set on <html> (see
- * `useSiteTheme.ts`). rowkit's components follow the theme through their
- * tokens; the site's own chrome — the taskbar that becomes a menu bar, the
- * Explorer toolbar that becomes Finder's — is styled per theme with these.
- * They are the site's, not rowkit's: a library cannot assume one theme per page.
+ * The live examples are drawn in one rowkit theme at a time, set on <html>
+ * (see `useSiteTheme.ts`). These variants style the site's own pieces per
+ * theme — the landing page above all. They are the site's, not rowkit's: a
+ * library cannot assume one theme per page.
  */
 @custom-variant modern (&:where([data-theme='modern'], [data-theme='modern'] *));
 @custom-variant win98 (&:where(:root:not([data-theme='modern']), :root:not([data-theme='modern']) *));
@@ -121,29 +114,4 @@
  */
 .rk-demo thead tr {
   z-index: 1;
-}
-
-:root {
-  --vp-font-family-base: var(--font-sans);
-  --vp-font-family-mono: var(--font-mono);
-
-  --vp-c-brand-1: var(--color-primary-solid);
-  --vp-c-brand-2: var(--color-link);
-  --vp-c-brand-3: var(--color-titlebar-to);
-  --vp-c-brand-soft: var(--color-border-subtle);
-
-  --vp-c-bg: var(--color-background);
-  --vp-c-bg-alt: var(--color-muted);
-  --vp-c-bg-soft: var(--color-muted);
-
-  --vp-c-text-1: var(--color-foreground);
-  --vp-c-text-2: var(--color-muted-foreground);
-  --vp-c-text-3: var(--color-text-subtle);
-
-  --vp-c-divider: var(--color-border);
-  --vp-c-gutter: var(--color-border);
-
-  --vp-button-brand-bg: var(--color-primary-solid);
-  --vp-button-brand-hover-bg: var(--color-primary-solid-hover);
-  --vp-button-brand-text: var(--color-primary-on-solid);
 }

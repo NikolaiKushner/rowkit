@@ -1,8 +1,6 @@
-import { createRequire } from 'node:module'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, type UserConfig } from 'vitepress'
 import { describe, pageHead, sharedHead } from './social'
-import { win98Code } from './syntax'
 import { tables } from './tables'
 import { themeBootScript } from './theme/components/site/useSiteTheme'
 
@@ -15,26 +13,26 @@ import { themeBootScript } from './theme/components/site/useSiteTheme'
 type VitePressPlugin = NonNullable<NonNullable<UserConfig['vite']>['plugins']>[number]
 
 /**
- * rowkit.dev as a desktop in either theme, from the Figma Site pages: the home
- * page is the desktop, every docs page an Explorer window in Windows 98 and a
- * Finder window in modern, built from rowkit's own components in
- * `theme/components/site` and `theme/components/home`.
- *
- * VitePress still renders the markdown, builds the search index and supplies
- * the `.vp-doc` content styles the site layers its own on top of.
+ * rowkit.dev 2.0 (design/briefs/site.md): the docs are VitePress's default
+ * theme with the brand on it, light and dark; the live examples are drawn in
+ * the rowkit theme the nav bar's «Components» switch picks.
  */
 export default defineConfig({
   title: 'rowkit',
-  // «DataTable — rowkit», as the Explorer window and the taskbar name a page.
   titleTemplate: ':title — rowkit',
   description: 'A professional Vue 3 toolkit — the components a product interface is built from.',
   lang: 'en-GB',
   cleanUrls: true,
-  // The Explorer window's status bar shows when the page last changed.
   lastUpdated: true,
 
   // Callout titles as the Figma panels read: «Tip», not «TIP».
   markdown: {
+    /*
+     * GitHub's colours, in the variants whose every token clears 4.5:1 on
+     * VitePress's code block: the plain github-light has red, green and orange
+     * at 3.2–4.3:1 on #f6f6f7, and github-dark's comments are 3.8:1.
+     */
+    theme: { light: 'github-light-high-contrast', dark: 'github-dark-default' },
     container: {
       tipLabel: 'Tip',
       infoLabel: 'Note',
@@ -43,14 +41,7 @@ export default defineConfig({
       detailsLabel: 'Details',
     },
     config: (md) => md.use(tables),
-    // Code in a Windows 98 IDE's colours. See `syntax.ts`.
-    theme: win98Code,
   },
-
-  // The site switches theme and scheme with its own control and rowkit's
-  // attributes. This removes VitePress's light/dark switch and its `.dark`
-  // class, rather than leaving a second toggle that restyles nothing.
-  appearance: false,
 
   sitemap: { hostname: 'https://rowkit.dev' },
 
@@ -85,20 +76,6 @@ export default defineConfig({
    * layer statement that restates a known order is a no-op.
    */
   vite: {
-    resolve: {
-      /*
-       * The Find window reads VitePress's own search index with the same
-       * MiniSearch VitePress uses. pnpm keeps it out of the theme's reach, so
-       * point at VitePress's copy rather than adding a second one.
-       */
-      alias: {
-        // The package's folder: it exports no package.json, so take its entry
-        // file and cut back to the folder, which Vite then resolves itself.
-        minisearch: createRequire(createRequire(import.meta.url).resolve('vitepress'))
-          .resolve('minisearch')
-          .replace(/[\\/]dist[\\/].*$/, ''),
-      },
-    },
     plugins: [
       {
         name: 'rowkit-layer-vitepress-css',
@@ -131,37 +108,33 @@ export default defineConfig({
     ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' }],
     ['link', { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon-48.png' }],
     ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
-    // The theme, set before the first paint so a reload never flashes the other one.
+    // The examples' theme, set before the first paint so a reload never flashes the other one.
     ['script', {}, themeBootScript],
     ...sharedHead,
   ],
 
   themeConfig: {
-    logo: { src: '/mark-light.svg', alt: 'rowkit' },
-    siteTitle: 'rowkit',
+    // The logo is the mark and the wordmark; no second title beside it.
+    logo: { light: '/logo.svg', dark: '/logo-light.svg', alt: 'rowkit' },
+    siteTitle: false,
 
     nav: [
       { text: 'Guide', link: '/introduction' },
       { text: 'Components', link: '/components/' },
       { text: 'Patterns', link: '/patterns/data-table-page' },
+      { text: 'Themes', link: '/foundations/themes' },
       { text: 'Storybook', link: 'https://storybook.rowkit.dev' },
-      { text: 'Decisions', link: '/decisions/001-typescript-pin' },
       {
-        text: 'Help',
+        text: '1.0 beta',
         items: [
-          {
-            text: 'Roadmap',
-            link: 'https://github.com/NikolaiKushner/rowkit/blob/main/ROADMAP.md',
-          },
           { text: 'Changelog', link: 'https://github.com/NikolaiKushner/rowkit/releases' },
+          { text: 'Roadmap', link: '/roadmap' },
+          { text: 'npm', link: 'https://www.npmjs.com/package/rowkit' },
         ],
       },
     ],
 
-    /*
-     * The folder tree of the Explorer window: sections, groups, pages. Nested
-     * `items` are folders; an item with a `link` is a page.
-     */
+    /* Sections, groups, pages: nested `items` are groups; an item with a `link` is a page. */
     sidebar: [
       {
         text: 'Guide',

@@ -1,0 +1,186 @@
+/*
+ * rowkit.dev's docs: VitePress's default theme with the brand on it — the
+ * vermilion accent on links, the active sidebar item and the outline marker,
+ * the logo, a 15px sidebar. The chrome is the brand's, in light and dark; the
+ * live examples inside it are drawn in whichever rowkit theme the nav bar's
+ * «Components» switch picks.
+ *
+ * In `components`: above VitePress's own rules (`vp-theme`, see config.ts),
+ * below Tailwind utilities, so a demo's own classes always win.
+ */
+
+/* The brand (Figma Brand — rowkit, Colour). Text in vermilion clears 4.5:1 on paper and on night. */
+:root {
+  --vp-c-brand-1: #c8361c;
+  --vp-c-brand-2: #b32e16;
+  --vp-c-brand-3: #d63a1f;
+  --vp-c-brand-soft: rgb(214 58 31 / 0.12);
+  --vp-button-brand-bg: #d63a1f;
+  --vp-button-brand-hover-bg: #b32e16;
+  --vp-button-brand-active-bg: #b32e16;
+  --vp-home-hero-name-color: var(--vp-c-brand-1);
+  /*
+   * Inline code a shade deeper than the links: brand-1 is 4.3:1 on the code's
+   * grey, brand-2 5.2:1. The code block's language label at text-2, not text-3
+   * (2.9:1).
+   */
+  --vp-code-color: var(--vp-c-brand-2);
+  --vp-code-lang-color: var(--vp-c-text-2);
+}
+
+.dark {
+  --vp-c-brand-1: #f0846e;
+  --vp-c-brand-2: #e8735b;
+  --vp-c-brand-3: #d63a1f;
+  --vp-c-brand-soft: rgb(214 58 31 / 0.16);
+  --vp-code-color: var(--vp-c-brand-1);
+}
+
+@layer components {
+  /* The sidebar a size up from VitePress's 14px, so the tree reads without squinting. */
+  .VPSidebarItem .text {
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  /*
+   * Inside a live demo, VitePress's article styles step back. Its `.vp-doc`
+   * rules give every <p> margins and a 28px line, underline and recolour every
+   * <a>, frame every table cell — and a component that leaves one of those
+   * properties unset would inherit it. This layer sits after VitePress's and
+   * before the components' own utilities, so it clears the leak without
+   * overriding anything a component sets.
+   */
+  .vp-doc .rk-demo :where(p, blockquote, h1, h2, h3, h4, h5, h6, ul, ol, hr, summary) {
+    margin: 0;
+  }
+
+  .vp-doc .rk-demo :where(p, blockquote) {
+    line-height: inherit;
+  }
+
+  .vp-doc .rk-demo :where(h1, h2, h3, h4, h5, h6) {
+    padding: 0;
+    border: 0;
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: var(--font-weight-strong);
+    letter-spacing: 0;
+  }
+
+  .vp-doc .rk-demo :where(a) {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: none;
+  }
+
+  .vp-doc .rk-demo :where(strong) {
+    font-weight: var(--font-weight-strong);
+  }
+
+  .vp-doc .rk-demo :where(ul, ol) {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .vp-doc .rk-demo :where(li + li) {
+    margin-top: 0;
+  }
+
+  .vp-doc .rk-demo :where(table) {
+    display: table;
+    margin: 0;
+    overflow: visible;
+  }
+
+  .vp-doc .rk-demo :where(tr, th, td) {
+    border: 0;
+    background: none;
+  }
+
+  .vp-doc .rk-demo :where(th, td) {
+    padding: 0;
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: inherit;
+    color: inherit;
+  }
+
+  .vp-doc .rk-demo :where(:not(pre) > code) {
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  /*
+   * A demo is its own stacking context. rowkit's z-index scale assumes rowkit
+   * is the page's chrome (a table's frame and sticky header sit at 100); here
+   * it is the guest, under VitePress's nav bar at 30.
+   */
+  .rk-demo {
+    isolation: isolate;
+  }
+
+  /*
+   * A props table on a phone: name in bold and type in mono on one line — the
+   * default after it, «= 'md'» — and the description under them. The cells
+   * carry their column's header as `data-label` (see tables.ts).
+   */
+  @media (max-width: 767px) {
+    .vp-doc .rk-props table {
+      display: block;
+      border: 0;
+    }
+
+    .vp-doc .rk-props table thead {
+      display: none;
+    }
+
+    .vp-doc .rk-props table tbody {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .vp-doc .rk-props table tr {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 2px 8px;
+      border: 0;
+      background: none;
+    }
+
+    .vp-doc .rk-props table td {
+      padding: 0;
+      border: 0;
+    }
+
+    .vp-doc .rk-props table td[data-label='Prop'] code {
+      font-weight: 600;
+    }
+
+    .vp-doc .rk-props table :where(td[data-label='Type'], td[data-label='Default']) {
+      color: var(--vp-c-text-2);
+    }
+
+    .vp-doc .rk-props table td[data-label='Default']::before {
+      content: '= ';
+    }
+
+    .vp-doc .rk-props table td[data-empty] {
+      display: none;
+    }
+
+    /* «required» is not a default; it reads as itself, without the «=». */
+    .vp-doc .rk-props table td[data-label='Default']:has(strong)::before {
+      content: none;
+    }
+
+    .vp-doc .rk-props table td[data-label='Description'] {
+      flex-basis: 100%;
+    }
+  }
+}
