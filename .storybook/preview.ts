@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/vue3-vite'
-import theme from './theme'
+import { forScheme } from './theme'
 // The Windows 98 faces, loaded the way an app is told to load them.
 import '@fontsource/pt-sans/400.css'
 import '@fontsource/pt-sans/700.css'
@@ -10,11 +10,18 @@ type Theme = 'win98' | 'modern'
 type Scheme = 'system' | 'light' | 'dark'
 
 /**
- * The theme the stories open in. Windows 98 is rowkit's default; set
- * `VITE_RK_THEME=modern` to run the browser tests (and their a11y gate) in the
- * modern theme instead.
+ * The theme the stories open in. People browsing the workshop start in modern,
+ * as rowkit.dev does. The browser tests (Vitest, mode `test`) and their a11y
+ * gate start in Windows 98 — rowkit's own default, without an attribute — and
+ * `VITE_RK_THEME` picks either explicitly (`test:a11y:modern`).
  */
-const initialTheme: Theme = import.meta.env.VITE_RK_THEME === 'modern' ? 'modern' : 'win98'
+const requested = import.meta.env.VITE_RK_THEME
+const initialTheme: Theme =
+  requested === 'modern' || requested === 'win98'
+    ? requested
+    : import.meta.env.MODE === 'test'
+      ? 'win98'
+      : 'modern'
 
 const preview: Preview = {
   globalTypes: {
@@ -47,10 +54,10 @@ const preview: Preview = {
   initialGlobals: { theme: initialTheme, scheme: 'system' },
   parameters: {
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
-    docs: { theme },
+    docs: { theme: forScheme() },
     options: {
       storySort: {
-        order: ['Patterns', 'Foundations', 'Data', 'Overlay', '*'],
+        order: ['Welcome', 'Patterns', 'Foundations', 'Data', 'Overlay', '*'],
       },
     },
     a11y: {

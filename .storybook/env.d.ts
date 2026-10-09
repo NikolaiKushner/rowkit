@@ -3,8 +3,10 @@
 declare module '*.css'
 
 interface ImportMetaEnv {
-  /** `modern` opens the stories in the modern theme; anything else, Windows 98. */
+  /** `win98` or `modern`: the theme the stories open in, overriding the default. */
   readonly VITE_RK_THEME?: string
+  /** Vite's mode: `test` under Vitest, `development` or `production` otherwise. */
+  readonly MODE: string
 }
 
 interface ImportMeta {

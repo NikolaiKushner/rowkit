@@ -6,6 +6,7 @@
  *   pnpm visual:check              # default matrix
  *   pnpm visual:check Button       # only stories whose id contains "button"
  *   pnpm visual:check --url http://127.0.0.1:6006
+ *   pnpm visual:check --theme modern   # Windows 98 unless asked
  *
  * Expects Storybook already running (`pnpm storybook`). Writes PNGs under
  * `.visual-check/` — gitignored. Agents must Read those images before claiming
@@ -44,16 +45,19 @@ const DEFAULT_STORIES = [
 
 function parseArgs(argv) {
   let url = 'http://127.0.0.1:6006'
+  let theme = 'win98'
   const filters = []
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
     if (arg === '--url') {
       url = argv[++i] ?? url
+    } else if (arg === '--theme') {
+      theme = argv[++i] ?? theme
     } else if (!arg.startsWith('-')) {
       filters.push(arg.toLowerCase())
     }
   }
-  return { url, filters }
+  return { url, theme, filters }
 }
 
 function pickStories(filters) {
@@ -77,8 +81,10 @@ async function waitForStorybook(page, url) {
   )
 }
 
-async function shot(page, baseUrl, storyId) {
-  const url = `${baseUrl}/iframe.html?id=${storyId}&viewMode=story`
+async function shot(page, baseUrl, storyId, theme) {
+  // The theme is named, not left to the workshop's default (modern for people,
+  // Windows 98 for the pixel baseline).
+  const url = `${baseUrl}/iframe.html?id=${storyId}&viewMode=story&globals=theme:${theme}`
   await page.goto(url, { waitUntil: 'networkidle' })
   // Let fonts and portals settle.
   await page.waitForTimeout(200)
@@ -88,7 +94,7 @@ async function shot(page, baseUrl, storyId) {
 }
 
 async function main() {
-  const { url, filters } = parseArgs(process.argv.slice(2))
+  const { url, theme, filters } = parseArgs(process.argv.slice(2))
   const stories = pickStories(filters)
   if (stories.length === 0) {
     console.error(`No default stories matched filter: ${filters.join(', ')}`)
@@ -103,7 +109,7 @@ async function main() {
     await waitForStorybook(page, url)
     const written = []
     for (const id of stories) {
-      const file = await shot(page, url, id)
+      const file = await shot(page, url, id, theme)
       written.push(file)
       console.log(file)
     }

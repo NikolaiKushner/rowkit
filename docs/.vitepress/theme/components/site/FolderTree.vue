@@ -5,8 +5,9 @@ import { DocumentIcon, FolderIcon, FolderOpenIcon, TriangleRightIcon } from 'row
 import type { NavNode } from './useSiteNav'
 
 /**
- * The Explorer window's left pane: the docs as a folder tree. Folders on the
- * way to the current page open by themselves; the rest open on demand.
+ * The Explorer window's left pane: the docs as a folder tree. Every folder
+ * starts open, so the whole site is in view; the reader can close any of
+ * them, and the folders on the way to the current page open again with it.
  *
  * A WAI-ARIA tree with one tab stop: ↑ ↓ move, → opens a folder or steps into
  * it, ← closes it or steps out, Enter opens the page, Home and End jump.
@@ -18,6 +19,22 @@ const props = defineProps<{
 
 const router = useRouter()
 const open = ref(new Set<string>())
+
+/** Every folder in the tree, at any depth. */
+const folderIds = (nodes: NavNode[]): string[] =>
+  nodes.flatMap((node) => (node.children.length > 0 ? [node.id, ...folderIds(node.children)] : []))
+
+// All open to begin with; once, so a folder the reader closed stays closed.
+let seeded = false
+watch(
+  () => props.tree,
+  (tree) => {
+    if (seeded || tree.length === 0) return
+    seeded = true
+    open.value = new Set([...open.value, ...folderIds(tree)])
+  },
+  { immediate: true }
+)
 
 // Every folder on the path to the page opens when the page changes, without
 // closing folders the reader opened themselves.
