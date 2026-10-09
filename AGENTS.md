@@ -129,6 +129,7 @@ pnpm size         # bundle budget, brotli
 pnpm storybook    # then, in another terminal:
 pnpm visual:check # screenshot default stories → .visual-check/
 pnpm visual:check Button  # scoped to one component
+pnpm visual:check --theme modern  # the same in the modern theme (Windows 98 by default)
 
 pnpm test:a11y         # the browser tests and a11y gate (Windows 98)
 pnpm test:a11y:modern  # the same in the modern theme
