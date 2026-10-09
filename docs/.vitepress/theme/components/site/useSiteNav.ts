@@ -1,7 +1,7 @@
-import { computed, ref } from 'vue'
-import { useData, useRoute, withBase, type DefaultTheme } from 'vitepress'
+import { computed } from 'vue'
+import { useData, type DefaultTheme } from 'vitepress'
 
-/** A folder or a page of the Explorer window's tree. */
+/** A group or a page of the sidebar tree. */
 export interface NavNode {
   /** Stable id: the link for a page, the folder path for a folder. */
   id: string
@@ -29,86 +29,17 @@ function build(items: DefaultTheme.SidebarItem[], path: NavNode[], prefix: strin
   })
 }
 
-function flatten(nodes: NavNode[]): NavNode[] {
-  return nodes.flatMap((node) => [node, ...flatten(node.children)])
-}
-
-/**
- * The site's navigation, read from the sidebar config: the tree, the page on
- * screen and where it sits in the tree.
- */
+/** The site's navigation as a tree, read from the sidebar config (the Components page lists from it). */
 export function useSiteNav() {
-  const { theme, page } = useData<DefaultTheme.Config>()
-  const route = useRoute()
-
+  const { theme } = useData<DefaultTheme.Config>()
   const tree = computed(() => {
     const sidebar = theme.value.sidebar
     return Array.isArray(sidebar) ? build(sidebar, [], '') : []
   })
-
-  const pages = computed(() => flatten(tree.value).filter((node) => node.link !== undefined))
-
-  const current = computed(() => {
-    const here = normalize(route.path)
-    return pages.value.find((node) => withBase(normalize(node.link ?? '')) === here)
-  })
-
-  /** `rowkit:\Components\Data\DataTable`, as the Explorer address bar shows it. */
-  const address = computed(() => {
-    const node = current.value
-    if (!node) return `rowkit:\\${page.value.title}`
-    return ['rowkit:', ...node.path.map((folder) => folder.text), node.text].join('\\')
-  })
-
-  /**
-   * Up: the nearest folder above. A folder with a page of its own — the
-   * Components overview — opens it; one without opens its first page that is
-   * not this one. Above the top folder is the desktop.
-   */
-  const up = computed(() => {
-    const node = current.value
-    if (!node) return '/'
-    for (const folder of [...node.path].reverse()) {
-      if (folder.link !== undefined) return folder.link
-      const first = flatten(folder.children).find((child) => child.link !== undefined)
-      if (first && first.id !== node.id) return first.link ?? '/'
-    }
-    return '/'
-  })
-
-  return { tree, pages, current, address, up }
+  return { tree }
 }
 
-/*
- * Back and Forward. The browser keeps the real history, but cannot say whether
- * there is anything to go back to, so the buttons would always look enabled.
- * This tracks the pages visited in this tab, which is what Explorer's buttons
- * reflect, and leaves the actual moving to the browser.
- */
-const visited = ref<string[]>([])
-const position = ref(-1)
-
-/** Every page opened in this tab, in order, for Spotlight's «Recent». */
-export const recentPaths = ref<string[]>([])
-
-/** Records a navigation. Called after every route change. */
-export function recordVisit(path: string, kind: 'push' | 'back' | 'forward'): void {
-  recentPaths.value = [...recentPaths.value.filter((seen) => seen !== path), path]
-  if (kind === 'back') position.value = Math.max(0, position.value - 1)
-  else if (kind === 'forward')
-    position.value = Math.min(visited.value.length - 1, position.value + 1)
-  else {
-    visited.value = [...visited.value.slice(0, position.value + 1), path]
-    position.value = visited.value.length - 1
-  }
-}
-
-export const canGoBack = computed(() => position.value > 0)
-export const canGoForward = computed(() => position.value < visited.value.length - 1)
-
-/** Whether `path` is the page one step back or forward, for popstate. */
-export function stepOf(path: string): 'back' | 'forward' | 'push' {
-  if (visited.value[position.value - 1] === path) return 'back'
-  if (visited.value[position.value + 1] === path) return 'forward'
-  return 'push'
+/** The folder of the tree with this text, or nothing. */
+export function folder(tree: NavNode[], text: string): NavNode | undefined {
+  return tree.find((node) => node.text === text)
 }

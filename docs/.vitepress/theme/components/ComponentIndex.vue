@@ -2,8 +2,7 @@
 import { computed } from 'vue'
 import { withBase } from 'vitepress'
 import { DataTable, DocumentIcon, type DataTableColumn } from 'rowkit'
-import { folder } from './site/menu'
-import { useSiteNav } from './site/useSiteNav'
+import { folder, useSiteNav } from './site/useSiteNav'
 import type { ComponentSummary } from '../data/components.data'
 
 /**
