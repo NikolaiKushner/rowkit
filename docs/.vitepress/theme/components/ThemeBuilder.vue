@@ -136,8 +136,13 @@ async function copy(): Promise<void> {
   setTimeout(() => (copied.value = false), 2000)
 }
 
-/** A <style> element: templates may not hold one, a render function may. */
-const ThemeStyle: FunctionalComponent<{ css: string }> = (props) => h('style', props.css)
+/**
+ * A <style> element: templates may not hold one, a render function may. The
+ * CSS goes in as `innerHTML`: as a text child the server escapes its quotes
+ * (`[data-theme=&quot;acme&quot;]`) and hydration reports a mismatch.
+ */
+const ThemeStyle: FunctionalComponent<{ css: string }> = (props) =>
+  h('style', { innerHTML: props.css })
 
 const options = <T extends string>(values: readonly (readonly [T, string])[]) => values
 const BASES = options<Base>([

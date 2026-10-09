@@ -50,8 +50,13 @@ export const acme = defineTheme({
   dark: violet,
 })`
 
-/** A <style> element: templates may not hold one, a render function may. */
-const ThemeStyle: FunctionalComponent<{ css: string }> = (props) => h('style', props.css)
+/**
+ * A <style> element: templates may not hold one, a render function may. The
+ * CSS goes in as `innerHTML`: as a text child the server escapes its quotes
+ * (`[data-theme=&quot;acme&quot;]`) and hydration reports a mismatch.
+ */
+const ThemeStyle: FunctionalComponent<{ css: string }> = (props) =>
+  h('style', { innerHTML: props.css })
 
 const PANELS = [
   { theme: 'win98', name: 'Windows 98', note: 'data-theme="win98"' },

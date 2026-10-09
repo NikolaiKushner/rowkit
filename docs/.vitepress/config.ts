@@ -27,6 +27,12 @@ export default defineConfig({
 
   // Callout titles as the Figma panels read: «Tip», not «TIP».
   markdown: {
+    /*
+     * GitHub's colours, in the variants whose every token clears 4.5:1 on
+     * VitePress's code block: the plain github-light has red, green and orange
+     * at 3.2–4.3:1 on #f6f6f7, and github-dark's comments are 3.8:1.
+     */
+    theme: { light: 'github-light-high-contrast', dark: 'github-dark-default' },
     container: {
       tipLabel: 'Tip',
       infoLabel: 'Note',

@@ -7,7 +7,7 @@ import { setSiteDark } from './useSiteTheme'
 
 /**
  * VitePress's default layout with one addition: the switch for the theme the
- * examples are drawn in — in the nav bar from 1280px, above the page's content
+ * examples are drawn in — in the nav bar from 1360px, above the page's content
  * where the nav bar is full, in the menu on a phone. VitePress's dark mode also turns the
  * modern examples dark.
  */

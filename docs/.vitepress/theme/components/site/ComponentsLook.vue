@@ -107,8 +107,9 @@ onMounted(readSiteTheme)
  * Where it shows. Plain media queries rather than utilities: these scoped
  * rules are unlayered and would beat any utility class.
  *
- * In the nav bar from 1280px, without the label (the group keeps its name);
- * above a page's content between 768 and 1279px, where the nav bar is full;
+ * In the nav bar from 1360px, without the label (the group keeps its name) —
+ * at 1280 the nav bar runs 6px short;
+ * above a page's content between 768 and 1359px, where the nav bar is full;
  * in the menu on a phone.
  */
 .rk-look.in-nav {
@@ -125,13 +126,13 @@ onMounted(readSiteTheme)
   padding: 0 0 16px;
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1360px) {
   .rk-look.in-nav {
     display: flex;
   }
 }
 
-@media (min-width: 768px) and (max-width: 1279px) {
+@media (min-width: 768px) and (max-width: 1359px) {
   .rk-look.in-doc {
     display: flex;
   }
